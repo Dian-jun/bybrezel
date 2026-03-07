@@ -343,15 +343,15 @@ async function loadRecords() {
       const f = r.fields;
       return {
         id:        r.id,
-        title:     f['title'] || '제목 없음',
-        content:   f['content'] || '',
-        cat:       f['category'] || '',
-        city:      f['city'] || '',
-        tags:      (f['tags'] || '').split(',').map(t => t.trim()).filter(Boolean),
-        author:    f['author Nickname'] || '익명',
+        title:     f['Title'] || '제목 없음',
+        content:   f['Content'] || '',
+        cat:       f['Category'] || '',
+        city:      f['City'] || '',
+        tags:      (f['Tags'] || '').split(',').map(t => t.trim()).filter(Boolean),
+        author:    f['Author Nickname'] || '익명',
         date:      f['Submission Date'] ? new Date(f['Submission Date']).toLocaleDateString('ko-KR') : '',
-        likes:     f['likes'] || 0,
-        isPopular: f['is popular'] || false,
+        likes:     f['Likes'] || 0,
+        isPopular: f['Is Popular'] || false,
         liked:     false,
       };
     });
@@ -521,14 +521,14 @@ async function submitInfo() {
       method: 'POST',
       body: {
         fields: {
-          'title':           title,
-          'category':        cat,
-          'content':         body,
-          'city':            document.getElementById('f-city').value.trim(),
-          'tags':            document.getElementById('f-tags').value.trim(),
-          'author Nickname': document.getElementById('f-author').value.trim() || '익명',
+          'Title':           title,
+          'Category':        cat,
+          'Content':         body,
+          'City':            document.getElementById('f-city').value.trim(),
+          'Tags':            document.getElementById('f-tags').value.trim(),
+          'Author Nickname': document.getElementById('f-author').value.trim() || '익명',
           'Submission Date': new Date().toISOString().split('T')[0],
-          'likes':           0,
+          'Likes':           0,
         }
       }
     });
