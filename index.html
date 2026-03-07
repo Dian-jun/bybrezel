@@ -325,8 +325,12 @@ async function apiFetch(options = {}) {
     body: options.body ? JSON.stringify(options.body) : undefined,
   });
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || `오류 ${res.status}`);
+  const err = await res.json();
+  const msg =
+    typeof err.error === 'string'
+      ? err.error
+      : err.error?.message || JSON.stringify(err);
+  throw new Error(msg || `오류 ${res.status}`);
   }
   return res.json();
 }
@@ -345,7 +349,7 @@ async function loadRecords() {
         city:      f['city'] || '',
         tags:      (f['tags'] || '').split(',').map(t => t.trim()).filter(Boolean),
         author:    f['author Nickname'] || '익명',
-        date:      f['submission date'] ? new Date(f['submission date']).toLocaleDateString('ko-KR') : '',
+        date:      f['Submission Date'] ? new Date(f['Submission Date']).toLocaleDateString('ko-KR') : '',
         likes:     f['likes'] || 0,
         isPopular: f['is popular'] || false,
         liked:     false,
@@ -523,7 +527,7 @@ async function submitInfo() {
           'city':            document.getElementById('f-city').value.trim(),
           'tags':            document.getElementById('f-tags').value.trim(),
           'author Nickname': document.getElementById('f-author').value.trim() || '익명',
-          'submission date': new Date().toISOString().split('T')[0],
+          'Submission Date': new Date().toISOString().split('T')[0],
           'likes':           0,
         }
       }
