@@ -23,7 +23,7 @@ exports.handler = async function (event) {
       // Public: only return approved records
       const params = new URLSearchParams();
       params.set("filterByFormula", "{approval status} = TRUE()");
-      params.set("sort[0][field]", "submission date");
+      params.set("sort[0][field]", "Submission Date");
       params.set("sort[0][direction]", "desc");
       url = base + "?" + params.toString();
     } else if (method === "POST") {
