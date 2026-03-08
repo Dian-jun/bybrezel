@@ -426,6 +426,7 @@ async function loadRecords() {
         // 1번 수정: tags를 string으로 안전하게 변환 후 split
         tags:      (String(f['tags'] || '')).split(',').map(t => t.trim()).filter(Boolean),
         author:    f['author Nickname'] || '익명',
+        dateRaw:   f['submission date'] || '',
         date:      f['submission date'] ? new Date(f['submission date']).toLocaleDateString('ko-KR') : '',
         likes:     f['likes'] || 0,
         isPopular: f['is popular'] || false,
@@ -437,6 +438,7 @@ async function loadRecords() {
     document.getElementById('totalCount').textContent = allRecords.filter(r => r.postType !== '질문').length;
     renderCatList();
     renderCards();
+    maybeOpenPostFromUrl();
   } catch(e) {
     document.getElementById('cardsGrid').innerHTML =
       `<div class="empty-state"><div class="empty-icon">⚠️</div><p>데이터를 불러오지 못했어요.<br>${e.message}</p></div>`;
@@ -509,6 +511,7 @@ function renderCards() {
   );
   if (sort === 'likes')   items.sort((a, b) => b.likes - a.likes);
   else if (sort === 'popular') items.sort((a, b) => (b.isPopular?1:0)-(a.isPopular?1:0) || b.likes-a.likes);
+  else items.sort((a, b) => new Date(b.dateRaw || 0) - new Date(a.dateRaw || 0));
 
   const grid = document.getElementById('cardsGrid');
   grid.innerHTML = '';
@@ -598,16 +601,58 @@ async function submitClaim() {
   }
 }
 
-function openDetail(id) {
+
+function setPostUrl(id) {
+  const url = new URL(window.location.href);
+  url.searchParams.set('post', id);
+  window.history.pushState({ postId: id }, '', url);
+}
+
+function clearPostUrl() {
+  const url = new URL(window.location.href);
+  url.searchParams.delete('post');
+  window.history.pushState({}, '', url);
+}
+
+function closeDetail() {
+  document.getElementById('detailModal').classList.remove('open');
+  const url = new URL(window.location.href);
+  if (url.searchParams.has('post')) {
+    url.searchParams.delete('post');
+    window.history.pushState({}, '', url);
+  }
+}
+
+function maybeOpenPostFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const postId = params.get('post');
+  if (!postId) return;
+  const found = allRecords.find(d => d.id === postId);
+  if (found) openDetail(postId, false);
+}
+
+function shareCurrentPost(id) {
+  const shareUrl = `${window.location.origin}${window.location.pathname}?post=${encodeURIComponent(id)}`;
+  if (navigator.share) {
+    navigator.share({ title: document.title, url: shareUrl }).catch(() => {});
+    return;
+  }
+  navigator.clipboard.writeText(shareUrl)
+    .then(() => showToast('글 링크가 복사됐어요 🔗', 'success'))
+    .catch(() => showToast(shareUrl, 'success'));
+}
+
+function openDetail(id, updateUrl = true) {
   const item = allRecords.find(d => d.id === id);
   if (!item) return;
   const isQ = item.postType === '질문';
   const cat = CATS.find(c => c.key === (isQ ? '질문' : item.cat)) || {icon:'📌'};
   const bm  = bookmarks.has(id);
+  if (updateUrl) setPostUrl(id);
   document.getElementById('detailContent').innerHTML = `
     <div class="modal-header">
       <span class="card-cat cat-${isQ ? '질문' : item.cat}">${cat.icon} ${isQ ? '궁금해요' : (item.cat || '기타')}</span>
-      <button class="modal-close" onclick="document.getElementById('detailModal').classList.remove('open')">✕</button>
+      <button class="modal-close" onclick="closeDetail()">✕</button>
     </div>
     <div class="detail-title">${item.title}</div>
     <div class="detail-meta">
@@ -624,6 +669,7 @@ function openDetail(id) {
     <div class="detail-actions">
       ${!isQ ? `<button class="detail-action-btn${item.liked?' liked':''}" onclick="toggleLike(event,'${id}');openDetail('${id}')">❤️ 좋아요 ${item.likes}</button>` : ''}
       <button class="detail-action-btn${bm?' bookmarked':''}" onclick="toggleBookmark(event,'${id}');openDetail('${id}')">🔖 ${bm?'북마크됨':'북마크'}</button>
+      <button class="detail-action-btn" onclick="shareCurrentPost('${id}')">🔗 링크 복사</button>
       <button class="detail-action-btn claim" onclick="openClaim(event,'${id}')">🚩 오류 신고</button>
     </div>`;
   document.getElementById('detailModal').classList.add('open');
@@ -715,7 +761,23 @@ function showToast(msg, type = '') {
 }
 
 document.querySelectorAll('.modal-overlay').forEach(el => {
-  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+  el.addEventListener('click', e => {
+    if (e.target === el) {
+      if (el.id === 'detailModal') closeDetail();
+      else el.classList.remove('open');
+    }
+  });
+});
+
+window.addEventListener('popstate', () => {
+  const params = new URLSearchParams(window.location.search);
+  const postId = params.get('post');
+  if (postId) {
+    const found = allRecords.find(d => d.id === postId);
+    if (found) openDetail(postId, false);
+  } else {
+    document.getElementById('detailModal').classList.remove('open');
+  }
 });
 
 loadRecords();
