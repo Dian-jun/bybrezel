@@ -47,7 +47,7 @@ exports.handler = async function (event) {
       } else {
         // 정보 또는 질문 제출
         const fields = body.fields || {};
-        fields["approval status"] = false;
+        fields["approval status"] = Pending;
         // 1번 수정: tags 항상 string으로 보장
         if ("tags" in fields) {
           fields["tags"] = String(fields["tags"] || "").trim();
