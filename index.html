@@ -406,7 +406,7 @@ async function apiFetch(options = {}) {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || `오류 ${res.status}`);
+    throw new Error(JSON.stringify(err) || `오류 ${res.status}`);
   }
   return res.json();
 }
