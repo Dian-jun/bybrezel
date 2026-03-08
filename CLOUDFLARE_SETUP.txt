@@ -1,0 +1,13 @@
+Cloudflare Pages 배포 메모
+
+1. GitHub 저장소를 Cloudflare Pages에 연결
+2. Build settings
+   - Framework preset: None
+   - Build command: 비워둠
+   - Output directory: /
+3. Environment Variables 추가
+   - AIRTABLE_TOKEN
+   - AIRTABLE_BASE_ID
+   - AIRTABLE_TABLE_ID
+4. Airtable의 tags 컬럼은 Multiple select 권장
+5. API 경로는 /api/airtable 로 바뀌어 있음
