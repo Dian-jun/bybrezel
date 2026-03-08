@@ -698,7 +698,7 @@ async function submitForm() {
     showToast(isQ ? '궁금증이 등록됐어요! 곧 답변이 달릴 거예요 🥨' : '제출됐어요! 운영자 승인 후 게시됩니다 🥨', 'success');
   } catch(e) {
     status.style.color = '#A83030';
-    status.textContent = '오류: ' + e.message;
+    status.textContent = '오류: ' + (e.message || JSON.stringify(e));
   } finally {
     btn.disabled = false;
     btn.textContent = isQ ? '궁금증 올리기 →' : '공유하기 →';
