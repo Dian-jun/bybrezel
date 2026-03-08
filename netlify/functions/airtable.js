@@ -26,7 +26,7 @@ exports.handler = async function (event) {
 
     if (method === "GET") {
       const params = new URLSearchParams();
-      params.set("filterByFormula", "{approval status} = TRUE()");
+      params.set("filterByFormula", "{approval status} = 'Approved'");
       params.set("sort[0][field]", "submission date");
       params.set("sort[0][direction]", "desc");
       url = base + "?" + params.toString();
@@ -47,7 +47,7 @@ exports.handler = async function (event) {
       } else {
         // 정보 또는 질문 제출
         const fields = body.fields || {};
-        fields["approval status"] = Pending;
+        fields["approval status"] = "Pending";
         // 1번 수정: tags 항상 string으로 보장
         if ("tags" in fields) {
           fields["tags"] = String(fields["tags"] || "").trim();
