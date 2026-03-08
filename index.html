@@ -6,6 +6,7 @@
 <title>by Brezel — 독일 거주 여성 정보 아카이브</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg:       #FDF8F4;
@@ -15,16 +16,19 @@
     --orange-d: #B04E1F;
     --amber:    #E8A84C;
     --ink:      #1C1410;
+    --bgo: #ff8345;
     --ink-soft: #3D2E26;
     --muted:    #9A8070;
     --border:   #EAD9CC;
     --white:    #FFFFFF;
+    --green:    #4d4d4d;
+    --grey: #3b3b3b;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--ink); min-height:100vh; }
+  body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--grey); min-height:100vh; }
 
   /* ── HEADER ── */
-  header { background:var(--ink); padding:0 2rem; position:sticky; top:0; z-index:100; box-shadow:0 2px 24px rgba(28,20,16,0.35); }
+  header { background:var(--bgo); padding:0 2rem; position:sticky; top:0; z-index:100; /*box-shadow:0 2px 24px rgba(28,20,16,0.35);*/ }
   .header-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:68px; }
   .logo-img { height:45px; filter:brightness(0) invert(1); opacity:0.95; cursor:pointer; }
   nav { display:flex; gap:0.2rem; align-items:center; }
@@ -39,20 +43,18 @@
   @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
 
   /* ── HERO ── */
-  .hero { background:var(--ink); padding:5rem 2rem 4.5rem; text-align:center; position:relative; overflow:hidden; }
-  .hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 30% 50%, rgba(212,98,42,0.18) 0%, transparent 60%), radial-gradient(ellipse at 70% 30%, rgba(232,168,76,0.12) 0%, transparent 50%); }
-  .hero::after { content:''; position:absolute; inset:0; background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23E8A84C' fill-opacity='0.04'%3E%3Ccircle cx='40' cy='40' r='2'/%3E%3C/g%3E%3C/svg%3E"); }
+  .hero { background:var(--bgo); padding:5rem 2rem 4.5rem; text-align:center; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; inset:0; z-index:0; background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23FFFFFF' fill-opacity='0.12'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
   .hero-inner { position:relative; z-index:1; }
-  .hero-logo { height:52px; filter:brightness(0) invert(1); margin:0 auto 2rem; display:block; opacity:0.95; }
-  .hero-badge { display:inline-block; background:rgba(212,98,42,0.2); border:1px solid rgba(212,98,42,0.4); color:var(--orange-l); font-size:0.72rem; letter-spacing:0.18em; padding:0.35rem 1rem; border-radius:20px; margin-bottom:1.5rem; font-weight:500; }
+  .hero-badge { display:inline-block; background:rgba(255, 255, 255, 0.9); border:1px solid rgb(60, 33, 18); color:var(--grey); font-size:0.72rem; letter-spacing:0.18em; padding:0.35rem 1rem; border-radius:20px; margin-bottom:1.5rem; font-weight:500; }
   .hero h1 { font-family:'Noto Sans KR',sans-serif; font-size:clamp(2rem,5vw,3.2rem); color:white; line-height:1.2; margin-bottom:1rem; }
-  .hero h1 em { color:var(--amber); font-style:italic; }
-  .hero p { color:rgba(255,255,255,0.6); font-size:0.95rem; font-weight:300; max-width:460px; margin:0 auto 3rem; line-height:1.75; }
+  .hero h1 em { position: relative; z-index: 2; color:var(--grey); font-style:italic; }
+  .hero p { color:rgba(255,255,255,0.8); font-size:0.95rem; font-weight:300; max-width:460px; margin:0 auto 3rem; line-height:1.75; }
   .hero-stats { display:flex; justify-content:center; gap:3rem; flex-wrap:wrap; }
   .stat { text-align:center; position:relative; }
-  .stat-num { font-family:'Noto Sans KR',sans-serif; font-size:2.2rem; color:var(--amber); display:block; line-height:1; }
-  .stat-label { font-size:0.68rem; color:rgba(255,255,255,0.45); letter-spacing:0.1em; margin-top:0.3rem; text-transform:uppercase; }
-  .stat:not(:last-child)::after { content:''; position:absolute; right:-1.5rem; top:15%; height:70%; width:1px; background:rgba(232,168,76,0.2); }
+  .stat-num { font-family:'DM Serif Display',serif; font-size:2.2rem; font-weight: bold; color:var(--grey); display:block; line-height:1; }
+  .stat-label { font-size:0.68rem; color:rgba(255, 255, 255, 0.5); letter-spacing:0.1em; margin-top:0.3rem; text-transform:uppercase; }
+  .stat:not(:last-child)::after { content:''; position:absolute; right:-1.5rem; top:15%; height:70%; width:2px; background:rgba(255, 255, 255, 0.5); z-index: 1;}
 
   /* ── SEARCH ── */
   .search-section { background:var(--warm); border-bottom:1px solid var(--border); padding:1.25rem 2rem; position:sticky; top:68px; z-index:90; }
@@ -71,13 +73,15 @@
   .cat-item { display:flex; align-items:center; gap:0.6rem; padding:0.55rem 0.75rem; border-radius:10px; cursor:pointer; transition:all 0.15s; margin-bottom:0.15rem; font-size:0.855rem; color:var(--ink-soft); border:1.5px solid transparent; }
   .cat-item:hover { background:white; color:var(--orange); }
   .cat-item.active { background:white; color:var(--orange); border-color:var(--orange); font-weight:500; }
+  .cat-item.active-q { background:white; color:var(--green); border-color:var(--green); font-weight:500; }
+  .cat-item.active-q .cat-count { background:rgba(45,106,79,0.12); color:var(--green); }
   .cat-icon { font-size:1rem; flex-shrink:0; }
   .cat-count { margin-left:auto; font-size:0.68rem; background:var(--border); color:var(--muted); border-radius:10px; padding:0.1rem 0.5rem; }
   .cat-item.active .cat-count { background:rgba(212,98,42,0.12); color:var(--orange); }
 
   /* ── CONTENT ── */
   .content-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; }
-  .content-title { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--ink); }
+  .content-title { font-family:'Noto Sans KR',sans-serif; font-size:1.4rem; color:var(--grey); }
   .sort-select { font-family:'Noto Sans KR',sans-serif; font-size:0.78rem; border:1.5px solid var(--border); border-radius:8px; padding:0.4rem 0.75rem; background:white; color:var(--ink-soft); cursor:pointer; outline:none; }
 
   /* ── CARDS ── */
@@ -85,10 +89,13 @@
   .card { background:white; border:1.5px solid var(--border); border-radius:16px; padding:1.5rem; cursor:pointer; transition:all 0.2s; position:relative; animation:fadeUp 0.35s ease both; }
   @keyframes fadeUp { from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)} }
   .card:hover { border-color:var(--orange-l); box-shadow:0 8px 28px rgba(212,98,42,0.1); transform:translateY(-2px); }
+  .card.is-question { border-left:3px solid var(--green); }
+  .card.is-question:hover { border-color:var(--green); box-shadow:0 8px 28px rgba(45,106,79,0.1); }
   .card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.9rem; }
   .card-cat { display:inline-flex; align-items:center; gap:0.35rem; font-size:0.68rem; font-weight:600; letter-spacing:0.06em; padding:0.25rem 0.7rem; border-radius:20px; text-transform:uppercase; }
   .popular-badge { font-size:0.62rem; font-weight:600; background:linear-gradient(135deg,var(--orange),var(--amber)); color:white; padding:0.2rem 0.55rem; border-radius:10px; }
-  .card-title { font-size:0.95rem; font-weight:500; line-height:1.55; margin-bottom:0.6rem; color:var(--ink); }
+  .question-badge { font-size:0.62rem; font-weight:600; background:var(--green); color:white; padding:0.2rem 0.55rem; border-radius:10px; }
+  .card-title { font-size:0.95rem; font-weight:500; line-height:1.55; margin-bottom:0.6rem; color:var(--grey); }
   .card-excerpt { font-size:0.81rem; color:var(--muted); line-height:1.7; margin-bottom:1.1rem; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
   .card-footer { display:flex; align-items:center; justify-content:space-between; font-size:0.73rem; color:var(--muted); border-top:1px solid var(--border); padding-top:0.85rem; }
   .card-meta { display:flex; gap:0.65rem; align-items:center; }
@@ -97,6 +104,7 @@
   .action-btn:hover { border-color:var(--orange); color:var(--orange); }
   .action-btn.liked { border-color:var(--orange); color:var(--orange); background:rgba(212,98,42,0.07); }
   .action-btn.bookmarked { border-color:var(--amber); color:#B8841C; background:rgba(232,168,76,0.08); }
+  .action-btn.claim:hover { border-color:#A83030; color:#A83030; }
 
   /* CAT COLORS */
   .cat-행정  { background:rgba(212,98,42,0.1);  color:#B04E1F; }
@@ -107,6 +115,7 @@
   .cat-부동산{ background:rgba(80,130,60,0.1);  color:#4A7A30; }
   .cat-취업  { background:rgba(200,150,40,0.1); color:#A08020; }
   .cat-교통  { background:rgba(40,140,180,0.1); color:#206090; }
+  .cat-질문  { background:rgba(45,106,79,0.1);  color:#2D6A4F; }
 
   /* ── MODALS ── */
   .modal-overlay { display:none; position:fixed; inset:0; background:rgba(28,20,16,0.55); backdrop-filter:blur(6px); z-index:200; align-items:center; justify-content:center; padding:1rem; }
@@ -114,7 +123,7 @@
   .modal { background:white; border-radius:22px; width:100%; max-width:560px; max-height:90vh; overflow-y:auto; padding:2.5rem; animation:slideUp 0.3s ease; }
   @keyframes slideUp { from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)} }
   .modal-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1.75rem; }
-  .modal-title { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--ink); }
+  .modal-title { font-family:'Cormorant Garamond',serif; font-size:1.5rem; color:var(--ink); }
   .modal-sub { font-size:0.78rem; color:var(--muted); margin-top:0.25rem; }
   .modal-close { background:var(--bg); border:none; border-radius:50%; width:36px; height:36px; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background 0.15s; }
   .modal-close:hover { background:var(--border); }
@@ -131,6 +140,12 @@
   .pending-notice { background:rgba(232,168,76,0.1); border:1px solid rgba(232,168,76,0.35); border-radius:10px; padding:0.85rem 1.1rem; font-size:0.8rem; color:#8A6010; line-height:1.6; margin-bottom:1.5rem; }
   .submit-status { font-size:0.8rem; text-align:center; margin-top:0.75rem; min-height:1.2em; color:var(--muted); }
 
+  /* MODAL TABS (궁금해요) */
+  .modal-tabs { display:flex; border:1.5px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:1.5rem; }
+  .tab-btn { flex:1; padding:0.6rem; background:none; border:none; font-family:'Noto Sans KR',sans-serif; font-size:0.82rem; cursor:pointer; color:var(--muted); transition:all 0.15s; }
+  .tab-btn.active { background:var(--orange); color:white; font-weight:500; }
+  .tab-btn.active-q { background:var(--green); color:white; font-weight:500; }
+
   /* DETAIL */
   .detail-modal { max-width:660px; }
   .detail-title { font-family:'Noto Serif KR',serif; font-size:1.45rem; font-weight:600; line-height:1.45; margin-bottom:1rem; color:var(--ink); }
@@ -138,11 +153,26 @@
   .detail-body { font-size:0.89rem; line-height:1.9; color:var(--ink-soft); white-space:pre-wrap; }
   .detail-tags { display:flex; flex-wrap:wrap; gap:0.45rem; margin-top:1.5rem; }
   .tag { background:var(--bg); border:1px solid var(--border); border-radius:20px; padding:0.2rem 0.7rem; font-size:0.7rem; color:var(--muted); }
-  .detail-actions { display:flex; gap:0.75rem; margin-top:1.75rem; padding-top:1.5rem; border-top:1px solid var(--border); }
+  .detail-actions { display:flex; gap:0.75rem; margin-top:1.75rem; padding-top:1.5rem; border-top:1px solid var(--border); flex-wrap:wrap; }
   .detail-action-btn { display:flex; align-items:center; gap:0.5rem; background:var(--bg); border:1.5px solid var(--border); border-radius:10px; padding:0.6rem 1.2rem; font-family:'Noto Sans KR',sans-serif; font-size:0.82rem; cursor:pointer; transition:all 0.15s; color:var(--ink-soft); }
   .detail-action-btn:hover { border-color:var(--orange); color:var(--orange); }
   .detail-action-btn.liked { border-color:var(--orange); color:var(--orange); background:rgba(212,98,42,0.07); }
   .detail-action-btn.bookmarked { border-color:var(--amber); color:#B8841C; background:rgba(232,168,76,0.08); }
+  .detail-action-btn.claim:hover { border-color:#A83030; color:#A83030; }
+  .answer-box { margin-top:1.25rem; background:rgba(45,106,79,0.07); border:1.5px solid rgba(45,106,79,0.2); border-radius:12px; padding:1rem 1.25rem; }
+  .answer-box p { font-size:0.78rem; color:var(--green); font-weight:600; margin-bottom:0.4rem; }
+  .answer-box a { color:var(--green); font-size:0.83rem; }
+
+  /* CLAIM MODAL */
+  .claim-modal { max-width:440px; }
+  .claim-notice { background:rgba(168,48,48,0.06); border:1px solid rgba(168,48,48,0.2); border-radius:10px; padding:0.8rem 1rem; font-size:0.78rem; color:#A83030; line-height:1.6; margin-bottom:1.25rem; }
+  .btn-claim { width:100%; background:#A83030; color:white; border:none; border-radius:12px; padding:0.9rem; font-family:'Noto Sans KR',sans-serif; font-size:0.9rem; font-weight:500; cursor:pointer; margin-top:0.5rem; transition:background 0.2s; }
+  .btn-claim:hover { background:#882020; }
+  .btn-claim:disabled { background:var(--muted); cursor:not-allowed; }
+
+  /* MOBILE FAB */
+  .mobile-fab { display:none; position:fixed; bottom:1.5rem; right:1.5rem; z-index:150; background:var(--orange); color:white; border:none; border-radius:50px; padding:0.75rem 1.25rem; font-family:'Noto Sans KR',sans-serif; font-size:0.875rem; font-weight:500; cursor:pointer; box-shadow:0 4px 20px rgba(212,98,42,0.45); }
+  .mobile-fab:hover { background:var(--orange-l); }
 
   /* TOAST */
   .toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(16px); background:var(--ink); color:white; padding:0.75rem 1.5rem; border-radius:30px; font-size:0.83rem; opacity:0; transition:all 0.3s; pointer-events:none; z-index:999; white-space:nowrap; }
@@ -160,15 +190,18 @@
   .skel-line { background:linear-gradient(90deg,var(--border) 25%,#f5ece4 50%,var(--border) 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:6px; margin-bottom:0.75rem; }
 
   @media (max-width:768px) {
-    .main-content { grid-template-columns:1fr; padding:1.5rem 1rem; }
+    .main-content { grid-template-columns:1fr; padding:1.5rem 1rem 5rem; }
     .sidebar { position:static; }
     .cat-list { display:flex; flex-wrap:wrap; gap:0.4rem; }
     .cat-item { font-size:0.78rem; }
     nav { display:none; }
+    .mobile-fab { display:flex; align-items:center; gap:0.4rem; }
     .hero { padding:3.5rem 1.5rem 3rem; }
     .hero-logo { height:40px; }
     .modal { padding:1.5rem; }
     .form-row { grid-template-columns:1fr; }
+    .detail-actions { flex-wrap:wrap; gap:0.5rem; }
+    .detail-action-btn { padding:0.5rem 0.9rem; font-size:0.78rem; }
   }
 </style>
 </head>
@@ -185,23 +218,25 @@
       <button onclick="filterCat('생활')">생활</button>
       <button onclick="filterCat('교육')">교육</button>
       <button onclick="filterCat('육아')">육아</button>
-      <button class="btn-write" onclick="openSubmit()">✏️ 정보 공유</button>
+      <button onclick="filterCat('질문')">❓ 궁금해요</button>
+      <button class="btn-write" onclick="openSubmit('info')">✏️ 정보 공유</button>
     </nav>
   </div>
 </header>
 <div class="loading-bar" id="loadingBar"></div>
 
+<!-- 모바일 정보공유 버튼 (3번) -->
+<button class="mobile-fab" onclick="openSubmit('info')">✏️ 정보 공유</button>
+
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-inner">
-    <div class="hero-badge">🇩🇪 독일 거주 여성 커뮤니티</div>
-    <h1>독일 생활의 <em>모든 정보</em>,<br>한 곳에서</h1>
-    <p>단톡방에서 오고 가는 소중한 정보들을 카테고리별로 아카이브합니다.<br>875명의 경험이 쌓이는 곳.</p>
-    <div class="hero-stats">
-      <div class="stat"><span class="stat-num" id="totalCount">—</span><div class="stat-label">등록된 정보</div></div>
-      <div class="stat"><span class="stat-num">875</span><div class="stat-label">멤버</div></div>
-      <div class="stat"><span class="stat-num">8</span><div class="stat-label">카테고리</div></div>
-    </div>
+  <div class="hero-badge">🇩🇪 독일 거주 여성 커뮤니티</div>
+  <h1>Real <em>experiences,</em><br> shared by locals</h1>
+  <p>단톡방에서 오고 가는 소중한 정보들을 카테고리별로 아카이브합니다.<br>875명의 경험이 쌓이는 곳.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num" id="totalCount">—</span><div class="stat-label">등록된 정보</div></div>
+    <div class="stat"><span class="stat-num">875</span><div class="stat-label">멤버</div></div>
+    <div class="stat"><span class="stat-num">8</span><div class="stat-label">카테고리</div></div>
   </div>
 </section>
 
@@ -239,7 +274,6 @@
       </select>
     </div>
     <div class="cards-grid" id="cardsGrid">
-      <!-- skeletons -->
       <div class="skel"><div class="skel-line" style="height:20px;width:40%"></div><div class="skel-line" style="height:16px;width:80%"></div><div class="skel-line" style="height:14px;width:100%"></div><div class="skel-line" style="height:14px;width:90%"></div></div>
       <div class="skel"><div class="skel-line" style="height:20px;width:35%"></div><div class="skel-line" style="height:16px;width:75%"></div><div class="skel-line" style="height:14px;width:100%"></div><div class="skel-line" style="height:14px;width:85%"></div></div>
       <div class="skel"><div class="skel-line" style="height:20px;width:45%"></div><div class="skel-line" style="height:16px;width:70%"></div><div class="skel-line" style="height:14px;width:100%"></div><div class="skel-line" style="height:14px;width:95%"></div></div>
@@ -247,46 +281,72 @@
   </main>
 </div>
 
-<!-- SUBMIT MODAL -->
+<!-- SUBMIT MODAL (정보공유 + 궁금해요 탭) -->
 <div class="modal-overlay" id="submitModal">
   <div class="modal">
     <div class="modal-header">
-      <div><div class="modal-title">정보 공유하기</div><div class="modal-sub">단톡방에서 유용했던 정보를 등록해주세요</div></div>
+      <div><div class="modal-title" id="submitTitle">정보 공유하기</div><div class="modal-sub" id="submitSub">단톡방에서 유용했던 정보를 등록해주세요</div></div>
       <button class="modal-close" onclick="closeSubmit()">✕</button>
     </div>
-    <div class="pending-notice">📋 제출한 정보는 운영자 승인 후 게시됩니다.</div>
-    <div class="form-group">
-      <label class="form-label">제목 <span>*</span></label>
-      <input class="form-input" id="f-title" placeholder="예: TK 건강보험 가입 방법 (직장인)">
+    <!-- 탭 (4번: 궁금해요) -->
+    <div class="modal-tabs">
+      <button class="tab-btn active" id="tabInfo" onclick="switchTab('info')">✏️ 정보 공유</button>
+      <button class="tab-btn" id="tabQuestion" onclick="switchTab('question')">❓ 궁금해요</button>
     </div>
-    <div class="form-row">
+    <div class="pending-notice">📋 제출한 내용은 운영자 승인 후 게시됩니다.</div>
+
+    <!-- 정보 공유 폼 -->
+    <div id="formInfo">
       <div class="form-group">
-        <label class="form-label">카테고리 <span>*</span></label>
-        <select class="form-select" id="f-cat">
-          <option value="">선택하세요</option>
-          <option>행정</option><option>의료</option><option>생활</option>
-          <option>교육</option><option>육아</option><option>부동산</option>
-          <option>취업</option><option>교통</option>
-        </select>
+        <label class="form-label">제목 <span>*</span></label>
+        <input class="form-input" id="f-title" placeholder="예: TK 건강보험 가입 방법 (직장인)">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">카테고리 <span>*</span></label>
+          <select class="form-select" id="f-cat">
+            <option value="">선택하세요</option>
+            <option>행정</option><option>의료</option><option>생활</option>
+            <option>교육</option><option>육아</option><option>부동산</option>
+            <option>취업</option><option>교통</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">도시 (선택)</label>
+          <input class="form-input" id="f-city" placeholder="예: 베를린, 뮌헨">
+        </div>
       </div>
       <div class="form-group">
-        <label class="form-label">도시 (선택)</label>
-        <input class="form-input" id="f-city" placeholder="예: 베를린, 뮌헨">
+        <label class="form-label">내용 <span>*</span></label>
+        <textarea class="form-textarea" id="f-body" placeholder="경험이나 정보를 자유롭게 작성해주세요."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">태그 (선택, 쉼표로 구분)</label>
+        <input class="form-input" id="f-tags" placeholder="예: Anmeldung, 주민등록, 비자">
+      </div>
+      <div class="form-group">
+        <label class="form-label">닉네임 (선택)</label>
+        <input class="form-input" id="f-author" placeholder="예: 베를린새댁, 익명">
       </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">내용 <span>*</span></label>
-      <textarea class="form-textarea" id="f-body" placeholder="경험이나 정보를 자유롭게 작성해주세요. 단계별 절차, 팁, 주의사항 등을 포함하면 더 도움이 됩니다."></textarea>
+
+    <!-- 궁금해요 폼 -->
+    <div id="formQuestion" style="display:none">
+      <div class="form-group">
+        <label class="form-label">궁금한 내용 <span>*</span></label>
+        <input class="form-input" id="q-title" placeholder="예: 독일 운전면허 한국 면허로 교환하는 방법이 궁금해요">
+      </div>
+      <div class="form-group">
+        <label class="form-label">자세한 설명 (선택)</label>
+        <textarea class="form-textarea" id="q-body" placeholder="더 자세한 상황이나 맥락을 설명해주세요." style="min-height:80px"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">닉네임 (선택)</label>
+        <input class="form-input" id="q-author" placeholder="예: 뮌헨새내기, 익명">
+      </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">태그 (선택, 쉼표로 구분)</label>
-      <input class="form-input" id="f-tags" placeholder="예: Anmeldung, 주민등록, 비자">
-    </div>
-    <div class="form-group">
-      <label class="form-label">닉네임 (선택)</label>
-      <input class="form-input" id="f-author" placeholder="예: 베를린새댁, 익명">
-    </div>
-    <button class="btn-primary" id="submitBtn" onclick="submitInfo()">공유하기 →</button>
+
+    <button class="btn-primary" id="submitBtn" onclick="submitForm()">공유하기 →</button>
     <div class="submit-status" id="submitStatus"></div>
   </div>
 </div>
@@ -296,25 +356,45 @@
   <div class="modal detail-modal" id="detailContent"></div>
 </div>
 
+<!-- CLAIM MODAL (2번: 오류신고) -->
+<div class="modal-overlay" id="claimModal">
+  <div class="modal claim-modal">
+    <div class="modal-header">
+      <div><div class="modal-title" style="font-size:1.3rem">🚩 오류 신고</div><div class="modal-sub">잘못된 정보를 운영자에게 알려주세요</div></div>
+      <button class="modal-close" onclick="document.getElementById('claimModal').classList.remove('open')">✕</button>
+    </div>
+    <div class="claim-notice">신고된 내용은 운영자가 검토 후 수정 또는 삭제합니다.</div>
+    <div class="form-group">
+      <label class="form-label">신고 이유 <span>*</span></label>
+      <textarea class="form-textarea" id="claimReason" placeholder="어떤 부분이 잘못됐는지 알려주세요.&#10;예: 2024년 이후 규정이 변경되어 절차가 다릅니다."></textarea>
+    </div>
+    <button class="btn-claim" id="claimBtn" onclick="submitClaim()">신고하기</button>
+    <div class="submit-status" id="claimStatus"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 const CATS = [
-  {key:'all',   label:'전체',         icon:'📋'},
-  {key:'행정',  label:'행정·비자',     icon:'🏛️'},
-  {key:'의료',  label:'의료·건강보험',  icon:'🏥'},
-  {key:'생활',  label:'생활·쇼핑',     icon:'🛒'},
-  {key:'교육',  label:'교육·어학',     icon:'📚'},
-  {key:'육아',  label:'육아·보육',     icon:'🧸'},
-  {key:'부동산',label:'부동산·집',     icon:'🏠'},
-  {key:'취업',  label:'취업·커리어',   icon:'💼'},
-  {key:'교통',  label:'교통·이동',     icon:'🚆'},
+  {key:'all',    label:'전체',          icon:'📋'},
+  {key:'행정',   label:'행정·비자',      icon:'🏛️'},
+  {key:'의료',   label:'의료·건강보험',   icon:'🏥'},
+  {key:'생활',   label:'생활·쇼핑',      icon:'🛒'},
+  {key:'교육',   label:'교육·어학',      icon:'📚'},
+  {key:'육아',   label:'육아·보육',      icon:'🧸'},
+  {key:'부동산', label:'부동산·집',      icon:'🏠'},
+  {key:'취업',   label:'취업·커리어',    icon:'💼'},
+  {key:'교통',   label:'교통·이동',      icon:'🚆'},
+  {key:'질문',   label:'궁금해요',       icon:'❓', isQ:true},
 ];
 
 const API = '/.netlify/functions/airtable';
 let allRecords = [];
 let currentCat = 'all';
 let showingBookmarks = false;
+let currentTab = 'info';
+let claimTargetId = null;
 let bookmarks = new Set(JSON.parse(localStorage.getItem('bybrezel_bm') || '[]'));
 
 // ── API ──
@@ -325,12 +405,8 @@ async function apiFetch(options = {}) {
     body: options.body ? JSON.stringify(options.body) : undefined,
   });
   if (!res.ok) {
-  const err = await res.json();
-  const msg =
-    typeof err.error === 'string'
-      ? err.error
-      : err.error?.message || JSON.stringify(err);
-  throw new Error(msg || `오류 ${res.status}`);
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `오류 ${res.status}`);
   }
   return res.json();
 }
@@ -343,19 +419,22 @@ async function loadRecords() {
       const f = r.fields;
       return {
         id:        r.id,
-        title:     f['Title'] || '제목 없음',
-        content:   f['Content'] || '',
-        cat:       f['Category'] || '',
-        city:      f['City'] || '',
-        tags:      (f['Tags'] || '').split(',').map(t => t.trim()).filter(Boolean),
-        author:    f['Author Nickname'] || '익명',
-        date:      f['Submission Date'] ? new Date(f['Submission Date']).toLocaleDateString('ko-KR') : '',
-        likes:     f['Likes'] || 0,
-        isPopular: f['Is Popular'] || false,
+        title:     f['title'] || '제목 없음',
+        content:   f['content'] || '',
+        cat:       f['category'] || '',
+        city:      f['city'] || '',
+        // 1번 수정: tags를 string으로 안전하게 변환 후 split
+        tags:      (String(f['tags'] || '')).split(',').map(t => t.trim()).filter(Boolean),
+        author:    f['author Nickname'] || '익명',
+        date:      f['submission date'] ? new Date(f['submission date']).toLocaleDateString('ko-KR') : '',
+        likes:     f['likes'] || 0,
+        isPopular: f['is popular'] || false,
+        postType:  f['post type'] || '정보',
+        answerUrl: f['answer url'] || '',
         liked:     false,
       };
     });
-    document.getElementById('totalCount').textContent = allRecords.length;
+    document.getElementById('totalCount').textContent = allRecords.filter(r => r.postType !== '질문').length;
     renderCatList();
     renderCards();
   } catch(e) {
@@ -374,9 +453,15 @@ function renderCatList() {
   const ul = document.getElementById('catList');
   ul.innerHTML = '';
   CATS.forEach(c => {
-    const count = c.key === 'all' ? allRecords.length : allRecords.filter(d => d.cat === c.key).length;
+    let count;
+    if (c.key === 'all') count = allRecords.filter(d => d.postType !== '질문').length;
+    else if (c.key === '질문') count = allRecords.filter(d => d.postType === '질문').length;
+    else count = allRecords.filter(d => d.cat === c.key && d.postType !== '질문').length;
+
+    const isActive = currentCat === c.key && !showingBookmarks;
+    const activeClass = isActive ? (c.isQ ? ' active-q' : ' active') : '';
     const li = document.createElement('li');
-    li.className = 'cat-item' + (currentCat === c.key && !showingBookmarks ? ' active' : '');
+    li.className = 'cat-item' + activeClass;
     li.innerHTML = `<span class="cat-icon">${c.icon}</span>${c.label}<span class="cat-count">${count}</span>`;
     li.onclick = () => filterCat(c.key);
     ul.appendChild(li);
@@ -387,7 +472,8 @@ function renderCatList() {
 function filterCat(key) {
   currentCat = key;
   showingBookmarks = false;
-  const label = key === 'all' ? '전체 정보' : (CATS.find(c => c.key === key)?.label || key) + ' 정보';
+  const cat = CATS.find(c => c.key === key);
+  const label = key === 'all' ? '전체 정보' : key === '질문' ? '❓ 궁금해요' : (cat?.label || key) + ' 정보';
   document.getElementById('contentTitle').textContent = label;
   document.getElementById('searchInput').value = '';
   renderCatList();
@@ -405,9 +491,17 @@ function showBookmarks() {
 function renderCards() {
   const q    = document.getElementById('searchInput').value.toLowerCase();
   const sort = document.querySelector('.sort-select').value;
-  let items  = showingBookmarks
-    ? allRecords.filter(d => bookmarks.has(d.id))
-    : currentCat === 'all' ? [...allRecords] : allRecords.filter(d => d.cat === currentCat);
+
+  let items;
+  if (showingBookmarks) {
+    items = allRecords.filter(d => bookmarks.has(d.id));
+  } else if (currentCat === '질문') {
+    items = allRecords.filter(d => d.postType === '질문');
+  } else if (currentCat === 'all') {
+    items = allRecords.filter(d => d.postType !== '질문');
+  } else {
+    items = allRecords.filter(d => d.cat === currentCat && d.postType !== '질문');
+  }
 
   if (q) items = items.filter(d =>
     d.title.toLowerCase().includes(q) || d.content.toLowerCase().includes(q) ||
@@ -419,31 +513,37 @@ function renderCards() {
   const grid = document.getElementById('cardsGrid');
   grid.innerHTML = '';
   if (!items.length) {
-    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">🥨</div><p>아직 등록된 정보가 없어요.<br>첫 번째 정보를 공유해보세요!</p></div>`;
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">🥨</div><p>아직 등록된 내용이 없어요.<br>첫 번째로 공유해보세요!</p></div>`;
     return;
   }
   items.forEach((item, i) => {
-    const cat = CATS.find(c => c.key === item.cat) || {icon:'📌'};
+    const isQ = item.postType === '질문';
+    const cat = CATS.find(c => c.key === (isQ ? '질문' : item.cat)) || {icon:'📌'};
     const bm  = bookmarks.has(item.id);
     const excerpt = item.content.substring(0, 120) + (item.content.length > 120 ? '...' : '');
     const div = document.createElement('div');
-    div.className = 'card';
+    div.className = 'card' + (isQ ? ' is-question' : '');
     div.style.animationDelay = (i * 0.04) + 's';
     div.innerHTML = `
       <div class="card-top">
-        <span class="card-cat cat-${item.cat}">${cat.icon} ${item.cat || '기타'}</span>
-        ${item.isPopular ? '<span class="popular-badge">🔥 인기</span>' : ''}
+        <span class="card-cat cat-${isQ ? '질문' : item.cat}">${cat.icon} ${isQ ? '궁금해요' : (item.cat || '기타')}</span>
+        <div style="display:flex;gap:0.3rem;align-items:center">
+          ${item.isPopular && !isQ ? '<span class="popular-badge">🔥 인기</span>' : ''}
+          ${isQ && item.answerUrl ? '<span class="question-badge">✅ 답변완료</span>' : ''}
+          ${isQ && !item.answerUrl ? '<span class="question-badge" style="background:var(--muted)">⏳ 답변대기</span>' : ''}
+        </div>
       </div>
       <div class="card-title">${item.title}</div>
-      <div class="card-excerpt">${excerpt}</div>
+      ${item.content ? `<div class="card-excerpt">${excerpt}</div>` : ''}
       <div class="card-footer">
         <div class="card-meta">
           ${item.city ? `<span>📍${item.city}</span>` : ''}
           <span>${item.date}</span>
         </div>
         <div class="card-actions">
-          <button class="action-btn${item.liked?' liked':''}" onclick="toggleLike(event,'${item.id}')">❤️ ${item.likes}</button>
+          ${!isQ ? `<button class="action-btn${item.liked?' liked':''}" onclick="toggleLike(event,'${item.id}')">❤️ ${item.likes}</button>` : ''}
           <button class="action-btn${bm?' bookmarked':''}" onclick="toggleBookmark(event,'${item.id}')">🔖</button>
+          <button class="action-btn claim" onclick="openClaim(event,'${item.id}')" title="오류 신고">🚩</button>
         </div>
       </div>`;
     div.onclick = e => { if (!e.target.closest('.action-btn')) openDetail(item.id); };
@@ -473,14 +573,40 @@ function toggleBookmark(e, id) {
   renderCards();
 }
 
+// 2번: 오류 신고
+function openClaim(e, id) {
+  e.stopPropagation();
+  claimTargetId = id;
+  document.getElementById('claimReason').value = '';
+  document.getElementById('claimStatus').textContent = '';
+  document.getElementById('claimModal').classList.add('open');
+}
+
+async function submitClaim() {
+  const reason = document.getElementById('claimReason').value.trim();
+  if (!reason) { showToast('신고 이유를 입력해주세요', 'error'); return; }
+  const btn = document.getElementById('claimBtn');
+  btn.disabled = true; btn.textContent = '신고 중...';
+  try {
+    await apiFetch({ method: 'POST', body: { type: 'claim', recordId: claimTargetId, reason } });
+    document.getElementById('claimModal').classList.remove('open');
+    showToast('신고가 접수됐어요. 운영자가 확인할게요 🙏', 'success');
+  } catch(e) {
+    document.getElementById('claimStatus').textContent = '오류: ' + e.message;
+  } finally {
+    btn.disabled = false; btn.textContent = '신고하기';
+  }
+}
+
 function openDetail(id) {
   const item = allRecords.find(d => d.id === id);
   if (!item) return;
-  const cat = CATS.find(c => c.key === item.cat) || {icon:'📌'};
+  const isQ = item.postType === '질문';
+  const cat = CATS.find(c => c.key === (isQ ? '질문' : item.cat)) || {icon:'📌'};
   const bm  = bookmarks.has(id);
   document.getElementById('detailContent').innerHTML = `
     <div class="modal-header">
-      <span class="card-cat cat-${item.cat}">${cat.icon} ${item.cat || '기타'}</span>
+      <span class="card-cat cat-${isQ ? '질문' : item.cat}">${cat.icon} ${isQ ? '궁금해요' : (item.cat || '기타')}</span>
       <button class="modal-close" onclick="document.getElementById('detailModal').classList.remove('open')">✕</button>
     </div>
     <div class="detail-title">${item.title}</div>
@@ -488,61 +614,94 @@ function openDetail(id) {
       ${item.city ? `<span>📍 ${item.city}</span>` : ''}
       <span>👤 ${item.author}</span>
       <span>📅 ${item.date}</span>
-      <span>❤️ ${item.likes}</span>
+      ${!isQ ? `<span>❤️ ${item.likes}</span>` : ''}
       ${item.isPopular ? '<span>🔥 인기글</span>' : ''}
     </div>
-    <div class="detail-body">${item.content}</div>
+    ${item.content ? `<div class="detail-body">${item.content}</div>` : ''}
     ${item.tags?.length ? `<div class="detail-tags">${item.tags.map(t => `<span class="tag">#${t}</span>`).join('')}</div>` : ''}
+    ${isQ && item.answerUrl ? `<div class="answer-box"><p>✅ 이 질문에 답변이 있어요!</p><a href="${item.answerUrl}" target="_blank" rel="noopener">→ 답변 보러가기</a></div>` : ''}
+    ${isQ && !item.answerUrl ? `<div class="answer-box" style="background:var(--warm)"><p style="color:var(--muted)">⏳ 아직 답변이 없어요. 아는 분은 정보를 공유해주세요!</p></div>` : ''}
     <div class="detail-actions">
-      <button class="detail-action-btn${item.liked?' liked':''}" onclick="toggleLike(event,'${id}');openDetail('${id}')">❤️ 좋아요 ${item.likes}</button>
+      ${!isQ ? `<button class="detail-action-btn${item.liked?' liked':''}" onclick="toggleLike(event,'${id}');openDetail('${id}')">❤️ 좋아요 ${item.likes}</button>` : ''}
       <button class="detail-action-btn${bm?' bookmarked':''}" onclick="toggleBookmark(event,'${id}');openDetail('${id}')">🔖 ${bm?'북마크됨':'북마크'}</button>
+      <button class="detail-action-btn claim" onclick="openClaim(event,'${id}')">🚩 오류 신고</button>
     </div>`;
   document.getElementById('detailModal').classList.add('open');
 }
 
-// ── SUBMIT ──
-function openSubmit()  { document.getElementById('submitModal').classList.add('open'); }
+// ── SUBMIT (정보 + 궁금해요 탭) ──
+function openSubmit(type = 'info') {
+  switchTab(type);
+  document.getElementById('submitModal').classList.add('open');
+}
 function closeSubmit() { document.getElementById('submitModal').classList.remove('open'); }
 
-async function submitInfo() {
-  const title = document.getElementById('f-title').value.trim();
-  const cat   = document.getElementById('f-cat').value;
-  const body  = document.getElementById('f-body').value.trim();
-  if (!title || !cat || !body) { showToast('제목, 카테고리, 내용은 필수예요 🙏', 'error'); return; }
+function switchTab(type) {
+  currentTab = type;
+  const isQ = type === 'question';
+  document.getElementById('formInfo').style.display     = isQ ? 'none' : 'block';
+  document.getElementById('formQuestion').style.display = isQ ? 'block' : 'none';
+  document.getElementById('tabInfo').className     = 'tab-btn' + (!isQ ? ' active' : '');
+  document.getElementById('tabQuestion').className = 'tab-btn' + (isQ ? ' active-q' : '');
+  document.getElementById('submitTitle').textContent = isQ ? '궁금해요' : '정보 공유하기';
+  document.getElementById('submitSub').textContent   = isQ ? '독일 생활에서 궁금한 것을 올려주세요' : '단톡방에서 유용했던 정보를 등록해주세요';
+  document.getElementById('submitBtn').textContent   = isQ ? '궁금증 올리기 →' : '공유하기 →';
+}
 
+async function submitForm() {
   const btn    = document.getElementById('submitBtn');
   const status = document.getElementById('submitStatus');
+  const isQ    = currentTab === 'question';
+  let fields   = {};
+
+  if (!isQ) {
+    const title = document.getElementById('f-title').value.trim();
+    const cat   = document.getElementById('f-cat').value;
+    const body  = document.getElementById('f-body').value.trim();
+    if (!title || !cat || !body) { showToast('제목, 카테고리, 내용은 필수예요 🙏', 'error'); return; }
+    fields = {
+      'title':           title,
+      'category':        cat,
+      'content':         body,
+      'city':            document.getElementById('f-city').value.trim(),
+      // 1번 수정: tags를 string으로 명시적으로 전달
+      'tags':            String(document.getElementById('f-tags').value.trim()),
+      'author Nickname': document.getElementById('f-author').value.trim() || '익명',
+      'submission date': new Date().toISOString().split('T')[0],
+      'likes':           0,
+      'post type':       '정보',
+    };
+  } else {
+    const title = document.getElementById('q-title').value.trim();
+    if (!title) { showToast('궁금한 내용을 입력해주세요 🙏', 'error'); return; }
+    fields = {
+      'title':           title,
+      'content':         document.getElementById('q-body').value.trim(),
+      'author Nickname': document.getElementById('q-author').value.trim() || '익명',
+      'submission date': new Date().toISOString().split('T')[0],
+      'likes':           0,
+      'post type':       '질문',
+    };
+  }
+
   btn.disabled = true;
   btn.textContent = '제출 중...';
   status.textContent = '저장하고 있어요...';
+  status.style.color = 'var(--muted)';
 
   try {
-    await apiFetch({
-      method: 'POST',
-      body: {
-        fields: {
-          'Title':           title,
-          'Category':        cat,
-          'Content':         body,
-          'City':            document.getElementById('f-city').value.trim(),
-          'Tags':            document.getElementById('f-tags').value.trim(),
-          'Author Nickname': document.getElementById('f-author').value.trim() || '익명',
-          'Submission Date': new Date().toISOString().split('T')[0],
-          'Likes':           0,
-        }
-      }
-    });
+    await apiFetch({ method: 'POST', body: { type: isQ ? 'question' : 'info', fields } });
     closeSubmit();
-    ['f-title','f-cat','f-city','f-body','f-tags','f-author'].forEach(id => {
+    ['f-title','f-cat','f-city','f-body','f-tags','f-author','q-title','q-body','q-author'].forEach(id => {
       const el = document.getElementById(id); if (el) el.value = '';
     });
-    showToast('제출됐어요! 운영자 승인 후 게시됩니다 🥨', 'success');
+    showToast(isQ ? '궁금증이 등록됐어요! 곧 답변이 달릴 거예요 🥨' : '제출됐어요! 운영자 승인 후 게시됩니다 🥨', 'success');
   } catch(e) {
     status.style.color = '#A83030';
     status.textContent = '오류: ' + e.message;
   } finally {
     btn.disabled = false;
-    btn.textContent = '공유하기 →';
+    btn.textContent = isQ ? '궁금증 올리기 →' : '공유하기 →';
     setTimeout(() => { status.textContent = ''; status.style.color = ''; }, 5000);
   }
 }
@@ -559,7 +718,6 @@ document.querySelectorAll('.modal-overlay').forEach(el => {
   el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
 });
 
-// ── INIT ──
 loadRecords();
 renderCatList();
 </script>
