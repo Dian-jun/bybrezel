@@ -40,16 +40,17 @@ export async function onRequest(context) {
       params.set("sort[0][direction]", "desc");
       params.set("maxRecords", "50");
       url = `${base}?${params.toString()}`;
-
-      const cache = caches.default;
+    
+      const cache = caches.default; 
       const cacheKey = new Request(url, { method: "GET" });
       const cached = await cache.match(cacheKey);
+    
       if (cached) {
         return new Response(cached.body, {
           status: cached.status,
           headers: {
             ...corsHeaders,
-            "Cache-Control": "public, max-age=300",
+            "Cache-Control": "public, max-age=300, s-maxage=300"
           },
         });
       }
@@ -60,7 +61,7 @@ export async function onRequest(context) {
         status: res.status,
         headers: {
           ...corsHeaders,
-          "Cache-Control": "public, max-age=300",
+          "Cache-Control": "public, max-age=300, s-maxage=300",
         },
       });
 
