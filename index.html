@@ -203,6 +203,15 @@
     .detail-actions { flex-wrap:wrap; gap:0.5rem; }
     .detail-action-btn { padding:0.5rem 0.9rem; font-size:0.78rem; }
   }
+
+  /* FOOTER */
+  .site-footer { border-top:1px solid var(--border); background:var(--warm); padding:1.5rem 2rem; margin-top:3rem; }
+  .footer-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem; }
+  .footer-logo { font-size:0.9rem; font-weight:500; color:var(--muted); }
+  .footer-links { display:flex; align-items:center; gap:0.6rem; font-size:0.78rem; color:var(--muted); }
+  .footer-links a { color:var(--muted); text-decoration:none; transition:color 0.15s; }
+  .footer-links a:hover { color:var(--orange); }
+  .footer-dot { opacity:0.4; }
 </style>
 </head>
 <body>
@@ -375,6 +384,20 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-logo">🥨 bybrezel</span>
+    <div class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <span class="footer-dot">·</span>
+      <a href="mailto:kim_dian@naver.com">문의</a>
+      <span class="footer-dot">·</span>
+      <span>© 2025 Dain Jun</span>
+    </div>
+  </div>
+</footer>
+
 <script>
 const CATS = [
   {key:'all',    label:'전체',          icon:'📋'},
@@ -429,7 +452,7 @@ async function loadRecords() {
         dateRaw:   f['submission date'] || '',
         date:      f['submission date'] ? new Date(f['submission date']).toLocaleDateString('ko-KR') : '',
         likes:     f['likes'] || 0,
-        isPopular: f['is popular'] || false,
+        isPopular: f['is popular'] === true,
         postType:  f['post type'] || '정보',
         answerUrl: f['answer url'] || '',
         liked:     false,
