@@ -130,6 +130,18 @@
   .pending-notice { background:rgba(232,168,76,0.1); border:1px solid rgba(232,168,76,0.35); border-radius:10px; padding:0.85rem 1.1rem; font-size:0.8rem; color:#8A6010; line-height:1.6; margin-bottom:1.5rem; }
   .submit-status { font-size:0.8rem; text-align:center; margin-top:0.75rem; min-height:1.2em; color:var(--muted); }
 
+  /* ── DETAIL MODAL ── */
+  .detail-modal { max-width:640px; }
+  .detail-title { font-family:"Noto Serif KR",serif; font-size:1.35rem; font-weight:600; line-height:1.45; margin-bottom:1rem; color:var(--ink); }
+  .detail-meta { display:flex; gap:0.75rem; font-size:0.76rem; color:var(--muted); margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:1px solid var(--border); flex-wrap:wrap; align-items:center; }
+  .detail-body { font-size:0.89rem; line-height:1.9; color:var(--ink-soft); white-space:pre-wrap; margin-bottom:1.5rem; }
+  .detail-info { display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.5rem; padding:1.25rem; background:var(--warm); border-radius:12px; }
+  .detail-info-row { display:flex; align-items:center; gap:0.6rem; font-size:0.85rem; color:var(--ink-soft); }
+  .detail-actions { display:flex; gap:0.75rem; padding-top:1.25rem; border-top:1px solid var(--border); flex-wrap:wrap; }
+  .detail-join-btn { display:inline-flex; align-items:center; gap:0.5rem; background:var(--meet); color:white; border:none; border-radius:10px; padding:0.65rem 1.4rem; font-family:"Noto Sans KR",sans-serif; font-size:0.85rem; font-weight:500; text-decoration:none; cursor:pointer; transition:background 0.15s; }
+  .detail-join-btn:hover { background:#203080; }
+  .detail-join-btn.closed { background:var(--muted); cursor:default; pointer-events:none; }
+
   /* ── MOBILE FAB ── */
   .mobile-fab { display:none; position:fixed; bottom:1.5rem; right:1.5rem; z-index:150; background:var(--meet); color:white; border:none; border-radius:50px; padding:0.75rem 1.25rem; font-family:'Noto Sans KR',sans-serif; font-size:0.875rem; font-weight:500; cursor:pointer; box-shadow:0 4px 20px rgba(48,80,160,0.4); }
   .mobile-fab:hover { background:#203080; }
@@ -225,6 +237,11 @@
       <div class="skel"><div class="skel-line" style="height:20px;width:45%"></div><div class="skel-line" style="height:16px;width:70%"></div><div class="skel-line" style="height:14px;width:65%"></div></div>
     </div>
   </main>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal detail-modal" id="detailContent"></div>
 </div>
 
 <!-- SUBMIT MODAL -->
@@ -338,6 +355,44 @@ let allRecords = [];
 let currentCat = 'all';
 
 // ── API ──
+function openDetail(id) {
+  const item = allRecords.find(d => d.id === id);
+  if (!item) return;
+  const expired  = isExpired(item.deadline);
+  const isOnline = item.type === "온라인";
+  document.getElementById("detailContent").innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem">
+      <div>
+        <span class="card-cat" style="margin-bottom:0.75rem;display:inline-flex">${item.category || "모임"}</span>
+        <div class="detail-title">${item.title}</div>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('detailModal').classList.remove('open')">✕</button>
+    </div>
+    <div class="detail-meta">
+      <span class="badge ${isOnline ? "badge-online" : "badge-offline"}">${isOnline ? "💻 온라인" : "📍 오프라인"}</span>
+      ${item.recurring === "정기모임" ? '<span class="badge badge-recurring">🔄 정기모임</span>' : ""}
+      ${expired ? '<span class="badge badge-closed">마감</span>' : ""}
+      <span>${item.author}</span>
+    </div>
+    ${item.description ? `<div class="detail-body">${item.description}</div>` : ""}
+    <div class="detail-info">
+      ${item.city ? `<div class="detail-info-row"><span>📍</span><span>${item.city}${item.location ? " · " + item.location : ""}</span></div>` : ""}
+      ${item.date ? `<div class="detail-info-row"><span>📅</span><span>${formatDate(item.date)}</span></div>` : ""}
+      ${item.maxMembers ? `<div class="detail-info-row"><span>👥</span><span>${item.maxMembers}명 모집</span></div>` : ""}
+      ${item.deadline ? `<div class="detail-info-row"><span>⏰</span><span>모집 마감 ${new Date(item.deadline).toLocaleDateString("ko-KR",{month:"long",day:"numeric"})}</span></div>` : ""}
+    </div>
+    <div class="detail-actions">
+      ${item.contactUrl
+        ? `<a class="detail-join-btn ${expired ? "closed" : ""}" ${expired ? "" : `href="${item.contactUrl}" target="_blank" rel="noopener"`}>${expired ? "모집 마감" : "👋 참여하기"}</a>`
+        : ""}
+    </div>`;
+  document.getElementById("detailModal").classList.add("open");
+}
+
+document.getElementById("detailModal").addEventListener("click", e => {
+  if (e.target === document.getElementById("detailModal")) document.getElementById("detailModal").classList.remove("open");
+});
+
 async function loadRecords() {
   setLoading(true);
   try {
@@ -456,6 +511,7 @@ function renderCards() {
           ? `<a class="join-btn ${expired ? 'closed' : ''}" ${expired ? '' : `href="${item.contactUrl}" target="_blank" rel="noopener"`}>${expired ? '모집 마감' : '참여하기 →'}</a>`
           : ''}
       </div>`;
+    div.onclick = e => { if (!e.target.closest(".join-btn")) openDetail(item.id); };
     grid.appendChild(div);
   });
 }
