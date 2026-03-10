@@ -88,11 +88,11 @@
 
   /* ── CARDS ── */
   .cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.25rem; }
-  .card { background:white; border:1.5px solid var(--border); border-left:3px solid var(--meet); border-radius:16px; padding:1.5rem; cursor:default; transition:all 0.2s; position:relative; animation:fadeUp 0.35s ease both; }
+  .card { background:white; border:1.5px solid var(--border); border-radius:16px; padding:1.5rem; cursor:default; transition:all 0.2s; position:relative; animation:fadeUp 0.35s ease both; }
   @keyframes fadeUp { from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)} }
   .card:hover { border-color:var(--meet); box-shadow:0 8px 28px rgba(48,80,160,0.1); transform:translateY(-2px); }
   .card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.9rem; }
-  .card-cat { display:inline-flex; align-items:center; gap:0.35rem; font-size:0.68rem; font-weight:600; letter-spacing:0.06em; padding:0.25rem 0.7rem; border-radius:20px; background:var(--meet-l); color:var(--meet); }
+  .card-cat { display:inline-flex; align-items:center; gap:0.35rem; font-size:0.68rem; font-weight:600; letter-spacing:0.06em; padding:0.25rem 0.7rem; border-radius:20px; background:var(--meet-l); color:#ffffff; }
   .badge { font-size:0.62rem; font-weight:600; padding:0.2rem 0.55rem; border-radius:10px; }
   .badge-online  { background:rgba(60,100,200,0.1); color:#3060C0; }
   .badge-offline { background:rgba(212,98,42,0.1);  color:var(--orange-d); }
@@ -284,6 +284,7 @@
       </div>
     </div>
     <div class="form-row">
+  
       <div class="form-group">
         <label class="form-label">정기 여부</label>
         <select class="form-select" id="m-recurring">
