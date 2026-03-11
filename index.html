@@ -173,9 +173,23 @@
   .btn-claim:hover { background:#882020; }
   .btn-claim:disabled { background:var(--muted); cursor:not-allowed; }
 
-  /* MOBILE FAB */
-  .mobile-fab { display:none; position:fixed; bottom:1.5rem; right:1.5rem; z-index:150; background:var(--orange); color:white; border:none; border-radius:50px; padding:0.75rem 1.25rem; font-family:'Noto Sans KR',sans-serif; font-size:0.875rem; font-weight:500; cursor:pointer; box-shadow:0 4px 20px rgba(212,98,42,0.45); }
-  .mobile-fab:hover { background:var(--orange-l); }
+  /* ── SPEED DIAL FAB ── */
+  .speed-dial { display:none; position:fixed; bottom:1.5rem; right:1.5rem; z-index:150; flex-direction:column-reverse; align-items:flex-end; gap:0.75rem; }
+  .speed-dial-main { background:var(--orange); color:white; border:none; border-radius:50px; padding:0.75rem 1.25rem; font-family:'Noto Sans KR',sans-serif; font-size:0.875rem; font-weight:500; cursor:pointer; box-shadow:0 4px 20px rgba(212,98,42,0.45); display:flex; align-items:center; gap:0.4rem; transition:background 0.2s; }
+  .speed-dial-main:hover { background:var(--orange-l); }
+  .speed-dial-main .sd-icon-close { display:none; }
+  .speed-dial.open .speed-dial-main .sd-icon-open { display:none; }
+  .speed-dial.open .speed-dial-main .sd-icon-close { display:inline; }
+  .speed-dial-items { display:flex; flex-direction:column; gap:0.6rem; align-items:flex-end; }
+  .speed-dial-item { display:flex; align-items:center; gap:0.65rem; opacity:0; transform:translateY(10px) scale(0.95); pointer-events:none; transition:opacity 0.2s, transform 0.2s; }
+  .speed-dial.open .speed-dial-item { opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+  .speed-dial.open .speed-dial-item:nth-child(1) { transition-delay:0.05s; }
+  .speed-dial.open .speed-dial-item:nth-child(2) { transition-delay:0.0s; }
+  .sd-label { background:var(--ink); color:white; font-size:0.75rem; padding:0.3rem 0.75rem; border-radius:20px; white-space:nowrap; font-family:'Noto Sans KR',sans-serif; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+  .sd-btn { width:46px; height:46px; border-radius:50%; border:none; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 12px rgba(0,0,0,0.2); flex-shrink:0; transition:transform 0.15s; }
+  .sd-btn:hover { transform:scale(1.1); }
+  .sd-btn-write { background:var(--orange); }
+  .sd-btn-meetup { background:white; text-decoration:none; }
 
   /* TOAST */
   .toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(16px); background:var(--ink); color:white; padding:0.75rem 1.5rem; border-radius:30px; font-size:0.83rem; opacity:0; transition:all 0.3s; pointer-events:none; z-index:999; white-space:nowrap; }
@@ -198,7 +212,7 @@
     .cat-list { display:flex; flex-wrap:wrap; gap:0.4rem; }
     .cat-item { font-size:0.78rem; }
     nav { display:none; }
-    .mobile-fab { display:flex; align-items:center; gap:0.4rem; }
+    .speed-dial { display:flex; }
     .hero { padding:3.5rem 1.5rem 3rem; }
     .hero-logo { height:40px; }
     .modal { padding:1.5rem; }
@@ -206,34 +220,7 @@
     .detail-actions { flex-wrap:wrap; gap:0.5rem; }
     .detail-action-btn { padding:0.5rem 0.9rem; font-size:0.78rem; }
   }
-  /* 함께해요버튼 */
-  .fab-meetup {
-  display: none;
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  background: #주색상;
-  color: white;
-  border-radius: 50px;
-  padding: 12px 20px;
-  font-size: 14px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  z-index: 999;
-  text-decoration: none;
-  }
-
-  @media (max-width: 768px) {
-    .fab-meetup {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .fab-meetup::after {
-      content: "함께해요";
-    }
-  }
-
-  /* FOOTER */
+/* FOOTER */
   .site-footer { border-top:1px solid var(--border); background:var(--warm); padding:1.5rem 2rem; margin-top:3rem; }
   .footer-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem; }
   .footer-logo { font-size:0.9rem; font-weight:500; color:var(--muted); }
@@ -264,10 +251,23 @@
 </header>
 <div class="loading-bar" id="loadingBar"></div>
 
-<!-- 모바일 정보공유 버튼 (3번) -->
-<button class="mobile-fab" onclick="openSubmit('info')">✏️ 정보 공유</button>
-<!-- 모바일에서만 보이는 플로팅 버튼 -->
-<a href="/meetup" class="fab-meetup">🤝</a>
+<!-- 모바일 Speed Dial FAB -->
+<div class="speed-dial" id="speedDial">
+  <button class="speed-dial-main" onclick="toggleSpeedDial()">
+    <span class="sd-icon-open">✏️ 글쓰기</span>
+    <span class="sd-icon-close">✕ 닫기</span>
+  </button>
+  <div class="speed-dial-items">
+    <div class="speed-dial-item">
+      <span class="sd-label">🤝 함께해요</span>
+      <a href="/meetup" class="sd-btn sd-btn-meetup">🤝</a>
+    </div>
+    <div class="speed-dial-item">
+      <span class="sd-label">✏️ 정보 공유</span>
+      <button class="sd-btn sd-btn-write" onclick="openSubmit('info');closeSpeedDial()">✏️</button>
+    </div>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -423,14 +423,14 @@
     <div class="footer-links">
       <a href="/impressum.html">Impressum</a>
       <span class="footer-dot">·</span>
-      <a href="mailto:kim_dian@naver.com">문의</a>
+      <a href="/cdn-cgi/l/email-protection#4a212327152e232b240a242b3c2f3864292527">문의</a>
       <span class="footer-dot">·</span>
       <span>© 2025 Dain Jun</span>
     </div>
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const CATS = [
   {key:'all',    label:'전체',          icon:'📋'},
   {key:'행정',   label:'행정·비자',      icon:'🏛️'},
@@ -815,7 +815,19 @@ function showToast(msg, type = '') {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-document.querySelectorAll('.modal-overlay').forEach(el => {
+function toggleSpeedDial() {
+  document.getElementById('speedDial').classList.toggle('open');
+}
+function closeSpeedDial() {
+  document.getElementById('speedDial').classList.remove('open');
+}
+// 바깥 클릭시 닫기
+document.addEventListener('click', e => {
+  const dial = document.getElementById('speedDial');
+  if (dial && !dial.contains(e.target)) dial.classList.remove('open');
+});
+
+
   el.addEventListener('click', e => {
     if (e.target === el) {
       if (el.id === 'detailModal') closeDetail();
@@ -829,14 +841,4 @@ window.addEventListener('popstate', () => {
   const postId = params.get('post');
   if (postId) {
     const found = allRecords.find(d => d.id === postId);
-    if (found) openDetail(postId, false);
-  } else {
-    document.getElementById('detailModal').classList.remove('open');
-  }
-});
-
-loadRecords();
-renderCatList();
-</script>
-</body>
-</html>
+    if (found) openDetail(postId, false)
