@@ -78,13 +78,13 @@
   .cat-item.active { background:white; color:var(--meet); border-color:var(--meet); font-weight:500; }
   .cat-icon { font-size:1rem; flex-shrink:0; }
   .cat-count { margin-left:auto; font-size:0.68rem; background:var(--border); color:var(--muted); border-radius:10px; padding:0.1rem 0.5rem; }
-  .cat-item.active .cat-count { background:var(--meet-l); color:var(--meet); }
+  .cat-item.active .cat-count { background:#ffe1c0; color:var(--meet); }
 
   /* ── CONTENT ── */
   .content-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; }
   .content-title { font-family:'Noto Sans KR',sans-serif; font-size:1.4rem; color:var(--grey); }
   .btn-create { background:var(--meet); color:white; border:none; border-radius:20px; padding:0.45rem 1.1rem; font-family:'Noto Sans KR',sans-serif; font-size:0.8rem; font-weight:500; cursor:pointer; transition:background 0.2s; }
-  .btn-create:hover { background:#203080; }
+  .btn-create:hover { background:var(--meet-l); }
 
   /* ── CARDS ── */
   .cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.25rem; }
@@ -92,7 +92,7 @@
   @keyframes fadeUp { from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)} }
   .card:hover { border-color:var(--meet); box-shadow:0 8px 28px rgba(48,80,160,0.1); transform:translateY(-2px); }
   .card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.9rem; }
-  .card-cat { display:inline-flex; align-items:center; gap:0.35rem; font-size:0.68rem; font-weight:600; letter-spacing:0.06em; padding:0.25rem 0.7rem; border-radius:20px; background:var(--meet-l); color:#ffffff; }
+  .card-cat { display:inline-flex; align-items:center; gap:0.35rem; font-size:0.68rem; font-weight:600; letter-spacing:0.06em; padding:0.25rem 0.7rem; border-radius:20px; background:#ffa87b; color:#ffffff; }
   .badge { font-size:0.62rem; font-weight:600; padding:0.2rem 0.55rem; border-radius:10px; }
   .badge-online  { background:rgba(60,100,200,0.1); color:#3060C0; }
   .badge-offline { background:rgba(212,98,42,0.1);  color:var(--orange-d); }
@@ -104,7 +104,7 @@
   .meet-info-row { display:flex; align-items:center; gap:0.4rem; font-size:0.78rem; color:var(--ink-soft); }
   .card-footer { display:flex; align-items:center; justify-content:space-between; font-size:0.73rem; color:var(--muted); border-top:1px solid var(--border); padding-top:0.85rem; }
   .join-btn { display:inline-flex; align-items:center; gap:0.35rem; background:var(--meet); color:white; border:none; border-radius:8px; padding:0.35rem 0.9rem; font-size:0.75rem; font-family:'Noto Sans KR',sans-serif; font-weight:500; text-decoration:none; transition:background 0.15s; cursor:pointer; }
-  .join-btn:hover { background:#203080; }
+  .join-btn:hover { background:var(--meet-l); }
   .join-btn.closed { background:var(--border); color:var(--muted); cursor:default; pointer-events:none; }
 
   /* ── MODALS ── */
