@@ -28,7 +28,7 @@ export async function onRequest(context) {
   };
   const base = `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(TABLE_ID)}`;
   const method = request.method;
-
+ 
   try {
     let url = base;
     let fetchOptions = { method, headers: atHeaders };
