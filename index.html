@@ -801,4 +801,10 @@ window.addEventListener('popstate', () => {
   const postId = params.get('post');
   if (postId) {
     const found = allRecords.find(d => d.id === postId);
-    if (found) openDetail(postId, false)
+    if (found) openDetail(postId, false)  }
+});
+
+loadRecords();
+</script>
+</body>
+</html>
