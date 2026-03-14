@@ -173,9 +173,21 @@
   .btn-claim:hover { background:#882020; }
   .btn-claim:disabled { background:var(--muted); cursor:not-allowed; }
 
-  /* MOBILE FAB */
-  .mobile-fab { display:none; position:fixed; bottom:1.5rem; right:1.5rem; z-index:150; background:var(--orange); color:white; border:none; border-radius:50px; padding:0.75rem 1.25rem; font-family:'Noto Sans KR',sans-serif; font-size:0.875rem; font-weight:500; cursor:pointer; box-shadow:0 4px 20px rgba(212,98,42,0.45); }
-  .mobile-fab:hover { background:var(--orange-l); }
+  /* MOBILE FAB MENU */
+  .fab-container { display:none; position:fixed; bottom:1.5rem; right:1.5rem; z-index:150; flex-direction:column; align-items:flex-end; gap:0.6rem; }
+  .fab-main { background:var(--orange); color:white; border:none; border-radius:50%; width:52px; height:52px; font-size:1.3rem; cursor:pointer; box-shadow:0 4px 20px rgba(212,98,42,0.45); display:flex; align-items:center; justify-content:center; transition:transform 0.25s, background 0.2s; flex-shrink:0; align-self:flex-end; }
+  .fab-main:hover { background:var(--orange-l); }
+  .fab-main.open { transform:rotate(45deg); background:var(--orange-d); }
+  .fab-items { display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem; }
+  .fab-item { display:flex; align-items:center; gap:0.55rem; background:white; color:var(--ink-soft); border:1.5px solid var(--border); border-radius:30px; padding:0.5rem 1rem 0.5rem 0.75rem; font-family:'Noto Sans KR',sans-serif; font-size:0.82rem; font-weight:500; cursor:pointer; box-shadow:0 3px 14px rgba(28,20,16,0.12); white-space:nowrap; text-decoration:none; opacity:0; transform:translateY(8px) scale(0.95); transition:opacity 0.2s, transform 0.2s, border-color 0.15s, color 0.15s; pointer-events:none; }
+  .fab-item:hover { border-color:var(--orange); color:var(--orange); }
+  .fab-item.fab-meetup:hover { border-color:var(--amber); color:#A08020; }
+  .fab-items.open .fab-item { opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+  .fab-items.open .fab-item:nth-child(1) { transition-delay:0.05s; }
+  .fab-items.open .fab-item:nth-child(2) { transition-delay:0.1s; }
+  .fab-items.open .fab-item:nth-child(3) { transition-delay:0.15s; }
+  .fab-backdrop { display:none; position:fixed; inset:0; z-index:149; }
+  .fab-backdrop.open { display:block; }
 
   /* TOAST */
   .toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(16px); background:var(--ink); color:white; padding:0.75rem 1.5rem; border-radius:30px; font-size:0.83rem; opacity:0; transition:all 0.3s; pointer-events:none; z-index:999; white-space:nowrap; }
@@ -198,7 +210,7 @@
     .cat-list { display:flex; flex-wrap:wrap; gap:0.4rem; }
     .cat-item { font-size:0.78rem; }
     nav { display:none; }
-    .mobile-fab { display:flex; align-items:center; gap:0.4rem; }
+    .fab-container { display:flex; }
     .hero { padding:3.5rem 1.5rem 3rem; }
     .hero-logo { height:40px; }
     .modal { padding:1.5rem; }
@@ -238,8 +250,16 @@
 </header>
 <div class="loading-bar" id="loadingBar"></div>
 
-<!-- 모바일 정보공유 버튼 (3번) -->
-<button class="mobile-fab" onclick="openSubmit('info')">✏️ 정보 공유</button>
+<!-- 모바일 FAB 메뉴 -->
+<div class="fab-backdrop" id="fabBackdrop" onclick="closeFab()"></div>
+<div class="fab-container" id="fabContainer">
+  <div class="fab-items" id="fabItems">
+    <a href="/meetup" class="fab-item fab-meetup">🤝 함께해요!</a>
+    <button class="fab-item" onclick="closeFab();openSubmit('info')">✏️ 정보 공유</button>
+    <button class="fab-item" onclick="closeFab();openSubmit('question')">❓ 궁금해요</button>
+  </div>
+  <button class="fab-main" id="fabMain" onclick="toggleFab()" aria-label="메뉴">＋</button>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -550,7 +570,7 @@ function renderCards() {
     const isQ = item.postType === '질문';
     const cat = CATS.find(c => c.key === (isQ ? '질문' : item.cat)) || {icon:'📌'};
     const bm  = bookmarks.has(item.id);
-    const excerpt = item.content.substring(0, 120) + (item.content.length > 120 ? '...' : '');
+    const excerpt = parseBold(item.content.substring(0, 120) + (item.content.length > 120 ? '...' : ''));
     const div = document.createElement('div');
     div.className = 'card' + (isQ ? ' is-question' : '');
     div.style.animationDelay = (i * 0.04) + 's';
@@ -689,7 +709,7 @@ function openDetail(id, updateUrl = true) {
       ${!isQ ? `<span>❤️ ${item.likes}</span>` : ''}
       ${item.isPopular ? '<span>🔥 인기글</span>' : ''}
     </div>
-    ${item.content ? `<div class="detail-body">${item.content}</div>` : ''}
+    ${item.content ? `<div class="detail-body">${parseBold(item.content)}</div>` : ''}
     ${item.tags?.length ? `<div class="detail-tags">${item.tags.map(t => `<span class="tag">#${t}</span>`).join('')}</div>` : ''}
     ${isQ && item.answerUrl ? `<div class="answer-box"><p>✅ 이 질문에 답변이 있어요!</p><a href="${item.answerUrl}" target="_blank" rel="noopener">→ 답변 보러가기</a></div>` : ''}
     ${isQ && !item.answerUrl ? `<div class="answer-box" style="background:var(--warm)"><p style="color:var(--muted)">⏳ 아직 답변이 없어요. 아는 분은 정보를 공유해주세요!</p></div>` : ''}
@@ -803,6 +823,34 @@ window.addEventListener('popstate', () => {
     const found = allRecords.find(d => d.id === postId);
     if (found) openDetail(postId, false)  }
 });
+
+// ── BOLD PARSER ──
+function parseBold(text) {
+  if (!text) return text;
+  return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
+
+
+function toggleFab() {
+  const main = document.getElementById('fabMain');
+  const items = document.getElementById('fabItems');
+  const backdrop = document.getElementById('fabBackdrop');
+  const isOpen = items.classList.contains('open');
+  if (isOpen) {
+    main.classList.remove('open');
+    items.classList.remove('open');
+    backdrop.classList.remove('open');
+  } else {
+    main.classList.add('open');
+    items.classList.add('open');
+    backdrop.classList.add('open');
+  }
+}
+function closeFab() {
+  document.getElementById('fabMain').classList.remove('open');
+  document.getElementById('fabItems').classList.remove('open');
+  document.getElementById('fabBackdrop').classList.remove('open');
+}
 
 loadRecords();
 </script>
