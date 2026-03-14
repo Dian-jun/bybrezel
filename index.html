@@ -219,7 +219,16 @@
     .detail-action-btn { padding:0.5rem 0.9rem; font-size:0.78rem; }
   }
 
-  /* FOOTER */
+  /* MARKDOWN TABLE */
+  .md-table-wrap { overflow-x:auto; margin:1rem 0; }
+  .md-table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+  .md-table th { background:var(--warm); color:var(--ink-soft); font-weight:600; padding:0.6rem 1rem; text-align:left; border:1.5px solid var(--border); font-size:0.78rem; }
+  .md-table td { padding:0.55rem 1rem; border:1px solid var(--border); color:var(--ink-soft); line-height:1.6; }
+  .md-table tr:nth-child(even) td { background:var(--bg); }
+  .md-table tr:hover td { background:var(--warm); }
+  /* MARKDOWN LINK */
+  .md-link { color:var(--orange); text-decoration:underline; text-underline-offset:2px; word-break:break-all; }
+  .md-link:hover { color:var(--orange-d); }
   .site-footer { border-top:1px solid var(--border); background:var(--warm); padding:1.5rem 2rem; margin-top:3rem; }
   .footer-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem; }
   .footer-logo { font-size:0.9rem; font-weight:500; color:var(--muted); }
@@ -709,7 +718,7 @@ function openDetail(id, updateUrl = true) {
       ${!isQ ? `<span>❤️ ${item.likes}</span>` : ''}
       ${item.isPopular ? '<span>🔥 인기글</span>' : ''}
     </div>
-    ${item.content ? `<div class="detail-body">${parseBold(item.content)}</div>` : ''}
+    ${item.content ? `<div class="detail-body">${parseContent(item.content)}</div>` : ''}
     ${item.tags?.length ? `<div class="detail-tags">${item.tags.map(t => `<span class="tag">#${t}</span>`).join('')}</div>` : ''}
     ${isQ && item.answerUrl ? `<div class="answer-box"><p>✅ 이 질문에 답변이 있어요!</p><a href="${item.answerUrl}" target="_blank" rel="noopener">→ 답변 보러가기</a></div>` : ''}
     ${isQ && !item.answerUrl ? `<div class="answer-box" style="background:var(--warm)"><p style="color:var(--muted)">⏳ 아직 답변이 없어요. 아는 분은 정보를 공유해주세요!</p></div>` : ''}
@@ -824,10 +833,49 @@ window.addEventListener('popstate', () => {
     if (found) openDetail(postId, false)  }
 });
 
-// ── BOLD PARSER ──
-function parseBold(text) {
+// ── CONTENT PARSER (bold, links, tables) ──
+function parseBold(text) { return parseContent(text, true); }
+
+function parseContent(text, inlineOnly = false) {
   if (!text) return text;
-  return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  if (!inlineOnly) {
+    const lines = text.split('\n');
+    let result = [];
+    let i = 0;
+    while (i < lines.length) {
+      const line = lines[i].trim();
+      if (line.startsWith('|')) {
+        let tableLines = [];
+        while (i < lines.length && lines[i].trim().startsWith('|')) {
+          tableLines.push(lines[i].trim());
+          i++;
+        }
+        tableLines = tableLines.filter(l => !/^\|[\s\-|:]+\|$/.test(l));
+        if (tableLines.length > 0) {
+          let html = '<div class="md-table-wrap"><table class="md-table">';
+          tableLines.forEach((tl, ti) => {
+            const cells = tl.replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+            const tag = ti === 0 ? 'th' : 'td';
+            html += '<tr>' + cells.map(c => `<${tag}>${parseInline(c)}</${tag}>`).join('') + '</tr>';
+          });
+          html += '</table></div>';
+          result.push(html);
+        }
+      } else {
+        result.push(parseInline(line));
+        i++;
+      }
+    }
+    return result.join('\n');
+  }
+  return parseInline(text);
+}
+
+function parseInline(text) {
+  if (!text) return text;
+  text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/(https?:\/\/[^\s<>"]+)/g, '<a href="$1" target="_blank" rel="noopener" class="md-link">$1</a>');
+  return text;
 }
 
 
