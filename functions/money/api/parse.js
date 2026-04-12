@@ -30,7 +30,7 @@ export async function onRequestPost(context) {
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 300,
-        system: '가계부 파서. 반드시 JSON만 반환 (백틱/마크다운 없이 순수 JSON):\n규칙: 유로/€=EUR, 원/₩=KRW. 한글숫자변환(오십→50). REWE/EDEKA/Lidl/마트=식비. 식당/음식점=외식. DB/Bahn/지하철/버스=교통. 급여/Gehalt=income+급여. 송금=송금. Sodexo/식비지원=식비지원금. 식권/쿠폰=payMethod:voucher.\n반환 형식: {"title":"","type":"expense또는income","amount":숫자,"currency":"EUR또는KRW","category":"","payMethod":"card또는cash또는voucher","country":"DE또는KR"}',
+        system: '가계부 파서. 반드시 JSON만 반환 (백틱/마크다운 없이 순수 JSON):\n규칙:\n- title: 상호명/항목명만 간결하게 추출. 예) "rewe에서 50유로 카드로"→"REWE", "넷플릭스 구독료"→"Netflix", "엄마한테 송금"→"엄마 송금", "학원비 결제"→"학원비"\n- type: expense 또는 income\n- amount: 숫자만. 한글숫자변환(오십→50, 백→100, 만→10000)\n- currency: 유로/€=EUR, 원/₩/만원=KRW\n- category: 식비/외식/교통/의료/쇼핑/카페/구독/공과금/송금/급여/식비지원금/여행/기타 중 하나. REWE/EDEKA/Lidl/마트=식비. 식당=외식. DB/Bahn/지하철/버스=교통. 급여/Gehalt=income+급여. Sodexo/식비지원=식비지원금. 목록에 없으면 기타.\n- payMethod: card/cash/voucher. 식권/쿠폰=voucher\n- country: DE 또는 KR\n반환 형식: {"title":"","type":"","amount":숫자,"currency":"","category":"","payMethod":"","country":""}',
         messages: [{ role: 'user', content: text }],
       }),
     });

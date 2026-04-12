@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>교민 가계부</title>
+<title>Brezel money 교민 가계부</title>
 
 <!-- PWA -->
 <link rel="manifest" href="/money/manifest.json"/>
@@ -500,7 +500,7 @@ function Onboarding({ onDone }) {
     ...fixedIncList.map(item => jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
       jsxs('div', { children: [
         jsx('p', { style: { fontSize: 13 }, children: item.name }),
-        jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [FREQ_INC.find(p => p.value === item.frequency)?.label, ' ', item.day, '일 · ', item.currency === 'EUR' ? '€' : '₩', item.amount, item.incomeType === 'voucher' ? ' · 🎫 상품권/쿠폰' : item.incomeType === 'cash' ? ' · 💵 현금' : ''] }),
+        jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [FREQ_INC.find(p => p.value === item.frequency)?.label, ' ', item.day, '일 · ', item.currency === 'EUR' ? '€' : '₩', item.amount, item.incomeType === 'voucher' ? ' · 상품권/쿠폰' : item.incomeType === 'cash' ? ' · 💵 현금' : ''] }),
       ] }),
       jsx('span', { style: { fontSize: 13, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: () => setFixedIncList(prev => prev.filter(p => p.id !== item.id)), children: '삭제' }),
     ] }, item.id)),
@@ -514,7 +514,7 @@ function Onboarding({ onDone }) {
       // 수입 유형: 계좌 / 현금, 상품권/쿠폰
       jsxs('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }, children: [
         jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', width: '100%' }, children: '수입 유형' }),
-        ...([{ v: 'account', l: '🏦 계좌' }, { v: 'cash', l: '💵 현금' }, { v: 'voucher', l: '🎫 상품권/쿠폰' }]).map(opt =>
+        ...([{ v: 'account', l: '계좌/현금' }, { v: 'voucher', l: '상품권/쿠폰' }]).map(opt =>
           jsx(Pill, { key: opt.v, on: fiType === opt.v, onClick: () => { setFiType(opt.v); if (opt.v !== 'account') setFiAccId(''); }, style: { fontSize: 11 }, children: opt.l })
         ),
       ] }),
@@ -674,7 +674,7 @@ function TxnDetail({ txn, onBack, onEdit }) {
       jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)' }, children: txn.currency === 'EUR' ? `≈ ₩ ${Math.round(txn.amount * r).toLocaleString()}` : `≈ € ${(txn.amount / r).toFixed(2)}` }),
     ] }),
     jsx('div', { style: { borderTop: '0.5px solid var(--gray-100)' }, children:
-      [['항목명', txn.title], ['날짜', txn.date], ['계좌', txn.accountName], ['결제 수단', txn.payMethod === 'card' ? '카드' : txn.payMethod === 'voucher' ? '식권/쿠폰' : '현금'], ['환율', txn.rateAtTime ? `1 EUR = ₩${Math.round(txn.rateAtTime).toLocaleString()} (${txn.rateDate || txn.date} 기준)` : '-'], txn.memo ? ['메모', txn.memo] : null].filter(Boolean)
+      [['항목명', txn.title], ['날짜', txn.date], ['계좌', txn.accountName], ['결제 수단', txn.payMethod === 'card' ? '카드' : txn.payMethod === 'voucher' ? '바우처/쿠폰' : '현금'], ['환율', txn.rateAtTime ? `1 EUR = ₩${Math.round(txn.rateAtTime).toLocaleString()} (${txn.rateDate || txn.date} 기준)` : '-'], txn.memo ? ['메모', txn.memo] : null].filter(Boolean)
       .map(([label, val]) => jsxs('div', { className: 'row', children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: label }), jsx('span', { style: { fontSize: 13, textAlign: 'right', maxWidth: '60%' }, children: val })] }, label))
     }),
     VOUCHER_CATS.includes(txn.category) && jsxs('div', { style: { background: 'var(--gray-50)', borderRadius: 8, padding: '10px 12px', marginTop: 16 }, children: [jsx('p', { style: { fontSize: 12, color: 'var(--gray-600)', fontWeight: 500, marginBottom: 4 }, children: '식비지원금' }), jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.7 }, children: '이 지출은 예산 소진으로 계산되지 않아요. 회사 식대 지원금처럼 보조금으로 처리돼요.' })] }),
@@ -829,7 +829,9 @@ function AddTransaction({ onDone, editing = null }) {
   const [accId, setAccId] = useState(f.accountId || accounts[0]?.id || '');
   const [cat, setCat] = useState(f.category || '식비');
   const [payMethod, setPayMethod] = useState(f.payMethod || 'card');
-  const titleRef = useRef(), memoRef = useRef();
+  // titleRef 대신 state로 관리 — ref 타이밍 문제 해결
+  const [titleVal, setTitleVal] = useState(f.title || '');
+  const memoRef = useRef();
   const [date, setDate] = useState(f.date || new Date().toISOString().split('T')[0]);
   const [rateInfo, setRateInfo] = useState(f.rateAtTime ? { rate: f.rateAtTime, date: f.rateDate } : null);
   const [rateLoading, setRateLoading] = useState(false);
@@ -843,6 +845,49 @@ function AddTransaction({ onDone, editing = null }) {
   const isVoucher = payMethod === 'voucher' || VOUCHER_CATS.includes(cat);
   const effectiveRate = manualRate && manualRateVal ? parseFloat(manualRateVal) : rateInfo?.rate || getRate().rate;
 
+  // 자연어에서 날짜 표현 → YYYY-MM-DD 변환
+  const parseRelativeDate = (text) => {
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    const t = text;
+    // 어제
+    if (/어제/.test(t)) { const d = new Date(today); d.setDate(d.getDate()-1); return d.toISOString().split('T')[0]; }
+    // 그저께 / 그제
+    if (/그저께|그제/.test(t)) { const d = new Date(today); d.setDate(d.getDate()-2); return d.toISOString().split('T')[0]; }
+    // N일 전
+    const daysAgo = t.match(/(\d+)일\s*전/);
+    if (daysAgo) { const d = new Date(today); d.setDate(d.getDate()-parseInt(daysAgo[1])); return d.toISOString().split('T')[0]; }
+    // 지난주 요일
+    const lastWeekDay = t.match(/지난\s*주?\s*(월|화|수|목|금|토|일)요일/);
+    if (lastWeekDay) {
+      const dayMap = { '일':0,'월':1,'화':2,'수':3,'목':4,'금':5,'토':6 };
+      const target = dayMap[lastWeekDay[1]];
+      const d = new Date(today);
+      const diff = (d.getDay() - target + 7) % 7 || 7;
+      d.setDate(d.getDate() - diff - (diff < 7 ? 7 : 0));
+      // 지난주 = 현재 기준 이전 주
+      const dayDiff = (today.getDay() - target + 7) % 7;
+      d.setDate(today.getDate() - dayDiff - (dayDiff === 0 ? 7 : 0) - 7);
+      return d.toISOString().split('T')[0];
+    }
+    // 이번주 요일
+    const thisWeekDay = t.match(/이번\s*주?\s*(월|화|수|목|금|토|일)요일/);
+    if (thisWeekDay) {
+      const dayMap = { '일':0,'월':1,'화':2,'수':3,'목':4,'금':5,'토':6 };
+      const target = dayMap[thisWeekDay[1]];
+      const d = new Date(today);
+      const diff = (d.getDay() - target + 7) % 7;
+      d.setDate(d.getDate() - diff);
+      return d.toISOString().split('T')[0];
+    }
+    // MM/DD 또는 M월 D일
+    const mdSlash = t.match(/(\d{1,2})\/(\d{1,2})/);
+    if (mdSlash) { return `${today.getFullYear()}-${String(mdSlash[1]).padStart(2,'0')}-${String(mdSlash[2]).padStart(2,'0')}`; }
+    const mdKor = t.match(/(\d{1,2})월\s*(\d{1,2})일/);
+    if (mdKor) { return `${today.getFullYear()}-${String(mdKor[1]).padStart(2,'0')}-${String(mdKor[2]).padStart(2,'0')}`; }
+    return null; // 날짜 표현 없음 → 오늘
+  };
+
   const runAI = async () => {
     if (!aiText.trim()) return;
     setAiLoading(true); setAiErr('');
@@ -853,11 +898,18 @@ function AddTransaction({ onDone, editing = null }) {
       const parsed = data.result;
       setAiResult(parsed);
       setType(parsed.type);
-      setAmtStr(fmtComma(String(Math.round(parsed.amount * (parsed.currency === 'EUR' ? 100 : 1) / (parsed.currency === 'EUR' ? 100 : 1)))));
+      setAmtStr(fmtComma(String(Math.round(parsed.amount))));
       setCur(parsed.currency);
-      setCat(parsed.category);
       setPayMethod(parsed.payMethod);
-      if (titleRef.current) titleRef.current.value = parsed.title;
+      // title — state로 안정적으로 반영
+      setTitleVal(parsed.title || '');
+      // category — 앱 카테고리 목록에 없으면 기타로 fallback
+      const validCats = getCategories();
+      setCat(validCats.includes(parsed.category) ? parsed.category : '기타');
+      // date — 자연어에서 날짜 표현 추출
+      const parsedDate = parseRelativeDate(aiText);
+      if (parsedDate) { setDate(parsedDate); }
+      // account — 국가 기준으로 자동 선택
       const acc = accounts.find(a => parsed.country === 'KR' ? a.country === 'KR' : a.country === 'DE');
       if (acc) setAccId(acc.id);
     } catch { setAiErr('파싱 실패. 직접 입력해주세요.'); }
@@ -872,12 +924,12 @@ function AddTransaction({ onDone, editing = null }) {
   };
 
   const save = () => {
-    const title = titleRef.current?.value || aiText || cat;
+    const title = titleVal.trim() || aiText || cat;
     const memo = memoRef.current?.value || '';
     if (!amtStr) return;
     if (!isVoucher && !accId) return;
     const acc = accounts.find(a => a.id === accId);
-    const entry = { title, type, amount: parseComma(amtStr), currency: cur, accountId: isVoucher ? '' : accId, accountName: isVoucher ? '식권/쿠폰' : acc?.name || '', category: cat, payMethod, memo, date, rateAtTime: effectiveRate, rateDate: rateInfo?.date || date };
+    const entry = { title, type, amount: parseComma(amtStr), currency: cur, accountId: isVoucher ? '' : accId, accountName: isVoucher ? '바우처/쿠폰' : acc?.name || '', category: cat, payMethod, memo, date, rateAtTime: effectiveRate, rateDate: rateInfo?.date || date };
     if (editing) updateTxn(editing.id, entry);
     else addTxn(entry);
     onDone();
@@ -896,11 +948,11 @@ function AddTransaction({ onDone, editing = null }) {
       aiResult && jsx('div', { className: 'divider' }),
     ] }),
     (mode === 'manual' || aiResult || editing) && jsxs('div', { children: [
-      jsxs('div', { style: { marginBottom: 16 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '항목명' }), jsx('input', { ref: titleRef, className: 'field', placeholder: '예: REWE 장보기', defaultValue: f.title || '' })] }),
+      jsxs('div', { style: { marginBottom: 16 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '항목명' }), jsx('input', { className: 'field', placeholder: '예: REWE 장보기', value: titleVal, onChange: e => setTitleVal(e.target.value) })] }),
       jsxs('div', { className: 'row', children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '수입 / 지출' }), jsxs('div', { style: { display: 'flex', gap: 6 }, children: [jsx(Pill, { on: type === 'income', onClick: () => setType('income'), children: '수입' }), jsx(Pill, { on: type === 'expense', onClick: () => setType('expense'), children: '지출' })] })] }),
       jsxs('div', { className: 'row', style: { opacity: isVoucher ? 0.4 : 1 }, children: [
         jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '계좌' }),
-        isVoucher ? jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '식권/쿠폰 — 계좌 불필요' }) :
+        isVoucher ? jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '바우처/쿠폰 — 계좌 불필요' }) :
         jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'flex-end' }, children: accounts.map(a => jsx(Pill, { key: a.id, on: accId === a.id, onClick: () => setAccId(a.id), children: a.name })) }),
       ] }),
       jsxs('div', { className: 'row', children: [
@@ -935,7 +987,7 @@ function AddTransaction({ onDone, editing = null }) {
       addCat && jsxs('div', { style: { display: 'flex', gap: 8, marginBottom: 12 }, children: [jsx('input', { ref: newCatRef, className: 'field', placeholder: '카테고리명', style: { flex: 1 }, onKeyDown: e => e.key === 'Enter' && !e.nativeEvent?.isComposing && addNewCat() }), jsx('button', { className: 'btn-sm', onClick: addNewCat, children: '추가' })] }),
       jsxs('div', { className: 'row', children: [
         jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '결제 수단' }),
-        jsxs('div', { style: { display: 'flex', gap: 6 }, children: [jsx(Pill, { on: payMethod === 'card', onClick: () => setPayMethod('card'), children: '카드' }), jsx(Pill, { on: payMethod === 'cash', onClick: () => setPayMethod('cash'), children: '현금' }), jsx(Pill, { on: payMethod === 'voucher', onClick: () => setPayMethod('voucher'), children: '🎫 식권' })] }),
+        jsxs('div', { style: { display: 'flex', gap: 6 }, children: [jsx(Pill, { on: payMethod === 'card', onClick: () => setPayMethod('card'), children: '카드' }), jsx(Pill, { on: payMethod === 'cash', onClick: () => setPayMethod('cash'), children: '현금' }), jsx(Pill, { on: payMethod === 'voucher', onClick: () => setPayMethod('voucher'), children: '바우처' })] }),
       ] }),
       jsxs('div', { className: 'row', children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '날짜' }), jsx('input', { type: 'date', value: date, onChange: e => setDate(e.target.value), style: { border: 'none', background: 'transparent', fontSize: 13, color: 'var(--black)', outline: 'none', fontFamily: 'var(--font)' } })] }),
       jsxs('div', { style: { paddingTop: 14 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '메모' }), jsx('textarea', { ref: memoRef, className: 'field', placeholder: '내용 입력 (선택)', rows: 2, defaultValue: f.memo || '' })] }),
@@ -1120,7 +1172,7 @@ function FixedItemForm({ initial, onSubmit, onCancel, submitLabel, isIncome = fa
     // 수입 유형: 계좌 / 현금 / 상품권·쿠폰
     isIncome && jsxs('div', { style: { marginBottom: 10 }, children: [
       jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '수입 유형' }),
-      jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: [{ v: 'account', l: '🏦 계좌' }, { v: 'cash', l: '💵 현금' }, { v: 'voucher', l: '🎫 상품권/쿠폰' }].map(opt => jsx(Pill, { key: opt.v, on: incomeType === opt.v, onClick: () => { setIncomeType(opt.v); if (opt.v !== 'account') setAccId(''); }, style: { fontSize: 11 }, children: opt.l })) }),
+      jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: [{ v: 'account', l: '계좌/현금' }, { v: 'voucher', l: '상품권/쿠폰' }].map(opt => jsx(Pill, { key: opt.v, on: incomeType === opt.v, onClick: () => { setIncomeType(opt.v); if (opt.v !== 'account') setAccId(''); }, style: { fontSize: 11 }, children: opt.l })) }),
     ] }),
     needsAccount && accounts.length > 0 && jsxs('div', { style: { marginBottom: 12 }, children: [
       jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: isIncome ? '입금 계좌' : '출금 계좌' }),
@@ -1172,7 +1224,7 @@ function FixedTab() {
       jsxs('div', { className: 'row', style: { cursor: 'pointer' }, onClick: () => setExpandedId(expanded ? null : item.id), children: [
         jsxs('div', { children: [
           jsxs('p', { style: { fontSize: 13, fontWeight: 500 }, children: [item.name, ' ', item.label && jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)', fontWeight: 400 }, children: item.label })] }),
-          jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }, children: [freqLabel(item.frequency, isIncome), ' ', item.day, '일', item.accountId ? ` · ${accName(item.accountId)}` : item.incomeType === 'voucher' ? ' · 🎫 상품권/쿠폰' : item.incomeType === 'cash' ? ' · 💵 현금' : ''] }),
+          jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }, children: [freqLabel(item.frequency, isIncome), ' ', item.day, '일', item.accountId ? ` · ${accName(item.accountId)}` : item.incomeType === 'voucher' ? ' · 상품권/쿠폰' : item.incomeType === 'cash' ? ' · 💵 현금' : ''] }),
         ] }),
         jsxs('div', { style: { textAlign: 'right' }, children: [
           jsx('p', { style: { fontSize: 13, fontWeight: 500 }, children: fmtItem(item) }),
