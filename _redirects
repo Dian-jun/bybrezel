@@ -1,0 +1,3 @@
+# /money 경로 SPA 라우팅
+# /money 하위 모든 경로를 index.html로 (API 제외)
+/money/*  /money/index.html  200

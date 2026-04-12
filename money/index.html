@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>교민 가계부</title>
+
+<!-- PWA -->
+<link rel="manifest" href="/money/manifest.json"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="교민가계부"/>
+<meta name="theme-color" content="#111111"/>
+<link rel="apple-touch-icon" href="/money/icons/icon-192.png"/>
+<style>
+@import "https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap";
+*,::before,::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#111;--white:#fff;
+  --gray-50:#f8f8f8;--gray-100:#f0f0f0;--gray-200:#e0e0e0;--gray-400:#999;--gray-600:#555;
+  --accent:#FF7A50;
+  --font:"DM Sans",sans-serif;--mono:"DM Mono",monospace;
+  --radius:14px;--radius-sm:8px;
+}
+html,body,#root{background:var(--white);width:100%;height:100%;font-family:var(--font);color:var(--black);-webkit-font-smoothing:antialiased}
+#root{background:var(--gray-50);justify-content:center;display:flex}
+.app-shell{background:var(--white);flex-direction:column;width:100%;max-width:430px;min-height:100%;display:flex;position:relative}
+h1{font-size:26px;font-weight:500;line-height:1.2}
+h2{font-size:20px;font-weight:500}
+p{line-height:1.6}
+.text-muted{color:var(--gray-400);font-size:12px}
+.page{flex:1;padding:16px 20px 100px;overflow-y:auto}
+.section{margin-bottom:28px}
+.section-title{letter-spacing:.8px;text-transform:uppercase;color:var(--gray-400);margin-bottom:12px;font-size:11px;font-weight:500}
+.divider{background:var(--gray-200);height:.5px;margin:18px 0}
+.row{border-bottom:.5px solid var(--gray-100);justify-content:space-between;align-items:center;padding:12px 0;display:flex}
+.row:last-child{border-bottom:none}
+.field{border:none;border-bottom:1px solid var(--gray-200);color:var(--black);width:100%;font-size:14px;font-family:var(--font);background:transparent;outline:none;padding:6px 0;transition:border-color .2s}
+.field:focus{border-color:var(--black)}
+.field::placeholder{color:var(--gray-400)}
+.field-sm{border:none;border-bottom:1px solid var(--gray-200);color:var(--black);text-align:center;width:36px;font-size:13px;font-family:var(--font);background:transparent;outline:none;padding:2px 0}
+.field-amt{border:none;border-bottom:1px solid var(--gray-200);color:var(--black);text-align:right;width:72px;font-size:13px;font-family:var(--font);background:transparent;outline:none;padding:2px 0}
+.field-amt::placeholder,.field-sm::placeholder{color:var(--gray-400)}
+.btn{background:var(--black);width:100%;color:var(--white);border-radius:var(--radius);font-size:15px;font-weight:500;font-family:var(--font);cursor:pointer;border:none;padding:15px;transition:opacity .15s}
+.btn:active{opacity:.8}
+.btn-ghost{width:100%;color:var(--gray-400);border:.5px solid var(--gray-200);border-radius:var(--radius);font-size:14px;font-family:var(--font);cursor:pointer;background:transparent;margin-top:8px;padding:13px}
+.btn-sm{background:var(--black);color:var(--white);font-size:12px;font-weight:500;font-family:var(--font);cursor:pointer;border:none;border-radius:20px;padding:5px 14px}
+.btn-sm-outline{color:var(--gray-600);border:.5px solid var(--gray-200);font-size:12px;font-family:var(--font);cursor:pointer;background:transparent;border-radius:20px;padding:5px 14px}
+.toggle-wrap{background:var(--gray-100);border-radius:20px;gap:2px;padding:3px;display:flex}
+.toggle-btn{cursor:pointer;font-size:12px;font-weight:500;font-family:var(--font);border:none;border-radius:16px;padding:4px 14px;transition:all .15s}
+.toggle-btn.active{background:var(--black);color:var(--white)}
+.toggle-btn.inactive{color:var(--gray-400);background:transparent}
+.check-on{background:var(--black);cursor:pointer;border-radius:4px;flex-shrink:0;justify-content:center;align-items:center;width:18px;height:18px;display:flex}
+.check-off{border:1px solid var(--gray-200);cursor:pointer;border-radius:4px;flex-shrink:0;width:18px;height:18px}
+.progress-bar{gap:4px;margin-bottom:24px;display:flex}
+.progress-bar span{border-radius:2px;flex:1;height:2px}
+.progress-bar span.on{background:var(--black)}
+.progress-bar span.off{background:var(--gray-200)}
+.bottom-nav{background:var(--white);border-top:.5px solid var(--gray-100);z-index:100;justify-content:space-around;align-items:center;width:100%;max-width:430px;padding:10px 0 20px;display:flex;position:fixed;bottom:0;left:50%;transform:translate(-50%)}
+.nav-item{cursor:pointer;flex-direction:column;align-items:center;gap:4px;min-width:52px;display:flex}
+.nav-label{color:var(--gray-400);font-size:10px}
+.nav-label.active{color:var(--black);font-weight:500}
+.nav-plus{background:var(--black);cursor:pointer;border-radius:50%;justify-content:center;align-items:center;width:44px;height:44px;display:flex}
+.card{background:var(--gray-50);border-radius:var(--radius);margin-bottom:12px;padding:16px}
+.add-row{cursor:pointer;color:var(--gray-400);align-items:center;gap:10px;padding:12px 0;display:flex}
+.add-circle{border:1px solid var(--gray-200);width:22px;height:22px;color:var(--gray-400);border-radius:50%;justify-content:center;align-items:center;font-size:14px;display:flex}
+.parse-result{flex-wrap:wrap;gap:6px;margin-top:10px;display:flex}
+.parse-tag{border:.5px solid var(--gray-200);color:var(--gray-600);border-radius:12px;padding:3px 10px;font-size:11px}
+.parse-tag.primary{background:var(--black);color:var(--white);border-color:var(--black)}
+.pill-on{background:var(--black);color:var(--white);cursor:pointer;font-size:12px;font-family:var(--font);border:none;border-radius:14px;padding:4px 12px}
+.pill-off{color:var(--gray-400);border:.5px solid var(--gray-200);cursor:pointer;font-size:12px;font-family:var(--font);background:transparent;border-radius:14px;padding:4px 12px}
+.bar-track{background:var(--gray-100);border-radius:2px;height:3px;margin-top:8px}
+.bar-fill{background:var(--black);border-radius:2px;height:100%}
+/* 펼침 애니메이션 */
+.expand-enter{animation:.2s ease forwards expandIn}
+@keyframes expandIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:.25s forwards fadeIn}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="module">
+import { createElement as h, useState, useEffect, useRef, Fragment, StrictMode } from 'https://esm.sh/react@19';
+import { createRoot } from 'https://esm.sh/react-dom@19/client';
+import { jsx, jsxs } from 'https://esm.sh/react@19/jsx-runtime';
+
+// ─── lucide icons (inline SVG helpers) ───────────────────────────────────────
+const Icon = ({ d, size=24, color='currentColor', sw=2, ...p }) =>
+  jsx('svg',{width:size,height:size,viewBox:'0 0 24 24',fill:'none',stroke:color,
+    strokeWidth:sw,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':true,...p,
+    children:Array.isArray(d)?d.map((dd,i)=>jsx('path',{d:dd},i)):jsx('path',{d})});
+const IconHome   = p => jsx(Icon,{...p,d:['M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8','M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z']});
+const IconList   = p => jsx(Icon,{...p,d:['M3 5h.01','M3 12h.01','M3 19h.01','M8 5h13','M8 12h13','M8 19h13']});
+const IconPlus   = p => jsx(Icon,{...p,d:['M5 12h14','M12 5v14']});
+const IconWallet = p => jsx(Icon,{...p,d:['M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1','M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4']});
+const IconCal    = p => jsx(Icon,{...p,d:['M8 2v4','M16 2v4','M3 10h18','rect:3,4,18,18,2']});
+const IconCalendar = ({size=20,color='currentColor',sw=1.5}) =>
+  jsx('svg',{width:size,height:size,viewBox:'0 0 24 24',fill:'none',stroke:color,strokeWidth:sw,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':true,
+    children:[jsx('path',{d:'M8 2v4'},0),jsx('path',{d:'M16 2v4'},1),jsx('rect',{width:'18',height:'18',x:'3',y:'4',rx:'2'},2),jsx('path',{d:'M3 10h18'},3)]});
+const IconFixed  = p => jsx(IconCalendar,p);
+const IconX      = p => jsx(Icon,{...p,d:['M18 6 6 18','M6 6l12 12']});
+const IconSettings = p => jsx('svg',{width:p.size||24,height:p.size||24,viewBox:'0 0 24 24',fill:'none',stroke:p.color||'currentColor',strokeWidth:p.sw||1.5,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':true,
+  children:[jsx('path',{d:'M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915'},0),jsx('circle',{cx:'12',cy:'12',r:'3'},1)]});
+const IconFilter = p => jsx('svg',{width:p.size||24,height:p.size||24,viewBox:'0 0 24 24',fill:'none',stroke:p.color||'currentColor',strokeWidth:p.sw||1.5,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':true,
+  children:[jsx('path',{d:'M10 5H3'},0),jsx('path',{d:'M12 19H3'},1),jsx('path',{d:'M14 3v4'},2),jsx('path',{d:'M16 17v4'},3),jsx('path',{d:'M21 12h-9'},4),jsx('path',{d:'M21 19h-5'},5),jsx('path',{d:'M21 5h-7'},6),jsx('path',{d:'M8 10v4'},7),jsx('path',{d:'M8 12H3'},8)]});
+const IconTrash  = p => jsx('svg',{width:p.size||24,height:p.size||24,viewBox:'0 0 24 24',fill:'none',stroke:p.color||'currentColor',strokeWidth:p.sw||1.5,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':true,
+  children:[jsx('path',{d:'M10 11v6'},0),jsx('path',{d:'M14 11v6'},1),jsx('path',{d:'M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6'},2),jsx('path',{d:'M3 6h18'},3),jsx('path',{d:'M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'},4)]});
+const IconBack   = p => jsx(Icon,{...p,d:'M15 18l-6-6 6-6'});
+const CheckIcon  = () => jsx('svg',{width:10,height:8,viewBox:'0 0 10 8',fill:'none',children:jsx('path',{d:'M1 4l3 3 5-6',stroke:'white',strokeWidth:'1.5',strokeLinecap:'round',strokeLinejoin:'round'})});
+
+// ─── category icons ───────────────────────────────────────────────────────────
+const CATEGORY_ICONS = {
+  '식비':   p => jsx(Icon,{...p,d:['M2 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2','M7 2v20','M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7']}),
+  '외식':   p => jsx(Icon,{...p,d:['M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2','M7 2v20','M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7']}),
+  '교통':   p => jsx(Icon,{...p,d:['M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z','M4 11h16','M12 3v8','M8 19l-2 3','M18 22l-2-3','M8 15h.01','M16 15h.01']}),
+  '의료':   p => jsx(Icon,{...p,d:'M10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7ZM8.5 8.5l7 7'}),
+  '쇼핑':   p => jsx(Icon,{...p,d:['M16 10a4 4 0 0 1-8 0','M3.103 6.034h17.794','M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z']}),
+  '카페':   p => jsx(Icon,{...p,d:['M10 2v2','M14 2v2','M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1','M6 2v2']}),
+  '구독':   p => jsx('svg',{width:p.size||16,height:p.size||16,viewBox:'0 0 24 24',fill:'none',stroke:p.color||'currentColor',strokeWidth:2,strokeLinecap:'round',strokeLinejoin:'round',children:[jsx('rect',{width:'14',height:'20',x:'5',y:'2',rx:'2',ry:'2'},0),jsx('path',{d:'M12 18h.01'},1)]}),
+  '공과금': p => jsx(Icon,{...p,d:'M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z'}),
+  '송금':   p => jsx(Icon,{...p,d:['M8 3 4 7l4 4','M4 7h16','M16 21l4-4-4-4','M20 17H4']}),
+  '급여':   p => jsx(Icon,{...p,d:['M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4','M4 6v12c0 1.1.9 2 2 2h14v-4','M12 12h.01']}),
+  '식비지원금': p => jsx(Icon,{...p,d:['M12 7v14','M20 11v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8','M7.5 7a1 1 0 0 1 0-5A4.8 8 0 0 1 12 7a4.8 8 0 0 1 4.5-5 1 1 0 0 1 0 5','M3 7h18a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v0a1 1 0 0 0 1 1z']}),
+  '여행':   p => jsx(Icon,{...p,d:['M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2','M4 7h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z','M4 12h16']}),
+  '기타':   p => jsx(Icon,{...p,d:['M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0','M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0','M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0']}),
+};
+const CategoryIcon = ({ cat, size=16, color='var(--gray-600)' }) => {
+  const C = CATEGORY_ICONS[cat] || CATEGORY_ICONS['기타'];
+  return jsx(C, { size, color, sw: 1.5 });
+};
+
+// ─── storage ─────────────────────────────────────────────────────────────────
+const K = {
+  ONBOARDED: 'gyembu_onboarded', ACCOUNTS: 'gyembu_accounts',
+  FIXED_EXP: 'gyembu_fixed', FIXED_INC: 'gyembu_fixed_income',
+  TRANSACTIONS: 'gyembu_transactions', RATE: 'gyembu_rate',
+  CATEGORIES: 'gyembu_categories', BUDGET: 'gyembu_budget',
+  SYNCED: 'gyembu_synced_months',
+};
+const ls = {
+  get: k => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch { return null; } },
+  set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+const isOnboarded   = () => !!ls.get(K.ONBOARDED);
+const setOnboarded  = () => ls.set(K.ONBOARDED, true);
+const getAccounts   = () => ls.get(K.ACCOUNTS) || [];
+const setAccounts   = v  => ls.set(K.ACCOUNTS, v);
+const getFixedExp   = () => ls.get(K.FIXED_EXP) || [];
+const setFixedExp   = v  => ls.set(K.FIXED_EXP, v);
+const getFixedInc   = () => ls.get(K.FIXED_INC) || [];
+const setFixedInc   = v  => ls.set(K.FIXED_INC, v);
+const getTxns       = () => ls.get(K.TRANSACTIONS) || [];
+const setTxns       = v  => ls.set(K.TRANSACTIONS, v);
+const getRate       = () => ls.get(K.RATE) || { rate: 1480, updatedAt: null };
+const setRate       = v  => ls.set(K.RATE, { rate: v, updatedAt: new Date().toISOString() });
+const DEFAULT_CATS  = ['식비','외식','교통','의료','쇼핑','카페','구독','공과금','송금','급여','식비지원금','여행','기타'];
+const getCategories = () => ls.get(K.CATEGORIES) || DEFAULT_CATS;
+const setCategories = v  => ls.set(K.CATEGORIES, v);
+const getBudget     = () => ls.get(K.BUDGET) || { eur: null, excludeCategories: ['식비지원금'] };
+const setBudget     = v  => ls.set(K.BUDGET, v);
+
+// ─── transaction helpers ──────────────────────────────────────────────────────
+const addTxn = entry => {
+  const txns = getTxns();
+  const t = { ...entry, id: `t_${Date.now()}_${Math.random().toString(36).slice(2)}`, createdAt: new Date().toISOString() };
+  setTxns([t, ...txns]);
+  applyBalanceDelta(t.accountId, t.type === 'expense' ? -t.amount : t.amount, t.currency);
+  return t;
+};
+const updateTxn = (id, patch) => {
+  const txns = getTxns();
+  const old = txns.find(t => t.id === id);
+  if (old) {
+    applyBalanceDelta(old.accountId, old.type === 'expense' ? old.amount : -old.amount, old.currency);
+    applyBalanceDelta(patch.accountId || old.accountId, (patch.type || old.type) === 'expense' ? -(patch.amount || old.amount) : (patch.amount || old.amount), patch.currency || old.currency);
+  }
+  setTxns(txns.map(t => t.id === id ? { ...t, ...patch } : t));
+};
+const deleteTxn = id => {
+  const txns = getTxns();
+  const t = txns.find(t => t.id === id);
+  if (t && !t.fixedId) applyBalanceDelta(t.accountId, t.type === 'expense' ? t.amount : -t.amount, t.currency);
+  setTxns(txns.filter(t => t.id !== id));
+};
+const applyBalanceDelta = (accountId, delta, _currency) => {
+  if (!accountId) return;
+  const accs = getAccounts();
+  if (!accs.find(a => a.id === accountId)) return;
+  setAccounts(accs.map(a => a.id === accountId ? { ...a, balance: Math.max(0, (a.balance || 0) + delta) } : a));
+};
+const correctBalance = (accountId, newBalance) => {
+  const accs = getAccounts();
+  const acc = accs.find(a => a.id === accountId);
+  if (!acc) return;
+  const diff = newBalance - (acc.balance || 0);
+  setTxns([{
+    id: `correction_${Date.now()}`, title: '잔액 보정', type: diff >= 0 ? 'income' : 'expense',
+    amount: Math.abs(diff), currency: acc.currency, accountId, accountName: acc.name,
+    category: '기타', payMethod: 'card', memo: '수동 잔액 보정',
+    date: new Date().toISOString().split('T')[0],
+    rateAtTime: getRate().rate, rateDate: new Date().toISOString().split('T')[0],
+    createdAt: new Date().toISOString(), isCorrection: true,
+  }, ...getTxns()]);
+  setAccounts(accs.map(a => a.id === accountId ? { ...a, balance: newBalance } : a));
+};
+
+// ─── exchange rate ────────────────────────────────────────────────────────────
+// Frankfurter does NOT support KRW. Using fawazahmed0 currency API instead.
+const fetchLatestRate = async () => {
+  try {
+    const res = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json');
+    const data = await res.json();
+    const rate = data.eur?.krw;
+    if (rate) { setRate(rate); return rate; }
+    return getRate().rate;
+  } catch { return getRate().rate; }
+};
+const fetchRateForDate = async date => {
+  const today = new Date().toISOString().split('T')[0];
+  try {
+    const dateKey = date >= today ? 'latest' : date;
+    const res = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${dateKey}/v1/currencies/eur.json`);
+    const data = await res.json();
+    const rate = data.eur?.krw;
+    return { rate: rate || getRate().rate, date };
+  } catch { return { rate: getRate().rate, date }; }
+};
+
+// ─── fixed cost auto-sync ─────────────────────────────────────────────────────
+const shouldApplyFixed = (item, yr, mo) => {
+  if (!item.frequency || item.frequency === 'monthly') return true;
+  if (item.frequency === 'quarterly') return (mo - (item.startMonth ?? 0) + 12) % 3 === 0;
+  if (item.frequency === 'bimonthly') return (mo - (item.startMonth ?? 0) + 12) % 2 === 0;
+  if (item.frequency === 'yearly') return mo === (item.startMonth ?? 0);
+  return true;
+};
+const syncFixedCosts = () => {
+  const now = new Date(), yr = now.getFullYear(), mo = now.getMonth();
+  const synced = ls.get(K.SYNCED) || {};
+  const rate = getRate().rate;
+  const accs = getAccounts();
+  let txns = getTxns(), changed = false;
+  const months = [];
+  for (let mi = 0; mi < 13; mi++) {
+    let y = yr, m = mo - mi;
+    while (m < 0) { m += 12; y--; }
+    const key = `${y}-${m}`;
+    if (!synced[key]) months.push({ y, m, key });
+  }
+  if (!months.length) return;
+  for (const { y, m, key } of months) {
+    const applyItems = (items, type) => items.forEach(item => {
+      if (!shouldApplyFixed(item, y, m)) return;
+      const cid = `fixed_${type}_${item.id}_${y}_${m}`;
+      if (txns.find(t => t.id === cid)) return;
+      const acc = accs.find(a => a.id === item.accountId) || accs.find(a => item.currency === 'KRW' ? a.currency === 'KRW' : a.currency === 'EUR');
+      const dd = Math.min(item.day || 1, new Date(y, m + 1, 0).getDate());
+      const dateStr = `${y}-${String(m + 1).padStart(2, '0')}-${String(dd).padStart(2, '0')}`;
+      txns = [{ id: cid, fixedId: item.id, title: item.name + (item.label ? ` (${item.label})` : ''),
+        type, amount: item.amount, currency: item.currency || 'EUR', rateAtTime: rate, rateDate: dateStr,
+        accountId: acc?.id || '', accountName: acc?.name || '',
+        category: type === 'income' ? '급여' : '공과금', payMethod: 'card',
+        memo: `고정 ${type === 'income' ? '수입' : '지출'}`, date: dateStr,
+        createdAt: new Date().toISOString() }, ...txns];
+      changed = true;
+    });
+    applyItems(getFixedExp(), 'expense');
+    applyItems(getFixedInc(), 'income');
+    synced[key] = true;
+  }
+  if (changed) setTxns(txns);
+  ls.set(K.SYNCED, synced);
+};
+
+// ─── utils ────────────────────────────────────────────────────────────────────
+// 천단위 콤마 포맷팅 유틸
+const fmtComma = val => val.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const parseComma = val => parseFloat(String(val).replace(/,/g, '')) || 0;
+
+const MONTHS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+const DAYS   = ['일','월','화','수','목','금','토'];
+const FREQ_EXP = [{ value: 'monthly', label: '매월' }, { value: 'quarterly', label: '분기납' }, { value: 'yearly', label: '연납' }];
+const FREQ_INC = [{ value: 'monthly', label: '매월' }, { value: 'bimonthly', label: '격월' }, { value: 'quarterly', label: '분기' }, { value: 'yearly', label: '연간' }];
+const VOUCHER_CATS = ['식비지원금'];
+const DEFAULT_FIXED_EXP = [
+  { id: 'kaltmiete',  name: 'Kaltmiete',          label: '월세',   checked: false, currency: 'EUR', frequency: 'monthly'   },
+  { id: 'gez',        name: 'GEZ',                 label: '방송수신료', checked: false, currency: 'EUR', frequency: 'quarterly' },
+  { id: 'haftpflicht',name: 'Haftpflicht',         label: '배상보험', checked: false, currency: 'EUR', frequency: 'monthly'   },
+  { id: 'kranken',    name: 'Krankenversicherung', label: '건강보험', checked: false, currency: 'EUR', frequency: 'monthly'   },
+  { id: 'neben',      name: 'Nebenkosten',         label: '관리비',  checked: false, currency: 'EUR', frequency: 'monthly'   },
+  { id: 'internet',   name: 'Internet',            label: '인터넷',  checked: false, currency: 'EUR', frequency: 'monthly'   },
+];
+
+// 자산탭 계좌 정렬: DE 먼저, KR 다음, 각 그룹 내 현금계좌는 마지막
+const sortAccountsForDisplay = accounts => [...accounts].sort((a, b) => {
+  const regionA = a.country === 'DE' ? 0 : 1;
+  const regionB = b.country === 'DE' ? 0 : 1;
+  if (regionA !== regionB) return regionA - regionB;
+  return (a.isCash ? 1 : 0) - (b.isCash ? 1 : 0);
+});
+
+// ─── shared sub-components ────────────────────────────────────────────────────
+const Pill = ({ on, onClick, children, style }) =>
+  jsx('button', { className: on ? 'pill-on' : 'pill-off', onClick, style, children });
+
+const AmountInput = ({ value, onChange, placeholder = '0', style }) => {
+  const handleChange = e => {
+    const raw = e.target.value.replace(/,/g, '');
+    if (raw === '' || /^\d*$/.test(raw)) onChange(fmtComma(raw));
+  };
+  return jsx('input', {
+    className: 'field-amt', type: 'text', inputMode: 'numeric',
+    value, onChange: handleChange, placeholder, style,
+  });
+};
+
+const AmountField = ({ value, onChange, placeholder = '0', style }) => {
+  const handleChange = e => {
+    const raw = e.target.value.replace(/,/g, '');
+    if (raw === '' || /^\d*$/.test(raw)) onChange(fmtComma(raw));
+  };
+  return jsx('input', {
+    className: 'field', type: 'text', inputMode: 'numeric',
+    value, onChange: handleChange, placeholder, style,
+  });
+};
+
+// ─── ONBOARDING ───────────────────────────────────────────────────────────────
+function Onboarding({ onDone }) {
+  const [step, setStep] = useState(0);
+  const [krName, setKrName] = useState('');
+  const [krBal, setKrBal]   = useState('');
+  const [deName, setDeName] = useState('');
+  const [deBal, setDeBal]   = useState('');
+  const [eurCash, setEurCash] = useState('');
+  const [krwCash, setKrwCash] = useState('');
+  const [extraAccs, setExtraAccs] = useState([]);
+  const [extraCountry, setExtraCountry] = useState('KR');
+  const extraNameRef = useRef(), extraBalRef = useRef();
+
+  // Fixed expense state
+  const [fixedExpChecks, setFixedExpChecks] = useState(DEFAULT_FIXED_EXP.map(e => ({ ...e, amount: '', day: '', accountId: '' })));
+  const [fixedExpExtra, setFixedExpExtra] = useState([]);
+  const [feCur, setFeCur] = useState('EUR'); const [feFreq, setFeFreq] = useState('monthly'); const [feAccId, setFeAccId] = useState('');
+  const feNameRef = useRef(), feAmtRef = useRef(), feDayRef = useRef();
+  const [fixedExpCfg, setFixedExpCfg] = useState({});
+
+  // Fixed income state
+  const [fixedIncList, setFixedIncList] = useState([]);
+  const [fiCur, setFiCur] = useState('EUR'); const [fiFreq, setFiFreq] = useState('monthly');
+  const [fiType, setFiType] = useState('account'); const [fiAccId, setFiAccId] = useState('');
+  const fiNameRef = useRef(), fiAmtRef = useRef(), fiDayRef = useRef();
+
+  const buildAccounts = () => {
+    const result = [];
+    if (krName.trim()) result.push({ id: 'kr-main', name: krName.trim(), country: 'KR', currency: 'KRW', balance: parseComma(krBal) });
+    if (deName.trim()) result.push({ id: 'de-main', name: deName.trim(), country: 'DE', currency: 'EUR', balance: parseComma(deBal) });
+    extraAccs.forEach(a => result.push({ id: a.id, name: a.name, country: a.country, currency: a.country === 'KR' ? 'KRW' : 'EUR', balance: parseComma(a.balance) }));
+    if (parseComma(eurCash) > 0) result.push({ id: 'cash-eur', name: '현금 (EUR)', country: 'DE', currency: 'EUR', balance: parseComma(eurCash), isCash: true });
+    if (parseComma(krwCash) > 0) result.push({ id: 'cash-krw', name: '현금 (KRW)', country: 'KR', currency: 'KRW', balance: parseComma(krwCash), isCash: true });
+    return result;
+  };
+
+  const addExtra = () => {
+    const nm = extraNameRef.current?.value, bal = extraBalRef.current?.value;
+    if (!nm?.trim()) return;
+    setExtraAccs(prev => [...prev, { id: Date.now().toString(), name: nm.trim(), balance: bal || '0', country: extraCountry }]);
+    if (extraNameRef.current) extraNameRef.current.value = '';
+    if (extraBalRef.current) extraBalRef.current.value = '';
+  };
+
+  const addFixedExpExtra = () => {
+    const nm = feNameRef.current?.value, amt = feAmtRef.current?.value, day = feDayRef.current?.value;
+    if (!nm?.trim()) return;
+    setFixedExpExtra(prev => [...prev, { id: Date.now().toString(), name: nm, amount: amt, day, currency: feCur, frequency: feFreq, accountId: feAccId }]);
+    if (feNameRef.current) feNameRef.current.value = '';
+    if (feAmtRef.current) feAmtRef.current.value = '';
+    if (feDayRef.current) feDayRef.current.value = '';
+  };
+
+  const addFixedInc = () => {
+    const nm = fiNameRef.current?.value, amt = fiAmtRef.current?.value, day = fiDayRef.current?.value;
+    if (!nm?.trim()) return;
+    setFixedIncList(prev => [...prev, { id: Date.now().toString(), name: nm, amount: amt, day, currency: fiCur, frequency: fiFreq, accountId: fiType === 'account' ? fiAccId : '', incomeType: fiType }]);
+    if (fiNameRef.current) fiNameRef.current.value = '';
+    if (fiAmtRef.current) fiAmtRef.current.value = '';
+    if (fiDayRef.current) fiDayRef.current.value = '';
+    setFiType('account'); setFiAccId('');
+  };
+
+  const finish = () => {
+    const accs = buildAccounts();
+    const deMain = accs.find(a => a.country === 'DE' && !a.isCash);
+    const krMain = accs.find(a => a.country === 'KR' && !a.isCash);
+    setAccounts(accs);
+    setFixedExp([
+      ...fixedExpChecks.filter(i => i.checked).map(i => {
+        const cfg = fixedExpCfg[i.id] || {};
+        return { id: i.id, name: i.name, label: i.label, amount: parseComma(cfg.amount || i.amount) || 0, day: parseInt(cfg.day || i.day) || 1, currency: cfg.currency || i.currency, frequency: cfg.frequency || i.frequency, accountId: cfg.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) };
+      }),
+      ...fixedExpExtra.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })),
+    ]);
+    setFixedInc(fixedIncList.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })));
+    syncFixedCosts(); setOnboarded(); onDone();
+  };
+
+  const Step = ({ to }) => jsx('button', { onClick: () => setStep(to), style: { background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: 'var(--gray-400)', padding: 0 }, children: '‹' });
+  const Prog = ({ total, cur }) => jsx('div', { className: 'progress-bar', style: { flex: 1, margin: 0 }, children: Array.from({ length: total }).map((_, i) => jsx('span', { className: i < cur ? 'on' : 'off' }, i)) });
+  const Label = ({ children }) => jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children });
+
+  const displayAccs = buildAccounts();
+
+  // Step 0: welcome
+  if (step === 0) return jsx('div', { className: 'app-shell', style: { justifyContent: 'space-between', padding: '60px 28px 48px' }, children: jsxs(Fragment, { children: [
+    jsxs('div', { children: [
+      jsx('p', { style: { fontSize: 11, fontWeight: 500, letterSpacing: '0.8px', textTransform: 'uppercase', color: 'var(--gray-400)', marginBottom: 14 }, children: '독일 교민 가계부' }),
+      jsxs('h1', { style: { marginBottom: 20 }, children: ['한국과 독일,', jsx('br',{}), '두 통장을', jsx('br',{}), '한 곳에서.'] }),
+      jsxs('p', { style: { fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.9 }, children: ['KRW · EUR 동시 관리', jsx('br',{}), '송금 내역 · 고정비 · 자연어 입력'] }),
+    ] }),
+    jsxs('div', { children: [
+      jsx('button', { className: 'btn', onClick: () => setStep(1), children: '시작하기' }),
+      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', textAlign: 'center', marginTop: 12 }, children: '설정은 언제든 변경할 수 있어요' }),
+    ] }),
+  ] }) });
+
+  // Step 1: accounts
+  if (step === 1) return jsx('div', { className: 'app-shell', children: jsx('div', { className: 'page', style: { paddingTop: 20 }, children: jsxs(Fragment, { children: [
+    jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }, children: [jsx(Step, { to: 0 }), jsx(Prog, { total: 4, cur: 1 })] }),
+    jsx('h2', { style: { marginBottom: 4 }, children: '계좌 등록' }),
+    jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', marginBottom: 24 }, children: '보유하신 계좌를 입력해주세요' }),
+    jsx('p', { className: 'section-title', children: '한국 계좌' }),
+    jsxs('div', { style: { marginBottom: 14 }, children: [jsx(Label, { children: '통장명' }), jsx('input', { className: 'field', placeholder: '예: 카카오뱅크', value: krName, onChange: e => setKrName(e.target.value) })] }),
+    jsxs('div', { style: { marginBottom: 0 }, children: [jsx(Label, { children: '현재 잔액' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: '₩' }), jsx(AmountField, { value: krBal, onChange: setKrBal, placeholder: '0', style: { flex: 1 } })] })] }),
+    jsx('div', { className: 'divider' }),
+    jsx('p', { className: 'section-title', children: '독일 계좌' }),
+    jsxs('div', { style: { marginBottom: 14 }, children: [jsx(Label, { children: '통장명' }), jsx('input', { className: 'field', placeholder: '예: Deutsche Bank', value: deName, onChange: e => setDeName(e.target.value) })] }),
+    jsxs('div', { style: { marginBottom: 0 }, children: [jsx(Label, { children: '현재 잔액' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: '€' }), jsx(AmountField, { value: deBal, onChange: setDeBal, placeholder: '0', style: { flex: 1 } })] })] }),
+    jsx('div', { className: 'divider' }),
+    jsx('p', { className: 'section-title', children: '추가 계좌 · 카드' }),
+    ...extraAccs.map(a => jsxs('div', { className: 'row', children: [
+      jsxs('div', { children: [jsx('p', { style: { fontSize: 13 }, children: a.name }), jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [a.country === 'KR' ? '한국' : '독일', ' · ', a.country === 'KR' ? '₩' : '€', ' ', a.balance || 0] })] }),
+      jsx('span', { style: { fontSize: 13, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: () => setExtraAccs(prev => prev.filter(x => x.id !== a.id)), children: '삭제' }),
+    ] }, a.id)),
+    jsxs('div', { style: { display: 'flex', gap: 8, marginTop: 8 }, children: [jsx('input', { ref: extraNameRef, className: 'field', placeholder: '통장/카드명', style: { flex: 2 } }), jsx('input', { ref: extraBalRef, className: 'field', placeholder: '잔액', type: 'number', style: { flex: 1 } })] }),
+    jsxs('div', { style: { display: 'flex', gap: 6, margin: '10px 0' }, children: [jsx(Pill, { on: extraCountry === 'KR', onClick: () => setExtraCountry('KR'), children: '한국' }), jsx(Pill, { on: extraCountry === 'DE', onClick: () => setExtraCountry('DE'), children: '독일' })] }),
+    jsxs('div', { className: 'add-row', onClick: addExtra, children: [jsx('div', { className: 'add-circle', children: '+' }), jsx('span', { style: { fontSize: 13 }, children: '추가' })] }),
+    jsx('div', { style: { height: 16 } }),
+    jsx('button', { className: 'btn', onClick: () => setStep(2), children: '다음' }),
+    jsx('button', { className: 'btn-ghost', onClick: () => setStep(2), children: '건너뛰기' }),
+  ] }) }) });
+
+  // Step 2: cash
+  if (step === 2) return jsx('div', { className: 'app-shell', children: jsx('div', { className: 'page', style: { paddingTop: 20 }, children: jsxs(Fragment, { children: [
+    jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }, children: [jsx(Step, { to: 1 }), jsx(Prog, { total: 4, cur: 2 })] }),
+    jsx('h2', { style: { marginBottom: 4 }, children: '현금 보유액' }),
+    jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', marginBottom: 24 }, children: '지갑 속 현금이 있다면 입력해주세요' }),
+    jsxs('div', { style: { marginBottom: 16 }, children: [jsx(Label, { children: 'EUR 현금' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: '€' }), jsx(AmountField, { value: eurCash, onChange: setEurCash, placeholder: '0', style: { flex: 1 } })] })] }),
+    jsxs('div', { style: { marginBottom: 16 }, children: [jsx(Label, { children: 'KRW 현금' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: '₩' }), jsx(AmountField, { value: krwCash, onChange: setKrwCash, placeholder: '0', style: { flex: 1 } })] })] }),
+    jsx('div', { style: { height: 16 } }),
+    jsx('button', { className: 'btn', onClick: () => setStep(3), children: '다음' }),
+    jsx('button', { className: 'btn-ghost', onClick: () => setStep(3), children: '건너뛰기' }),
+  ] }) }) });
+
+  // Step 3: fixed expenses
+  if (step === 3) return jsx('div', { className: 'app-shell', children: jsx('div', { className: 'page', style: { paddingTop: 20 }, children: jsxs(Fragment, { children: [
+    jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }, children: [jsx(Step, { to: 2 }), jsx(Prog, { total: 4, cur: 3 })] }),
+    jsx('h2', { style: { marginBottom: 4 }, children: '고정 지출' }),
+    jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', marginBottom: 20 }, children: '매달 나가는 항목을 선택해주세요' }),
+    jsx('div', { style: { borderTop: '0.5px solid var(--gray-100)' }, children: fixedExpChecks.map(item => jsx(FixedExpOnboardItem, { key: item.id, item, accounts: displayAccs, onToggle: () => setFixedExpChecks(prev => prev.map(p => p.id === item.id ? { ...p, checked: !p.checked } : p)), onUpdate: (id, cfg) => setFixedExpCfg(prev => ({ ...prev, [id]: cfg })) })) }),
+    jsx('p', { className: 'section-title', style: { marginTop: 20 }, children: '직접 추가' }),
+    ...fixedExpExtra.map(item => jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
+      jsxs('div', { children: [jsx('p', { style: { fontSize: 13 }, children: item.name }), jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: ['납입일 ', item.day, '일 · ', item.currency === 'EUR' ? '€' : '₩', item.amount] })] }),
+      jsx('span', { style: { fontSize: 13, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: () => setFixedExpExtra(prev => prev.filter(p => p.id !== item.id)), children: '삭제' }),
+    ] }, item.id)),
+    jsxs('div', { style: { marginTop: 12 }, children: [
+      jsxs('div', { style: { display: 'flex', gap: 8, marginBottom: 8 }, children: [jsx('input', { ref: feNameRef, className: 'field', placeholder: '항목명', style: { flex: 2 } }), jsx('input', { ref: feAmtRef, className: 'field-amt', placeholder: '0', type: 'number' })] }),
+      jsxs('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }, children: [
+        jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 4 }, children: [jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '납입일' }), jsx('input', { ref: feDayRef, className: 'field-sm', placeholder: '일', maxLength: 2 }), jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '일' })] }),
+        ...['EUR','KRW'].map(cc => jsx(Pill, { key: cc, on: feCur === cc, onClick: () => setFeCur(cc), style: { fontSize: 11 }, children: cc === 'EUR' ? '€ EUR' : '₩ KRW' })),
+        ...FREQ_EXP.map(pp => jsx(Pill, { key: pp.value, on: feFreq === pp.value, onClick: () => setFeFreq(pp.value), style: { fontSize: 11 }, children: pp.label })),
+      ] }),
+      displayAccs.filter(a => feCur === 'EUR' ? a.currency === 'EUR' : a.currency === 'KRW').length > 0 && jsxs('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }, children: [
+        jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '출금계좌' }),
+        ...displayAccs.filter(a => feCur === 'EUR' ? a.currency === 'EUR' : a.currency === 'KRW').map(a => jsx(Pill, { key: a.id, on: feAccId === a.id, onClick: () => setFeAccId(a.id), style: { fontSize: 11 }, children: a.name })),
+      ] }),
+      jsxs('div', { className: 'add-row', style: { padding: 0 }, onClick: addFixedExpExtra, children: [jsx('div', { className: 'add-circle', children: '+' }), jsx('span', { style: { fontSize: 13 }, children: '추가' })] }),
+    ] }),
+    jsx('div', { style: { height: 16 } }),
+    jsx('button', { className: 'btn', onClick: () => setStep(4), children: '다음' }),
+    jsx('button', { className: 'btn-ghost', onClick: () => setStep(4), children: '건너뛰기' }),
+  ] }) }) });
+
+  // Step 4: fixed income
+  if (step === 4) return jsx('div', { className: 'app-shell', children: jsx('div', { className: 'page', style: { paddingTop: 20 }, children: jsxs(Fragment, { children: [
+    jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }, children: [jsx(Step, { to: 3 }), jsx(Prog, { total: 4, cur: 4 })] }),
+    jsx('h2', { style: { marginBottom: 4 }, children: '고정 수입' }),
+    jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', marginBottom: 20 }, children: '매달 들어오는 고정 수입을 등록해주세요' }),
+    ...fixedIncList.map(item => jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
+      jsxs('div', { children: [
+        jsx('p', { style: { fontSize: 13 }, children: item.name }),
+        jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [FREQ_INC.find(p => p.value === item.frequency)?.label, ' ', item.day, '일 · ', item.currency === 'EUR' ? '€' : '₩', item.amount, item.incomeType === 'voucher' ? ' · 🎫 상품권/쿠폰' : item.incomeType === 'cash' ? ' · 💵 현금' : ''] }),
+      ] }),
+      jsx('span', { style: { fontSize: 13, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: () => setFixedIncList(prev => prev.filter(p => p.id !== item.id)), children: '삭제' }),
+    ] }, item.id)),
+    jsxs('div', { style: { marginTop: 12 }, children: [
+      jsxs('div', { style: { display: 'flex', gap: 8, marginBottom: 8 }, children: [jsx('input', { ref: fiNameRef, className: 'field', placeholder: '예: 월급, 장학금, Sodexo', style: { flex: 2 } }), jsx('input', { ref: fiAmtRef, className: 'field-amt', placeholder: '0', type: 'number' })] }),
+      jsxs('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }, children: [
+        jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 4 }, children: [jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '입금일' }), jsx('input', { ref: fiDayRef, className: 'field-sm', placeholder: '일', maxLength: 2 }), jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '일' })] }),
+        ...['EUR','KRW'].map(cc => jsx(Pill, { key: cc, on: fiCur === cc, onClick: () => setFiCur(cc), style: { fontSize: 11 }, children: cc === 'EUR' ? '€ EUR' : '₩ KRW' })),
+        ...FREQ_INC.map(pp => jsx(Pill, { key: pp.value, on: fiFreq === pp.value, onClick: () => setFiFreq(pp.value), style: { fontSize: 11 }, children: pp.label })),
+      ] }),
+      // 수입 유형: 계좌 / 현금, 상품권/쿠폰
+      jsxs('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }, children: [
+        jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', width: '100%' }, children: '수입 유형' }),
+        ...([{ v: 'account', l: '🏦 계좌' }, { v: 'cash', l: '💵 현금' }, { v: 'voucher', l: '🎫 상품권/쿠폰' }]).map(opt =>
+          jsx(Pill, { key: opt.v, on: fiType === opt.v, onClick: () => { setFiType(opt.v); if (opt.v !== 'account') setFiAccId(''); }, style: { fontSize: 11 }, children: opt.l })
+        ),
+      ] }),
+      fiType === 'account' && displayAccs.filter(a => fiCur === 'EUR' ? a.currency === 'EUR' : a.currency === 'KRW').length > 0 && jsxs('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }, children: [
+        jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '입금계좌' }),
+        ...displayAccs.filter(a => fiCur === 'EUR' ? a.currency === 'EUR' : a.currency === 'KRW').map(a => jsx(Pill, { key: a.id, on: fiAccId === a.id, onClick: () => setFiAccId(a.id), style: { fontSize: 11 }, children: a.name })),
+      ] }),
+      jsxs('div', { className: 'add-row', style: { padding: 0 }, onClick: addFixedInc, children: [jsx('div', { className: 'add-circle', children: '+' }), jsx('span', { style: { fontSize: 13 }, children: '추가' })] }),
+    ] }),
+    jsx('div', { style: { height: 16 } }),
+    jsx('button', { className: 'btn', onClick: finish, children: '완료 — 시작하기' }),
+    jsx('button', { className: 'btn-ghost', onClick: finish, children: '건너뛰기' }),
+  ] }) }) });
+
+  return null;
+}
+
+function FixedExpOnboardItem({ item, accounts, onToggle, onUpdate }) {
+  const amtRef = useRef(), dayRef = useRef();
+  const [cur, setCur] = useState(item.currency || 'EUR');
+  const [freq, setFreq] = useState(item.frequency || 'monthly');
+  const [accId, setAccId] = useState(item.accountId || '');
+  const accList = accounts.filter(a => cur === 'EUR' ? a.currency === 'EUR' : a.currency === 'KRW');
+  const save = () => onUpdate(item.id, { amount: amtRef.current?.value, day: dayRef.current?.value, currency: cur, frequency: freq, accountId: accId });
+  return jsxs('div', { style: { display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
+    jsx('div', { style: { marginTop: 2, flexShrink: 0 }, onClick: onToggle, children: item.checked ? jsx('div', { className: 'check-on', children: jsx(CheckIcon,{}) }) : jsx('div', { className: 'check-off' }) }),
+    jsxs('div', { style: { flex: 1 }, children: [
+      jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }, children: [
+        jsxs('span', { style: { fontSize: 13, color: item.checked ? 'var(--black)' : 'var(--gray-400)' }, children: [item.name, ' ', item.label && jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: item.label })] }),
+        jsx('input', { ref: amtRef, className: 'field-amt', placeholder: '0', defaultValue: item.amount || '', onBlur: save }),
+      ] }),
+      jsxs('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 4 }, children: [
+        jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 4 }, children: [jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '납입일' }), jsx('input', { ref: dayRef, className: 'field-sm', placeholder: '15', maxLength: 2, defaultValue: item.day || '', onBlur: save, style: { width: 32 } }), jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '일' })] }),
+        ...['EUR','KRW'].map(cc => jsx(Pill, { key: cc, on: cur === cc, onClick: () => { setCur(cc); setAccId(''); setTimeout(save, 0); }, style: { fontSize: 11 }, children: cc })),
+        ...FREQ_EXP.map(pp => jsx(Pill, { key: pp.value, on: freq === pp.value, onClick: () => { setFreq(pp.value); setTimeout(save, 0); }, style: { fontSize: 11 }, children: pp.label })),
+      ] }),
+      accList.length > 0 && jsxs('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: [
+        jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '출금' }),
+        ...accList.map(a => jsx(Pill, { key: a.id, on: accId === a.id, onClick: () => { setAccId(a.id); setTimeout(save, 0); }, style: { fontSize: 11 }, children: a.name })),
+      ] }),
+    ] }),
+  ] });
+}
+
+// ─── HOME TAB ─────────────────────────────────────────────────────────────────
+function HomeTab({ onOpenSettings }) {
+  const today = new Date();
+  const [yr, setYr] = useState(today.getFullYear());
+  const [mo, setMo] = useState(today.getMonth());
+  const [day, setDay] = useState(today.getDate());
+  const [cur, setCur] = useState('EUR');
+  const [txns, setTxns] = useState([]);
+  const [rate, setRate] = useState(1480);
+  const [budget, setBudgetState] = useState({ eur: null, excludeCategories: ['식비지원금'] });
+
+  useEffect(() => {
+    syncFixedCosts(); setTxns(getTxns()); setRate(getRate().rate); setBudgetState(getBudget());
+    fetchLatestRate().then(r => setRate(r));
+  }, []);
+
+  const firstDay = new Date(yr, mo, 1).getDay();
+  const daysInMonth = new Date(yr, mo + 1, 0).getDate();
+  const grid = Array.from({ length: 42 }, (_, i) => { const d = i - firstDay + 1; return d >= 1 && d <= daysInMonth ? d : null; });
+  const monthTxns = txns.filter(t => { const d = new Date(t.date); return d.getFullYear() === yr && d.getMonth() === mo; });
+  const toEur = t => t.currency === 'EUR' ? t.amount : t.amount / (t.rateAtTime || rate);
+  const toDisplay = t => { const r2 = t.rateAtTime || rate; return cur === 'EUR' ? (t.currency === 'EUR' ? t.amount : t.amount / r2) : (t.currency === 'KRW' ? t.amount : t.amount * r2); };
+  const fmt = v => cur === 'EUR' ? `€ ${Math.abs(v).toFixed(2)}` : `₩ ${Math.round(Math.abs(v)).toLocaleString()}`;
+  const totalInc = monthTxns.filter(t => t.type === 'income').reduce((s, t) => s + toDisplay(t), 0);
+  const totalExp = monthTxns.filter(t => t.type === 'expense').reduce((s, t) => s + toDisplay(t), 0);
+  const excl = budget.excludeCategories || ['식비지원금'];
+  const budgetExp = monthTxns.filter(t => t.type === 'expense' && !excl.includes(t.category)).reduce((s, t) => s + toEur(t), 0);
+  const budgetLimit = budget.eur;
+  const budgetDisplay = budgetLimit ? (cur === 'EUR' ? budgetLimit : budgetLimit * rate) : null;
+  const budgetUsedDisplay = cur === 'EUR' ? budgetExp : budgetExp * rate;
+  const budgetPct = budgetLimit ? Math.min(budgetExp / budgetLimit * 100, 100) : null;
+  const overBudget = budgetLimit && budgetExp > budgetLimit;
+  const hasDot = new Set(monthTxns.map(t => new Date(t.date).getDate()));
+  const dayTxns = txns.filter(t => { const d = new Date(t.date); return d.getFullYear() === yr && d.getMonth() === mo && d.getDate() === day; });
+  const fmtEntry = t => { const s = t.type === 'expense' ? '-' : '+'; return cur === 'EUR' ? (t.currency === 'EUR' ? `${s}€ ${t.amount.toFixed(2)}` : `${s}₩ ${Math.round(t.amount).toLocaleString()}`) : (t.currency === 'KRW' ? `${s}₩ ${Math.round(t.amount).toLocaleString()}` : `${s}€ ${t.amount.toFixed(2)}`); };
+  const fmtAlt = t => { const r2 = t.rateAtTime || rate; return cur === 'EUR' ? (t.currency === 'EUR' ? `≈ ₩ ${Math.round(t.amount * r2).toLocaleString()}` : `≈ € ${(t.amount / r2).toFixed(2)}`) : (t.currency === 'KRW' ? `≈ € ${(t.amount / r2).toFixed(2)}` : `≈ ₩ ${Math.round(t.amount * r2).toLocaleString()}`); };
+  const prevM = mo === 0 ? 11 : mo - 1; const prevY = mo === 0 ? yr - 1 : yr;
+  const prevNav = () => { if (mo === 0) { setYr(y => y-1); setMo(11); } else setMo(m => m-1); setDay(1); };
+  const nextNav = () => { if (mo === 11) { setYr(y => y+1); setMo(0); } else setMo(m => m+1); setDay(1); };
+
+  return jsxs('div', { className: 'page', style: { paddingTop: 16 }, children: [
+    jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }, children: [
+      jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 8 }, children: [
+        jsx('button', { onClick: prevNav, style: { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', fontSize: 18, padding: '0 2px' }, children: '‹' }),
+        jsxs('h2', { children: [yr, '년 ', MONTHS[mo]] }),
+        jsx('button', { onClick: nextNav, style: { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', fontSize: 18, padding: '0 2px' }, children: '›' }),
+      ] }),
+      jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 10 }, children: [
+        jsxs('div', { className: 'toggle-wrap', children: [
+          jsx('button', { className: `toggle-btn ${cur === 'EUR' ? 'active' : 'inactive'}`, onClick: () => setCur('EUR'), children: 'EUR' }),
+          jsx('button', { className: `toggle-btn ${cur === 'KRW' ? 'active' : 'inactive'}`, onClick: () => setCur('KRW'), children: 'KRW' }),
+        ] }),
+        jsx('button', { onClick: onOpenSettings, style: { background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }, children: jsx(IconSettings, { size: 18, color: 'var(--gray-400)', sw: 1.5 }) }),
+      ] }),
+    ] }),
+    jsxs('div', { style: { display: 'flex', gap: 12, marginBottom: budgetPct === null ? 20 : 14 }, children: [
+      jsxs('div', { style: { flex: 1 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '수입' }), jsx('p', { style: { fontSize: 20, fontWeight: 500 }, children: fmt(totalInc) })] }),
+      jsx('div', { style: { width: '0.5px', background: 'var(--gray-200)' } }),
+      jsxs('div', { style: { flex: 1, paddingLeft: 12 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '지출' }), jsx('p', { style: { fontSize: 20, fontWeight: 500 }, children: fmt(totalExp) })] }),
+    ] }),
+    budgetPct !== null && jsxs('div', { style: { marginBottom: 20 }, children: [
+      jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', marginBottom: 5 }, children: [
+        jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: overBudget ? '예산 초과' : '예산' }),
+        jsxs('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [fmt(budgetUsedDisplay), ' / ', fmt(budgetDisplay)] }),
+      ] }),
+      jsx('div', { className: 'bar-track', style: { height: 4 }, children: jsx('div', { className: 'bar-fill', style: { width: `${budgetPct}%`, background: overBudget ? 'var(--black)' : 'var(--gray-400)', height: '100%', borderRadius: 2 } }) }),
+    ] }),
+    // Calendar
+    jsxs('div', { children: [
+      jsx('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', textAlign: 'center', marginBottom: 4 }, children: DAYS.map(d => jsx('div', { style: { fontSize: 11, color: 'var(--gray-400)', padding: '0 0 6px' }, children: d }, d)) }),
+      jsx('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', textAlign: 'center' }, children: grid.map((d, i) => {
+        const isToday = d && d === today.getDate() && mo === today.getMonth() && yr === today.getFullYear();
+        const isSel = d && d === day;
+        return jsxs('div', { onClick: () => d && setDay(d), style: { cursor: d ? 'pointer' : 'default', padding: '3px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }, children: [
+          jsx('div', { style: { width: 26, height: 26, borderRadius: '50%', background: isToday ? 'var(--black)' : isSel ? 'var(--gray-100)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: isToday ? 'white' : d ? 'var(--black)' : 'transparent', fontWeight: isToday || isSel ? 500 : 400 }, children: d || '' }),
+          jsx('div', { style: { width: 3, height: 3, borderRadius: '50%', background: hasDot.has(d) ? 'var(--gray-400)' : 'transparent' } }),
+        ] }, i);
+      }) }),
+    ] }),
+    // Day transactions
+    jsxs('div', { style: { marginTop: 14, borderTop: '0.5px solid var(--gray-100)', paddingTop: 14 }, children: [
+      jsxs('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginBottom: 10 }, children: [mo + 1, '월 ', day, '일'] }),
+      dayTxns.length === 0 ? jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)' }, children: '내역이 없어요' }) :
+      dayTxns.map(t => jsxs('div', { className: 'row', style: { paddingTop: 10, paddingBottom: 10 }, children: [
+        jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 10 }, children: [
+          jsx('span', { style: { display: 'flex', alignItems: 'center', width: 20 }, children: jsx(CategoryIcon, { cat: t.category }) }),
+          jsxs('div', { children: [jsx('p', { style: { fontSize: 13, fontWeight: 500 }, children: t.title }), jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [t.category, ' · ', t.accountName] })] }),
+        ] }),
+        jsxs('div', { style: { textAlign: 'right' }, children: [
+          // 지출 금액에 #FF7A50 색상 적용
+          jsx('p', { style: { fontSize: 13, fontWeight: 500, color: t.type === 'expense' ? 'var(--accent)' : undefined }, children: fmtEntry(t) }),
+          jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: fmtAlt(t) }),
+          t.rateAtTime && jsx('p', { style: { fontSize: 10, color: 'var(--gray-400)' }, children: `1€=₩${Math.round(t.rateAtTime).toLocaleString()}` }),
+        ] }),
+      ] }, t.id)),
+    ] }),
+    jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', Math.round(rate).toLocaleString(), ' · 오늘 기준'] }),
+  ] });
+}
+
+// ─── HISTORY TAB ──────────────────────────────────────────────────────────────
+function TxnDetail({ txn, onBack, onEdit }) {
+  const { rate } = getRate();
+  const r = txn.rateAtTime || rate;
+  return jsxs('div', { className: 'page', style: { paddingTop: 16 }, children: [
+    jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }, children: [
+      jsxs('button', { onClick: onBack, style: { background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, color: 'var(--gray-400)', fontSize: 13, padding: 0 }, children: [jsx(IconBack, { size: 16, sw: 1.5 }), ' 뒤로'] }),
+      jsx('button', { onClick: () => { if (window.confirm('이 내역을 삭제할까요?')) { deleteTxn(txn.id); onBack(); } }, style: { background: 'none', border: 'none', cursor: 'pointer', padding: 0 }, children: jsx(IconTrash, { size: 18, color: 'var(--gray-400)', sw: 1.5 }) }),
+    ] }),
+    jsxs('div', { style: { marginBottom: 28 }, children: [
+      jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }, children: [jsx('span', { style: { display: 'flex', alignItems: 'center' }, children: jsx(CategoryIcon, { cat: txn.category }) }), jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)' }, children: txn.category })] }),
+      jsx('p', { style: { fontSize: 26, fontWeight: 500, marginBottom: 4 }, children: (() => { const s = txn.type === 'expense' ? '-' : '+'; return txn.currency === 'EUR' ? `${s}€ ${txn.amount.toFixed(2)}` : `${s}₩ ${Math.round(txn.amount).toLocaleString()}`; })() }),
+      jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)' }, children: txn.currency === 'EUR' ? `≈ ₩ ${Math.round(txn.amount * r).toLocaleString()}` : `≈ € ${(txn.amount / r).toFixed(2)}` }),
+    ] }),
+    jsx('div', { style: { borderTop: '0.5px solid var(--gray-100)' }, children:
+      [['항목명', txn.title], ['날짜', txn.date], ['계좌', txn.accountName], ['결제 수단', txn.payMethod === 'card' ? '카드' : txn.payMethod === 'voucher' ? '식권/쿠폰' : '현금'], ['환율', txn.rateAtTime ? `1 EUR = ₩${Math.round(txn.rateAtTime).toLocaleString()} (${txn.rateDate || txn.date} 기준)` : '-'], txn.memo ? ['메모', txn.memo] : null].filter(Boolean)
+      .map(([label, val]) => jsxs('div', { className: 'row', children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: label }), jsx('span', { style: { fontSize: 13, textAlign: 'right', maxWidth: '60%' }, children: val })] }, label))
+    }),
+    VOUCHER_CATS.includes(txn.category) && jsxs('div', { style: { background: 'var(--gray-50)', borderRadius: 8, padding: '10px 12px', marginTop: 16 }, children: [jsx('p', { style: { fontSize: 12, color: 'var(--gray-600)', fontWeight: 500, marginBottom: 4 }, children: '식비지원금' }), jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', lineHeight: 1.7 }, children: '이 지출은 예산 소진으로 계산되지 않아요. 회사 식대 지원금처럼 보조금으로 처리돼요.' })] }),
+    jsx('div', { style: { height: 20 } }),
+    jsx('button', { className: 'btn', onClick: () => onEdit(txn), children: '수정하기' }),
+  ] });
+}
+
+function HistoryTab({ onEdit }) {
+  const [txns, setTxnsState] = useState([]);
+  const [cur, setCur] = useState('EUR');
+  const [view, setView] = useState('list');
+  const [search, setSearch] = useState('');
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [catFilter, setCatFilter] = useState([]);
+  const [accFilter, setAccFilter] = useState([]);
+  const [detail, setDetail] = useState(null);
+  const [cats] = useState(getCategories());
+  const [accs] = useState(getAccounts());
+  const { rate } = getRate();
+
+  useEffect(() => { setTxnsState(getTxns()); }, []);
+  const reload = () => setTxnsState(getTxns());
+
+  const toDisplay = t => { const r2 = t.rateAtTime || rate; return cur === 'EUR' ? (t.currency === 'EUR' ? t.amount : t.amount / r2) : (t.currency === 'KRW' ? t.amount : t.amount * r2); };
+  const fmtEntry = t => { const s = t.type === 'expense' ? '-' : '+'; return cur === 'EUR' ? (t.currency === 'EUR' ? `${s}€ ${t.amount.toFixed(2)}` : `${s}₩ ${Math.round(t.amount).toLocaleString()}`) : (t.currency === 'KRW' ? `${s}₩ ${Math.round(t.amount).toLocaleString()}` : `${s}€ ${t.amount.toFixed(2)}`); };
+  const fmtAlt = t => { const r2 = t.rateAtTime || rate; return cur === 'EUR' ? (t.currency === 'EUR' ? `≈ ₩ ${Math.round(t.amount * r2).toLocaleString()}` : `≈ € ${(t.amount / r2).toFixed(2)}`) : (t.currency === 'KRW' ? `≈ € ${(t.amount / r2).toFixed(2)}` : `≈ ₩ ${Math.round(t.amount * r2).toLocaleString()}`); };
+  const fmt = v => cur === 'EUR' ? `€ ${Math.abs(v).toFixed(2)}` : `₩ ${Math.round(Math.abs(v)).toLocaleString()}`;
+  const hasFilter = typeFilter !== 'all' || catFilter.length > 0 || accFilter.length > 0;
+
+  const filtered = txns.filter(t =>
+    !(typeFilter !== 'all' && t.type !== typeFilter) &&
+    !(catFilter.length > 0 && !catFilter.includes(t.category)) &&
+    !(accFilter.length > 0 && !accFilter.includes(t.accountId)) &&
+    !(search && !t.title?.toLowerCase().includes(search.toLowerCase()) && !t.category?.includes(search))
+  );
+
+  const grouped = filtered.reduce((acc, t) => {
+    const d = new Date(t.date), key = `${d.getFullYear()}-${String(d.getMonth()).padStart(2,'0')}`;
+    if (!acc[key]) acc[key] = { label: `${d.getFullYear()}년 ${MONTHS[d.getMonth()]}`, items: [] };
+    acc[key].items.push(t);
+    return acc;
+  }, {});
+
+  const now = new Date();
+  const thisMonthExp = txns.filter(t => { const d = new Date(t.date); return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && t.type === 'expense'; });
+  const catTotals = cats.map(c => ({ cat: c, total: thisMonthExp.filter(t => t.category === c).reduce((s, t) => s + Math.abs(toDisplay(t)), 0) })).filter(x => x.total > 0).sort((a,b) => b.total - a.total);
+  const maxCat = Math.max(...catTotals.map(x => x.total), 1);
+  const topExp = thisMonthExp.reduce((top, t) => !top || Math.abs(toDisplay(t)) > Math.abs(toDisplay(top)) ? t : top, null);
+  const thisMonthInc = txns.filter(t => { const d = new Date(t.date); return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && t.type === 'income'; });
+  const topInc = thisMonthInc.reduce((top, t) => !top || Math.abs(toDisplay(t)) > Math.abs(toDisplay(top)) ? t : top, null);
+  const prevMo = now.getMonth() === 0 ? 11 : now.getMonth() - 1, prevYr = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
+  const thisTotal = thisMonthExp.reduce((s,t) => s + Math.abs(toDisplay(t)), 0);
+  const prevTotal = txns.filter(t => { const d = new Date(t.date); return d.getFullYear() === prevYr && d.getMonth() === prevMo && t.type === 'expense'; }).reduce((s,t) => s + Math.abs(toDisplay(t)), 0);
+  const maxBar = Math.max(thisTotal, prevTotal, 1);
+
+  if (detail) return jsx('div', { className: 'app-shell', children: jsx(TxnDetail, { txn: detail, onBack: () => { setDetail(null); reload(); }, onEdit: t => { setDetail(null); onEdit(t); } }) });
+
+  return jsxs('div', { className: 'page', style: { paddingTop: 16 }, children: [
+    jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }, children: [
+      jsx('h2', { children: '내역' }),
+      view !== 'list' && jsxs('div', { className: 'toggle-wrap', children: [jsx('button', { className: `toggle-btn ${cur === 'EUR' ? 'active' : 'inactive'}`, onClick: () => setCur('EUR'), children: 'EUR' }), jsx('button', { className: `toggle-btn ${cur === 'KRW' ? 'active' : 'inactive'}`, onClick: () => setCur('KRW'), children: 'KRW' })] }),
+    ] }),
+    jsxs('div', { style: { display: 'flex', gap: 6, marginBottom: 14 }, children: [['list','목록'],['chart','차트'],['compare','비교']].map(([v,l]) => jsx('button', { key: v, className: v === view ? 'pill-on' : 'pill-off', onClick: () => setView(v), children: l })) }),
+    view === 'list' && jsxs(Fragment, { children: [
+      jsxs('div', { style: { display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }, children: [
+        jsx('input', { className: 'field', placeholder: '검색', value: search, onChange: e => setSearch(e.target.value), style: { flex: 1 } }),
+        jsxs('button', { onClick: () => setFilterOpen(o => !o), style: { background: 'none', border: 'none', cursor: 'pointer', position: 'relative', display: 'flex', alignItems: 'center' }, children: [
+          jsx(IconFilter, { size: 18, color: hasFilter ? 'var(--black)' : 'var(--gray-400)', sw: 1.5 }),
+          hasFilter && jsx('div', { style: { width: 6, height: 6, borderRadius: '50%', background: 'var(--black)', position: 'absolute', top: -2, right: -2 } }),
+        ] }),
+      ] }),
+      filterOpen && jsxs('div', { style: { background: 'var(--gray-50)', borderRadius: 12, padding: 16, marginBottom: 16 }, children: [
+        jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }, children: [jsx('p', { style: { fontSize: 13, fontWeight: 500 }, children: '필터' }), jsxs('div', { style: { display: 'flex', gap: 10, alignItems: 'center' }, children: [hasFilter && jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: () => { setTypeFilter('all'); setCatFilter([]); setAccFilter([]); }, children: '초기화' }), jsx(IconX, { size: 16, color: 'var(--gray-400)', sw: 1.5, style: { cursor: 'pointer' }, onClick: () => setFilterOpen(false) })] }) ] }),
+        jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 8 }, children: '거래 유형' }),
+        jsxs('div', { style: { display: 'flex', gap: 6, marginBottom: 16 }, children: [['all','전체'],['expense','지출'],['income','수입']].map(([v,l]) => jsx(Pill, { key: v, on: typeFilter === v, onClick: () => setTypeFilter(v), style: { fontSize: 12 }, children: l })) }),
+        jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 8 }, children: '카테고리' }),
+        jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }, children: cats.map(c => jsxs(Pill, { on: catFilter.includes(c), onClick: () => setCatFilter(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c]), style: { fontSize: 11, display: 'inline-flex', alignItems: 'center', gap: 4 }, children: [jsx('span', { style: { display: 'inline-flex', alignItems: 'center' }, children: jsx(CategoryIcon, { cat: c }) }), c] }, c)) }),
+        jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 8 }, children: '계좌' }),
+        jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: accs.map(a => jsx(Pill, { key: a.id, on: accFilter.includes(a.id), onClick: () => setAccFilter(prev => prev.includes(a.id) ? prev.filter(x => x !== a.id) : [...prev, a.id]), style: { fontSize: 11 }, children: a.name })) }),
+      ] }),
+      Object.keys(grouped).length === 0 ? jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)' }, children: '내역이 없어요' }) :
+      Object.entries(grouped).sort((a,b) => b[0].localeCompare(a[0])).map(([key, grp]) =>
+        jsxs('div', { style: { marginBottom: 24 }, children: [
+          jsx('p', { className: 'section-title', children: grp.label }),
+          jsx('div', { style: { borderTop: '0.5px solid var(--gray-100)' }, children: grp.items.map(t =>
+            jsxs('div', { className: 'row', style: { cursor: 'pointer' }, onClick: () => setDetail(t), children: [
+              jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 10 }, children: [
+                jsx('span', { style: { display: 'flex', alignItems: 'center', width: 20, flexShrink: 0 }, children: jsx(CategoryIcon, { cat: t.category }) }),
+                jsxs('div', { children: [
+                  // 항목명은 기본색
+                  jsx('p', { style: { fontSize: 13, fontWeight: 500 }, children: t.title }),
+                  jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [t.category, ' · ', t.accountName, ' · ', new Date(t.date).getMonth()+1, '/', new Date(t.date).getDate()] }),
+                ] }),
+              ] }),
+              jsxs('div', { style: { textAlign: 'right' }, children: [
+                // 지출 금액에 #FF7A50 색상 적용
+                jsx('p', { style: { fontSize: 13, fontWeight: 500, color: t.type === 'expense' ? 'var(--accent)' : undefined }, children: fmtEntry(t) }),
+                jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: fmtAlt(t) }),
+              ] }),
+            ] }, t.id)
+          ) }),
+        ] }, key)
+      ),
+    ] }),
+    view === 'chart' && jsxs(Fragment, { children: [
+      jsxs('p', { className: 'section-title', children: [now.getMonth()+1, '월 카테고리별 지출'] }),
+      catTotals.length === 0 ? jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)' }, children: '이번 달 지출 내역이 없어요' }) :
+      catTotals.map(({ cat, total }) => jsxs('div', { style: { marginBottom: 14 }, children: [
+        jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', marginBottom: 5 }, children: [
+          jsxs('span', { style: { display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13 }, children: [jsx(CategoryIcon, { cat }), cat] }),
+          jsx('span', { style: { fontSize: 13, fontWeight: 500 }, children: fmt(total) }),
+        ] }),
+        jsx('div', { className: 'bar-track', style: { height: 4 }, children: jsx('div', { className: 'bar-fill', style: { width: `${total/maxCat*100}%`, height: '100%', borderRadius: 2 } }) }),
+      ] }, cat)),
+      jsx('p', { className: 'section-title', style: { marginTop: 22 }, children: '주요 기록' }),
+      jsxs('div', { style: { display: 'grid', gap: 10 }, children: [
+        jsxs('div', { className: 'card', style: { marginBottom: 0 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '가장 높은 지출' }), jsx('p', { style: { fontSize: 14, fontWeight: 500, color: 'var(--accent)', marginBottom: 4 }, children: topExp ? topExp.title : '기록 없음' }), jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: topExp ? `${fmt(Math.abs(toDisplay(topExp)))} · ${topExp.category} · ${new Date(topExp.date).getMonth()+1}/${new Date(topExp.date).getDate()}` : '이번 달 지출 내역이 없어요' })] }),
+        jsxs('div', { className: 'card', style: { marginBottom: 0 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '가장 높은 수입' }), jsx('p', { style: { fontSize: 14, fontWeight: 500, marginBottom: 4 }, children: topInc ? topInc.title : '기록 없음' }), jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: topInc ? `${fmt(Math.abs(toDisplay(topInc)))} · ${topInc.category} · ${new Date(topInc.date).getMonth()+1}/${new Date(topInc.date).getDate()}` : '이번 달 수입 내역이 없어요' })] }),
+      ] }),
+    ] }),
+    view === 'compare' && jsxs(Fragment, { children: [
+      jsx('p', { className: 'section-title', children: '이번 달 vs 지난 달' }),
+      jsxs('div', { style: { display: 'flex', gap: 12, marginBottom: 20 }, children: [
+        jsxs('div', { style: { flex: 1 }, children: [jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: [now.getMonth()+1, '월'] }), jsx('p', { style: { fontSize: 18, fontWeight: 500 }, children: fmt(thisTotal) })] }),
+        jsxs('div', { style: { flex: 1 }, children: [jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: [prevMo+1, '월'] }), jsx('p', { style: { fontSize: 18, fontWeight: 500 }, children: fmt(prevTotal) })] }),
+      ] }),
+      jsxs('div', { style: { marginBottom: 10 }, children: [jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 5 }, children: [now.getMonth()+1, '월'] }), jsx('div', { className: 'bar-track', style: { height: 8 }, children: jsx('div', { className: 'bar-fill', style: { width: `${thisTotal/maxBar*100}%`, height: '100%', borderRadius: 4 } }) })] }),
+      jsxs('div', { children: [jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 5 }, children: [prevMo+1, '월'] }), jsx('div', { className: 'bar-track', style: { height: 8 }, children: jsx('div', { className: 'bar-fill', style: { width: `${prevTotal/maxBar*100}%`, height: '100%', borderRadius: 4, background: 'var(--gray-200)' } }) })] }),
+      jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginTop: 14 }, children: thisTotal > prevTotal ? `지난 달보다 ${fmt(thisTotal-prevTotal)} 더 지출했어요` : thisTotal < prevTotal ? `지난 달보다 ${fmt(prevTotal-thisTotal)} 덜 지출했어요` : '지난 달과 지출이 같아요' }),
+    ] }),
+  ] });
+}
+
+// ─── ADD / EDIT TRANSACTION ───────────────────────────────────────────────────
+function AddTransaction({ onDone, editing = null }) {
+  const accounts = getAccounts();
+  const [cats, setCats] = useState(getCategories());
+  const [addCat, setAddCat] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
+  const newCatRef = useRef();
+  const [mode, setMode] = useState(editing ? 'manual' : 'ai');
+  const [aiText, setAiText] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResult, setAiResult] = useState(null);
+  const [aiErr, setAiErr] = useState('');
+  const f = editing || {};
+  const [type, setType] = useState(f.type || 'expense');
+  const [amtStr, setAmtStr] = useState(f.amount ? fmtComma(String(Math.round(f.currency === 'EUR' ? f.amount * 100 / 100 : f.amount))) : '');
+  const [cur, setCur] = useState(f.currency || 'EUR');
+  const [accId, setAccId] = useState(f.accountId || accounts[0]?.id || '');
+  const [cat, setCat] = useState(f.category || '식비');
+  const [payMethod, setPayMethod] = useState(f.payMethod || 'card');
+  const titleRef = useRef(), memoRef = useRef();
+  const [date, setDate] = useState(f.date || new Date().toISOString().split('T')[0]);
+  const [rateInfo, setRateInfo] = useState(f.rateAtTime ? { rate: f.rateAtTime, date: f.rateDate } : null);
+  const [rateLoading, setRateLoading] = useState(false);
+  const [manualRate, setManualRate] = useState(false);
+  const [manualRateVal, setManualRateVal] = useState('');
+
+  useEffect(() => {
+    if (!editing) { setRateLoading(true); fetchRateForDate(date).then(r => { setRateInfo(r); setRateLoading(false); }); }
+  }, [date]);
+
+  const isVoucher = payMethod === 'voucher' || VOUCHER_CATS.includes(cat);
+  const effectiveRate = manualRate && manualRateVal ? parseFloat(manualRateVal) : rateInfo?.rate || getRate().rate;
+
+  const runAI = async () => {
+    if (!aiText.trim()) return;
+    setAiLoading(true); setAiErr('');
+    try {
+      const res = await fetch('/money/api/parse', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: aiText }) });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error);
+      const parsed = data.result;
+      setAiResult(parsed);
+      setType(parsed.type);
+      setAmtStr(fmtComma(String(Math.round(parsed.amount * (parsed.currency === 'EUR' ? 100 : 1) / (parsed.currency === 'EUR' ? 100 : 1)))));
+      setCur(parsed.currency);
+      setCat(parsed.category);
+      setPayMethod(parsed.payMethod);
+      if (titleRef.current) titleRef.current.value = parsed.title;
+      const acc = accounts.find(a => parsed.country === 'KR' ? a.country === 'KR' : a.country === 'DE');
+      if (acc) setAccId(acc.id);
+    } catch { setAiErr('파싱 실패. 직접 입력해주세요.'); }
+    setAiLoading(false);
+  };
+
+  const addNewCat = () => {
+    const nm = newCatRef.current?.value?.trim();
+    if (!nm || cats.includes(nm)) return;
+    const updated = [...cats, nm]; setCats(updated); setCategories(updated); setCat(nm);
+    if (newCatRef.current) newCatRef.current.value = ''; setAddCat(false);
+  };
+
+  const save = () => {
+    const title = titleRef.current?.value || aiText || cat;
+    const memo = memoRef.current?.value || '';
+    if (!amtStr) return;
+    if (!isVoucher && !accId) return;
+    const acc = accounts.find(a => a.id === accId);
+    const entry = { title, type, amount: parseComma(amtStr), currency: cur, accountId: isVoucher ? '' : accId, accountName: isVoucher ? '식권/쿠폰' : acc?.name || '', category: cat, payMethod, memo, date, rateAtTime: effectiveRate, rateDate: rateInfo?.date || date };
+    if (editing) updateTxn(editing.id, entry);
+    else addTxn(entry);
+    onDone();
+  };
+
+  return jsx('div', { className: 'app-shell', children: jsx('div', { className: 'page', style: { paddingTop: 16 }, children: jsxs(Fragment, { children: [
+    jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 22 }, children: [jsx('h2', { children: editing ? '내역 수정' : '내역 추가' }), jsx('span', { style: { fontSize: 13, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: onDone, children: '취소' })] }),
+    !editing && jsxs('div', { className: 'toggle-wrap', style: { marginBottom: 22 }, children: [jsx('button', { className: `toggle-btn ${mode === 'ai' ? 'active' : 'inactive'}`, style: { flex: 1 }, onClick: () => setMode('ai'), children: '자연어 입력' }), jsx('button', { className: `toggle-btn ${mode === 'manual' ? 'active' : 'inactive'}`, style: { flex: 1 }, onClick: () => setMode('manual'), children: '직접 입력' })] }),
+    mode === 'ai' && !editing && jsxs('div', { style: { marginBottom: 20 }, children: [
+      jsxs('div', { style: { display: 'flex', gap: 10, alignItems: 'flex-end' }, children: [
+        jsx('input', { className: 'field', placeholder: '예: rewe에서 오십유로 카드로', value: aiText, onChange: e => setAiText(e.target.value), onKeyDown: e => e.key === 'Enter' && !e.nativeEvent?.isComposing && runAI(), style: { flex: 1 } }),
+        jsx('button', { onClick: runAI, disabled: aiLoading, style: { background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, paddingBottom: 6, color: aiLoading ? 'var(--gray-400)' : 'var(--black)' }, children: aiLoading ? '···' : '→' }),
+      ] }),
+      aiResult && jsxs('div', { className: 'parse-result', children: [jsx('span', { className: 'parse-tag primary', children: type === 'expense' ? '지출' : '수입' }), jsxs('span', { className: 'parse-tag', children: [cur === 'EUR' ? '€' : '₩', ' ', parseComma(amtStr).toLocaleString()] }), jsx('span', { className: 'parse-tag', children: cat })] }),
+      aiErr && jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginTop: 8 }, children: aiErr }),
+      aiResult && jsx('div', { className: 'divider' }),
+    ] }),
+    (mode === 'manual' || aiResult || editing) && jsxs('div', { children: [
+      jsxs('div', { style: { marginBottom: 16 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '항목명' }), jsx('input', { ref: titleRef, className: 'field', placeholder: '예: REWE 장보기', defaultValue: f.title || '' })] }),
+      jsxs('div', { className: 'row', children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '수입 / 지출' }), jsxs('div', { style: { display: 'flex', gap: 6 }, children: [jsx(Pill, { on: type === 'income', onClick: () => setType('income'), children: '수입' }), jsx(Pill, { on: type === 'expense', onClick: () => setType('expense'), children: '지출' })] })] }),
+      jsxs('div', { className: 'row', style: { opacity: isVoucher ? 0.4 : 1 }, children: [
+        jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '계좌' }),
+        isVoucher ? jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '식권/쿠폰 — 계좌 불필요' }) :
+        jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'flex-end' }, children: accounts.map(a => jsx(Pill, { key: a.id, on: accId === a.id, onClick: () => setAccId(a.id), children: a.name })) }),
+      ] }),
+      jsxs('div', { className: 'row', children: [
+        jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '금액' }),
+        jsxs('div', { style: { display: 'flex', gap: 8, alignItems: 'center' }, children: [
+          jsx(Pill, { on: cur === 'EUR', onClick: () => setCur('EUR'), children: '€' }),
+          jsx(Pill, { on: cur === 'KRW', onClick: () => setCur('KRW'), children: '₩' }),
+          jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 2 }, children: [
+            jsx('span', { style: { fontSize: 13, color: 'var(--gray-400)' }, children: cur === 'EUR' ? '€' : '₩' }),
+            jsx(AmountInput, { value: amtStr, onChange: setAmtStr, style: { width: 90 } }),
+          ] }),
+        ] }),
+      ] }),
+      jsxs('div', { style: { padding: '10px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
+        jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' }, children: [
+          jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: rateLoading ? '환율 조회 중...' : `1 EUR = ₩${Math.round(effectiveRate).toLocaleString()} (${rateInfo?.date || date} 기준)` }),
+          jsx('button', { style: { background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: 'var(--gray-400)', textDecoration: 'underline' }, onClick: () => setManualRate(r => !r), children: manualRate ? '자동으로' : '직접 입력' }),
+        ] }),
+        manualRate && jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6, marginTop: 8 }, children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '1 EUR = ₩' }), jsx('input', { className: 'field-sm', placeholder: '1480', style: { width: 70 }, value: manualRateVal, onChange: e => setManualRateVal(e.target.value) })] }),
+      ] }),
+      jsxs('div', { className: 'row', style: { alignItems: 'flex-start', paddingTop: 14, paddingBottom: 14 }, children: [
+        jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)', paddingTop: 2 }, children: '카테고리' }),
+        jsxs('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'flex-end', maxWidth: '70%' }, children: [
+          ...cats.map(c => jsxs(Pill, { on: cat === c, onClick: () => setCat(c), style: { fontSize: 11, display: 'inline-flex', alignItems: 'center', gap: 4 }, children: [jsx('span', { style: { display: 'inline-flex', alignItems: 'center' }, children: jsx(CategoryIcon, { cat: c }) }), c] }, c)),
+          jsx(Pill, { on: false, onClick: () => setAddCat(o => !o), style: { fontSize: 11 }, children: '+ 추가' }),
+        ] }),
+      ] }),
+      VOUCHER_CATS.includes(cat) && jsxs('div', { style: { background: 'var(--gray-50)', borderRadius: 8, padding: '10px 12px', marginBottom: 12 }, children: [
+        jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' }, children: [jsx('p', { style: { fontSize: 12, color: 'var(--gray-600)', fontWeight: 500 }, children: '식비지원금이란?' }), jsx('button', { style: { background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--gray-400)' }, onClick: () => setShowDetail(d => !d), children: showDetail ? '접기' : '더 보기' })] }),
+        showDetail && jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 6, lineHeight: 1.7 }, children: '식비지원금으로 분류된 지출은 예산 소진으로 계산되지 않아요. Sodexo, 식대 지원금처럼 회사에서 지원받는 금액을 따로 추적할 수 있어요.' }),
+      ] }),
+      addCat && jsxs('div', { style: { display: 'flex', gap: 8, marginBottom: 12 }, children: [jsx('input', { ref: newCatRef, className: 'field', placeholder: '카테고리명', style: { flex: 1 }, onKeyDown: e => e.key === 'Enter' && !e.nativeEvent?.isComposing && addNewCat() }), jsx('button', { className: 'btn-sm', onClick: addNewCat, children: '추가' })] }),
+      jsxs('div', { className: 'row', children: [
+        jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '결제 수단' }),
+        jsxs('div', { style: { display: 'flex', gap: 6 }, children: [jsx(Pill, { on: payMethod === 'card', onClick: () => setPayMethod('card'), children: '카드' }), jsx(Pill, { on: payMethod === 'cash', onClick: () => setPayMethod('cash'), children: '현금' }), jsx(Pill, { on: payMethod === 'voucher', onClick: () => setPayMethod('voucher'), children: '🎫 식권' })] }),
+      ] }),
+      jsxs('div', { className: 'row', children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '날짜' }), jsx('input', { type: 'date', value: date, onChange: e => setDate(e.target.value), style: { border: 'none', background: 'transparent', fontSize: 13, color: 'var(--black)', outline: 'none', fontFamily: 'var(--font)' } })] }),
+      jsxs('div', { style: { paddingTop: 14 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '메모' }), jsx('textarea', { ref: memoRef, className: 'field', placeholder: '내용 입력 (선택)', rows: 2, defaultValue: f.memo || '' })] }),
+      jsx('div', { style: { height: 20 } }),
+      jsx('button', { className: 'btn', onClick: save, children: editing ? '수정 완료' : '저장' }),
+    ] }),
+  ] }) }) });
+}
+
+// ─── ACCOUNTS TAB ─────────────────────────────────────────────────────────────
+function AccountForm({ initial, onSubmit, onCancel, submitLabel }) {
+  const nameRef = useRef(), balRef = useRef();
+  const [country, setCountry] = useState(initial?.country || 'KR');
+  const sym = country === 'KR' ? '₩' : '€';
+  return jsxs('div', { style: { background: 'var(--gray-50)', borderRadius: 12, padding: 16, marginBottom: 12 }, children: [
+    jsxs('div', { style: { marginBottom: 12 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '통장명' }), jsx('input', { ref: nameRef, className: 'field', placeholder: country === 'KR' ? '예: 카카오뱅크' : '예: Deutsche Bank', defaultValue: initial?.name || '' })] }),
+    jsxs('div', { style: { marginBottom: 12 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '현재 잔액' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: sym }), jsx('input', { ref: balRef, className: 'field', placeholder: '0', type: 'number', defaultValue: initial?.balance || '', style: { flex: 1 } })] })] }),
+    jsxs('div', { style: { display: 'flex', gap: 6, marginBottom: 14 }, children: [jsx(Pill, { on: country === 'KR', onClick: () => setCountry('KR'), children: '🇰🇷 한국' }), jsx(Pill, { on: country === 'DE', onClick: () => setCountry('DE'), children: '🇩🇪 독일' })] }),
+    jsxs('div', { style: { display: 'flex', gap: 8 }, children: [jsx('button', { className: 'btn', style: { flex: 1, padding: 11, fontSize: 13 }, onClick: () => onSubmit({ name: nameRef.current.value, balance: balRef.current.value, country }), children: submitLabel }), jsx('button', { className: 'btn-ghost', style: { flex: 1, margin: 0, padding: 11, fontSize: 13 }, onClick: onCancel, children: '취소' })] }),
+  ] });
+}
+
+function BalanceCorrectForm({ account, onSubmit, onCancel }) {
+  const ref = useRef();
+  return jsxs('div', { style: { background: 'var(--gray-50)', borderRadius: 12, padding: 14, marginTop: 10 }, children: [
+    jsx('p', { style: { fontSize: 12, color: 'var(--gray-600)', marginBottom: 10 }, children: '실제 잔액을 입력하면 차액이 자동으로 보정 내역으로 기록돼요' }),
+    jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: account.currency === 'EUR' ? '€' : '₩' }), jsx('input', { ref, className: 'field', placeholder: '실제 잔액', type: 'number', style: { flex: 1 } })] }),
+    jsxs('div', { style: { display: 'flex', gap: 8 }, children: [jsx('button', { className: 'btn', style: { flex: 1, padding: 10, fontSize: 13 }, onClick: () => onSubmit(parseFloat(ref.current.value) || 0), children: '보정하기' }), jsx('button', { className: 'btn-ghost', style: { flex: 1, margin: 0, padding: 10, fontSize: 13 }, onClick: onCancel, children: '취소' })] }),
+  ] });
+}
+
+function AccountsTab() {
+  const [accs, setAccsState] = useState([]);
+  const [cur, setCur] = useState('EUR');
+  const [editId, setEditId] = useState(null);
+  const [addMode, setAddMode] = useState(false);
+  const [correctId, setCorrectId] = useState(null);
+  const [calYear, setCalYear] = useState(new Date().getFullYear());
+  const [calMonth, setCalMonth] = useState(new Date().getMonth());
+  const [calDay, setCalDay] = useState(null);
+  const [showCal, setShowCal] = useState(false);
+  const { rate } = getRate();
+
+  useEffect(() => { setAccsState(getAccounts()); }, []);
+  const reload = newAccs => { setAccounts(newAccs); setAccsState(newAccs); };
+
+  const toEur = a => a.currency === 'EUR' ? a.balance : a.balance / rate;
+  const toKrw = a => a.currency === 'KRW' ? a.balance : a.balance * rate;
+  const fmtBal = a => cur === 'EUR' ? `€ ${toEur(a).toFixed(2)}` : `₩ ${Math.round(toKrw(a)).toLocaleString()}`;
+  const fmtAlt = a => cur === 'EUR' ? `≈ ₩ ${Math.round(toKrw(a)).toLocaleString()}` : `≈ € ${toEur(a).toFixed(2)}`;
+  const totalEur = accs.reduce((s, a) => s + toEur(a), 0);
+  const totalKrw = accs.reduce((s, a) => s + toKrw(a), 0);
+  const maxEur = totalEur || 1;
+
+  const COLORS = ['#111111','#888780','#B4B2A9','#444441','#D3D1C7','#5F5E5A','#2C2C2A','#F1EFE8'];
+  const getColor = i => accs[i]?.color || COLORS[i % COLORS.length];
+
+  const today = new Date(), todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  const getSnapshot = (yr, mo, dy) => {
+    const dateStr = `${yr}-${String(mo+1).padStart(2,'0')}-${String(dy).padStart(2,'0')}`;
+    const isFuture = dateStr > todayStr;
+    const txns = getTxns();
+    if (isFuture) {
+      const accounts = [...getAccounts()];
+      const fixedExp = getFixedExp(), fixedInc = getFixedInc();
+      const tDate = new Date(yr, mo, dy), tDays = Math.ceil((tDate - today) / 86400000), months = tDays > 0 ? Math.ceil(tDays / 30) : 0;
+      const result = accounts.map(acc => {
+        let bal = acc.balance || 0;
+        for (let mi = 0; mi <= months; mi++) {
+          const mDate = new Date(today.getFullYear(), today.getMonth() + mi, 1), myr = mDate.getFullYear(), mmo = mDate.getMonth();
+          fixedExp.forEach(item => { if (item.accountId === acc.id && shouldApplyFixed(item, myr, mmo)) bal -= (item.currency === acc.currency ? item.amount : item.currency === 'EUR' ? item.amount * rate : item.amount / rate); });
+          fixedInc.forEach(item => { if (item.accountId === acc.id && shouldApplyFixed(item, myr, mmo)) bal += (item.currency === acc.currency ? item.amount : item.currency === 'EUR' ? item.amount * rate : item.amount / rate); });
+        }
+        return { ...acc, snapBalance: Math.max(0, bal) };
+      });
+      return { accounts: result, isFuture: true, dateStr };
+    } else {
+      const accounts = getAccounts().map(a => ({ ...a, snapBalance: 0 }));
+      txns.filter(t => t.date <= dateStr).forEach(t => { const a = accounts.find(a => a.id === t.accountId); if (a) { if (t.type === 'income') a.snapBalance += t.amount; else a.snapBalance -= t.amount; } });
+      accounts.forEach(a => { const allT = txns.filter(t => t.accountId === a.id); const delta = allT.reduce((s,t) => t.type === 'income' ? s + t.amount : s - t.amount, 0); a.snapBalance = Math.max(0, (a.balance || 0) - delta + a.snapBalance); });
+      return { accounts, isFuture: false, dateStr };
+    }
+  };
+
+  const calFirst = new Date(calYear, calMonth, 1).getDay(), calDays = new Date(calYear, calMonth + 1, 0).getDate();
+  const calGrid = Array.from({ length: 42 }, (_, i) => { const d = i - calFirst + 1; return d >= 1 && d <= calDays ? d : null; });
+  const snapshot = calDay ? getSnapshot(calYear, calMonth, calDay) : null;
+  const snapAccs = snapshot ? snapshot.accounts : accs;
+  const snapEur = snapAccs.reduce((s, a) => s + (a.currency === 'EUR' ? (snapshot ? a.snapBalance : a.balance) : (snapshot ? a.snapBalance : a.balance) / rate), 0);
+  const snapKrw = snapAccs.reduce((s, a) => s + (a.currency === 'KRW' ? (snapshot ? a.snapBalance : a.balance) : (snapshot ? a.snapBalance : a.balance) * rate), 0);
+
+  // 정렬된 계좌 목록: 독일 먼저, 한국 다음, 각 그룹 내 현금은 마지막
+  const sortedAccs = sortAccountsForDisplay(accs);
+
+  return jsxs('div', { className: 'page', style: { paddingTop: 16 }, children: [
+    jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }, children: [
+      jsx('h2', { children: '자산' }),
+      jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 8 }, children: [
+        jsx('button', { onClick: () => setShowCal(v => !v), style: { background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }, children: jsx(IconCalendar, { size: 18, color: showCal ? 'var(--black)' : 'var(--gray-400)', sw: 1.5 }) }),
+        jsxs('div', { className: 'toggle-wrap', children: [jsx('button', { className: `toggle-btn ${cur === 'EUR' ? 'active' : 'inactive'}`, onClick: () => setCur('EUR'), children: 'EUR' }), jsx('button', { className: `toggle-btn ${cur === 'KRW' ? 'active' : 'inactive'}`, onClick: () => setCur('KRW'), children: 'KRW' })] }),
+      ] }),
+    ] }),
+    showCal && jsxs('div', { style: { marginBottom: 16, background: 'var(--gray-50)', borderRadius: 12, padding: 12 }, children: [
+      jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }, children: [
+        jsx('button', { onClick: () => { if (calMonth === 0) { setCalMonth(11); setCalYear(y => y-1); } else setCalMonth(m => m-1); setCalDay(null); }, style: { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', fontSize: 16 }, children: '‹' }),
+        jsxs('span', { style: { fontSize: 13, fontWeight: 500 }, children: [calYear, '년 ', MONTHS[calMonth]] }),
+        jsx('button', { onClick: () => { if (calMonth === 11) { setCalMonth(0); setCalYear(y => y+1); } else setCalMonth(m => m+1); setCalDay(null); }, style: { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)', fontSize: 16 }, children: '›' }),
+      ] }),
+      jsx('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', textAlign: 'center', marginBottom: 4 }, children: DAYS.map(d => jsx('div', { style: { fontSize: 10, color: 'var(--gray-400)' }, children: d }, d)) }),
+      jsx('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', textAlign: 'center' }, children: calGrid.map((d, i) => {
+        const isToday = d && d === today.getDate() && calMonth === today.getMonth() && calYear === today.getFullYear();
+        const isSel = d === calDay;
+        const isFut = d && `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}` > todayStr;
+        return jsx('div', { key: i, onClick: () => d && !isFut && setCalDay(d === calDay ? null : d), style: { cursor: d && !isFut ? 'pointer' : 'default', padding: '3px 0', opacity: isFut ? 0.45 : 1 }, children: jsx('div', { style: { width: 24, height: 24, borderRadius: '50%', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, background: isSel ? 'var(--black)' : isToday ? 'var(--gray-200)' : 'transparent', color: isSel ? 'white' : isFut ? 'var(--gray-400)' : d ? 'var(--black)' : 'transparent', fontWeight: isSel || isToday ? 500 : 400 }, children: d || '' }) });
+      }) }),
+    ] }),
+    snapshot && jsxs('div', { style: { marginBottom: 16, background: 'var(--gray-50)', borderRadius: 12, padding: 12 }, children: [
+      jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }, children: [
+        jsxs('p', { style: { fontSize: 13, fontWeight: 500 }, children: [calMonth+1, '월 ', calDay, '일 기준 자산', snapshot.isFuture ? ' (예상)' : ''] }),
+        jsx('button', { onClick: () => setCalDay(null), style: { background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--gray-400)' }, children: '✕' }),
+      ] }),
+      snapshot.isFuture && jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 8 }, children: '고정 수입/지출 기반 예상치입니다' }),
+      snapshot.accounts.map(a => {
+        const bal = snapshot.isFuture ? a.snapBalance : a.snapBalance;
+        const disp = cur === 'EUR' ? (a.currency === 'EUR' ? bal : bal / rate) : (a.currency === 'KRW' ? bal : bal * rate);
+        return jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '0.5px solid var(--gray-200)' }, children: [jsx('span', { style: { fontSize: 12 }, children: a.name }), jsx('span', { style: { fontSize: 12, fontWeight: 500 }, children: cur === 'EUR' ? `€ ${disp.toFixed(2)}` : `₩ ${Math.round(disp).toLocaleString()}` })] }, a.id);
+      }),
+    ] }),
+    jsxs('div', { style: { marginBottom: 16 }, children: [
+      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '총 자산' }),
+      jsx('p', { style: { fontSize: 28, fontWeight: 500 }, children: cur === 'EUR' ? `€ ${snapEur.toFixed(2)}` : `₩ ${Math.round(snapKrw).toLocaleString()}` }),
+      jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginTop: 4 }, children: cur === 'EUR' ? `≈ ₩ ${Math.round(snapKrw).toLocaleString()}` : `≈ € ${snapEur.toFixed(2)}` }),
+    ] }),
+    accs.length > 0 && jsxs('div', { style: { marginBottom: 20 }, children: [
+      jsx('div', { style: { display: 'flex', height: 6, borderRadius: 3, overflow: 'hidden', gap: 1 }, children: accs.map((a, i) => jsx('div', { style: { width: `${toEur(a)/maxEur*100}%`, background: getColor(i) } }, a.id)) }),
+      jsx('div', { style: { display: 'flex', gap: 12, marginTop: 8, flexWrap: 'wrap' }, children: accs.map((a, i) => jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 4 }, children: [jsx('div', { style: { width: 8, height: 8, borderRadius: 2, background: getColor(i) } }), jsxs('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [a.name, ' ', (toEur(a)/maxEur*100).toFixed(0), '%'] })] }, a.id)) }),
+    ] }),
+    jsx('div', { className: 'divider' }),
+    jsx('p', { className: 'section-title', children: '계좌별 잔액' }),
+    addMode && jsx(AccountForm, { onSubmit: ({ name, balance, country }) => { if (!name.trim()) return; const idx = accs.length; const newAcc = { id: Date.now().toString(), name: name.trim(), country, currency: country === 'KR' ? 'KRW' : 'EUR', balance: parseFloat(balance) || 0, color: COLORS[idx % COLORS.length] }; reload([...accs, newAcc]); setAddMode(false); }, onCancel: () => setAddMode(false), submitLabel: '추가' }),
+    jsx('div', { style: { borderTop: '0.5px solid var(--gray-100)' }, children: sortedAccs.length === 0 ? jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', padding: '16px 0' }, children: '등록된 계좌가 없어요' }) :
+      sortedAccs.map((a, i) => jsx('div', { key: a.id, children:
+        editId === a.id ? jsx('div', { style: { padding: '12px 0' }, children: jsx(AccountForm, { initial: a, onSubmit: ({ name, balance, country }) => { if (!name.trim()) return; reload(accs.map(x => x.id === a.id ? { ...x, name: name.trim(), country, currency: country === 'KR' ? 'KRW' : 'EUR', balance: parseFloat(balance) || 0 } : x)); setEditId(null); }, onCancel: () => setEditId(null), submitLabel: '수정 완료' }) }) :
+        jsxs('div', { style: { padding: '14px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
+          jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 3 }, children: [jsx('p', { style: { fontSize: 13, fontWeight: 500 }, children: a.name }), jsx('p', { style: { fontSize: 16, fontWeight: 500 }, children: fmtBal(a) })] }),
+          jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', marginBottom: 8 }, children: [jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [a.country === 'KR' ? '🇰🇷 한국' : '🇩🇪 독일', ' · ', a.currency] }), jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: fmtAlt(a) })] }),
+          jsxs('div', { style: { display: 'flex', gap: 12 }, children: [
+            jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: () => { setEditId(a.id); setAddMode(false); setCorrectId(null); }, children: '수정' }),
+            jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: () => { if (window.confirm('계좌를 삭제할까요?')) reload(accs.filter(x => x.id !== a.id)); }, children: '삭제' }),
+            jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: () => { setCorrectId(correctId === a.id ? null : a.id); setEditId(null); }, children: '잔액 보정' }),
+          ] }),
+          correctId === a.id && jsx(BalanceCorrectForm, { account: a, onSubmit: v => { correctBalance(a.id, v); setAccsState(getAccounts()); setCorrectId(null); }, onCancel: () => setCorrectId(null) }),
+        ] })
+      } ))
+    }),
+    jsxs('div', { className: 'add-row', onClick: () => { setAddMode(o => !o); setEditId(null); setCorrectId(null); }, children: [jsx('div', { className: 'add-circle', children: '+' }), jsx('span', { style: { fontSize: 13 }, children: '계좌 추가' })] }),
+    jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', Math.round(rate).toLocaleString(), ' · ECB 기준'] }),
+  ] });
+}
+
+// ─── FIXED COSTS TAB ──────────────────────────────────────────────────────────
+function FixedItemForm({ initial, onSubmit, onCancel, submitLabel, isIncome = false }) {
+  const nameRef = useRef(), amtRef = useRef(), labelRef = useRef(), dayRef = useRef();
+  const [cur, setCur] = useState(initial?.currency || 'EUR');
+  const [freq, setFreq] = useState(initial?.frequency || 'monthly');
+  const [accId, setAccId] = useState(initial?.accountId || '');
+  const [incomeType, setIncomeType] = useState(initial?.incomeType || 'account');
+  const accounts = getAccounts().filter(a => cur === 'EUR' ? a.currency === 'EUR' : a.currency === 'KRW');
+  const freqOpts = isIncome ? FREQ_INC : FREQ_EXP;
+  const needsAccount = !isIncome || incomeType === 'account';
+  return jsxs('div', { style: { background: 'var(--gray-50)', borderRadius: 12, padding: 14, marginBottom: 12 }, children: [
+    jsxs('div', { style: { display: 'flex', gap: 8, marginBottom: 10 }, children: [
+      jsxs('div', { style: { flex: 2 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '항목명' }), jsx('input', { ref: nameRef, className: 'field', placeholder: isIncome ? '예: 월급, 장학금' : '예: Netflix', defaultValue: initial?.name || '' })] }),
+      jsxs('div', { style: { flex: 1 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '금액' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 2 }, children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: cur === 'EUR' ? '€' : '₩' }), jsx('input', { ref: amtRef, className: 'field-amt', placeholder: '0', type: 'number', defaultValue: initial?.amount || '', style: { width: '100%' } })] })] }),
+    ] }),
+    jsxs('div', { style: { display: 'flex', gap: 6, marginBottom: 10 }, children: [jsx(Pill, { on: cur === 'EUR', onClick: () => { setCur('EUR'); setAccId(''); }, style: { fontSize: 11 }, children: '€ EUR' }), jsx(Pill, { on: cur === 'KRW', onClick: () => { setCur('KRW'); setAccId(''); }, style: { fontSize: 11 }, children: '₩ KRW' })] }),
+    jsxs('div', { style: { display: 'flex', gap: 8, marginBottom: 10 }, children: [
+      !isIncome && jsxs('div', { style: { flex: 2 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '한국어 설명 (선택)' }), jsx('input', { ref: labelRef, className: 'field', placeholder: '예: 스트리밍', defaultValue: initial?.label || '' })] }),
+      jsxs('div', { style: { flex: 1 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: isIncome ? '입금일' : '납입일' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 4, paddingTop: 6 }, children: [jsx('input', { ref: dayRef, className: 'field-sm', placeholder: '15', maxLength: 2, defaultValue: initial?.day || '', style: { width: 32 } }), jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '일' })] })] }),
+    ] }),
+    jsxs('div', { style: { marginBottom: 10 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: isIncome ? '수익 주기' : '납부 주기' }), jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: freqOpts.map(pp => jsx(Pill, { key: pp.value, on: freq === pp.value, onClick: () => setFreq(pp.value), style: { fontSize: 11 }, children: pp.label })) })] }),
+    // 수입 유형: 계좌 / 현금 / 상품권·쿠폰
+    isIncome && jsxs('div', { style: { marginBottom: 10 }, children: [
+      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '수입 유형' }),
+      jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: [{ v: 'account', l: '🏦 계좌' }, { v: 'cash', l: '💵 현금' }, { v: 'voucher', l: '🎫 상품권/쿠폰' }].map(opt => jsx(Pill, { key: opt.v, on: incomeType === opt.v, onClick: () => { setIncomeType(opt.v); if (opt.v !== 'account') setAccId(''); }, style: { fontSize: 11 }, children: opt.l })) }),
+    ] }),
+    needsAccount && accounts.length > 0 && jsxs('div', { style: { marginBottom: 12 }, children: [
+      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: isIncome ? '입금 계좌' : '출금 계좌' }),
+      jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: accounts.map(a => jsx(Pill, { key: a.id, on: accId === a.id, onClick: () => setAccId(a.id), style: { fontSize: 11 }, children: a.name })) }),
+    ] }),
+    jsxs('div', { style: { display: 'flex', gap: 8 }, children: [
+      jsx('button', { className: 'btn', style: { flex: 1, padding: 11, fontSize: 13 }, onClick: () => onSubmit({ name: nameRef.current.value, label: labelRef?.current?.value || '', amount: amtRef.current.value, day: dayRef.current.value, currency: cur, frequency: freq, accountId: needsAccount ? accId : '', incomeType: isIncome ? incomeType : 'expense' }), children: submitLabel }),
+      jsx('button', { className: 'btn-ghost', style: { flex: 1, margin: 0, padding: 11, fontSize: 13 }, onClick: onCancel, children: '취소' }),
+    ] }),
+  ] });
+}
+
+function FixedTab() {
+  const [expenses, setExpenses] = useState([]);
+  const [incomes, setIncomes] = useState([]);
+  const [cur, setCur] = useState('EUR');
+  const [addExpOpen, setAddExpOpen] = useState(false);
+  const [addIncOpen, setAddIncOpen] = useState(false);
+  const [editExpId, setEditExpId] = useState(null);
+  const [editIncId, setEditIncId] = useState(null);
+  // 내역 선택 시 펼침 (수정/삭제 버튼)
+  const [expandedExpId, setExpandedExpId] = useState(null);
+  const [expandedIncId, setExpandedIncId] = useState(null);
+  const { rate } = getRate();
+
+  useEffect(() => { setExpenses(getFixedExp()); setIncomes(getFixedInc()); }, []);
+
+  const saveExp = items => { setFixedExp(items); setExpenses(items); ls.set(K.SYNCED, {}); syncFixedCosts(); };
+  const saveInc = items => { setFixedInc(items); setIncomes(items); ls.set(K.SYNCED, {}); syncFixedCosts(); };
+
+  const today = new Date().getDate();
+  const toDisplay = item => { const v = item.currency === 'EUR' ? (cur === 'EUR' ? item.amount : item.amount * rate) : (cur === 'KRW' ? item.amount : item.amount / rate); return v; };
+  const fmt = v => cur === 'EUR' ? `€ ${v.toFixed(2)}` : `₩ ${Math.round(v).toLocaleString()}`;
+  const fmtItem = item => fmt(toDisplay(item)) + (item.currency === 'EUR' ? (cur === 'KRW' ? ` (€ ${item.amount})` : '') : (cur === 'EUR' ? ` (₩ ${Math.round(item.amount).toLocaleString()})` : ''));
+  const dday = d => { const diff = d - today; return diff === 0 ? 'D-day' : diff > 0 ? `D-${diff}` : `D-${new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate() - today + d}`; };
+  const freqLabel = (f, isInc) => (isInc ? FREQ_INC : FREQ_EXP).find(x => x.value === f)?.label || '매월';
+  const sortByDay = items => [...items].sort((a,b) => (a.day-today>=0?a.day-today:31+a.day-today)-(b.day-today>=0?b.day-today:31+b.day-today));
+  const accName = id => getAccounts().find(a => a.id === id)?.name || '';
+  const makeId = () => Date.now().toString() + Math.random().toString(36).slice(2);
+
+  const totalExp = expenses.reduce((s, i) => s + toDisplay(i), 0);
+  const totalInc = incomes.reduce((s, i) => s + toDisplay(i), 0);
+  const maxBar = Math.max(...expenses.map(i => toDisplay(i)), 1);
+
+  // 수정/삭제 펼침 아이템 컴포넌트
+  const FixedItem = ({ item, isIncome, expandedId, setExpandedId, onEdit, onDelete }) => {
+    const expanded = expandedId === item.id;
+    return jsxs('div', { children: [
+      jsxs('div', { className: 'row', style: { cursor: 'pointer' }, onClick: () => setExpandedId(expanded ? null : item.id), children: [
+        jsxs('div', { children: [
+          jsxs('p', { style: { fontSize: 13, fontWeight: 500 }, children: [item.name, ' ', item.label && jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)', fontWeight: 400 }, children: item.label })] }),
+          jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }, children: [freqLabel(item.frequency, isIncome), ' ', item.day, '일', item.accountId ? ` · ${accName(item.accountId)}` : item.incomeType === 'voucher' ? ' · 🎫 상품권/쿠폰' : item.incomeType === 'cash' ? ' · 💵 현금' : ''] }),
+        ] }),
+        jsxs('div', { style: { textAlign: 'right' }, children: [
+          jsx('p', { style: { fontSize: 13, fontWeight: 500 }, children: fmtItem(item) }),
+          jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: dday(item.day) }),
+        ] }),
+      ] }),
+      expanded && jsxs('div', { className: 'expand-enter', style: { display: 'flex', gap: 8, padding: '8px 0 14px', justifyContent: 'flex-end' }, children: [
+        jsx('button', { className: 'btn-sm-outline', onClick: () => { setExpandedId(null); onEdit(); }, children: '수정하기' }),
+        jsx('button', { className: 'btn-sm', style: { background: 'var(--gray-600)' }, onClick: () => { if (window.confirm('삭제할까요?')) { onDelete(); setExpandedId(null); } }, children: '삭제하기' }),
+      ] }),
+    ] });
+  };
+
+  return jsxs('div', { className: 'page', style: { paddingTop: 16 }, children: [
+    jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }, children: [
+      jsx('h2', { children: '고정 내역' }),
+      jsxs('div', { className: 'toggle-wrap', children: [jsx('button', { className: `toggle-btn ${cur === 'EUR' ? 'active' : 'inactive'}`, onClick: () => setCur('EUR'), children: 'EUR' }), jsx('button', { className: `toggle-btn ${cur === 'KRW' ? 'active' : 'inactive'}`, onClick: () => setCur('KRW'), children: 'KRW' })] }),
+    ] }),
+    jsxs('div', { style: { display: 'flex', gap: 12, marginBottom: 16 }, children: [
+      jsxs('div', { style: { flex: 1 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '고정 수입' }), jsx('p', { style: { fontSize: 18, fontWeight: 500 }, children: fmt(totalInc) })] }),
+      jsx('div', { style: { width: '0.5px', background: 'var(--gray-200)' } }),
+      jsxs('div', { style: { flex: 1, paddingLeft: 12 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '고정 지출' }), jsx('p', { style: { fontSize: 18, fontWeight: 500 }, children: fmt(totalExp) })] }),
+    ] }),
+    jsxs('div', { style: { paddingBottom: 16, borderBottom: '0.5px solid var(--gray-100)', marginBottom: 20 }, children: [
+      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '예상 잔여금' }),
+      jsxs('p', { style: { fontSize: 22, fontWeight: 500 }, children: [totalInc - totalExp >= 0 ? '+' : '', fmt(totalInc - totalExp)] }),
+    ] }),
+    jsx('p', { className: 'section-title', children: '고정 수입' }),
+    addIncOpen && jsx(FixedItemForm, { isIncome: true, onSubmit: v => { if (!v.name.trim()) return; saveInc([...incomes, { id: makeId(), name: v.name.trim(), label: '', amount: parseFloat(v.amount) || 0, day: parseInt(v.day) || 1, currency: v.currency, frequency: v.frequency, accountId: v.accountId, incomeType: v.incomeType }]); setAddIncOpen(false); }, onCancel: () => setAddIncOpen(false), submitLabel: '추가' }),
+    jsx('div', { style: { borderTop: '0.5px solid var(--gray-100)', marginBottom: 8 }, children: incomes.length === 0 ? jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', padding: '12px 0' }, children: '등록된 고정 수입이 없어요' }) :
+      sortByDay(incomes).map(item => editIncId === item.id ?
+        jsx('div', { key: item.id, style: { padding: '12px 0' }, children: jsx(FixedItemForm, { isIncome: true, initial: item, onSubmit: v => { saveInc(incomes.map(x => x.id === item.id ? { ...x, name: v.name.trim(), amount: parseFloat(v.amount)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, accountId: v.accountId, incomeType: v.incomeType } : x)); setEditIncId(null); }, onCancel: () => setEditIncId(null), submitLabel: '수정 완료' }) }) :
+        jsx(FixedItem, { key: item.id, item, isIncome: true, expandedId: expandedIncId, setExpandedId: setExpandedIncId, onEdit: () => { setEditIncId(item.id); setAddIncOpen(false); }, onDelete: () => saveInc(incomes.filter(x => x.id !== item.id)) })
+      )
+    }),
+    jsxs('div', { className: 'add-row', onClick: () => { setAddIncOpen(o => !o); setEditIncId(null); }, children: [jsx('div', { className: 'add-circle', children: '+' }), jsx('span', { style: { fontSize: 13 }, children: '고정 수입 추가' })] }),
+    jsx('div', { className: 'divider' }),
+    jsx('p', { className: 'section-title', children: '고정 지출' }),
+    addExpOpen && jsx(FixedItemForm, { onSubmit: v => { if (!v.name.trim()) return; saveExp([...expenses, { id: makeId(), name: v.name.trim(), label: v.label || '', amount: parseFloat(v.amount)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, accountId: v.accountId }]); setAddExpOpen(false); }, onCancel: () => setAddExpOpen(false), submitLabel: '추가' }),
+    jsx('div', { style: { borderTop: '0.5px solid var(--gray-100)', marginBottom: 8 }, children: expenses.length === 0 ? jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', padding: '12px 0' }, children: '등록된 고정 지출이 없어요' }) :
+      sortByDay(expenses).map(item => editExpId === item.id ?
+        jsx('div', { key: item.id, style: { padding: '12px 0' }, children: jsx(FixedItemForm, { initial: item, onSubmit: v => { saveExp(expenses.map(x => x.id === item.id ? { ...x, name: v.name.trim(), label: v.label||'', amount: parseFloat(v.amount)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, accountId: v.accountId } : x)); setEditExpId(null); }, onCancel: () => setEditExpId(null), submitLabel: '수정 완료' }) }) :
+        jsx(FixedItem, { key: item.id, item, isIncome: false, expandedId: expandedExpId, setExpandedId: setExpandedExpId, onEdit: () => { setEditExpId(item.id); setAddExpOpen(false); }, onDelete: () => saveExp(expenses.filter(x => x.id !== item.id)) })
+      )
+    }),
+    jsxs('div', { className: 'add-row', onClick: () => { setAddExpOpen(o => !o); setEditExpId(null); }, children: [jsx('div', { className: 'add-circle', children: '+' }), jsx('span', { style: { fontSize: 13 }, children: '고정 지출 추가' })] }),
+    expenses.length > 0 && jsxs(Fragment, { children: [
+      jsx('div', { className: 'divider' }),
+      jsx('p', { className: 'section-title', children: '지출 비중' }),
+      sortByDay(expenses).map(item => jsxs('div', { style: { marginBottom: 12 }, children: [
+        jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', marginBottom: 4 }, children: [jsx('span', { style: { fontSize: 13 }, children: item.name }), jsxs('span', { style: { fontSize: 13, fontWeight: 500 }, children: [fmt(toDisplay(item)), ' · ', (toDisplay(item)/totalExp*100).toFixed(0), '%'] })] }),
+        jsx('div', { className: 'bar-track', style: { height: 4 }, children: jsx('div', { className: 'bar-fill', style: { width: `${toDisplay(item)/maxBar*100}%`, height: '100%', borderRadius: 2 } }) }),
+      ] }, item.id)),
+    ] }),
+  ] });
+}
+
+// ─── SETTINGS ─────────────────────────────────────────────────────────────────
+function SettingsPage({ onClose }) {
+  const budgetRef = useRef();
+  const b = getBudget();
+  const cats = getCategories();
+  const [excluded, setExcluded] = useState(b.excludeCategories || ['식비지원금']);
+  const toggle = c => setExcluded(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c]);
+  return jsx('div', { className: 'app-shell', children: jsx('div', { className: 'page', style: { paddingTop: 16 }, children: jsxs(Fragment, { children: [
+    jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }, children: [jsx('h2', { children: '예산 설정' }), jsx('button', { onClick: onClose, style: { background: 'none', border: 'none', cursor: 'pointer', padding: 0 }, children: jsx(IconX, { size: 20, color: 'var(--gray-400)', sw: 1.5 }) })] }),
+    jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', marginBottom: 24, lineHeight: 1.7 }, children: '월 예산을 설정하면 홈 화면에 이번 달 지출 진행률이 표시돼요. KRW 모드에서도 동일한 예산을 환율로 자동 환산해서 보여줘요.' }),
+    jsxs('div', { style: { marginBottom: 28 }, children: [
+      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '월 예산 (EUR 기준)' }),
+      jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: '€' }), jsx('input', { ref: budgetRef, className: 'field', type: 'number', placeholder: '설정 안 함', defaultValue: b.eur || '', style: { flex: 1 } })] }),
+      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 6 }, children: 'KRW 모드에서는 현재 환율로 자동 환산돼요' }),
+    ] }),
+    jsxs('div', { style: { marginBottom: 28 }, children: [
+      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 10 }, children: '예산에서 제외할 카테고리' }),
+      jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginBottom: 12, lineHeight: 1.6 }, children: '체크된 카테고리의 지출은 예산 소진으로 계산되지 않아요' }),
+      jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: cats.map(c => jsxs(Pill, { on: excluded.includes(c), onClick: () => toggle(c), style: { fontSize: 11, display: 'inline-flex', alignItems: 'center', gap: 4 }, children: [jsx('span', { style: { display: 'inline-flex', alignItems: 'center' }, children: jsx(CategoryIcon, { cat: c }) }), c] }, c)) }),
+    ] }),
+    jsx('button', { className: 'btn', onClick: () => { setBudget({ eur: parseFloat(budgetRef.current.value) || null, excludeCategories: excluded }); onClose(); }, children: '저장' }),
+    jsx('div', { className: 'divider', style: { margin: '32px 0 16px' } }),
+    jsx('p', { className: 'section-title', children: '데이터' }),
+    jsx('button', { className: 'btn-ghost', style: { marginTop: 0 }, onClick: () => { if (window.confirm('모든 데이터를 초기화할까요? 이 작업은 되돌릴 수 없어요.')) { localStorage.clear(); window.location.reload(); } }, children: '앱 초기화 (전체 데이터 삭제)' }),
+  ] }) }) });
+}
+
+// ─── BOTTOM NAV ───────────────────────────────────────────────────────────────
+function BottomNav({ active, onChange }) {
+  const items = [
+    { id: 'home', Icon: IconHome, label: '홈' },
+    { id: 'history', Icon: IconList, label: '내역' },
+    { id: 'add', Icon: null, label: '' },
+    { id: 'accounts', Icon: IconWallet, label: '자산' },
+    { id: 'fixed', Icon: IconFixed, label: '고정비' },
+  ];
+  return jsx('nav', { className: 'bottom-nav', children: items.map(item => {
+    if (item.id === 'add') return jsx('div', { key: 'add', className: 'nav-plus', onClick: () => onChange('add'), children: jsx(IconPlus, { size: 20, color: 'white' }) });
+    const on = active === item.id;
+    return jsxs('div', { key: item.id, className: 'nav-item', onClick: () => onChange(item.id), children: [jsx(item.Icon, { size: 20, color: on ? 'var(--black)' : 'var(--gray-400)', sw: on ? 2 : 1.5 }), jsx('span', { className: `nav-label ${on ? 'active' : ''}`, children: item.label })] });
+  }) });
+}
+
+// ─── ROOT APP ─────────────────────────────────────────────────────────────────
+function App() {
+  const [onboarded, setOnboarded] = useState(null);
+  const [tab, setTab] = useState('home');
+  const [prevTab, setPrevTab] = useState('home');
+  const [editing, setEditing] = useState(null);
+  const [settings, setSettings] = useState(false);
+
+  useEffect(() => { setOnboarded(isOnboarded()); }, []);
+
+  if (onboarded === null) return null;
+  if (!onboarded) return jsx(Onboarding, { onDone: () => setOnboarded(true) });
+  if (settings) return jsx(SettingsPage, { onClose: () => setSettings(false) });
+  if (tab === 'add') return jsx('div', { className: 'app-shell', children: jsx(AddTransaction, { editing, onDone: () => { setEditing(null); setTab(prevTab); } }) });
+
+  return jsxs('div', { className: 'app-shell', children: [
+    tab === 'home'     && jsx(HomeTab,     { onOpenSettings: () => setSettings(true) }),
+    tab === 'history'  && jsx(HistoryTab,  { onEdit: t => { setEditing(t); setPrevTab(tab); setTab('add'); } }),
+    tab === 'accounts' && jsx(AccountsTab, {}),
+    tab === 'fixed'    && jsx(FixedTab,    {}),
+    jsx(BottomNav, { active: tab, onChange: t => { if (t === 'add') { setEditing(null); setPrevTab(tab); setTab('add'); } else setTab(t); } }),
+  ] });
+}
+
+createRoot(document.getElementById('root')).render(jsx(StrictMode, { children: jsx(App, {}) }));
+
+// ─── Service Worker 등록 ──────────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/money/service-worker.js', { scope: '/money/' })
+      .then(reg => console.log('[SW] 등록 완료:', reg.scope))
+      .catch(err => console.warn('[SW] 등록 실패:', err));
+  });
+}
+</script>
+</body>
+</html>
