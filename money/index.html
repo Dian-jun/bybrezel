@@ -766,6 +766,7 @@ function HomeTab({ onOpenSettings }) {
   const prevNav = () => { if (mo === 0) { setYr(y => y-1); setMo(11); } else setMo(m => m-1); setDay(1); };
   const nextNav = () => { if (mo === 11) { setYr(y => y+1); setMo(0); } else setMo(m => m+1); setDay(1); };
 
+  if (detail) return jsx('div', { className: 'app-shell', children: jsx(TxnDetail, { txn: detail, onBack: () => { setDetail(null); setTxns(getTxns()); }, onEdit: t => { setDetail(null); } }) });
   return jsxs('div', { className: 'page', style: { paddingTop: 16 }, children: [
     jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }, children: [
       jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 8 }, children: [
@@ -830,7 +831,6 @@ function HomeTab({ onOpenSettings }) {
 function TxnDetail({ txn, onBack, onEdit }) {
   const { rate } = getRate();
   const r = txn.rateAtTime || rate;
-  if (detail) return jsx('div', { className: 'app-shell', children: jsx(TxnDetail, { txn: detail, onBack: () => { setDetail(null); setTxns(getTxns()); }, onEdit: t => { setDetail(null); } }) });
   return jsxs('div', { className: 'page', style: { paddingTop: 16 }, children: [
     jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }, children: [
       jsxs('button', { onClick: onBack, style: { background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, color: 'var(--gray-400)', fontSize: 13, padding: 0 }, children: [jsx(IconBack, { size: 16, sw: 1.5 }), ' 뒤로'] }),
