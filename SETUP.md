@@ -83,4 +83,4 @@ Production과 Preview 둘 다 설정해주세요.
 파일을 덮어쓰지 말고, 기존 내용 아래에 이 줄만 추가:
 ```
 /money/*  /money/index.html  200
-```
+``` 
