@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>개인정보처리방침 · Datenschutzerklärung — Brezel Money</title>
+<style>
+@import "https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap";
+*,::before,::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#111;--white:#fff;
+  --gray-50:#f8f8f8;--gray-100:#f0f0f0;--gray-400:#999;--gray-600:#555;
+  --accent:#F5C842;
+  --font:"DM Sans",sans-serif;
+  --radius:12px;
+}
+html,body{background:var(--white);font-family:var(--font);color:var(--black);-webkit-font-smoothing:antialiased;line-height:1.7}
+.wrap{max-width:680px;margin:0 auto;padding:48px 24px 80px}
+
+/* header */
+.header{display:flex;align-items:center;gap:10px;margin-bottom:48px}
+.logo{width:36px;height:36px;border-radius:50%;background:#111;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo svg{width:22px;height:22px}
+.brand{font-size:15px;font-weight:600;letter-spacing:-0.3px}
+.brand span{font-weight:300}
+.back{margin-left:auto;font-size:13px;color:var(--gray-400);text-decoration:none;border-bottom:1px solid var(--gray-100);padding-bottom:2px}
+.back:hover{color:var(--black)}
+
+/* lang toggle */
+.lang-toggle{display:flex;gap:8px;margin-bottom:40px}
+.lang-btn{padding:6px 16px;border-radius:20px;border:1px solid var(--gray-100);background:transparent;font-family:var(--font);font-size:12px;cursor:pointer;color:var(--gray-400);transition:all .15s}
+.lang-btn.active{background:var(--black);color:var(--white);border-color:var(--black)}
+
+/* content */
+.content{display:none}
+.content.active{display:block}
+.updated{font-size:11px;color:var(--gray-400);letter-spacing:0.5px;margin-bottom:32px;text-transform:uppercase}
+h1{font-size:26px;font-weight:500;line-height:1.2;margin-bottom:8px}
+.subtitle{font-size:15px;color:var(--gray-600);margin-bottom:40px}
+.section{margin-bottom:36px}
+h2{font-size:15px;font-weight:500;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--gray-100)}
+p{font-size:14px;color:var(--gray-600);margin-bottom:10px}
+ul{padding-left:20px;margin-bottom:10px}
+li{font-size:14px;color:var(--gray-600);margin-bottom:6px}
+.highlight{background:var(--gray-50);border-radius:var(--radius);padding:16px 20px;margin-bottom:10px}
+.highlight p{margin:0;font-size:13px}
+.tag{display:inline-block;background:#f0f0f0;border-radius:6px;padding:2px 8px;font-size:12px;color:var(--gray-600);margin:2px}
+.contact-box{border:1px solid var(--gray-100);border-radius:var(--radius);padding:20px;margin-top:8px}
+.contact-box p{margin-bottom:4px}
+footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--gray-100);font-size:12px;color:var(--gray-400);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+footer a{color:var(--gray-400);text-decoration:none}
+footer a:hover{color:var(--black)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- header -->
+  <div class="header">
+    <div class="logo">
+      <svg viewBox="0 0 100 100" fill="none">
+        <path d="M30 52 C18 40 18 28 28 24 C38 20 46 28 46 38 C46 48 38 54 30 52Z" stroke="#F5C842" stroke-width="7" stroke-linecap="round"/>
+        <path d="M70 52 C82 40 82 28 72 24 C62 20 54 28 54 38 C54 48 62 54 70 52Z" stroke="#F5C842" stroke-width="7" stroke-linecap="round"/>
+        <path d="M30 52 C34 62 50 68 50 68 C50 68 66 62 70 52" stroke="#F5C842" stroke-width="7" stroke-linecap="round"/>
+        <path d="M40 56 C44 54 50 56 56 54" stroke="#F5C842" stroke-width="7" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="brand">Brezel <span>Money</span></div>
+    <a class="back" href="/money/">← 앱으로 돌아가기</a>
+  </div>
+
+  <!-- lang toggle -->
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('ko')">한국어</button>
+    <button class="lang-btn" onclick="setLang('de')">Deutsch</button>
+  </div>
+
+  <!-- 한국어 -->
+  <div class="content active" id="ko">
+    <p class="updated">최종 업데이트: 2026년 4월</p>
+    <h1>개인정보처리방침</h1>
+    <p class="subtitle">Brezel Money는 사용자의 금융 데이터를 소중히 여깁니다.</p>
+
+    <div class="section">
+      <h2>1. 운영자 정보</h2>
+      <div class="contact-box">
+        <p><strong>서비스명</strong>: Brezel Money</p>
+        <p><strong>웹사이트</strong>: bybrezel.com/money</p>
+        <p><strong>문의</strong>: bybrezel.com 내 연락처 참조</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>2. 수집하는 데이터</h2>
+      <div class="highlight">
+        <p>✓ Brezel Money는 <strong>서버에 개인 금융 데이터를 저장하지 않습니다.</strong> 모든 가계부 데이터는 사용자의 기기(브라우저 localStorage)에만 저장됩니다.</p>
+      </div>
+      <p>수집하거나 처리하는 데이터:</p>
+      <ul>
+        <li>가계부 내역, 계좌 정보, 고정비 — <strong>기기 내 저장만</strong>, 서버 전송 없음</li>
+        <li>자연어 입력 텍스트 — 파싱 목적으로 Anthropic API에 전송 (아래 참조)</li>
+        <li>환율 정보 — 외부 환율 API에서 조회 (개인정보 미포함)</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>3. 제3자 서비스</h2>
+      <p><strong>Anthropic API (자연어 입력 기능)</strong></p>
+      <p>자연어로 내역을 입력할 때 입력한 텍스트가 Anthropic의 서버로 전송됩니다. 이 기능은 선택 사항이며, 직접 입력 방식을 사용하면 데이터가 전송되지 않습니다.</p>
+      <div class="highlight">
+        <p>예: "rewe에서 50유로 카드로" → Anthropic API에서 파싱 후 결과 반환</p>
+      </div>
+      <p>Anthropic의 개인정보처리방침: <a href="https://www.anthropic.com/privacy" target="_blank">anthropic.com/privacy</a></p>
+
+      <p style="margin-top:16px"><strong>환율 API</strong></p>
+      <p>현재 환율 조회를 위해 공개 환율 API를 사용합니다. 개인정보는 전송되지 않습니다.</p>
+    </div>
+
+    <div class="section">
+      <h2>4. 쿠키 및 추적</h2>
+      <p>Brezel Money는 <strong>쿠키를 사용하지 않으며</strong> 사용자 행동을 추적하지 않습니다. 광고 또는 분석 도구가 포함되어 있지 않습니다.</p>
+    </div>
+
+    <div class="section">
+      <h2>5. 데이터 보관 및 삭제</h2>
+      <p>모든 데이터는 사용자 기기의 브라우저 localStorage에 저장됩니다. 데이터 삭제 방법:</p>
+      <ul>
+        <li>앱 내 설정 → <strong>앱 초기화</strong> 버튼</li>
+        <li>브라우저 설정에서 사이트 데이터 삭제</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>6. 사용자 권리 (GDPR)</h2>
+      <p>EU/EEA 거주자로서 다음 권리를 갖습니다:</p>
+      <ul>
+        <li>데이터 열람권 — 모든 데이터는 기기에 저장되어 직접 확인 가능</li>
+        <li>삭제권 — 앱 초기화로 즉시 삭제 가능</li>
+        <li>이동권 — 설정 → 데이터 내보내기로 JSON 다운로드 가능</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>7. 미성년자</h2>
+      <p>Brezel Money는 만 16세 이상을 대상으로 합니다.</p>
+    </div>
+
+    <div class="section">
+      <h2>8. 방침 변경</h2>
+      <p>방침 변경 시 이 페이지에 업데이트 날짜와 함께 공지합니다.</p>
+    </div>
+  </div>
+
+  <!-- Deutsch -->
+  <div class="content" id="de">
+    <p class="updated">Stand: April 2026</p>
+    <h1>Datenschutzerklärung</h1>
+    <p class="subtitle">Brezel Money schützt Ihre finanziellen Daten.</p>
+
+    <div class="section">
+      <h2>1. Verantwortliche Stelle</h2>
+      <div class="contact-box">
+        <p><strong>Dienst</strong>: Brezel Money</p>
+        <p><strong>Website</strong>: bybrezel.com/money</p>
+        <p><strong>Kontakt</strong>: Siehe Impressum unter bybrezel.com</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>2. Erhobene Daten</h2>
+      <div class="highlight">
+        <p>✓ Brezel Money speichert <strong>keine persönlichen Finanzdaten auf Servern.</strong> Alle Haushaltsbuchdaten werden ausschließlich lokal auf dem Gerät des Nutzers (Browser localStorage) gespeichert.</p>
+      </div>
+      <p>Verarbeitete Daten:</p>
+      <ul>
+        <li>Buchungseinträge, Kontodaten, Fixkosten — <strong>nur lokale Speicherung</strong>, keine Serverübertragung</li>
+        <li>Freitexteingaben — zur Analyse an die Anthropic API übermittelt (siehe unten)</li>
+        <li>Wechselkursdaten — Abfrage über externe Wechselkurs-API (keine personenbezogenen Daten)</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>3. Drittanbieter</h2>
+      <p><strong>Anthropic API (Freitexteingabe)</strong></p>
+      <p>Bei der Freitexteingabe wird der eingegebene Text zur Verarbeitung an Anthropic übermittelt. Diese Funktion ist optional. Bei manueller Eingabe werden keine Daten übertragen.</p>
+      <div class="highlight">
+        <p>Beispiel: "50 Euro bei REWE mit Karte" → Verarbeitung durch Anthropic API → Rückgabe des Ergebnisses</p>
+      </div>
+      <p>Datenschutzerklärung von Anthropic: <a href="https://www.anthropic.com/privacy" target="_blank">anthropic.com/privacy</a></p>
+
+      <p style="margin-top:16px"><strong>Wechselkurs-API</strong></p>
+      <p>Zur Abfrage aktueller Wechselkurse wird eine öffentliche API genutzt. Es werden keine personenbezogenen Daten übertragen.</p>
+    </div>
+
+    <div class="section">
+      <h2>4. Cookies und Tracking</h2>
+      <p>Brezel Money verwendet <strong>keine Cookies</strong> und verfolgt kein Nutzerverhalten. Es sind keine Werbe- oder Analysetools eingebunden.</p>
+    </div>
+
+    <div class="section">
+      <h2>5. Datenspeicherung und -löschung</h2>
+      <p>Alle Daten werden im Browser localStorage des Nutzergeräts gespeichert. Möglichkeiten zur Datenlöschung:</p>
+      <ul>
+        <li>In der App: Einstellungen → <strong>App zurücksetzen</strong></li>
+        <li>Über die Browsereinstellungen: Website-Daten löschen</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>6. Betroffenenrechte (DSGVO)</h2>
+      <p>Als in der EU/EEA ansässige Person haben Sie folgende Rechte:</p>
+      <ul>
+        <li>Auskunftsrecht — Alle Daten sind lokal gespeichert und direkt einsehbar</li>
+        <li>Recht auf Löschung — Sofortige Löschung über App zurücksetzen möglich</li>
+        <li>Recht auf Datenübertragbarkeit — Export als JSON über Einstellungen → Daten exportieren</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>7. Minderjährige</h2>
+      <p>Brezel Money richtet sich an Personen ab 16 Jahren.</p>
+    </div>
+
+    <div class="section">
+      <h2>8. Änderungen dieser Erklärung</h2>
+      <p>Bei Änderungen wird diese Seite mit dem aktualisierten Datum aktualisiert.</p>
+    </div>
+  </div>
+
+  <footer>
+    <span>© 2026 Brezel Money</span>
+    <div style="display:flex;gap:16px">
+      <a href="/money/">App</a>
+      <a href="/impressum.html">Impressum</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+function setLang(lang) {
+  document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.lang-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(lang).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
