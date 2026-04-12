@@ -297,6 +297,84 @@ const syncFixedCosts = () => {
   ls.set(K.SYNCED, synced);
 };
 
+// 데이터 내보내기
+const exportData = () => {
+  const data = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    accounts: getAccounts(),
+    fixedExp: getFixedExp(),
+    fixedInc: getFixedInc(),
+    transactions: getTxns(),
+    categories: getCategories(),
+    budget: getBudget(),
+    startMonth: ls.get(K.START_MONTH),
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `gyembu_backup_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+// CSV 내보내기 (엑셀용)
+const exportCSV = () => {
+  const txns = getTxns();
+  const header = ['날짜', '항목명', '유형', '금액', '통화', '카테고리', '계좌', '결제수단', '메모', '환율(1EUR=KRW)'];
+  const rows = txns.map(t => [
+    t.date,
+    t.title,
+    t.type === 'expense' ? '지출' : '수입',
+    t.amount,
+    t.currency,
+    t.category,
+    t.accountName,
+    t.payMethod === 'card' ? '카드' : t.payMethod === 'voucher' ? '상품권/쿠폰' : '현금',
+    t.memo || '',
+    t.rateAtTime || '',
+  ]);
+  const csv = [header, ...rows]
+    .map(row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
+    .join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `gyembu_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+// 데이터 가져오기
+const importData = (file) => {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.version || !data.accounts) {
+        alert('올바른 백업 파일이 아니에요.');
+        return;
+      }
+      if (!window.confirm('현재 데이터를 백업 파일로 덮어쓸까요? 기존 데이터는 사라져요.')) return;
+      if (data.accounts) setAccounts(data.accounts);
+      if (data.fixedExp) setFixedExp(data.fixedExp);
+      if (data.fixedInc) setFixedInc(data.fixedInc);
+      if (data.transactions) setTxns(data.transactions);
+      if (data.categories) setCategories(data.categories);
+      if (data.budget) setBudget(data.budget);
+      if (data.startMonth) ls.set(K.START_MONTH, data.startMonth);
+      ls.set(K.ONBOARDED, true);
+      alert('데이터를 성공적으로 가져왔어요. 앱을 새로고침할게요.');
+      window.location.reload();
+    } catch {
+      alert('파일을 읽는 중 오류가 발생했어요.');
+    }
+  };
+  reader.readAsText(file);
+};
+
 // ─── utils ────────────────────────────────────────────────────────────────────
 // 천단위 콤마 포맷팅 유틸
 const fmtComma = val => {
@@ -1405,8 +1483,14 @@ function SettingsPage({ onClose }) {
     jsx('button', { className: 'btn', onClick: () => { setBudget({ eur: parseFloat(budgetRef.current.value) || null, excludeCategories: excluded }); onClose(); }, children: '저장' }),
     jsx('div', { className: 'divider', style: { margin: '32px 0 16px' } }),
     jsx('p', { className: 'section-title', children: '데이터' }),
+    jsx('button', { className: 'btn-ghost', style: { marginTop: 0 }, onClick: exportData, children: '데이터 내보내기 (백업)' }),
+    jsx('button', { className: 'btn-ghost', style: { marginTop: 0 }, onClick: exportCSV, children: '엑셀로 내보내기 (CSV)' }),
+    jsxs('label', { style: { display: 'block', marginTop: 8 }, children: [
+      jsx('input', { type: 'file', accept: '.json', style: { display: 'none' }, onChange: e => e.target.files[0] && importData(e.target.files[0]) }),
+      jsx('span', { className: 'btn-ghost', style: { display: 'block', textAlign: 'center', cursor: 'pointer', marginTop: 0 }, children: '데이터 가져오기 (복원)' }),
+    ] }),
     jsx('button', { className: 'btn-ghost', style: { marginTop: 0 }, onClick: () => { if (window.confirm('모든 데이터를 초기화할까요? 이 작업은 되돌릴 수 없어요.')) { localStorage.clear(); window.location.reload(); } }, children: '앱 초기화 (전체 데이터 삭제)' }),
-  ] }) }) });
+    ] }) }) });
 }
 
 // ─── BOTTOM NAV ───────────────────────────────────────────────────────────────
