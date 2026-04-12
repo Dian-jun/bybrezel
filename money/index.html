@@ -559,7 +559,7 @@ function Onboarding({ onDone }) {
     jsxs('div', { style: { marginTop: 12 }, children: [
       jsxs('div', { style: { display: 'flex', gap: 8, marginBottom: 8 }, children: [jsx('input', { ref: feNameRef, className: 'field', placeholder: '항목명', style: { flex: 2 } }), jsx('input', { ref: feAmtRef, className: 'field-amt', placeholder: '0', type: 'number' })] }),
       jsxs('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }, children: [
-        jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 4 }, children: [jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '납입일' }), jsx('input', { ref: feDayRef, className: 'field-sm', placeholder: '일', maxLength: 2 }), jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '일' })] }),
+        jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 4 }, children: [jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '납입일' }), jsx('input', { ref: feDayRef, className: 'field-sm', placeholder: '1', maxLength: 2 }), jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '일' })] }),
         ...['EUR','KRW'].map(cc => jsx(Pill, { key: cc, on: feCur === cc, onClick: () => setFeCur(cc), style: { fontSize: 11 }, children: cc === 'EUR' ? '€ EUR' : '₩ KRW' })),
         ...FREQ_EXP.map(pp => jsx(Pill, { key: pp.value, on: feFreq === pp.value, onClick: () => setFeFreq(pp.value), style: { fontSize: 11 }, children: pp.label })),
       ] }),
@@ -582,21 +582,21 @@ function Onboarding({ onDone }) {
     ...fixedIncList.map(item => jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
       jsxs('div', { children: [
         jsx('p', { style: { fontSize: 13 }, children: item.name }),
-        jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [FREQ_INC.find(p => p.value === item.frequency)?.label, ' ', item.day, '일 · ', item.currency === 'EUR' ? '€' : '₩', item.amount, item.incomeType === 'voucher' ? ' · 🎫 상품권/쿠폰' : item.incomeType === 'cash' ? ' · 💵 현금' : ''] }),
+        jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [FREQ_INC.find(p => p.value === item.frequency)?.label, ' ', item.day, '일 · ', item.currency === 'EUR' ? '€' : '₩', item.amount, item.incomeType === 'voucher' ? ' · 상품권/쿠폰' : item.incomeType === 'cash' ? ' · 💵 현금' : ''] }),
       ] }),
       jsx('span', { style: { fontSize: 13, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: () => setFixedIncList(prev => prev.filter(p => p.id !== item.id)), children: '삭제' }),
     ] }, item.id)),
     jsxs('div', { style: { marginTop: 12 }, children: [
-      jsxs('div', { style: { display: 'flex', gap: 8, marginBottom: 8 }, children: [jsx('input', { ref: fiNameRef, className: 'field', placeholder: '예: 월급, 장학금, Sodexo', style: { flex: 2 } }), jsx('input', { ref: fiAmtRef, className: 'field-amt', placeholder: '0', type: 'number' })] }),
+      jsxs('div', { style: { display: 'flex', gap: 8, marginBottom: 8 }, children: [jsx('input', { ref: fiNameRef, className: 'field', placeholder: '예: 월급, 장학금, Pluxee', style: { flex: 2 } }), jsx('input', { ref: fiAmtRef, className: 'field-amt', placeholder: '0', type: 'number' })] }),
       jsxs('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }, children: [
-        jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 4 }, children: [jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '입금일' }), jsx('input', { ref: fiDayRef, className: 'field-sm', placeholder: '일', maxLength: 2 }), jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '일' })] }),
+        jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 4 }, children: [jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '입금일' }), jsx('input', { ref: fiDayRef, className: 'field-sm', placeholder: '1', maxLength: 2 }), jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '일' })] }),
         ...['EUR','KRW'].map(cc => jsx(Pill, { key: cc, on: fiCur === cc, onClick: () => setFiCur(cc), style: { fontSize: 11 }, children: cc === 'EUR' ? '€ EUR' : '₩ KRW' })),
         ...FREQ_INC.map(pp => jsx(Pill, { key: pp.value, on: fiFreq === pp.value, onClick: () => setFiFreq(pp.value), style: { fontSize: 11 }, children: pp.label })),
       ] }),
-      // 수입 유형: 계좌 / 현금, 상품권/쿠폰
+      // 수입 유형: 계좌/현금, 상품권/쿠폰
       jsxs('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }, children: [
         jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', width: '100%' }, children: '수입 유형' }),
-        ...([{ v: 'account', l: '🏦 계좌' }, { v: 'cash', l: '💵 현금' }, { v: 'voucher', l: '🎫 상품권/쿠폰' }]).map(opt =>
+        ...([{ v: 'account', l: '계좌/현금' }, { v: 'voucher', l: '상품권/쿠폰' }]).map(opt =>
           jsx(Pill, { key: opt.v, on: fiType === opt.v, onClick: () => { setFiType(opt.v); if (opt.v !== 'account') setFiAccId(''); }, style: { fontSize: 11 }, children: opt.l })
         ),
       ] }),
@@ -1071,7 +1071,7 @@ function AddTransaction({ onDone, editing = null }) {
       addCat && jsxs('div', { style: { display: 'flex', gap: 8, marginBottom: 12 }, children: [jsx('input', { ref: newCatRef, className: 'field', placeholder: '카테고리명', style: { flex: 1 }, onKeyDown: e => e.key === 'Enter' && !e.nativeEvent?.isComposing && addNewCat() }), jsx('button', { className: 'btn-sm', onClick: addNewCat, children: '추가' })] }),
       jsxs('div', { className: 'row', children: [
         jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '결제 수단' }),
-        jsxs('div', { style: { display: 'flex', gap: 6 }, children: [jsx(Pill, { on: payMethod === 'card', onClick: () => setPayMethod('card'), children: '카드' }), jsx(Pill, { on: payMethod === 'cash', onClick: () => setPayMethod('cash'), children: '현금' }), jsx(Pill, { on: payMethod === 'voucher', onClick: () => setPayMethod('voucher'), children: '🎫 식권' })] }),
+        jsxs('div', { style: { display: 'flex', gap: 6 }, children: [jsx(Pill, { on: payMethod === 'card', onClick: () => setPayMethod('card'), children: '카드' }), jsx(Pill, { on: payMethod === 'cash', onClick: () => setPayMethod('cash'), children: '현금' }), jsx(Pill, { on: payMethod === 'voucher', onClick: () => setPayMethod('voucher'), children: '식권' })] }),
       ] }),
       jsxs('div', { className: 'row', children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '날짜' }), jsx('input', { type: 'date', value: date, onChange: e => setDate(e.target.value), style: { border: 'none', background: 'transparent', fontSize: 13, color: 'var(--black)', outline: 'none', fontFamily: 'var(--font)' } })] }),
       jsxs('div', { style: { paddingTop: 14 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '메모' }), jsx('textarea', { ref: memoRef, className: 'field', placeholder: '내용 입력 (선택)', rows: 2, defaultValue: f.memo || '' })] }),
@@ -1268,7 +1268,7 @@ function FixedItemForm({ initial, onSubmit, onCancel, submitLabel, isIncome = fa
     ] }),
     isIncome && jsxs('div', { style: { marginBottom: 10 }, children: [
       jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '수입 유형' }),
-      jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: [{ v: 'account', l: '🏦 계좌' }, { v: 'cash', l: '💵 현금' }, { v: 'voucher', l: '🎫 상품권/쿠폰' }].map(opt => jsx(Pill, { key: opt.v, on: incomeType === opt.v, onClick: () => { setIncomeType(opt.v); if (opt.v !== 'account') setAccId(''); }, style: { fontSize: 11 }, children: opt.l })) }),
+      jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: [{ v: 'account', l: '계좌/현금' }, { v: 'voucher', l: '상품권/쿠폰' }].map(opt => jsx(Pill, { key: opt.v, on: incomeType === opt.v, onClick: () => { setIncomeType(opt.v); if (opt.v !== 'account') setAccId(''); }, style: { fontSize: 11 }, children: opt.l })) }),
     ] }),
     needsAccount && accounts.length > 0 && jsxs('div', { style: { marginBottom: 12 }, children: [
       jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: isIncome ? '입금 계좌' : '출금 계좌' }),
@@ -1320,7 +1320,7 @@ function FixedTab() {
       jsxs('div', { className: 'row', style: { cursor: 'pointer' }, onClick: () => setExpandedId(expanded ? null : item.id), children: [
         jsxs('div', { children: [
           jsxs('p', { style: { fontSize: 13, fontWeight: 500 }, children: [item.name, ' ', item.label && jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)', fontWeight: 400 }, children: item.label })] }),
-          jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }, children: [freqLabel(item.frequency, isIncome), ' ', item.day, '일', item.accountId ? ` · ${accName(item.accountId)}` : item.incomeType === 'voucher' ? ' · 🎫 상품권/쿠폰' : item.incomeType === 'cash' ? ' · 💵 현금' : ''] }),
+          jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }, children: [freqLabel(item.frequency, isIncome), ' ', item.day, '일', item.accountId ? ` · ${accName(item.accountId)}` : item.incomeType === 'voucher' ? ' · 상품권/쿠폰' : item.incomeType === 'cash' ? ' · 현금' : ''] }),
         ] }),
         jsxs('div', { style: { textAlign: 'right' }, children: [
           jsx('p', { style: { fontSize: 13, fontWeight: 500 }, children: fmtItem(item) }),
