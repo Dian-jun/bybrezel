@@ -299,7 +299,11 @@ const syncFixedCosts = () => {
 
 // ─── utils ────────────────────────────────────────────────────────────────────
 // 천단위 콤마 포맷팅 유틸
-const fmtComma = val => val.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const fmtComma = val => {
+  const parts = String(val).split('.');
+  parts[0] = parts[0].replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return parts.length > 1 ? parts[0] + '.' + parts[1].replace(/\D/g, '') : parts[0];
+};
 const parseComma = val => parseFloat(String(val).replace(/,/g, '')) || 0;
 
 const MONTHS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
@@ -370,7 +374,7 @@ const Pill = ({ on, onClick, children, style }) =>
 const AmountInput = ({ value, onChange, placeholder = '0', style }) => {
   const handleChange = e => {
     const raw = e.target.value.replace(/,/g, '');
-    if (raw === '' || /^\d*$/.test(raw)) onChange(fmtComma(raw));
+    if (raw === '' || /^\d*\.?\d{0,2}$/.test(raw)) onChange(fmtComma(raw));
   };
   return jsx('input', {
     className: 'field-amt', type: 'text', inputMode: 'numeric',
