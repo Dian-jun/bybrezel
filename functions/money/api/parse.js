@@ -51,7 +51,7 @@ export async function onRequestPost(context) {
 
   } catch (err) {
     return new Response(
-      JSON.stringify({ ok: false, error: '파싱 실패. 직접 입력해주세요.' }),
+      JSON.stringify({ ok: false, error: err.message, raw: err.stack }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   }
