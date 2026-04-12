@@ -451,7 +451,7 @@ const Pill = ({ on, onClick, children, style }) =>
 
 const AmountInput = ({ value, onChange, placeholder = '0', style }) => {
   const handleChange = e => {
-    const raw = e.target.value.replace(/,/g, '');
+    const raw = e.target.value.replace(/,/g, '.').replace(/\.(?=.*\.)/g, '');
     if (raw === '' || /^\d*\.?\d{0,2}$/.test(raw)) onChange(fmtComma(raw));
   };
   return jsx('input', {
@@ -462,7 +462,7 @@ const AmountInput = ({ value, onChange, placeholder = '0', style }) => {
 
 const AmountField = ({ value, onChange, placeholder = '0', style }) => {
   const handleChange = e => {
-    const raw = e.target.value.replace(/,/g, '');
+    const raw = e.target.value.replace(/,/g, '.').replace(/\.(?=.*\.)/g, '');
     if (raw === '' || /^\d*\.?\d{0,2}$/.test(raw)) onChange(fmtComma(raw));
   };
   return jsx('input', {
