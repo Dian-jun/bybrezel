@@ -385,7 +385,7 @@ const AmountInput = ({ value, onChange, placeholder = '0', style }) => {
 const AmountField = ({ value, onChange, placeholder = '0', style }) => {
   const handleChange = e => {
     const raw = e.target.value.replace(/,/g, '');
-    if (raw === '' || /^\d*$/.test(raw)) onChange(fmtComma(raw));
+    if (raw === '' || /^\d*\.?\d{0,2}$/.test(raw)) onChange(fmtComma(raw));
   };
   return jsx('input', {
     className: 'field', type: 'text', inputMode: 'numeric',
