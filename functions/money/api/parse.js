@@ -29,7 +29,7 @@ export async function onRequestPost(context) {
         'X-Title': '교민 가계부',
       },
       body: JSON.stringify({
-        model: 'openrouter/free',
+        model: 'meta-llama/llama-3.3-70b-instruct:free',
         messages: [
           {
             role: 'system',
@@ -48,7 +48,9 @@ export async function onRequestPost(context) {
     const data = await response.json();
 
     // OpenRouter 응답에서 텍스트 추출
-    const raw = data.choices?.[0]?.message?.content || '';
+    const raw = data.choices?.[0]?.message?.content 
+    || data.choices?.[0]?.message?.reasoning 
+    || '';
 
     // 디버그: raw 값 그대로 반환
     return new Response(JSON.stringify({ ok: false, debug: true, raw, fullData: data }), {
