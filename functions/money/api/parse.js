@@ -29,7 +29,7 @@ export async function onRequestPost(context) {
         'X-Title': '교민 가계부',
       },
       body: JSON.stringify({
-        model: 'meta-llama/llama-3.1-8b-instruct:free',
+        model: 'google/gemini-2.0-flash-exp:free',
         messages: [
           {
             role: 'system',
