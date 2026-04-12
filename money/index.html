@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>교민 가계부</title>
+<title>Brezel Money</title>
 
 <!-- PWA -->
 <link rel="manifest" href="/money/manifest.json"/>
@@ -559,8 +559,11 @@ function Onboarding({ onDone }) {
   // Step 0: welcome
   if (step === 0) return jsx('div', { className: 'app-shell', style: { justifyContent: 'space-between', padding: '60px 28px 48px' }, children: jsxs(Fragment, { children: [
     jsxs('div', { children: [
-      jsx('p', { style: { fontSize: 11, fontWeight: 500, letterSpacing: '0.8px', textTransform: 'uppercase', color: 'var(--gray-400)', marginBottom: 14 }, children: '독일 교민 가계부' }),
-      jsxs('h1', { style: { marginBottom: 20 }, children: ['한국과 독일,', jsx('br',{}), '두 통장을', jsx('br',{}), '한 곳에서.'] }),
+      jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }, children: [
+        jsx('img', { src: '/money/icons/icon-192.png', style: { width: 40, height: 40, borderRadius: 10 } }),
+        jsxs('p', { style: { fontSize: 20, fontWeight: 600, letterSpacing: '-0.5px' }, children: ['Brezel ', jsx('span', { style: { fontWeight: 300 }, children: 'Money' })] }),
+    ] }),
+    jsxs('h1', { style: { marginBottom: 20 }, children: ['한국과 독일,', jsx('br',{}), '두 통장을', jsx('br',{}), '한 곳에서.'] }),
       jsxs('p', { style: { fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.9 }, children: ['KRW · EUR 동시 관리', jsx('br',{}), '송금 내역 · 고정비 · 자연어 입력'] }),
     ] }),
     jsxs('div', { children: [

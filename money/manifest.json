@@ -1,6 +1,6 @@
 {
-  "name": "교민 가계부",
-  "short_name": "교민가계부",
+  "name": "Brezel Money",
+  "short_name": "Brezel Money",
   "description": "독일 교민을 위한 KRW·EUR 동시 관리 가계부",
   "start_url": "/money/",
   "scope": "/money/",
