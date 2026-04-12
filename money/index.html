@@ -990,7 +990,9 @@ function AddTransaction({ onDone, editing = null }) {
   const [aiErr, setAiErr] = useState('');
   const f = editing || {};
   const [type, setType] = useState(f.type || 'expense');
-  const [amtStr, setAmtStr] = useState(f.amount ? fmtComma(String(f.currency === 'EUR' ? f.amount : Math.round(f.amount))) : '');  const [accId, setAccId] = useState(f.accountId || accounts[0]?.id || '');
+  const [cur, setCur] = useState(f.currency || 'EUR');
+  const [amtStr, setAmtStr] = useState(f.amount ? fmtComma(String(f.currency === 'EUR' ? f.amount : Math.round(f.amount))) : '');
+  const [accId, setAccId] = useState(f.accountId || accounts[0]?.id || '');
   const [cat, setCat] = useState(f.category || '식비');
   const [payMethod, setPayMethod] = useState(f.payMethod || 'card');
   // titleRef 대신 state로 관리 — ref 타이밍 문제 해결
