@@ -137,14 +137,21 @@ const K = {
   FIXED_EXP: 'gyembu_fixed', FIXED_INC: 'gyembu_fixed_income',
   TRANSACTIONS: 'gyembu_transactions', RATE: 'gyembu_rate',
   CATEGORIES: 'gyembu_categories', BUDGET: 'gyembu_budget',
-  SYNCED: 'gyembu_synced_months',
+  SYNCED: 'gyembu_synced_months', START_MONTH: 'gyembu_start_month',
 };
 const ls = {
   get: k => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch { return null; } },
   set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
 };
 const isOnboarded   = () => !!ls.get(K.ONBOARDED);
-const setOnboarded  = () => ls.set(K.ONBOARDED, true);
+const setOnboarded  = () => {
+  ls.set(K.ONBOARDED, true);
+  // 온보딩 완료 시점의 연월을 기록 — 고정비 소급 적용 방지
+  if (!ls.get(K.START_MONTH)) {
+    const now = new Date();
+    ls.set(K.START_MONTH, { year: now.getFullYear(), month: now.getMonth() });
+  }
+};
 const getAccounts   = () => ls.get(K.ACCOUNTS) || [];
 const setAccounts   = v  => ls.set(K.ACCOUNTS, v);
 const getFixedExp   = () => ls.get(K.FIXED_EXP) || [];
@@ -242,10 +249,21 @@ const syncFixedCosts = () => {
   const rate = getRate().rate;
   const accs = getAccounts();
   let txns = getTxns(), changed = false;
+
+  // 앱 시작월 — 온보딩 완료 시점. 없으면 현재 달로 기록
+  const startData = ls.get(K.START_MONTH) || (() => {
+    const d = { year: yr, month: mo };
+    ls.set(K.START_MONTH, d);
+    return d;
+  })();
+  const startYear = startData.year, startMo = startData.month;
+
   const months = [];
   for (let mi = 0; mi < 13; mi++) {
     let y = yr, m = mo - mi;
     while (m < 0) { m += 12; y--; }
+    // 앱 시작월 이전은 건너뜀
+    if (y < startYear || (y === startYear && m < startMo)) continue;
     const key = `${y}-${m}`;
     if (!synced[key]) months.push({ y, m, key });
   }
@@ -261,7 +279,7 @@ const syncFixedCosts = () => {
       txns = [{ id: cid, fixedId: item.id, title: item.name + (item.label ? ` (${item.label})` : ''),
         type, amount: item.amount, currency: item.currency || 'EUR', rateAtTime: rate, rateDate: dateStr,
         accountId: acc?.id || '', accountName: acc?.name || '',
-        category: type === 'income' ? '급여' : '공과금', payMethod: 'card',
+        category: type === 'income' ? '급여' : (item.category || '공과금'), payMethod: 'card',
         memo: `고정 ${type === 'income' ? '수입' : '지출'}`, date: dateStr,
         createdAt: new Date().toISOString() }, ...txns];
       changed = true;
@@ -281,16 +299,55 @@ const parseComma = val => parseFloat(String(val).replace(/,/g, '')) || 0;
 
 const MONTHS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 const DAYS   = ['일','월','화','수','목','금','토'];
-const FREQ_EXP = [{ value: 'monthly', label: '매월' }, { value: 'quarterly', label: '분기납' }, { value: 'yearly', label: '연납' }];
+const DEFAULT_CATS  = [
+  '식비','외식','교통','의료','쇼핑','카페',
+  '구독','공과금','주거','통신','보험','금융','교육','육아',
+  '송금','급여','식비지원금','여행','기타'
+];
+const FREQ_EXP = [
+  { value: 'monthly', label: '매월' },
+  { value: 'bimonthly', label: '격월' },
+  { value: 'quarterly', label: '분기납' },
+  { value: 'yearly', label: '연납' },
+];
 const FREQ_INC = [{ value: 'monthly', label: '매월' }, { value: 'bimonthly', label: '격월' }, { value: 'quarterly', label: '분기' }, { value: 'yearly', label: '연간' }];
 const VOUCHER_CATS = ['식비지원금'];
+
+// 독일 교민 실생활 기반 고정지출 기본 목록
 const DEFAULT_FIXED_EXP = [
-  { id: 'kaltmiete',  name: 'Kaltmiete',          label: '월세',   checked: false, currency: 'EUR', frequency: 'monthly'   },
-  { id: 'gez',        name: 'GEZ',                 label: '방송수신료', checked: false, currency: 'EUR', frequency: 'quarterly' },
-  { id: 'haftpflicht',name: 'Haftpflicht',         label: '배상보험', checked: false, currency: 'EUR', frequency: 'monthly'   },
-  { id: 'kranken',    name: 'Krankenversicherung', label: '건강보험', checked: false, currency: 'EUR', frequency: 'monthly'   },
-  { id: 'neben',      name: 'Nebenkosten',         label: '관리비',  checked: false, currency: 'EUR', frequency: 'monthly'   },
-  { id: 'internet',   name: 'Internet',            label: '인터넷',  checked: false, currency: 'EUR', frequency: 'monthly'   },
+  // 주거
+  { id: 'kaltmiete',   name: 'Kaltmiete',          label: '집세 (월세)',       checked: false, currency: 'EUR', frequency: 'monthly',  category: '주거' },
+  { id: 'neben',       name: 'Nebenkosten',         label: '부대비용 (관리비)', checked: false, currency: 'EUR', frequency: 'monthly',  category: '주거' },
+  { id: 'strom',       name: 'Strom',               label: '전기세',            checked: false, currency: 'EUR', frequency: 'monthly',  category: '공과금' },
+  { id: 'gas',         name: 'Gas',                 label: '가스비',            checked: false, currency: 'EUR', frequency: 'monthly',  category: '공과금' },
+  // 통신
+  { id: 'handy',       name: 'Handy (Alditalk 등)', label: '핸드폰 요금',       checked: false, currency: 'EUR', frequency: 'monthly',  category: '통신' },
+  { id: 'router',      name: 'Router-Miete',        label: '공유기 렌탈',       checked: false, currency: 'EUR', frequency: 'monthly',  category: '통신' },
+  { id: 'internet',    name: 'Internet (Telekom 등)',label: '와이파이/인터넷',   checked: false, currency: 'EUR', frequency: 'monthly',  category: '통신' },
+  { id: 'gez',         name: 'GEZ (Rundfunkbeitrag)',label: '방송수신료',        checked: false, currency: 'EUR', frequency: 'monthly',  category: '통신' },
+  // 보험
+  { id: 'kranken',     name: 'Krankenversicherung', label: '건강보험',           checked: false, currency: 'EUR', frequency: 'monthly',  category: '보험' },
+  { id: 'haftpflicht', name: 'Haftpflicht',         label: '배상보험',           checked: false, currency: 'EUR', frequency: 'monthly',  category: '보험' },
+  { id: 'hausrat',     name: 'Hausratversicherung', label: '가재도구보험',        checked: false, currency: 'EUR', frequency: 'monthly',  category: '보험' },
+  { id: 'kfz_vers',    name: 'Kfz-Versicherung',    label: '자동차보험',          checked: false, currency: 'EUR', frequency: 'monthly',  category: '보험' },
+  // 교통
+  { id: 'deticket',    name: 'Deutschlandticket',   label: '도이칠란트 티켓',    checked: false, currency: 'EUR', frequency: 'monthly',  category: '교통' },
+  { id: 'kfz_rate',    name: 'Kfz-Rate',            label: '자동차 할부',         checked: false, currency: 'EUR', frequency: 'monthly',  category: '교통' },
+  { id: 'kfz_steuer',  name: 'Kfz-Steuer',          label: '자동차세',            checked: false, currency: 'EUR', frequency: 'yearly',   category: '교통' },
+  { id: 'charging',    name: 'Ladekosten',           label: '전기차 충전비',       checked: false, currency: 'EUR', frequency: 'monthly',  category: '교통' },
+  // 구독
+  { id: 'netflix',     name: 'Netflix',              label: '',                   checked: false, currency: 'EUR', frequency: 'monthly',  category: '구독' },
+  { id: 'youtube',     name: 'YouTube Premium',      label: '',                   checked: false, currency: 'EUR', frequency: 'monthly',  category: '구독' },
+  { id: 'spotify',     name: 'Spotify',              label: '',                   checked: false, currency: 'EUR', frequency: 'monthly',  category: '구독' },
+  { id: 'chatgpt',     name: 'ChatGPT Plus',         label: '',                   checked: false, currency: 'EUR', frequency: 'monthly',  category: '구독' },
+  { id: 'amazon',      name: 'Amazon Prime',         label: '',                   checked: false, currency: 'EUR', frequency: 'monthly',  category: '구독' },
+  { id: 'icloud',      name: 'iCloud',               label: '',                   checked: false, currency: 'EUR', frequency: 'monthly',  category: '구독' },
+  // 금융
+  { id: 'altersvorsorge', name: 'Altersvorsorge',   label: '노후 연금',           checked: false, currency: 'EUR', frequency: 'monthly',  category: '금융' },
+  { id: 'sparplan',    name: 'Sparplan/ETF',         label: '적금/ETF',            checked: false, currency: 'EUR', frequency: 'monthly',  category: '금융' },
+  // 교육/육아
+  { id: 'kita',        name: 'Kita',                 label: '어린이집',            checked: false, currency: 'EUR', frequency: 'monthly',  category: '육아' },
+  { id: 'sprachkurs',  name: 'Sprachkurs',           label: '어학원',              checked: false, currency: 'EUR', frequency: 'monthly',  category: '교육' },
 ];
 
 // 자산탭 계좌 정렬: DE 먼저, KR 다음, 각 그룹 내 현금계좌는 마지막
@@ -467,8 +524,29 @@ function Onboarding({ onDone }) {
   if (step === 3) return jsx('div', { className: 'app-shell', children: jsx('div', { className: 'page', style: { paddingTop: 20 }, children: jsxs(Fragment, { children: [
     jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }, children: [jsx(Step, { to: 2 }), jsx(Prog, { total: 4, cur: 3 })] }),
     jsx('h2', { style: { marginBottom: 4 }, children: '고정 지출' }),
-    jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', marginBottom: 20 }, children: '매달 나가는 항목을 선택해주세요' }),
-    jsx('div', { style: { borderTop: '0.5px solid var(--gray-100)' }, children: fixedExpChecks.map(item => jsx(FixedExpOnboardItem, { key: item.id, item, accounts: displayAccs, onToggle: () => setFixedExpChecks(prev => prev.map(p => p.id === item.id ? { ...p, checked: !p.checked } : p)), onUpdate: (id, cfg) => setFixedExpCfg(prev => ({ ...prev, [id]: cfg })) })) }),
+    jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', marginBottom: 20 }, children: '해당되는 항목을 선택하고 금액을 입력해주세요' }),
+    // 카테고리별 그룹핑
+    ...(() => {
+      const catOrder = ['주거','통신','보험','교통','구독','금융','교육','육아'];
+      const groups = {};
+      fixedExpChecks.forEach(item => {
+        const cat = item.category || '기타';
+        if (!groups[cat]) groups[cat] = [];
+        groups[cat].push(item);
+      });
+      const catIcons = { '주거':'🏠', '통신':'📡', '보험':'🛡️', '교통':'🚗', '구독':'📱', '금융':'💰', '교육':'🎓', '육아':'👶', '기타':'📦' };
+      return catOrder.filter(c => groups[c]).map(cat =>
+        jsxs('div', { key: cat, style: { marginBottom: 8 }, children: [
+          jsxs('p', { style: { fontSize: 11, fontWeight: 500, color: 'var(--gray-400)', letterSpacing: '0.8px', textTransform: 'uppercase', padding: '12px 0 4px' }, children: [catIcons[cat] || '', ' ', cat] }),
+          jsx('div', { style: { borderTop: '0.5px solid var(--gray-100)' }, children: groups[cat].map(item =>
+            jsx(FixedExpOnboardItem, { key: item.id, item, accounts: displayAccs,
+              onToggle: () => setFixedExpChecks(prev => prev.map(p => p.id === item.id ? { ...p, checked: !p.checked } : p)),
+              onUpdate: (id, cfg) => setFixedExpCfg(prev => ({ ...prev, [id]: cfg }))
+            })
+          ) }),
+        ] })
+      );
+    })(),
     jsx('p', { className: 'section-title', style: { marginTop: 20 }, children: '직접 추가' }),
     ...fixedExpExtra.map(item => jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
       jsxs('div', { children: [jsx('p', { style: { fontSize: 13 }, children: item.name }), jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: ['납입일 ', item.day, '일 · ', item.currency === 'EUR' ? '€' : '₩', item.amount] })] }),
@@ -500,7 +578,7 @@ function Onboarding({ onDone }) {
     ...fixedIncList.map(item => jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
       jsxs('div', { children: [
         jsx('p', { style: { fontSize: 13 }, children: item.name }),
-        jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [FREQ_INC.find(p => p.value === item.frequency)?.label, ' ', item.day, '일 · ', item.currency === 'EUR' ? '€' : '₩', item.amount, item.incomeType === 'voucher' ? ' · 상품권/쿠폰' : item.incomeType === 'cash' ? ' · 현금' : ''] }),
+        jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [FREQ_INC.find(p => p.value === item.frequency)?.label, ' ', item.day, '일 · ', item.currency === 'EUR' ? '€' : '₩', item.amount, item.incomeType === 'voucher' ? ' · 🎫 상품권/쿠폰' : item.incomeType === 'cash' ? ' · 💵 현금' : ''] }),
       ] }),
       jsx('span', { style: { fontSize: 13, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: () => setFixedIncList(prev => prev.filter(p => p.id !== item.id)), children: '삭제' }),
     ] }, item.id)),
@@ -514,7 +592,7 @@ function Onboarding({ onDone }) {
       // 수입 유형: 계좌 / 현금, 상품권/쿠폰
       jsxs('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }, children: [
         jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', width: '100%' }, children: '수입 유형' }),
-        ...([{ v: 'account', l: '계좌/현금' }, { v: 'voucher', l: '상품권/쿠폰' }]).map(opt =>
+        ...([{ v: 'account', l: '🏦 계좌' }, { v: 'cash', l: '💵 현금' }, { v: 'voucher', l: '🎫 상품권/쿠폰' }]).map(opt =>
           jsx(Pill, { key: opt.v, on: fiType === opt.v, onClick: () => { setFiType(opt.v); if (opt.v !== 'account') setFiAccId(''); }, style: { fontSize: 11 }, children: opt.l })
         ),
       ] }),
@@ -543,11 +621,13 @@ function FixedExpOnboardItem({ item, accounts, onToggle, onUpdate }) {
     jsx('div', { style: { marginTop: 2, flexShrink: 0 }, onClick: onToggle, children: item.checked ? jsx('div', { className: 'check-on', children: jsx(CheckIcon,{}) }) : jsx('div', { className: 'check-off' }) }),
     jsxs('div', { style: { flex: 1 }, children: [
       jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }, children: [
-        jsxs('span', { style: { fontSize: 13, color: item.checked ? 'var(--black)' : 'var(--gray-400)' }, children: [item.name, ' ', item.label && jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: item.label })] }),
+        jsxs('div', { children: [
+          jsxs('span', { style: { fontSize: 13, color: item.checked ? 'var(--black)' : 'var(--gray-400)' }, children: [item.name, ' ', item.label && jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: item.label })] }),
+        ] }),
         jsx('input', { ref: amtRef, className: 'field-amt', placeholder: '0', defaultValue: item.amount || '', onBlur: save }),
       ] }),
       jsxs('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 4 }, children: [
-        jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 4 }, children: [jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '납입일' }), jsx('input', { ref: dayRef, className: 'field-sm', placeholder: '15', maxLength: 2, defaultValue: item.day || '', onBlur: save, style: { width: 32 } }), jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '일' })] }),
+        jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 4 }, children: [jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '납입일' }), jsx('input', { ref: dayRef, className: 'field-sm', placeholder: '1', maxLength: 2, defaultValue: item.day || '', onBlur: save, style: { width: 32 } }), jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '일' })] }),
         ...['EUR','KRW'].map(cc => jsx(Pill, { key: cc, on: cur === cc, onClick: () => { setCur(cc); setAccId(''); setTimeout(save, 0); }, style: { fontSize: 11 }, children: cc })),
         ...FREQ_EXP.map(pp => jsx(Pill, { key: pp.value, on: freq === pp.value, onClick: () => { setFreq(pp.value); setTimeout(save, 0); }, style: { fontSize: 11 }, children: pp.label })),
       ] }),
@@ -987,7 +1067,7 @@ function AddTransaction({ onDone, editing = null }) {
       addCat && jsxs('div', { style: { display: 'flex', gap: 8, marginBottom: 12 }, children: [jsx('input', { ref: newCatRef, className: 'field', placeholder: '카테고리명', style: { flex: 1 }, onKeyDown: e => e.key === 'Enter' && !e.nativeEvent?.isComposing && addNewCat() }), jsx('button', { className: 'btn-sm', onClick: addNewCat, children: '추가' })] }),
       jsxs('div', { className: 'row', children: [
         jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '결제 수단' }),
-        jsxs('div', { style: { display: 'flex', gap: 6 }, children: [jsx(Pill, { on: payMethod === 'card', onClick: () => setPayMethod('card'), children: '카드' }), jsx(Pill, { on: payMethod === 'cash', onClick: () => setPayMethod('cash'), children: '현금' }), jsx(Pill, { on: payMethod === 'voucher', onClick: () => setPayMethod('voucher'), children: '식권' })] }),
+        jsxs('div', { style: { display: 'flex', gap: 6 }, children: [jsx(Pill, { on: payMethod === 'card', onClick: () => setPayMethod('card'), children: '카드' }), jsx(Pill, { on: payMethod === 'cash', onClick: () => setPayMethod('cash'), children: '현금' }), jsx(Pill, { on: payMethod === 'voucher', onClick: () => setPayMethod('voucher'), children: '🎫 식권' })] }),
       ] }),
       jsxs('div', { className: 'row', children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '날짜' }), jsx('input', { type: 'date', value: date, onChange: e => setDate(e.target.value), style: { border: 'none', background: 'transparent', fontSize: 13, color: 'var(--black)', outline: 'none', fontFamily: 'var(--font)' } })] }),
       jsxs('div', { style: { paddingTop: 14 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '메모' }), jsx('textarea', { ref: memoRef, className: 'field', placeholder: '내용 입력 (선택)', rows: 2, defaultValue: f.memo || '' })] }),
@@ -1155,9 +1235,14 @@ function FixedItemForm({ initial, onSubmit, onCancel, submitLabel, isIncome = fa
   const [freq, setFreq] = useState(initial?.frequency || 'monthly');
   const [accId, setAccId] = useState(initial?.accountId || '');
   const [incomeType, setIncomeType] = useState(initial?.incomeType || 'account');
+  const [cat, setCat] = useState(initial?.category || (isIncome ? '급여' : '공과금'));
   const accounts = getAccounts().filter(a => cur === 'EUR' ? a.currency === 'EUR' : a.currency === 'KRW');
   const freqOpts = isIncome ? FREQ_INC : FREQ_EXP;
   const needsAccount = !isIncome || incomeType === 'account';
+  // 지출용 카테고리 / 수입용 카테고리
+  const expCats = ['주거','통신','보험','교통','구독','금융','교육','육아','공과금','의료','쇼핑','기타'];
+  const incCats = ['급여','송금','식비지원금','기타'];
+  const catList = isIncome ? incCats : expCats;
   return jsxs('div', { style: { background: 'var(--gray-50)', borderRadius: 12, padding: 14, marginBottom: 12 }, children: [
     jsxs('div', { style: { display: 'flex', gap: 8, marginBottom: 10 }, children: [
       jsxs('div', { style: { flex: 2 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '항목명' }), jsx('input', { ref: nameRef, className: 'field', placeholder: isIncome ? '예: 월급, 장학금' : '예: Netflix', defaultValue: initial?.name || '' })] }),
@@ -1166,20 +1251,27 @@ function FixedItemForm({ initial, onSubmit, onCancel, submitLabel, isIncome = fa
     jsxs('div', { style: { display: 'flex', gap: 6, marginBottom: 10 }, children: [jsx(Pill, { on: cur === 'EUR', onClick: () => { setCur('EUR'); setAccId(''); }, style: { fontSize: 11 }, children: '€ EUR' }), jsx(Pill, { on: cur === 'KRW', onClick: () => { setCur('KRW'); setAccId(''); }, style: { fontSize: 11 }, children: '₩ KRW' })] }),
     jsxs('div', { style: { display: 'flex', gap: 8, marginBottom: 10 }, children: [
       !isIncome && jsxs('div', { style: { flex: 2 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '한국어 설명 (선택)' }), jsx('input', { ref: labelRef, className: 'field', placeholder: '예: 스트리밍', defaultValue: initial?.label || '' })] }),
-      jsxs('div', { style: { flex: 1 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: isIncome ? '입금일' : '납입일' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 4, paddingTop: 6 }, children: [jsx('input', { ref: dayRef, className: 'field-sm', placeholder: '15', maxLength: 2, defaultValue: initial?.day || '', style: { width: 32 } }), jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '일' })] })] }),
+      jsxs('div', { style: { flex: 1 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: isIncome ? '입금일' : '납입일' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 4, paddingTop: 6 }, children: [jsx('input', { ref: dayRef, className: 'field-sm', placeholder: '1', maxLength: 2, defaultValue: initial?.day || '', style: { width: 32 } }), jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '일' })] })] }),
     ] }),
-    jsxs('div', { style: { marginBottom: 10 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: isIncome ? '수익 주기' : '납부 주기' }), jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: freqOpts.map(pp => jsx(Pill, { key: pp.value, on: freq === pp.value, onClick: () => setFreq(pp.value), style: { fontSize: 11 }, children: pp.label })) })] }),
-    // 수입 유형: 계좌 / 현금 / 상품권·쿠폰
+    jsxs('div', { style: { marginBottom: 10 }, children: [
+      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: isIncome ? '수익 주기' : '납부 주기' }),
+      jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: freqOpts.map(pp => jsx(Pill, { key: pp.value, on: freq === pp.value, onClick: () => setFreq(pp.value), style: { fontSize: 11 }, children: pp.label })) }),
+    ] }),
+    // 카테고리 선택
+    jsxs('div', { style: { marginBottom: 10 }, children: [
+      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '카테고리' }),
+      jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: catList.map(c => jsx(Pill, { key: c, on: cat === c, onClick: () => setCat(c), style: { fontSize: 11 }, children: c })) }),
+    ] }),
     isIncome && jsxs('div', { style: { marginBottom: 10 }, children: [
       jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '수입 유형' }),
-      jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: [{ v: 'account', l: '계좌/현금' }, { v: 'voucher', l: '상품권/쿠폰' }].map(opt => jsx(Pill, { key: opt.v, on: incomeType === opt.v, onClick: () => { setIncomeType(opt.v); if (opt.v !== 'account') setAccId(''); }, style: { fontSize: 11 }, children: opt.l })) }),
+      jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: [{ v: 'account', l: '🏦 계좌' }, { v: 'cash', l: '💵 현금' }, { v: 'voucher', l: '🎫 상품권/쿠폰' }].map(opt => jsx(Pill, { key: opt.v, on: incomeType === opt.v, onClick: () => { setIncomeType(opt.v); if (opt.v !== 'account') setAccId(''); }, style: { fontSize: 11 }, children: opt.l })) }),
     ] }),
     needsAccount && accounts.length > 0 && jsxs('div', { style: { marginBottom: 12 }, children: [
       jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: isIncome ? '입금 계좌' : '출금 계좌' }),
       jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: accounts.map(a => jsx(Pill, { key: a.id, on: accId === a.id, onClick: () => setAccId(a.id), style: { fontSize: 11 }, children: a.name })) }),
     ] }),
     jsxs('div', { style: { display: 'flex', gap: 8 }, children: [
-      jsx('button', { className: 'btn', style: { flex: 1, padding: 11, fontSize: 13 }, onClick: () => onSubmit({ name: nameRef.current.value, label: labelRef?.current?.value || '', amount: amtRef.current.value, day: dayRef.current.value, currency: cur, frequency: freq, accountId: needsAccount ? accId : '', incomeType: isIncome ? incomeType : 'expense' }), children: submitLabel }),
+      jsx('button', { className: 'btn', style: { flex: 1, padding: 11, fontSize: 13 }, onClick: () => onSubmit({ name: nameRef.current.value, label: labelRef?.current?.value || '', amount: amtRef.current.value, day: dayRef.current.value, currency: cur, frequency: freq, category: cat, accountId: needsAccount ? accId : '', incomeType: isIncome ? incomeType : 'expense' }), children: submitLabel }),
       jsx('button', { className: 'btn-ghost', style: { flex: 1, margin: 0, padding: 11, fontSize: 13 }, onClick: onCancel, children: '취소' }),
     ] }),
   ] });
@@ -1224,7 +1316,7 @@ function FixedTab() {
       jsxs('div', { className: 'row', style: { cursor: 'pointer' }, onClick: () => setExpandedId(expanded ? null : item.id), children: [
         jsxs('div', { children: [
           jsxs('p', { style: { fontSize: 13, fontWeight: 500 }, children: [item.name, ' ', item.label && jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)', fontWeight: 400 }, children: item.label })] }),
-          jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }, children: [freqLabel(item.frequency, isIncome), ' ', item.day, '일', item.accountId ? ` · ${accName(item.accountId)}` : item.incomeType === 'voucher' ? ' · 상품권/쿠폰' : item.incomeType === 'cash' ? ' · 현금' : ''] }),
+          jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }, children: [freqLabel(item.frequency, isIncome), ' ', item.day, '일', item.accountId ? ` · ${accName(item.accountId)}` : item.incomeType === 'voucher' ? ' · 🎫 상품권/쿠폰' : item.incomeType === 'cash' ? ' · 💵 현금' : ''] }),
         ] }),
         jsxs('div', { style: { textAlign: 'right' }, children: [
           jsx('p', { style: { fontSize: 13, fontWeight: 500 }, children: fmtItem(item) }),
@@ -1263,10 +1355,10 @@ function FixedTab() {
     jsxs('div', { className: 'add-row', onClick: () => { setAddIncOpen(o => !o); setEditIncId(null); }, children: [jsx('div', { className: 'add-circle', children: '+' }), jsx('span', { style: { fontSize: 13 }, children: '고정 수입 추가' })] }),
     jsx('div', { className: 'divider' }),
     jsx('p', { className: 'section-title', children: '고정 지출' }),
-    addExpOpen && jsx(FixedItemForm, { onSubmit: v => { if (!v.name.trim()) return; saveExp([...expenses, { id: makeId(), name: v.name.trim(), label: v.label || '', amount: parseFloat(v.amount)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, accountId: v.accountId }]); setAddExpOpen(false); }, onCancel: () => setAddExpOpen(false), submitLabel: '추가' }),
+    addExpOpen && jsx(FixedItemForm, { onSubmit: v => { if (!v.name.trim()) return; saveExp([...expenses, { id: makeId(), name: v.name.trim(), label: v.label || '', amount: parseFloat(v.amount)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, category: v.category || '공과금', accountId: v.accountId }]); setAddExpOpen(false); }, onCancel: () => setAddExpOpen(false), submitLabel: '추가' }),
     jsx('div', { style: { borderTop: '0.5px solid var(--gray-100)', marginBottom: 8 }, children: expenses.length === 0 ? jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', padding: '12px 0' }, children: '등록된 고정 지출이 없어요' }) :
       sortByDay(expenses).map(item => editExpId === item.id ?
-        jsx('div', { key: item.id, style: { padding: '12px 0' }, children: jsx(FixedItemForm, { initial: item, onSubmit: v => { saveExp(expenses.map(x => x.id === item.id ? { ...x, name: v.name.trim(), label: v.label||'', amount: parseFloat(v.amount)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, accountId: v.accountId } : x)); setEditExpId(null); }, onCancel: () => setEditExpId(null), submitLabel: '수정 완료' }) }) :
+        jsx('div', { key: item.id, style: { padding: '12px 0' }, children: jsx(FixedItemForm, { initial: item, onSubmit: v => { saveExp(expenses.map(x => x.id === item.id ? { ...x, name: v.name.trim(), label: v.label||'', amount: parseFloat(v.amount)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, category: v.category || x.category || '공과금', accountId: v.accountId } : x)); setEditExpId(null); }, onCancel: () => setEditExpId(null), submitLabel: '수정 완료' }) }) :
         jsx(FixedItem, { key: item.id, item, isIncome: false, expandedId: expandedExpId, setExpandedId: setExpandedExpId, onEdit: () => { setEditExpId(item.id); setAddExpOpen(false); }, onDelete: () => saveExp(expenses.filter(x => x.id !== item.id)) })
       )
     }),
