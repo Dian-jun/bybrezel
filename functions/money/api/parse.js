@@ -29,7 +29,7 @@ export async function onRequestPost(context) {
         'X-Title': '교민 가계부',
       },
       body: JSON.stringify({
-        model: 'mistralai/mistral-7b-instruct:free',
+        model: 'openrouter/free',
         messages: [
           {
             role: 'system',
