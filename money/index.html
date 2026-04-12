@@ -455,7 +455,7 @@ const AmountInput = ({ value, onChange, placeholder = '0', style }) => {
     if (raw === '' || /^\d*\.?\d{0,2}$/.test(raw)) onChange(fmtComma(raw));
   };
   return jsx('input', {
-    className: 'field-amt', type: 'text', inputMode: 'numeric',
+    className: 'field-amt', type: 'text', inputMode: 'decimal',
     value, onChange: handleChange, placeholder, style,
   });
 };
@@ -466,7 +466,7 @@ const AmountField = ({ value, onChange, placeholder = '0', style }) => {
     if (raw === '' || /^\d*\.?\d{0,2}$/.test(raw)) onChange(fmtComma(raw));
   };
   return jsx('input', {
-    className: 'field', type: 'text', inputMode: 'numeric',
+    className: 'field', type: 'text', inputMode: 'decimal',
     value, onChange: handleChange, placeholder, style,
   });
 };
@@ -990,9 +990,7 @@ function AddTransaction({ onDone, editing = null }) {
   const [aiErr, setAiErr] = useState('');
   const f = editing || {};
   const [type, setType] = useState(f.type || 'expense');
-  const [amtStr, setAmtStr] = useState(f.amount ? fmtComma(String(Math.round(f.currency === 'EUR' ? f.amount * 100 / 100 : f.amount))) : '');
-  const [cur, setCur] = useState(f.currency || 'EUR');
-  const [accId, setAccId] = useState(f.accountId || accounts[0]?.id || '');
+  const [amtStr, setAmtStr] = useState(f.amount ? fmtComma(String(f.currency === 'EUR' ? f.amount : Math.round(f.amount))) : '');  const [accId, setAccId] = useState(f.accountId || accounts[0]?.id || '');
   const [cat, setCat] = useState(f.category || '식비');
   const [payMethod, setPayMethod] = useState(f.payMethod || 'card');
   // titleRef 대신 state로 관리 — ref 타이밍 문제 해결
@@ -1064,8 +1062,7 @@ function AddTransaction({ onDone, editing = null }) {
       const parsed = data.result;
       setAiResult(parsed);
       setType(parsed.type);
-      setAmtStr(fmtComma(String(Math.round(parsed.amount))));
-      setCur(parsed.currency);
+      setAmtStr(fmtComma(String(parsed.currency === 'EUR' ? parsed.amount : Math.round(parsed.amount))));      setCur(parsed.currency);
       setPayMethod(parsed.payMethod);
       // title — state로 안정적으로 반영
       setTitleVal(parsed.title || '');
