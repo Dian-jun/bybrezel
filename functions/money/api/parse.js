@@ -49,10 +49,9 @@ export async function onRequestPost(context) {
 
     // OpenRouter 응답에서 텍스트 추출
     const raw = data.choices?.[0]?.message?.content || '';
-    const clean = raw.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
 
-    return new Response(JSON.stringify({ ok: true, result: parsed }), {
+    // 디버그: raw 값 그대로 반환
+    return new Response(JSON.stringify({ ok: false, debug: true, raw, fullData: data }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
