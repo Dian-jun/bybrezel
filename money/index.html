@@ -735,6 +735,7 @@ function HomeTab({ onOpenSettings }) {
   const [txns, setTxns] = useState([]);
   const [rate, setRate] = useState(1480);
   const [budget, setBudgetState] = useState({ eur: null, excludeCategories: ['식비지원금'] });
+  const [detail, setDetail] = useState(null);
 
   useEffect(() => {
     syncFixedCosts(); setTxns(getTxns()); setRate(getRate().rate); setBudgetState(getBudget());
@@ -808,7 +809,7 @@ function HomeTab({ onOpenSettings }) {
     jsxs('div', { style: { marginTop: 14, borderTop: '0.5px solid var(--gray-100)', paddingTop: 14 }, children: [
       jsxs('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginBottom: 10 }, children: [mo + 1, '월 ', day, '일'] }),
       dayTxns.length === 0 ? jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)' }, children: '내역이 없어요' }) :
-      dayTxns.map(t => jsxs('div', { className: 'row', style: { paddingTop: 10, paddingBottom: 10 }, children: [
+      dayTxns.map(t => jsxs('div', { className: 'row', style: { paddingTop: 10, paddingBottom: 10, cursor: 'pointer' }, onClick: () => setDetail(t), children: [
         jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 10 }, children: [
           jsx('span', { style: { display: 'flex', alignItems: 'center', width: 20 }, children: jsx(CategoryIcon, { cat: t.category }) }),
           jsxs('div', { children: [jsx('p', { style: { fontSize: 13, fontWeight: 500 }, children: t.title }), jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [t.category, ' · ', t.accountName] })] }),
@@ -829,6 +830,7 @@ function HomeTab({ onOpenSettings }) {
 function TxnDetail({ txn, onBack, onEdit }) {
   const { rate } = getRate();
   const r = txn.rateAtTime || rate;
+  if (detail) return jsx('div', { className: 'app-shell', children: jsx(TxnDetail, { txn: detail, onBack: () => { setDetail(null); setTxns(getTxns()); }, onEdit: t => { setDetail(null); } }) });
   return jsxs('div', { className: 'page', style: { paddingTop: 16 }, children: [
     jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }, children: [
       jsxs('button', { onClick: onBack, style: { background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, color: 'var(--gray-400)', fontSize: 13, padding: 0 }, children: [jsx(IconBack, { size: 16, sw: 1.5 }), ' 뒤로'] }),
@@ -1092,7 +1094,7 @@ function AddTransaction({ onDone, editing = null }) {
     const title = titleVal.trim() || aiText || cat;
     const memo = memoRef.current?.value || '';
     if (!amtStr) return;
-    if (!isVoucher && !accId) return;
+    if (!isVoucher && !accId && accounts.length > 0) return;
     const acc = accounts.find(a => a.id === accId);
     const entry = { title, type, amount: parseComma(amtStr), currency: cur, accountId: isVoucher ? '' : accId, accountName: isVoucher ? '상품권/쿠폰' : acc?.name || '', category: cat, payMethod, memo, date, rateAtTime: effectiveRate, rateDate: rateInfo?.date || date };
     if (editing) updateTxn(editing.id, entry);
