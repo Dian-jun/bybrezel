@@ -1183,7 +1183,7 @@ function AccountsTab() {
       jsx('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', textAlign: 'center', marginBottom: 4 }, children: DAYS.map(d => jsx('div', { style: { fontSize: 10, color: 'var(--gray-400)' }, children: d }, d)) }),
       jsx('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', textAlign: 'center' }, children: calGrid.map((d, i) => {
         const isToday = d && d === today.getDate() && calMonth === today.getMonth() && calYear === today.getFullYear();
-        const isSel = d === calDay;
+        const isSel = d !== null && d === calDay;
         const isFut = d && `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}` > todayStr;
         return jsx('div', { key: i, onClick: () => d && !isFut && setCalDay(d === calDay ? null : d), style: { cursor: d && !isFut ? 'pointer' : 'default', padding: '3px 0', opacity: isFut ? 0.45 : 1 }, children: jsx('div', { style: { width: 24, height: 24, borderRadius: '50%', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, background: isSel ? 'var(--black)' : isToday ? 'var(--gray-200)' : 'transparent', color: isSel ? 'white' : isFut ? 'var(--gray-400)' : d ? 'var(--black)' : 'transparent', fontWeight: isSel || isToday ? 500 : 400 }, children: d || '' }) });
       }) }),
