@@ -1,5 +1,5 @@
 // 교민 가계부 Service Worker — /money/ 경로용
-const CACHE_VERSION = 'gyembu-v1';
+const CACHE_VERSION = 'gyembu-v2';
 
 const SHELL_ASSETS = [
   '/money/',
