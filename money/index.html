@@ -112,19 +112,25 @@ const CheckIcon  = () => jsx('svg',{width:10,height:8,viewBox:'0 0 10 8',fill:'n
 
 // ─── category icons ───────────────────────────────────────────────────────────
 const CATEGORY_ICONS = {
-  '식비':   p => jsx(Icon,{...p,d:['M2 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2','M7 2v20','M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7']}),
-  '외식':   p => jsx(Icon,{...p,d:['M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2','M7 2v20','M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7']}),
-  '교통':   p => jsx(Icon,{...p,d:['M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z','M4 11h16','M12 3v8','M8 19l-2 3','M18 22l-2-3','M8 15h.01','M16 15h.01']}),
-  '의료':   p => jsx(Icon,{...p,d:'M10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7ZM8.5 8.5l7 7'}),
-  '쇼핑':   p => jsx(Icon,{...p,d:['M16 10a4 4 0 0 1-8 0','M3.103 6.034h17.794','M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z']}),
-  '카페':   p => jsx(Icon,{...p,d:['M10 2v2','M14 2v2','M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1','M6 2v2']}),
-  '구독':   p => jsx('svg',{width:p.size||16,height:p.size||16,viewBox:'0 0 24 24',fill:'none',stroke:p.color||'currentColor',strokeWidth:2,strokeLinecap:'round',strokeLinejoin:'round',children:[jsx('rect',{width:'14',height:'20',x:'5',y:'2',rx:'2',ry:'2'},0),jsx('path',{d:'M12 18h.01'},1)]}),
-  '공과금': p => jsx(Icon,{...p,d:'M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z'}),
-  '송금':   p => jsx(Icon,{...p,d:['M8 3 4 7l4 4','M4 7h16','M16 21l4-4-4-4','M20 17H4']}),
-  '급여':   p => jsx(Icon,{...p,d:['M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4','M4 6v12c0 1.1.9 2 2 2h14v-4','M12 12h.01']}),
+  '식비':     p => jsx(Icon,{...p,d:['M2 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2','M7 2v20','M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7']}),
+  '외식':     p => jsx(Icon,{...p,d:['M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2','M7 2v20','M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7']}),
+  '교통':     p => jsx(Icon,{...p,d:['M8 6v6','M15 6v6','M2 12h19.6','M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3','M7 18h7','M10 18a2 2 0 1 0 4 0 2 2 0 0 0-4 0','M17 18a2 2 0 1 0 4 0 2 2 0 0 0-4 0']}),
+  '의료':     p => jsx(Icon,{...p,d:['M11 2a2 2 0 0 0-2 2v5H4a2 2 0 0 0-2 2v2c0 1.1.9 2 2 2h5v5c0 1.1.9 2 2 2h2a2 2 0 0 0 2-2v-5h5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-5V4a2 2 0 0 0-2-2h-2z']}),
+  '쇼핑':     p => jsx(Icon,{...p,d:['M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z','M3 6h18','M16 10a4 4 0 0 1-8 0']}),
+  '카페':     p => jsx(Icon,{...p,d:['M10 2v2','M14 2v2','M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1','M6 2v2']}),
+  '구독':     p => jsx(Icon,{...p,d:['M21 12V7H5a2 2 0 0 1 0-4h14v4','M3 5v14a2 2 0 0 0 2 2h16v-5','M18 12a2 2 0 0 0 0 4h4v-4z']}),
+  '공과금':   p => jsx(Icon,{...p,d:'M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z'}),
+  '주거':     p => jsx(Icon,{...p,d:['M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8','M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z']}),
+  '통신':     p => jsx(Icon,{...p,d:['M5 12.55a11 11 0 0 1 14.08 0','M1.42 9a16 16 0 0 1 21.16 0','M8.53 16.11a6 6 0 0 1 6.95 0','M12 20h.01']}),
+  '보험':     p => jsx(Icon,{...p,d:['M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z']}),
+  '금융':     p => jsx(Icon,{...p,d:['M12 2v20','M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6']}),
+  '교육':     p => jsx(Icon,{...p,d:['M22 10v6M2 10l10-5 10 5-10 5z','M6 12v5c3 3 9 3 12 0v-5']}),
+  '육아':     p => jsx(Icon,{...p,d:['M9 12h.01','M15 12h.01','M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5','M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 3']}),
+  '송금':     p => jsx(Icon,{...p,d:['M8 3 4 7l4 4','M4 7h16','M16 21l4-4-4-4','M20 17H4']}),
+  '급여':     p => jsx(Icon,{...p,d:['M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4','M4 6v12c0 1.1.9 2 2 2h14v-4','M12 12h.01']}),
   '식비지원금': p => jsx(Icon,{...p,d:['M12 7v14','M20 11v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8','M7.5 7a1 1 0 0 1 0-5A4.8 8 0 0 1 12 7a4.8 8 0 0 1 4.5-5 1 1 0 0 1 0 5','M3 7h18a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v0a1 1 0 0 0 1 1z']}),
-  '여행':   p => jsx(Icon,{...p,d:['M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2','M4 7h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z','M4 12h16']}),
-  '기타':   p => jsx(Icon,{...p,d:['M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0','M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0','M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0']}),
+  '여행':     p => jsx(Icon,{...p,d:['M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2','M4 7h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z','M4 12h16']}),
+  '기타':     p => jsx(Icon,{...p,d:['M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0','M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0','M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0']}),
 };
 const CategoryIcon = ({ cat, size=16, color='var(--gray-600)' }) => {
   const C = CATEGORY_ICONS[cat] || CATEGORY_ICONS['기타'];
@@ -162,7 +168,6 @@ const getTxns       = () => ls.get(K.TRANSACTIONS) || [];
 const setTxns       = v  => ls.set(K.TRANSACTIONS, v);
 const getRate       = () => ls.get(K.RATE) || { rate: 1480, updatedAt: null };
 const setRate       = v  => ls.set(K.RATE, { rate: v, updatedAt: new Date().toISOString() });
-const DEFAULT_CATS  = ['식비','외식','교통','의료','쇼핑','카페','구독','공과금','송금','급여','식비지원금','여행','기타'];
 const getCategories = () => ls.get(K.CATEGORIES) || DEFAULT_CATS;
 const setCategories = v  => ls.set(K.CATEGORIES, v);
 const getBudget     = () => ls.get(K.BUDGET) || { eur: null, excludeCategories: ['식비지원금'] };
@@ -455,7 +460,7 @@ function Onboarding({ onDone }) {
     setFixedExp([
       ...fixedExpChecks.filter(i => i.checked).map(i => {
         const cfg = fixedExpCfg[i.id] || {};
-        return { id: i.id, name: i.name, label: i.label, amount: parseComma(cfg.amount || i.amount) || 0, day: parseInt(cfg.day || i.day) || 1, currency: cfg.currency || i.currency, frequency: cfg.frequency || i.frequency, accountId: cfg.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) };
+        return { id: i.id, name: i.name, label: i.label, amount: parseComma(cfg.amount || i.amount) || 0, day: parseInt(cfg.day || i.day) || 1, currency: cfg.currency || i.currency, frequency: cfg.frequency || i.frequency, category: i.category || '공과금', accountId: cfg.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) };
       }),
       ...fixedExpExtra.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })),
     ]);
@@ -534,10 +539,9 @@ function Onboarding({ onDone }) {
         if (!groups[cat]) groups[cat] = [];
         groups[cat].push(item);
       });
-      const catIcons = { '주거':'🏠', '통신':'📡', '보험':'🛡️', '교통':'🚗', '구독':'📱', '금융':'💰', '교육':'🎓', '육아':'👶', '기타':'📦' };
       return catOrder.filter(c => groups[c]).map(cat =>
         jsxs('div', { key: cat, style: { marginBottom: 8 }, children: [
-          jsxs('p', { style: { fontSize: 11, fontWeight: 500, color: 'var(--gray-400)', letterSpacing: '0.8px', textTransform: 'uppercase', padding: '12px 0 4px' }, children: [catIcons[cat] || '', ' ', cat] }),
+          jsxs('p', { style: { fontSize: 11, fontWeight: 500, color: 'var(--gray-400)', letterSpacing: '0.8px', textTransform: 'uppercase', padding: '12px 0 4px', display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx(CategoryIcon, { cat, size: 13, color: 'var(--gray-400)' }), cat] }),
           jsx('div', { style: { borderTop: '0.5px solid var(--gray-100)' }, children: groups[cat].map(item =>
             jsx(FixedExpOnboardItem, { key: item.id, item, accounts: displayAccs,
               onToggle: () => setFixedExpChecks(prev => prev.map(p => p.id === item.id ? { ...p, checked: !p.checked } : p)),
