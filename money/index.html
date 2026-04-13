@@ -1556,18 +1556,24 @@ function AccountsTab() {
   const calFirst = new Date(calYear, calMonth, 1).getDay(), calDays = new Date(calYear, calMonth + 1, 0).getDate();
   const calGrid = Array.from({ length: 42 }, (_, i) => { const d = i - calFirst + 1; return d >= 1 && d <= calDays ? d : null; });
   const snapshot = calDay ? getSnapshot(calYear, calMonth, calDay) : null;
+  const isHistoryMode = !!snapshot;
   const snapAccs = snapshot ? snapshot.accounts : accsWithBal.map(a => ({ ...a, snapBalance: a.computedBalance }));
   const snapEur = snapAccs.reduce((s, a) => s + toEur(a.snapBalance, a.currency), 0);
   const snapKrw = snapAccs.reduce((s, a) => s + toKrw(a.snapBalance, a.currency), 0);
 
+  const displayAccs = isHistoryMode
+    ? sortAccountsForDisplay(snapAccs.map(a => ({ ...a, computedBalance: a.snapBalance })))
+    : sortAccountsForDisplay(accsWithBal);
+  const displayTotalEur = displayAccs.reduce((s, a) => s + toEur(a.computedBalance, a.currency), 0);
+  const displayMaxEur = displayTotalEur || 1;
+
   // 정렬된 계좌 목록: 독일 먼저, 한국 다음, 각 그룹 내 현금은 마지막
-  const sortedAccs = sortAccountsForDisplay(accsWithBal);
 
   return jsxs('div', { className: 'page', style: { paddingTop: 16 }, children: [
     jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }, children: [
       jsx('h2', { children: '자산' }),
       jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 8 }, children: [
-        jsx('button', { onClick: () => setShowCal(v => !v), style: { background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }, children: jsx(IconCalendar, { size: 18, color: showCal ? 'var(--black)' : 'var(--gray-400)', sw: 1.5 }) }),
+        jsx('button', { onClick: () => setShowCal(v => { const next = !v; if (!next) { setCalDay(null); } return next; }), style: { background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }, children: jsx(IconCalendar, { size: 18, color: showCal ? 'var(--black)' : 'var(--gray-400)', sw: 1.5 }) }),
         jsxs('div', { className: 'toggle-wrap', children: [jsx('button', { className: `toggle-btn ${cur === 'EUR' ? 'active' : 'inactive'}`, onClick: () => setCur('EUR'), children: 'EUR' }), jsx('button', { className: `toggle-btn ${cur === 'KRW' ? 'active' : 'inactive'}`, onClick: () => setCur('KRW'), children: 'KRW' })] }),
       ] }),
     ] }),
@@ -1585,45 +1591,34 @@ function AccountsTab() {
         return jsx('div', { key: i, onClick: () => d && !isFut && setCalDay(d === calDay ? null : d), style: { cursor: d && !isFut ? 'pointer' : 'default', padding: '3px 0', opacity: isFut ? 0.45 : 1 }, children: jsx('div', { style: { width: 24, height: 24, borderRadius: '50%', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, background: isSel ? 'var(--black)' : isToday ? 'var(--gray-200)' : 'transparent', color: isSel ? 'white' : isFut ? 'var(--gray-400)' : d ? 'var(--black)' : 'transparent', fontWeight: isSel || isToday ? 500 : 400 }, children: d || '' }) });
       }) }),
     ] }),
-    snapshot && jsxs('div', { style: { marginBottom: 16, background: 'transparent', borderRadius: 12, padding: 12 }, children: [
-      jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }, children: [
-        jsxs('p', { style: { fontSize: 13, fontWeight: 500 }, children: [calMonth+1, '월 ', calDay, '일 기준 자산', snapshot.isFuture ? ' (예상)' : ''] }),
-        jsx('button', { onClick: () => setCalDay(null), style: { background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--gray-400)' }, children: '✕' }),
-      ] }),
-      snapshot.isFuture && jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 8 }, children: '고정 수입/지출 기반 예상치입니다' }),
-      snapshot.accounts.map(a => {
-        const disp = cur === 'EUR' ? (a.currency === 'EUR' ? a.snapBalance : a.snapBalance / rate) : (a.currency === 'KRW' ? a.snapBalance : a.snapBalance * rate);
-        return jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '0.5px solid var(--gray-200)' }, children: [jsx('span', { style: { fontSize: 12 }, children: a.name }), jsx('span', { style: { fontSize: 12, fontWeight: 500 }, children: cur === 'EUR' ? `€ ${disp.toFixed(2)}` : `₩ ${Math.round(disp).toLocaleString()}` })] }, a.id);
-      }),
-    ] }),
     jsxs('div', { style: { marginBottom: 16 }, children: [
-      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '총 자산' }),
+      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: calDay ? `${calMonth+1}월 ${calDay}일 기준 총 자산` : '총 자산' }),
       jsx('p', { style: { fontSize: 28, fontWeight: 500 }, children: cur === 'EUR' ? `€ ${snapEur.toFixed(2)}` : `₩ ${Math.round(snapKrw).toLocaleString()}` }),
       jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginTop: 4 }, children: cur === 'EUR' ? `≈ ₩ ${Math.round(snapKrw).toLocaleString()}` : `≈ € ${snapEur.toFixed(2)}` }),
     ] }),
-    accs.length > 0 && jsxs('div', { style: { marginBottom: 20 }, children: [
-      jsx('div', { style: { display: 'flex', height: 6, borderRadius: 3, overflow: 'hidden', gap: 1 }, children: accsWithBal.map((a, i) => jsx('div', { style: { width: `${toEur(a.computedBalance, a.currency)/maxEur*100}%`, background: getColor(i) } }, a.id)) }),
-      jsx('div', { style: { display: 'flex', gap: 12, marginTop: 8, flexWrap: 'wrap' }, children: accsWithBal.map((a, i) => jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 4 }, children: [jsx('div', { style: { width: 8, height: 8, borderRadius: 2, background: getColor(i) } }), jsxs('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [a.name, ' ', (toEur(a.computedBalance, a.currency)/maxEur*100).toFixed(0), '%'] })] }, a.id)) }),
+    displayAccs.length > 0 && jsxs('div', { style: { marginBottom: 20 }, children: [
+      jsx('div', { style: { display: 'flex', height: 6, borderRadius: 3, overflow: 'hidden', gap: 1 }, children: displayAccs.map((a, i) => jsx('div', { style: { width: `${toEur(a.computedBalance, a.currency)/displayMaxEur*100}%`, background: getColor(i) } }, a.id)) }),
+      jsx('div', { style: { display: 'flex', gap: 12, marginTop: 8, flexWrap: 'wrap' }, children: displayAccs.map((a, i) => jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 4 }, children: [jsx('div', { style: { width: 8, height: 8, borderRadius: 2, background: getColor(i) } }), jsxs('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [a.name, ' ', (toEur(a.computedBalance, a.currency)/displayMaxEur*100).toFixed(0), '%'] })] }, a.id)) }),
     ] }),
     jsx('div', { className: 'divider' }),
     jsx('p', { className: 'section-title', children: '계좌별 잔액' }),
-    addMode && jsx(AccountForm, { onSubmit: ({ name, balance, country }) => { if (!name.trim()) return; const idx = accs.length; const newAcc = { id: Date.now().toString(), name: name.trim(), country, currency: country === 'KR' ? 'KRW' : 'EUR', initialBalance: parseFloat(balance) || 0, color: COLORS[idx % COLORS.length] }; reload([...accs, newAcc]); setAddMode(false); }, onCancel: () => setAddMode(false), submitLabel: '추가' }),
-    jsx('div', { style: { borderTop: '0.5px solid var(--gray-100)' }, children: sortedAccs.length === 0 ? jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', padding: '16px 0' }, children: '등록된 계좌가 없어요' }) :
-      sortedAccs.map((a, i) => jsx('div', { key: a.id, children:
-        editId === a.id ? jsx('div', { style: { padding: '12px 0' }, children: jsx(AccountForm, { initial: a, onSubmit: ({ name, balance, country }) => { if (!name.trim()) return; reload(accs.map(x => x.id === a.id ? { ...x, name: name.trim(), country, currency: country === 'KR' ? 'KRW' : 'EUR', initialBalance: parseFloat(balance) || 0 } : x)); setEditId(null); }, onCancel: () => setEditId(null), submitLabel: '수정 완료' }) }) :
+    !isHistoryMode && addMode && jsx(AccountForm, { onSubmit: ({ name, balance, country }) => { if (!name.trim()) return; const idx = accs.length; const newAcc = { id: Date.now().toString(), name: name.trim(), country, currency: country === 'KR' ? 'KRW' : 'EUR', initialBalance: parseFloat(balance) || 0, color: COLORS[idx % COLORS.length] }; reload([...accs, newAcc]); setAddMode(false); }, onCancel: () => setAddMode(false), submitLabel: '추가' }),
+    jsx('div', { style: { borderTop: '0.5px solid var(--gray-100)' }, children: displayAccs.length === 0 ? jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', padding: '16px 0' }, children: '등록된 계좌가 없어요' }) :
+      displayAccs.map((a, i) => jsx('div', { key: a.id, children:
+        !isHistoryMode && editId === a.id ? jsx('div', { style: { padding: '12px 0' }, children: jsx(AccountForm, { initial: a, onSubmit: ({ name, balance, country }) => { if (!name.trim()) return; reload(accs.map(x => x.id === a.id ? { ...x, name: name.trim(), country, currency: country === 'KR' ? 'KRW' : 'EUR', initialBalance: parseFloat(balance) || 0 } : x)); setEditId(null); }, onCancel: () => setEditId(null), submitLabel: '수정 완료' }) }) :
         jsxs('div', { style: { padding: '14px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
           jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 3 }, children: [jsx('p', { style: { fontSize: 13, fontWeight: 500 }, children: a.name }), jsx('p', { style: { fontSize: 16, fontWeight: 500 }, children: fmtBal(a) })] }),
           jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', marginBottom: 8 }, children: [jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [a.country === 'KR' ? '🇰🇷 한국' : '🇩🇪 독일', ' · ', a.currency] }), jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: fmtAlt(a) })] }),
-          jsxs('div', { style: { display: 'flex', gap: 12 }, children: [
+          !isHistoryMode ? jsxs('div', { style: { display: 'flex', gap: 12 }, children: [
             jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: () => { setEditId(a.id); setAddMode(false); setCorrectId(null); }, children: '수정' }),
             jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: () => { if (window.confirm('계좌를 삭제할까요?')) reload(accs.filter(x => x.id !== a.id)); }, children: '삭제' }),
             jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: () => { setCorrectId(correctId === a.id ? null : a.id); setEditId(null); }, children: '잔액 보정' }),
-          ] }),
-          correctId === a.id && jsx(BalanceCorrectForm, { account: a, onSubmit: v => { correctBalance(a.id, v); setTxnsState(getTxns()); setCorrectId(null); }, onCancel: () => setCorrectId(null) }),
+          ] }) : jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '날짜 기준 보기에서는 수정할 수 없어요' }),
+          !isHistoryMode && correctId === a.id && jsx(BalanceCorrectForm, { account: a, onSubmit: v => { correctBalance(a.id, v); setTxnsState(getTxns()); setCorrectId(null); }, onCancel: () => setCorrectId(null) }),
         ] })
       } ))
     }),
-    jsxs('div', { className: 'add-row', onClick: () => { setAddMode(o => !o); setEditId(null); setCorrectId(null); }, children: [jsx('div', { className: 'add-circle', children: '+' }), jsx('span', { style: { fontSize: 13 }, children: '계좌 추가' })] }),
+    !isHistoryMode && jsxs('div', { className: 'add-row', onClick: () => { setAddMode(o => !o); setEditId(null); setCorrectId(null); }, children: [jsx('div', { className: 'add-circle', children: '+' }), jsx('span', { style: { fontSize: 13 }, children: '계좌 추가' })] }),
     jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', Math.round(rate).toLocaleString(), ' · ECB 기준'] }),
   ] });
 }
