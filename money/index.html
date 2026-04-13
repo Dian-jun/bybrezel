@@ -567,9 +567,14 @@ function Onboarding({ onDone }) {
   };
 
   const addExtra = () => {
-    const nm = extraNameRef.current?.value, bal = extraBalRef.current?.value;
+    const nm = extraNameRef.current?.value;
+    const balRaw = extraBalRef.current?.value || '0';
     if (!nm?.trim()) return;
-    setExtraAccs(prev => [...prev, { id: Date.now().toString(), name: nm.trim(), balance: bal || '0', country: extraCountry }]);
+    // 독일식 소수점 콤마 처리: 마지막 콤마가 소수점인 경우 변환
+    // 예: "543,30" → "543.30", "1.234,56" → "1234.56"
+    const balNorm = balRaw.replace(/\.(?=\d{3})/g, '').replace(/,(\d{1,2})$/, '.$1').replace(/,/g, '');
+    const bal = parseFloat(balNorm) || 0;
+    setExtraAccs(prev => [...prev, { id: Date.now().toString(), name: nm.trim(), balance: bal, country: extraCountry }]);
     if (extraNameRef.current) extraNameRef.current.value = '';
     if (extraBalRef.current) extraBalRef.current.value = '';
   };
