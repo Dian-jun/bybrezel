@@ -1585,7 +1585,7 @@ function AccountsTab() {
         return jsx('div', { key: i, onClick: () => d && !isFut && setCalDay(d === calDay ? null : d), style: { cursor: d && !isFut ? 'pointer' : 'default', padding: '3px 0', opacity: isFut ? 0.45 : 1 }, children: jsx('div', { style: { width: 24, height: 24, borderRadius: '50%', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, background: isSel ? 'var(--black)' : isToday ? 'var(--gray-200)' : 'transparent', color: isSel ? 'white' : isFut ? 'var(--gray-400)' : d ? 'var(--black)' : 'transparent', fontWeight: isSel || isToday ? 500 : 400 }, children: d || '' }) });
       }) }),
     ] }),
-    snapshot && jsxs('div', { style: { marginBottom: 16, background: 'var(--gray-50)', borderRadius: 12, padding: 12 }, children: [
+    snapshot && jsxs('div', { style: { marginBottom: 16, background: 'transparent', borderRadius: 12, padding: 12 }, children: [
       jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }, children: [
         jsxs('p', { style: { fontSize: 13, fontWeight: 500 }, children: [calMonth+1, '월 ', calDay, '일 기준 자산', snapshot.isFuture ? ' (예상)' : ''] }),
         jsx('button', { onClick: () => setCalDay(null), style: { background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--gray-400)' }, children: '✕' }),
