@@ -490,10 +490,24 @@ const sortAccountsForDisplay = accounts => [...accounts].sort((a, b) => {
 const Pill = ({ on, onClick, children, style }) =>
   jsx('button', { className: on ? 'pill-on' : 'pill-off', onClick, style, children });
 
-const AmountInput = ({ value, onChange, placeholder = '0', style }) => {
+const fmtAmount = (raw, currency) => {
+  // 소수점 분리
+  const parts = raw.split('.');
+  const intPart = parts[0].replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  if (currency === 'KRW') return intPart; // 원화는 소수점 없음
+  return parts.length > 1 ? intPart + '.' + parts[1].replace(/\D/g, '').slice(0, 2) : intPart;
+};
+
+const AmountInput = ({ value, onChange, placeholder = '0', style, currency = 'EUR' }) => {
   const handleChange = e => {
-    const raw = e.target.value.replace(/,/g, '').replace(/[^\d.]/g, '').replace(/\.(?=.*\.)/g, '');
-    if (raw === '' || /^\d*\.?\d{0,2}$/.test(raw)) onChange(fmtComma(raw));
+    // 천단위 콤마 제거, 독일식 소수점 콤마를 .으로 변환
+    let raw = e.target.value.replace(/,/g, '');
+    // 독일 키보드: 마지막에 입력된 콤마를 소수점으로 처리
+    const lastChar = e.target.value.slice(-1);
+    if (lastChar === ',') raw = e.target.value.slice(0, -1).replace(/,/g, '') + '.';
+    raw = raw.replace(/[^\d.]/g, '').replace(/\.(?=.*\.)/g, '');
+    if (currency === 'KRW') raw = raw.replace(/\./g, ''); // 원화는 소수점 제거
+    if (raw === '' || /^\d*\.?\d{0,2}$/.test(raw)) onChange(fmtAmount(raw, currency));
   };
   return jsx('input', {
     className: 'field-amt', type: 'text', inputMode: 'decimal',
@@ -501,11 +515,14 @@ const AmountInput = ({ value, onChange, placeholder = '0', style }) => {
   });
 };
 
-const AmountField = ({ value, onChange, placeholder = '0', style }) => {
+const AmountField = ({ value, onChange, placeholder = '0', style, currency = 'EUR' }) => {
   const handleChange = e => {
-    // 천단위 콤마 제거 후 독일식 소수점(,) → . 변환
-    const raw = e.target.value.replace(/,/g, '').replace(/[^\d.]/g, '').replace(/\.(?=.*\.)/g, '');
-    if (raw === '' || /^\d*\.?\d{0,2}$/.test(raw)) onChange(fmtComma(raw));
+    let raw = e.target.value.replace(/,/g, '');
+    const lastChar = e.target.value.slice(-1);
+    if (lastChar === ',') raw = e.target.value.slice(0, -1).replace(/,/g, '') + '.';
+    raw = raw.replace(/[^\d.]/g, '').replace(/\.(?=.*\.)/g, '');
+    if (currency === 'KRW') raw = raw.replace(/\./g, '');
+    if (raw === '' || /^\d*\.?\d{0,2}$/.test(raw)) onChange(fmtAmount(raw, currency));
   };
   return jsx('input', {
     className: 'field', type: 'text', inputMode: 'decimal',
@@ -622,11 +639,11 @@ function Onboarding({ onDone }) {
     jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', marginBottom: 24 }, children: '보유하신 계좌를 입력해주세요' }),
     jsx('p', { className: 'section-title', children: '한국 계좌' }),
     jsxs('div', { style: { marginBottom: 14 }, children: [jsx(Label, { children: '통장명' }), jsx('input', { className: 'field', placeholder: '예: 카카오뱅크', value: krName, onChange: e => setKrName(e.target.value) })] }),
-    jsxs('div', { style: { marginBottom: 0 }, children: [jsx(Label, { children: '현재 잔액' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: '₩' }), jsx(AmountField, { value: krBal, onChange: setKrBal, placeholder: '0', style: { flex: 1 } })] })] }),
+    jsxs('div', { style: { marginBottom: 0 }, children: [jsx(Label, { children: '현재 잔액' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: '₩' }), jsx(AmountField, { value: krBal, onChange: setKrBal, placeholder: '0', style: { flex: 1 }, currency: 'KRW' })] })] }),
     jsx('div', { className: 'divider' }),
     jsx('p', { className: 'section-title', children: '독일 계좌' }),
     jsxs('div', { style: { marginBottom: 14 }, children: [jsx(Label, { children: '통장명' }), jsx('input', { className: 'field', placeholder: '예: Deutsche Bank', value: deName, onChange: e => setDeName(e.target.value) })] }),
-    jsxs('div', { style: { marginBottom: 0 }, children: [jsx(Label, { children: '현재 잔액' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: '€' }), jsx(AmountField, { value: deBal, onChange: setDeBal, placeholder: '0', style: { flex: 1 } })] })] }),
+    jsxs('div', { style: { marginBottom: 0 }, children: [jsx(Label, { children: '현재 잔액' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: '€' }), jsx(AmountField, { value: deBal, onChange: setDeBal, placeholder: '0', style: { flex: 1 }, currency: 'EUR' })] })] }),
     jsx('div', { className: 'divider' }),
     jsx('p', { className: 'section-title', children: '추가 계좌 · 카드' }),
     ...extraAccs.map(a => jsxs('div', { className: 'row', children: [
@@ -646,8 +663,8 @@ function Onboarding({ onDone }) {
     jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }, children: [jsx(Step, { to: 1 }), jsx(Prog, { total: 4, cur: 2 })] }),
     jsx('h2', { style: { marginBottom: 4 }, children: '현금 보유액' }),
     jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', marginBottom: 24 }, children: '지갑 속 현금이 있다면 입력해주세요' }),
-    jsxs('div', { style: { marginBottom: 16 }, children: [jsx(Label, { children: 'EUR 현금' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: '€' }), jsx(AmountField, { value: eurCash, onChange: setEurCash, placeholder: '0', style: { flex: 1 } })] })] }),
-    jsxs('div', { style: { marginBottom: 16 }, children: [jsx(Label, { children: 'KRW 현금' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: '₩' }), jsx(AmountField, { value: krwCash, onChange: setKrwCash, placeholder: '0', style: { flex: 1 } })] })] }),
+    jsxs('div', { style: { marginBottom: 16 }, children: [jsx(Label, { children: 'EUR 현금' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: '€' }), jsx(AmountField, { value: eurCash, onChange: setEurCash, placeholder: '0', style: { flex: 1 }, currency: 'EUR' })] })] }),
+    jsxs('div', { style: { marginBottom: 16 }, children: [jsx(Label, { children: 'KRW 현금' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: '₩' }), jsx(AmountField, { value: krwCash, onChange: setKrwCash, placeholder: '0', style: { flex: 1 }, currency: 'KRW' })] })] }),
     jsx('div', { style: { height: 16 } }),
     jsx('button', { className: 'btn', onClick: () => setStep(3), children: '다음' }),
     jsx('button', { className: 'btn-ghost', onClick: () => setStep(3), children: '건너뛰기' }),
@@ -1330,7 +1347,7 @@ function AddTransaction({ onDone, editing = null }) {
             jsx(Pill, { on: fromCur === 'EUR', onClick: () => setFromCur('EUR'), style: { fontSize: 11 }, children: '€' }),
             jsx(Pill, { on: fromCur === 'KRW', onClick: () => setFromCur('KRW'), style: { fontSize: 11 }, children: '₩' }),
             jsx('span', { style: { fontSize: 13, color: 'var(--gray-400)' }, children: fromCur === 'EUR' ? '€' : '₩' }),
-            jsx(AmountInput, { value: fromAmtStr, onChange: setFromAmtStr, style: { width: 100 } }),
+            jsx(AmountInput, { value: fromAmtStr, onChange: setFromAmtStr, style: { width: 100 }, currency: fromCur }),
           ] }),
         ] }),
         // 입금
@@ -1344,7 +1361,7 @@ function AddTransaction({ onDone, editing = null }) {
             jsx(Pill, { on: toCur === 'EUR', onClick: () => setToCur('EUR'), style: { fontSize: 11 }, children: '€' }),
             jsx(Pill, { on: toCur === 'KRW', onClick: () => setToCur('KRW'), style: { fontSize: 11 }, children: '₩' }),
             jsx('span', { style: { fontSize: 13, color: 'var(--gray-400)' }, children: toCur === 'EUR' ? '€' : '₩' }),
-            jsx(AmountInput, { value: toAmtStr, onChange: setToAmtStr, style: { width: 100 } }),
+            jsx(AmountInput, { value: toAmtStr, onChange: setToAmtStr, style: { width: 100 }, currency: toCur }),
           ] }),
         ] }),
         // 수수료
@@ -1354,7 +1371,7 @@ function AddTransaction({ onDone, editing = null }) {
             jsx(Pill, { on: feeCur === 'EUR', onClick: () => setFeeCur('EUR'), style: { fontSize: 11 }, children: '€' }),
             jsx(Pill, { on: feeCur === 'KRW', onClick: () => setFeeCur('KRW'), style: { fontSize: 11 }, children: '₩' }),
             jsx('span', { style: { fontSize: 13, color: 'var(--gray-400)' }, children: feeCur === 'EUR' ? '€' : '₩' }),
-            jsx(AmountInput, { value: feeStr, onChange: setFeeStr, style: { width: 100 } }),
+            jsx(AmountInput, { value: feeStr, onChange: setFeeStr, style: { width: 100 }, currency: feeCur }),
           ] }),
           feeStr && parseComma(feeStr) > 0 && jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 8 }, children: '수수료는 송금 카테고리 지출로 자동 기록돼요' }),
         ] }),
@@ -1379,7 +1396,7 @@ function AddTransaction({ onDone, editing = null }) {
           jsx(Pill, { on: cur === 'KRW', onClick: () => setCur('KRW'), children: '₩' }),
           jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 2 }, children: [
             jsx('span', { style: { fontSize: 13, color: 'var(--gray-400)' }, children: cur === 'EUR' ? '€' : '₩' }),
-            jsx(AmountInput, { value: amtStr, onChange: setAmtStr, style: { width: 90 } }),
+            jsx(AmountInput, { value: amtStr, onChange: setAmtStr, style: { width: 90 }, currency: cur }),
           ] }),
         ] }),
       ] }),
