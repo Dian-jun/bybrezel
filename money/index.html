@@ -462,8 +462,9 @@ const AmountInput = ({ value, onChange, placeholder = '0', style }) => {
 
 const AmountField = ({ value, onChange, placeholder = '0', style }) => {
   const handleChange = e => {
-    const raw = e.target.value.replace(/,/g, '.').replace(/\.(?=.*\.)/g, '');
-    if (raw === '' || /^\d*\.?\d{0,2}$/.test(raw)) onChange(fmtComma(raw));
+    const stripped = e.target.value.replace(/[^\d.,]/g, '');
+    const raw = stripped.replace(/,/g, '.').replace(/\.(?=.*\.)/g, '');
+    if (raw === '' || /^\d{0,15}\.?\d{0,2}$/.test(raw)) onChange(fmtComma(raw));
   };
   return jsx('input', {
     className: 'field', type: 'text', inputMode: 'decimal',
@@ -590,7 +591,7 @@ function Onboarding({ onDone }) {
       jsxs('div', { children: [jsx('p', { style: { fontSize: 13 }, children: a.name }), jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [a.country === 'KR' ? '한국' : '독일', ' · ', a.country === 'KR' ? '₩' : '€', ' ', a.balance || 0] })] }),
       jsx('span', { style: { fontSize: 13, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: () => setExtraAccs(prev => prev.filter(x => x.id !== a.id)), children: '삭제' }),
     ] }, a.id)),
-    jsxs('div', { style: { display: 'flex', gap: 8, marginTop: 8 }, children: [jsx('input', { ref: extraNameRef, className: 'field', placeholder: '통장/카드명', style: { flex: 2 } }), jsx('input', { ref: extraBalRef, className: 'field', placeholder: '잔액', type: 'number', style: { flex: 1 } })] }),
+    jsxs('div', { style: { display: 'flex', gap: 8, marginTop: 8 }, children: [jsx('input', { ref: extraNameRef, className: 'field', placeholder: '통장/카드명', style: { flex: 2 } }), jsx('input', { ref: extraBalRef, className: 'field', placeholder: '잔액', type: 'text', inputMode: 'decimal', style: { flex: 1 } })] }),
     jsxs('div', { style: { display: 'flex', gap: 6, margin: '10px 0' }, children: [jsx(Pill, { on: extraCountry === 'KR', onClick: () => setExtraCountry('KR'), children: '한국' }), jsx(Pill, { on: extraCountry === 'DE', onClick: () => setExtraCountry('DE'), children: '독일' })] }),
     jsxs('div', { className: 'add-row', onClick: addExtra, children: [jsx('div', { className: 'add-circle', children: '+' }), jsx('span', { style: { fontSize: 13 }, children: '추가' })] }),
     jsx('div', { style: { height: 16 } }),
@@ -729,7 +730,7 @@ function FixedExpOnboardItem({ item, accounts, onToggle, onUpdate }) {
 }
 
 // ─── HOME TAB ─────────────────────────────────────────────────────────────────
-function HomeTab({ onOpenSettings }) {
+function HomeTab({ onOpenSettings, onEdit }) {
   const today = new Date();
   const [yr, setYr] = useState(today.getFullYear());
   const [mo, setMo] = useState(today.getMonth());
@@ -769,7 +770,7 @@ function HomeTab({ onOpenSettings }) {
   const prevNav = () => { if (mo === 0) { setYr(y => y-1); setMo(11); } else setMo(m => m-1); setDay(1); };
   const nextNav = () => { if (mo === 11) { setYr(y => y+1); setMo(0); } else setMo(m => m+1); setDay(1); };
 
-  if (detail) return jsx('div', { className: 'app-shell', children: jsx(TxnDetail, { txn: detail, onBack: () => { setDetail(null); setTxns(getTxns()); }, onEdit: t => { setDetail(null); } }) });
+  if (detail) return jsx('div', { className: 'app-shell', children: jsx(TxnDetail, { txn: detail, onBack: () => { setDetail(null); setTxns(getTxns()); }, onEdit: t => { setDetail(null); onEdit(t); } }) });
   return jsxs('div', { className: 'page', style: { paddingTop: 16 }, children: [
     jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }, children: [
       jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 8 }, children: [
@@ -1533,7 +1534,7 @@ function App() {
   if (tab === 'add') return jsx('div', { className: 'app-shell', children: jsx(AddTransaction, { editing, onDone: () => { setEditing(null); setTab(prevTab); } }) });
 
   return jsxs('div', { className: 'app-shell', children: [
-    tab === 'home'     && jsx(HomeTab,     { onOpenSettings: () => setSettings(true) }),
+    tab === 'home'     && jsx(HomeTab,     { onOpenSettings: () => setSettings(true), onEdit: t => { setEditing(t); setPrevTab('home'); setTab('add'); } }),
     tab === 'history'  && jsx(HistoryTab,  { onEdit: t => { setEditing(t); setPrevTab(tab); setTab('add'); } }),
     tab === 'accounts' && jsx(AccountsTab, {}),
     tab === 'fixed'    && jsx(FixedTab,    {}),
