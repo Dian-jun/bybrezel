@@ -16,8 +16,6 @@
 }
 html,body{background:var(--white);font-family:var(--font);color:var(--black);-webkit-font-smoothing:antialiased;line-height:1.7}
 .wrap{max-width:680px;margin:0 auto;padding:48px 24px 80px}
-
-/* header */
 .header{display:flex;align-items:center;gap:10px;margin-bottom:48px}
 .logo{width:36px;height:36px;border-radius:50%;background:#111;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .logo svg{width:22px;height:22px}
@@ -25,13 +23,9 @@ html,body{background:var(--white);font-family:var(--font);color:var(--black);-we
 .brand span{font-weight:300}
 .back{margin-left:auto;font-size:13px;color:var(--gray-400);text-decoration:none;border-bottom:1px solid var(--gray-100);padding-bottom:2px}
 .back:hover{color:var(--black)}
-
-/* lang toggle */
 .lang-toggle{display:flex;gap:8px;margin-bottom:40px}
 .lang-btn{padding:6px 16px;border-radius:20px;border:1px solid var(--gray-100);background:transparent;font-family:var(--font);font-size:12px;cursor:pointer;color:var(--gray-400);transition:all .15s}
 .lang-btn.active{background:var(--black);color:var(--white);border-color:var(--black)}
-
-/* content */
 .content{display:none}
 .content.active{display:block}
 .updated{font-size:11px;color:var(--gray-400);letter-spacing:0.5px;margin-bottom:32px;text-transform:uppercase}
@@ -44,178 +38,274 @@ ul{padding-left:20px;margin-bottom:10px}
 li{font-size:14px;color:var(--gray-600);margin-bottom:6px}
 .highlight{background:var(--gray-50);border-radius:var(--radius);padding:16px 20px;margin-bottom:10px}
 .highlight p{margin:0;font-size:13px}
-.tag{display:inline-block;background:#f0f0f0;border-radius:6px;padding:2px 8px;font-size:12px;color:var(--gray-600);margin:2px}
 .contact-box{border:1px solid var(--gray-100);border-radius:var(--radius);padding:20px;margin-top:8px}
 .contact-box p{margin-bottom:4px}
 footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--gray-100);font-size:12px;color:var(--gray-400);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 footer a{color:var(--gray-400);text-decoration:none}
 footer a:hover{color:var(--black)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--gray-50);padding:1px 4px;border-radius:6px}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- header -->
   <div class="header">
     <div class="brand">Brezel <span>Money</span></div>
     <a class="back" href="/money/">← 앱으로 돌아가기</a>
   </div>
 
-  <!-- lang toggle -->
   <div class="lang-toggle">
-    <button class="lang-btn active" onclick="setLang('ko')">한국어</button>
-    <button class="lang-btn" onclick="setLang('de')">Deutsch</button>
+    <button class="lang-btn active" onclick="setLang('ko', event)">한국어</button>
+    <button class="lang-btn" onclick="setLang('de', event)">Deutsch</button>
   </div>
 
-  <!-- 한국어 -->
   <div class="content active" id="ko">
-    <p class="updated">최종 업데이트: 2026년 4월</p>
+    <p class="updated">최종 업데이트: 2026년 4월 14일</p>
     <h1>개인정보처리방침</h1>
-    <p class="subtitle">Brezel Money는 사용자의 금융 데이터를 소중히 여깁니다.</p>
+    <p class="subtitle">Brezel Money는 사용자의 금융 데이터와 계정 정보를 투명하고 신중하게 처리합니다.</p>
 
     <div class="section">
       <h2>1. 운영자 정보</h2>
       <div class="contact-box">
         <p><strong>서비스명</strong>: Brezel Money</p>
         <p><strong>웹사이트</strong>: bybrezel.com/money</p>
-        <p><strong>문의</strong>: bybrezel.com 내 연락처 참조</p>
+        <p><strong>이메일</strong>: hello@bybrezel.com</p>
       </div>
     </div>
 
     <div class="section">
-      <h2>2. 수집하는 데이터</h2>
+      <h2>2. 처리하는 데이터</h2>
       <div class="highlight">
-        <p>✓ Brezel Money는 <strong>서버에 개인 금융 데이터를 저장하지 않습니다.</strong> 모든 가계부 데이터는 사용자의 기기(브라우저 localStorage)에만 저장됩니다.</p>
+        <p>✓ Brezel Money는 <strong>비로그인 상태에서는 데이터를 사용자의 브라우저 localStorage에 저장</strong>하고, <strong>로그인 상태에서는 일부 데이터를 Supabase 데이터베이스와 동기화하여 저장</strong>할 수 있습니다.</p>
       </div>
-      <p>수집하거나 처리하는 데이터:</p>
+      <p>서비스 이용 과정에서 다음 데이터가 처리될 수 있습니다.</p>
       <ul>
-        <li>가계부 내역, 계좌 정보, 고정비 — <strong>기기 내 저장만</strong>, 서버 전송 없음</li>
-        <li>자연어 입력 텍스트 — 파싱 목적으로 Anthropic API에 전송 (아래 참조)</li>
-        <li>환율 정보 — 외부 환율 API에서 조회 (개인정보 미포함)</li>
+        <li><strong>계정 정보</strong>: 이메일 주소, 인증 상태, 로그인 관련 정보</li>
+        <li><strong>가계부 데이터</strong>: 거래 내역, 계좌 정보, 고정 지출/수입, 사용자 설정, 카테고리, 예산, 환율 관련 설정</li>
+        <li><strong>기기 내 저장 데이터</strong>: 비로그인 사용 또는 앱 지속 사용을 위한 localStorage 데이터</li>
+        <li><strong>자연어 입력 텍스트</strong>: 선택적으로 외부 API를 통해 파싱될 수 있는 텍스트</li>
+        <li><strong>기술적 요청 데이터</strong>: 환율 조회, 로그인 처리, 보안 및 세션 유지에 필요한 기술 정보</li>
       </ul>
     </div>
 
     <div class="section">
-      <h2>3. 제3자 서비스</h2>
-      <p><strong>Anthropic API (자연어 입력 기능)</strong></p>
-      <p>자연어로 내역을 입력할 때 입력한 텍스트가 Anthropic의 서버로 전송됩니다. 이 기능은 선택 사항이며, 직접 입력 방식을 사용하면 데이터가 전송되지 않습니다.</p>
+      <h2>3. 저장 방식 및 동기화</h2>
+      <p>Brezel Money는 로그인 여부에 따라 저장 구조가 달라집니다.</p>
+      <ul>
+        <li><strong>비로그인 상태</strong>: 데이터는 브라우저의 <code>localStorage</code>에 저장됩니다.</li>
+        <li><strong>로그인 상태</strong>: 데이터는 localStorage와 함께 Supabase 데이터베이스에도 저장되거나 동기화될 수 있습니다.</li>
+        <li><strong>최초 로그인 시</strong>: 기존 localStorage 데이터가 있는 경우, 이를 Supabase로 자동 마이그레이션할 수 있습니다.</li>
+        <li><strong>로그인 후</strong>: Supabase에 저장된 데이터가 다시 기기에 로드되어 앱에 반영될 수 있습니다.</li>
+      </ul>
       <div class="highlight">
-        <p>예: "rewe에서 50유로 카드로" → Anthropic API에서 파싱 후 결과 반환</p>
+        <p>즉, 현재 Brezel Money는 <strong>비로그인 사용자는 로컬 저장</strong>, <strong>로그인 사용자는 로컬 저장 + 클라우드 동기화</strong> 구조로 동작합니다.</p>
       </div>
-      <p>Anthropic의 개인정보처리방침: <a href="https://www.anthropic.com/privacy" target="_blank">anthropic.com/privacy</a></p>
+    </div>
+
+    <div class="section">
+      <h2>4. 인증 및 계정</h2>
+      <p>Brezel Money는 다음 인증 방식을 제공할 수 있습니다.</p>
+      <ul>
+        <li>이메일 + 비밀번호 로그인</li>
+        <li>이메일 + 비밀번호 회원가입</li>
+        <li>비밀번호 재설정 이메일 발송</li>
+        <li>Google 계정을 통한 로그인 또는 가입</li>
+      </ul>
+      <p>로그인은 선택 사항입니다. 사용자는 로그인하지 않고도 앱을 사용할 수 있습니다. 다만 로그인 시 데이터 동기화 및 복원 기능이 제공될 수 있습니다.</p>
+    </div>
+
+    <div class="section">
+      <h2>5. 제3자 서비스 및 수신자</h2>
+      <p><strong>Supabase (인증 및 데이터 저장)</strong></p>
+      <p>Brezel Money는 사용자 인증, 계정 관리 및 로그인 사용자의 데이터 저장과 동기화를 위해 Supabase를 사용합니다. Supabase는 당사의 지시에 따라 데이터를 처리하는 처리자(Processor) 또는 인프라 제공자로 기능할 수 있습니다.</p>
+      <p>Supabase 개인정보처리방침: <a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer">supabase.com/privacy</a></p>
+
+      <p style="margin-top:16px"><strong>Anthropic API (자연어 입력 기능)</strong></p>
+      <p>자연어로 거래 내역을 입력할 경우, 사용자가 입력한 텍스트가 파싱을 위해 외부 API로 전송될 수 있습니다. 이 기능은 선택 사항이며, 직접 수동 입력만 사용하는 경우 해당 전송은 발생하지 않습니다.</p>
+      <div class="highlight">
+        <p>예: “rewe에서 50유로 카드로” → 입력 텍스트를 분석하여 구조화된 거래 정보로 변환</p>
+      </div>
+      <p>Anthropic 개인정보처리방침: <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener noreferrer">anthropic.com/privacy</a></p>
 
       <p style="margin-top:16px"><strong>환율 API</strong></p>
-      <p>현재 환율 조회를 위해 공개 환율 API를 사용합니다. 개인정보는 전송되지 않습니다.</p>
+      <p>현재 환율 정보를 표시하거나 저장하기 위해 외부 환율 API를 사용합니다. 일반적으로 금융 거래 자체의 상세 내역은 이 요청에 포함되지 않습니다.</p>
     </div>
 
     <div class="section">
-      <h2>4. 쿠키 및 추적</h2>
-      <p>Brezel Money는 <strong>쿠키를 사용하지 않으며</strong> 사용자 행동을 추적하지 않습니다. 광고 또는 분석 도구가 포함되어 있지 않습니다.</p>
-    </div>
-
-    <div class="section">
-      <h2>5. 데이터 보관 및 삭제</h2>
-      <p>모든 데이터는 사용자 기기의 브라우저 localStorage에 저장됩니다. 데이터 삭제 방법:</p>
+      <h2>6. 데이터 처리의 법적 근거</h2>
+      <p>EU/EEA 이용자에 대해, 당사는 특히 다음 법적 근거에 따라 데이터를 처리할 수 있습니다.</p>
       <ul>
-        <li>앱 내 설정 → <strong>앱 초기화</strong> 버튼</li>
-        <li>브라우저 설정에서 사이트 데이터 삭제</li>
+        <li><strong>계약 이행 또는 계약 체결 전 조치</strong> (Art. 6 Abs. 1 lit. b DSGVO / Art. 6(1)(b) GDPR): 앱 기능 제공, 로그인 계정 운영, 데이터 동기화 및 복원</li>
+        <li><strong>동의</strong> (Art. 6 Abs. 1 lit. a DSGVO / Art. 6(1)(a) GDPR): 선택형 기능 사용 시 필요한 범위의 처리</li>
+        <li><strong>정당한 이익</strong> (Art. 6 Abs. 1 lit. f DSGVO / Art. 6(1)(f) GDPR): 서비스 보안, 안정성 유지, 오류 대응, 남용 방지</li>
       </ul>
     </div>
 
     <div class="section">
-      <h2>6. 사용자 권리 (GDPR)</h2>
-      <p>EU/EEA 거주자로서 다음 권리를 갖습니다:</p>
-      <ul>
-        <li>데이터 열람권 — 모든 데이터는 기기에 저장되어 직접 확인 가능</li>
-        <li>삭제권 — 앱 초기화로 즉시 삭제 가능</li>
-        <li>이동권 — 설정 → 데이터 내보내기로 JSON 다운로드 가능</li>
-      </ul>
+      <h2>7. 쿠키, 로컬 저장 및 추적</h2>
+      <p>Brezel Money는 광고 목적의 추적 도구나 고전적인 웹 분석 도구를 포함하지 않도록 설계되어 있습니다. 다만 앱 작동, 로그인 유지, 데이터 저장을 위해 브라우저의 localStorage 또는 이와 유사한 기술적 저장 메커니즘이 사용될 수 있습니다.</p>
     </div>
 
     <div class="section">
-      <h2>7. 미성년자</h2>
+      <h2>8. 데이터 보관, 삭제 및 계정 삭제</h2>
+      <p>데이터의 저장 위치와 삭제 방식은 사용 방식에 따라 달라질 수 있습니다.</p>
+      <ul>
+        <li><strong>로컬 데이터 삭제</strong>: 앱 초기화 기능 또는 브라우저의 사이트 데이터 삭제를 통해 삭제할 수 있습니다.</li>
+        <li><strong>데이터 내보내기/가져오기</strong>: 앱에서 제공하는 내보내기 및 가져오기 기능을 이용할 수 있습니다.</li>
+        <li><strong>서버 저장 데이터 삭제 요청</strong>: 로그인 상태에서 동기화된 데이터의 삭제를 원할 경우 <strong>hello@bybrezel.com</strong>으로 요청할 수 있습니다.</li>
+        <li><strong>계정 삭제 요청</strong>: 계정 삭제를 원할 경우 <strong>hello@bybrezel.com</strong>으로 요청할 수 있으며, 법적 보관 의무가 없는 범위에서 관련 데이터를 삭제합니다.</li>
+      </ul>
+      <p>브라우저에서 localStorage만 삭제하더라도, 로그인 사용자의 서버 저장 데이터가 자동으로 함께 삭제되는 것은 아닐 수 있습니다.</p>
+    </div>
+
+    <div class="section">
+      <h2>9. 사용자 권리 (GDPR)</h2>
+      <p>EU/EEA 거주자는 적용 법령에 따라 다음 권리를 가질 수 있습니다.</p>
+      <ul>
+        <li>열람권</li>
+        <li>정정권</li>
+        <li>삭제권</li>
+        <li>처리 제한권</li>
+        <li>데이터 이동권</li>
+        <li>동의 철회권</li>
+      </ul>
+      <p>이러한 권리 행사 요청은 <strong>hello@bybrezel.com</strong>으로 보낼 수 있습니다.</p>
+      <p>또한 사용자는 관할 감독기관에 불만을 제기할 권리가 있습니다.</p>
+    </div>
+
+    <div class="section">
+      <h2>10. 미성년자</h2>
       <p>Brezel Money는 만 16세 이상을 대상으로 합니다.</p>
     </div>
 
     <div class="section">
-      <h2>8. 방침 변경</h2>
-      <p>방침 변경 시 이 페이지에 업데이트 날짜와 함께 공지합니다.</p>
+      <h2>11. 방침 변경</h2>
+      <p>서비스 기능이나 데이터 처리 방식이 변경되면, 이 페이지의 내용을 업데이트하고 최종 업데이트 날짜를 함께 표시합니다.</p>
     </div>
   </div>
 
-  <!-- Deutsch -->
   <div class="content" id="de">
-    <p class="updated">Stand: April 2026</p>
+    <p class="updated">Stand: 14. April 2026</p>
     <h1>Datenschutzerklärung</h1>
-    <p class="subtitle">Brezel Money schützt Ihre finanziellen Daten.</p>
+    <p class="subtitle">Brezel Money verarbeitet Finanz- und Kontodaten transparent und mit besonderer Sorgfalt.</p>
 
     <div class="section">
       <h2>1. Verantwortliche Stelle</h2>
       <div class="contact-box">
         <p><strong>Dienst</strong>: Brezel Money</p>
         <p><strong>Website</strong>: bybrezel.com/money</p>
-        <p><strong>Kontakt</strong>: Siehe Impressum unter bybrezel.com</p>
+        <p><strong>E-Mail</strong>: hello@bybrezel.com</p>
       </div>
     </div>
 
     <div class="section">
-      <h2>2. Erhobene Daten</h2>
+      <h2>2. Verarbeitete Daten</h2>
       <div class="highlight">
-        <p>✓ Brezel Money speichert <strong>keine persönlichen Finanzdaten auf Servern.</strong> Alle Haushaltsbuchdaten werden ausschließlich lokal auf dem Gerät des Nutzers (Browser localStorage) gespeichert.</p>
+        <p>✓ Brezel Money speichert <strong>im nicht eingeloggten Zustand Daten lokal im Browser (localStorage)</strong> und <strong>im eingeloggten Zustand bestimmte Daten zusätzlich synchronisiert in einer Supabase-Datenbank</strong>.</p>
       </div>
-      <p>Verarbeitete Daten:</p>
+      <p>Im Rahmen der Nutzung können insbesondere folgende Daten verarbeitet werden.</p>
       <ul>
-        <li>Buchungseinträge, Kontodaten, Fixkosten — <strong>nur lokale Speicherung</strong>, keine Serverübertragung</li>
-        <li>Freitexteingaben — zur Analyse an die Anthropic API übermittelt (siehe unten)</li>
-        <li>Wechselkursdaten — Abfrage über externe Wechselkurs-API (keine personenbezogenen Daten)</li>
+        <li><strong>Kontodaten</strong>: E-Mail-Adresse, Authentifizierungsstatus und loginbezogene Informationen</li>
+        <li><strong>Haushaltsbuchdaten</strong>: Buchungen, Konten, Fixkosten/Fixeinnahmen, Einstellungen, Kategorien, Budget- und Wechselkursdaten</li>
+        <li><strong>Lokal gespeicherte Daten</strong>: localStorage-Daten zur Nutzung ohne Login oder zur gerätebezogenen Persistenz</li>
+        <li><strong>Freitexteingaben</strong>: Texte, die optional über einen externen Dienst analysiert werden können</li>
+        <li><strong>Technische Verbindungs- und Anfragedaten</strong>: soweit dies für Login, Sicherheit, Sitzung und Wechselkursabfrage erforderlich ist</li>
       </ul>
     </div>
 
     <div class="section">
-      <h2>3. Drittanbieter</h2>
-      <p><strong>Anthropic API (Freitexteingabe)</strong></p>
-      <p>Bei der Freitexteingabe wird der eingegebene Text zur Verarbeitung an Anthropic übermittelt. Diese Funktion ist optional. Bei manueller Eingabe werden keine Daten übertragen.</p>
+      <h2>3. Speicher- und Synchronisationskonzept</h2>
+      <p>Die Art der Speicherung hängt davon ab, ob der Nutzer eingeloggt ist oder nicht.</p>
+      <ul>
+        <li><strong>Ohne Login</strong>: Die Daten werden lokal im Browser des Endgeräts gespeichert.</li>
+        <li><strong>Mit Login</strong>: Daten können sowohl lokal als auch in Supabase gespeichert und synchronisiert werden.</li>
+        <li><strong>Beim ersten Login</strong>: Bereits lokal vorhandene Daten können automatisch in die Datenbank migriert werden.</li>
+        <li><strong>Nach dem Login</strong>: In Supabase gespeicherte Daten können erneut in die App geladen und lokal verfügbar gemacht werden.</li>
+      </ul>
       <div class="highlight">
-        <p>Beispiel: "50 Euro bei REWE mit Karte" → Verarbeitung durch Anthropic API → Rückgabe des Ergebnisses</p>
+        <p>Brezel Money arbeitet damit <strong>ohne Login lokal</strong> und <strong>mit Login lokal plus Cloud-Synchronisierung</strong>.</p>
       </div>
-      <p>Datenschutzerklärung von Anthropic: <a href="https://www.anthropic.com/privacy" target="_blank">anthropic.com/privacy</a></p>
+    </div>
+
+    <div class="section">
+      <h2>4. Anmeldung und Benutzerkonto</h2>
+      <p>Brezel Money kann insbesondere folgende Anmeldemethoden bereitstellen.</p>
+      <ul>
+        <li>Anmeldung mit E-Mail und Passwort</li>
+        <li>Registrierung mit E-Mail und Passwort</li>
+        <li>Versand von E-Mails zum Zurücksetzen des Passworts</li>
+        <li>Anmeldung oder Registrierung mit Google</li>
+      </ul>
+      <p>Die Anmeldung ist optional. Die App kann grundsätzlich auch ohne Login genutzt werden. Ein Login ermöglicht jedoch Synchronisierung und Wiederherstellung von Daten.</p>
+    </div>
+
+    <div class="section">
+      <h2>5. Drittanbieter und Empfänger</h2>
+      <p><strong>Supabase (Authentifizierung und Datenspeicherung)</strong></p>
+      <p>Für Benutzeranmeldung, Kontoverwaltung sowie Speicherung und Synchronisierung von Daten eingeloggter Nutzer wird Supabase eingesetzt. Supabase kann dabei als Auftragsverarbeiter (Processor) bzw. Infrastruktur-Anbieter auf Weisung des Verantwortlichen tätig werden.</p>
+      <p>Datenschutzhinweise von Supabase: <a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer">supabase.com/privacy</a></p>
+
+      <p style="margin-top:16px"><strong>Anthropic API (Freitexteingabe)</strong></p>
+      <p>Bei der Eingabe in natürlicher Sprache kann der eingegebene Text zur Analyse an einen externen Dienst übermittelt werden. Diese Funktion ist optional; bei manueller Eingabe findet eine solche Übermittlung nicht statt.</p>
+      <div class="highlight">
+        <p>Beispiel: „50 Euro bei REWE mit Karte“ → Analyse des Textes → Umwandlung in strukturierte Buchungsdaten</p>
+      </div>
+      <p>Datenschutzhinweise von Anthropic: <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener noreferrer">anthropic.com/privacy</a></p>
 
       <p style="margin-top:16px"><strong>Wechselkurs-API</strong></p>
-      <p>Zur Abfrage aktueller Wechselkurse wird eine öffentliche API genutzt. Es werden keine personenbezogenen Daten übertragen.</p>
+      <p>Zur Anzeige oder Aktualisierung von Wechselkursen wird eine externe Wechselkurs-API genutzt. Die eigentlichen Finanzbuchungsdaten werden dabei in der Regel nicht mitübermittelt.</p>
     </div>
 
     <div class="section">
-      <h2>4. Cookies und Tracking</h2>
-      <p>Brezel Money verwendet <strong>keine Cookies</strong> und verfolgt kein Nutzerverhalten. Es sind keine Werbe- oder Analysetools eingebunden.</p>
-    </div>
-
-    <div class="section">
-      <h2>5. Datenspeicherung und -löschung</h2>
-      <p>Alle Daten werden im Browser localStorage des Nutzergeräts gespeichert. Möglichkeiten zur Datenlöschung:</p>
+      <h2>6. Rechtsgrundlagen der Verarbeitung</h2>
+      <p>Für Nutzer in der EU/im EWR kann die Verarbeitung insbesondere auf folgende Rechtsgrundlagen gestützt werden.</p>
       <ul>
-        <li>In der App: Einstellungen → <strong>App zurücksetzen</strong></li>
-        <li>Über die Browsereinstellungen: Website-Daten löschen</li>
+        <li><strong>Art. 6 Abs. 1 lit. b DSGVO</strong>: Bereitstellung der App-Funktionen, Login, Kontoführung, Datensynchronisierung und Wiederherstellung</li>
+        <li><strong>Art. 6 Abs. 1 lit. a DSGVO</strong>: Einwilligung bei optionalen Funktionen, soweit einschlägig</li>
+        <li><strong>Art. 6 Abs. 1 lit. f DSGVO</strong>: berechtigtes Interesse an Sicherheit, Stabilität, Fehlerbehebung und Missbrauchsvermeidung</li>
       </ul>
     </div>
 
     <div class="section">
-      <h2>6. Betroffenenrechte (DSGVO)</h2>
-      <p>Als in der EU/EEA ansässige Person haben Sie folgende Rechte:</p>
-      <ul>
-        <li>Auskunftsrecht — Alle Daten sind lokal gespeichert und direkt einsehbar</li>
-        <li>Recht auf Löschung — Sofortige Löschung über App zurücksetzen möglich</li>
-        <li>Recht auf Datenübertragbarkeit — Export als JSON über Einstellungen → Daten exportieren</li>
-      </ul>
+      <h2>7. Cookies, lokale Speicherung und Tracking</h2>
+      <p>Brezel Money ist so gestaltet, dass keine Werbe- oder klassischen Analysetools eingesetzt werden. Es können jedoch technisch notwendige Speicher- oder Sitzungsmechanismen verwendet werden, etwa für Login, lokale Speicherung oder Synchronisierung.</p>
     </div>
 
     <div class="section">
-      <h2>7. Minderjährige</h2>
+      <h2>8. Speicherung, Löschung und Kontolöschung</h2>
+      <p>Der Speicherort und die Art der Löschung hängen von der Nutzung ab.</p>
+      <ul>
+        <li><strong>Lokal gespeicherte Daten löschen</strong>: über App-Zurücksetzen oder durch Löschen der Website-Daten im Browser</li>
+        <li><strong>Export/Import</strong>: Daten können über die in der App bereitgestellten Funktionen exportiert und importiert werden</li>
+        <li><strong>Löschung serverseitig gespeicherter Daten</strong>: Synchronisierte Daten eingeloggter Nutzer können auf Anfrage über <strong>hello@bybrezel.com</strong> gelöscht werden</li>
+        <li><strong>Kontolöschung</strong>: Die Löschung des Benutzerkontos kann über <strong>hello@bybrezel.com</strong> beantragt werden; betroffene Daten werden gelöscht, soweit keine gesetzlichen Aufbewahrungspflichten entgegenstehen</li>
+      </ul>
+      <p>Das Löschen lokaler Browserdaten führt nicht automatisch dazu, dass auch serverseitig gespeicherte Daten eingeloggter Nutzer entfernt werden.</p>
+    </div>
+
+    <div class="section">
+      <h2>9. Betroffenenrechte (DSGVO)</h2>
+      <p>Betroffene Personen in der EU/im EWR können nach Maßgabe der gesetzlichen Vorschriften insbesondere folgende Rechte haben.</p>
+      <ul>
+        <li>Recht auf Auskunft</li>
+        <li>Recht auf Berichtigung</li>
+        <li>Recht auf Löschung</li>
+        <li>Recht auf Einschränkung der Verarbeitung</li>
+        <li>Recht auf Datenübertragbarkeit</li>
+        <li>Recht auf Widerruf einer Einwilligung</li>
+      </ul>
+      <p>Anfragen zur Ausübung dieser Rechte können an <strong>hello@bybrezel.com</strong> gerichtet werden.</p>
+      <p>Außerdem besteht das Recht, sich bei einer zuständigen Aufsichtsbehörde zu beschweren.</p>
+    </div>
+
+    <div class="section">
+      <h2>10. Minderjährige</h2>
       <p>Brezel Money richtet sich an Personen ab 16 Jahren.</p>
     </div>
 
     <div class="section">
-      <h2>8. Änderungen dieser Erklärung</h2>
-      <p>Bei Änderungen wird diese Seite mit dem aktualisierten Datum aktualisiert.</p>
+      <h2>11. Änderungen dieser Erklärung</h2>
+      <p>Wenn sich Funktionen oder die Art der Datenverarbeitung ändern, wird diese Erklärung entsprechend aktualisiert und das Datum der letzten Änderung angepasst.</p>
     </div>
   </div>
 
@@ -231,11 +321,11 @@ footer a:hover{color:var(--black)}
 </div>
 
 <script>
-function setLang(lang) {
+function setLang(lang, event) {
   document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.lang-btn').forEach(el => el.classList.remove('active'));
   document.getElementById(lang).classList.add('active');
-  event.target.classList.add('active');
+  if (event && event.target) event.target.classList.add('active');
 }
 </script>
 </body>
