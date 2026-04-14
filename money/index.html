@@ -265,65 +265,7 @@ const setFixedInc   = v  => ls.set(K.FIXED_INC, v);
 const getTxns       = () => ls.get(K.TRANSACTIONS) || [];
 const setTxns       = v  => ls.set(K.TRANSACTIONS, v);
 const getRate       = () => ls.get(K.RATE) || { rate: 1480, updatedAt: null };
-
-const formatRate = (rate) => {
-  const n = Number(rate);
-  if (!Number.isFinite(n)) return '0.00';
-  return n.toLocaleString('ko-KR', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-};
-
-const roundRate2 = v => {
-  const n = Number(v);
-  return Number.isFinite(n) ? Math.round(n * 100) / 100 : 0;
-};
-
-const getBerlinDateParts = (date = new Date()) => {
-  const parts = new Intl.DateTimeFormat('sv-SE', {
-    timeZone: 'Europe/Berlin',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  }).formatToParts(date);
-  const obj = {};
-  for (const p of parts) obj[p.type] = p.value;
-  return obj;
-};
-
-const shouldRefreshEcbRate = (updatedAt) => {
-  if (!updatedAt) return true;
-  const nowParts = getBerlinDateParts(new Date());
-  const updParts = getBerlinDateParts(new Date(updatedAt));
-
-  const nowYmd = `${nowParts.year}-${nowParts.month}-${nowParts.day}`;
-  const updYmd = `${updParts.year}-${updParts.month}-${updParts.day}`;
-  const nowHour = Number(nowParts.hour || 0);
-
-  if (updYmd === nowYmd) return false;
-  if (nowHour < 16) return false; // ECB 기준, 베를린 시간 16시 전에는 전일 값 유지
-  return true;
-};
-
-const formatRateUpdatedAt = (updatedAt) => {
-  if (!updatedAt) return '업데이트 시간 없음';
-  const d = new Date(updatedAt);
-  return new Intl.DateTimeFormat('ko-KR', {
-    timeZone: 'Europe/Berlin',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  }).format(d).replace(/\. /g, '.').replace(/\.$/, '') + ' CET';
-};
-
-const setRate       = v  => ls.set(K.RATE, { rate: roundRate2(v), updatedAt: new Date().toISOString() });
+const setRate       = v  => ls.set(K.RATE, { rate: v, updatedAt: new Date().toISOString() });
 const getCategories = () => ls.get(K.CATEGORIES) || DEFAULT_CATS;
 const setCategories = v  => ls.set(K.CATEGORIES, v);
 const getBudget     = () => ls.get(K.BUDGET) || { eur: null, excludeCategories: ['식비지원금'] };
@@ -381,19 +323,42 @@ const getCurrentUserId = async () => {
   return data?.user?.id || null;
 };
 
+// ── 계좌 데이터 정규화 ─────────────────────────────────────────────
+const normalizeAccounts = (accounts) =>
+  (accounts || []).map(a => {
+    const initialBalance =
+      a.initialBalance ??
+      a.balance ??
+      a.initial_balance ??
+      0;
+
+    const { balance, initial_balance, ...rest } = a || {};
+
+    return {
+      ...rest,
+      initialBalance,
+    };
+  });
+
 // ── DB 저장 함수들 (localStorage 동시 저장) ──────────────────────
 const dbSaveAccounts = async (accounts) => {
-  setAccounts(accounts);   // localStorage
+  const normalized = normalizeAccounts(accounts);
+  setAccounts(normalized);   // localStorage
   const uid = await getCurrentUserId();
   if (!uid) return;
   // 기존 전체 삭제 후 재삽입
   const { error: delErr } = await supabase.from('accounts').delete().eq('user_id', uid);
   if (delErr) { console.error('[DB] accounts 삭제 오류:', delErr); return; }
-  if (accounts.length === 0) return;
-  const rows = accounts.map(a => ({ ...toSnake(a), user_id: uid }));
+  if (normalized.length === 0) return;
+
+  const rows = normalized.map(a => {
+    const { balance, initial_balance, ...clean } = a || {};
+    return { ...toSnake(clean), user_id: uid };
+  });
+
   const { error: insErr } = await supabase.from('accounts').insert(rows);
   if (insErr) console.error('[DB] accounts 저장 오류:', insErr, '데이터 샘플:', rows[0]);
-  else console.log('[DB] accounts 저장 완료:', accounts.length, '개');
+  else console.log('[DB] accounts 저장 완료:', normalized.length, '개');
 };
 
 const dbSaveTxns = async (txns) => {
@@ -464,14 +429,17 @@ const dbLoadAll = async () => {
     supabase.from('transactions').select('*').eq('user_id', uid).order('date', { ascending: false }),
     supabase.from('fixed_expenses').select('*').eq('user_id', uid),
     supabase.from('fixed_incomes').select('*').eq('user_id', uid),
-    supabase.from('user_settings').select('*').eq('user_id', uid).single(),
+    supabase.from('user_settings').select('*').eq('user_id', uid).maybeSingle(),
   ]);
 
   // DB 데이터가 있으면 localStorage 덮어쓰기
-  if (accsRes.data?.length)   setAccounts(accsRes.data.map(toCamel));
+  if (accsRes.data?.length)   setAccounts(normalizeAccounts(accsRes.data.map(toCamel)));
   if (txnsRes.data?.length)   setTxns(txnsRes.data.map(toCamel));
   if (fixExpRes.data?.length) setFixedExp(fixExpRes.data.map(toCamel));
   if (fixIncRes.data?.length) setFixedInc(fixIncRes.data.map(toCamel));
+  if (settRes.error) {
+    console.error('[DB] user_settings load 오류:', settRes.error);
+  }
   if (settRes.data) {
     const s = settRes.data;
     if (s.rate)               setRate(s.rate);
@@ -484,31 +452,43 @@ const dbLoadAll = async () => {
   return true;
 };
 
+let isMigratingToDb = false;
+
 // ── localStorage → DB 마이그레이션 (최초 로그인 시) ─────────────
 const migrateLocalToDb = async () => {
-  const uid = await getCurrentUserId();
-  if (!uid) return;
-  // DB에 데이터가 이미 있으면 스킵
-  const { data, error } = await supabase.from('accounts').select('id').eq('user_id', uid).limit(1);
-  if (error) { console.error('[DB] migrate 체크 오류:', error); return; }
-  if (data?.length) { console.log('[DB] migrate 스킵 — 이미 DB에 데이터 있음'); return; }
-  // localStorage 데이터가 있으면 DB로 올리기
-  const accs   = getAccounts();
-  const txns   = getTxns();
-  const fixExp = getFixedExp();
-  const fixInc = getFixedInc();
-  console.log('[DB] migrate 시작 — 계좌:', accs.length, '내역:', txns.length);
-  if (accs.length || txns.length || fixExp.length || fixInc.length) {
-    await Promise.all([
-      dbSaveAccounts(accs),
-      dbSaveTxns(txns),
-      dbSaveFixedExp(fixExp),
-      dbSaveFixedInc(fixInc),
-      dbSaveSettings(),
-    ]);
-    console.log('[DB] migrate 완료');
-  } else {
-    console.log('[DB] migrate 스킵 — localStorage도 비어있음');
+  if (isMigratingToDb) {
+    console.log('[DB] migrate 스킵 — 이미 실행 중');
+    return;
+  }
+  isMigratingToDb = true;
+
+  try {
+    const uid = await getCurrentUserId();
+    if (!uid) return;
+    // DB에 데이터가 이미 있으면 스킵
+    const { data, error } = await supabase.from('accounts').select('id').eq('user_id', uid).limit(1);
+    if (error) { console.error('[DB] migrate 체크 오류:', error); return; }
+    if (data?.length) { console.log('[DB] migrate 스킵 — 이미 DB에 데이터 있음'); return; }
+    // localStorage 데이터가 있으면 DB로 올리기
+    const accs   = getAccounts();
+    const txns   = getTxns();
+    const fixExp = getFixedExp();
+    const fixInc = getFixedInc();
+    console.log('[DB] migrate 시작 — 계좌:', accs.length, '내역:', txns.length);
+    if (accs.length || txns.length || fixExp.length || fixInc.length) {
+      await Promise.all([
+        dbSaveAccounts(accs),
+        dbSaveTxns(txns),
+        dbSaveFixedExp(fixExp),
+        dbSaveFixedInc(fixInc),
+        dbSaveSettings(),
+      ]);
+      console.log('[DB] migrate 완료');
+    } else {
+      console.log('[DB] migrate 스킵 — localStorage도 비어있음');
+    }
+  } finally {
+    isMigratingToDb = false;
   }
 };
 
@@ -601,36 +581,29 @@ const correctBalance = (accountId, newBalance) => {
 };
 
 // ─── exchange rate ────────────────────────────────────────────────────────────
-// ECB 기준 환율은 Frankfurter v2 + providers=ECB 사용
-const fetchLatestRate = async (force = false) => {
-  const cached = getRate();
-  if (!force && cached?.rate && !shouldRefreshEcbRate(cached.updatedAt)) {
-    return roundRate2(cached.rate);
-  }
-
+// Frankfurter does NOT support KRW. Using fawazahmed0 currency API instead.
+const fetchLatestRate = async () => {
   try {
-    const res = await fetch('https://api.frankfurter.dev/v2/rates?base=EUR&quotes=KRW&providers=ECB');
+    const res = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json');
     const data = await res.json();
-    const rate = roundRate2(data.rates?.KRW);
+    const rate = data.eur?.krw;
     if (rate) {
       setRate(rate);
       await dbSaveSettings();  // 모든 기기가 같은 환율을 쓰도록 DB에도 저장
       return rate;
     }
-    return roundRate2(cached?.rate || 1480);
-  } catch {
-    return roundRate2(cached?.rate || 1480);
-  }
+    return getRate().rate;
+  } catch { return getRate().rate; }
 };
 const fetchRateForDate = async date => {
+  const today = new Date().toISOString().split('T')[0];
   try {
-    const res = await fetch(`https://api.frankfurter.dev/v2/rates?base=EUR&quotes=KRW&providers=ECB&date=${date}`);
+    const dateKey = date >= today ? 'latest' : date;
+    const res = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${dateKey}/v1/currencies/eur.json`);
     const data = await res.json();
-    const rate = roundRate2(data.rates?.KRW);
-    return { rate: rate || roundRate2(getRate().rate), date };
-  } catch {
-    return { rate: roundRate2(getRate().rate), date };
-  }
+    const rate = data.eur?.krw;
+    return { rate: rate || getRate().rate, date };
+  } catch { return { rate: getRate().rate, date }; }
 };
 
 // ─── fixed cost auto-sync ─────────────────────────────────────────────────────
@@ -757,7 +730,7 @@ const importData = (file) => {
         return;
       }
       if (!window.confirm('현재 데이터를 백업 파일로 덮어쓸까요? 기존 데이터는 사라져요.')) return;
-      if (data.accounts)     setAccounts(data.accounts);
+      if (data.accounts)     setAccounts(normalizeAccounts(data.accounts));
       if (data.fixedExp)     setFixedExp(data.fixedExp);
       if (data.fixedInc)     setFixedInc(data.fixedInc);
       if (data.transactions) setTxns(data.transactions);
@@ -767,7 +740,7 @@ const importData = (file) => {
       ls.set(K.ONBOARDED, true);
       // DB에도 동기화 (로그인 상태일 때만)
       await Promise.all([
-        dbSaveAccounts(data.accounts || []),
+        dbSaveAccounts(normalizeAccounts(data.accounts || [])),
         dbSaveTxns(data.transactions || []),
         dbSaveFixedExp(data.fixedExp || []),
         dbSaveFixedInc(data.fixedInc || []),
@@ -960,7 +933,7 @@ const PageHeader = ({ title, right, mb = 18 }) =>
   ] });
 
 // ─── ONBOARDING ───────────────────────────────────────────────────────────────
-function Onboarding({ onDone, onLogin }) {
+function Onboarding({ onDone, onShowAuth }) {
   const [step, setStep] = useState(0);
 
   // ── 계좌 관련 상태 ────────────────────────────────────────────────────────
@@ -1020,7 +993,7 @@ function Onboarding({ onDone, onLogin }) {
 
   const addFixedInc = () => {
     const nm = fiNameRef.current?.value;
-    if (!nm?.trim()) return;
+    if (!nm?.trim()) return false;
     const amt = fiAmtRef.current?.value, day = fiDayRef.current?.value;
     setFixedIncList(prev => [...prev, {
       id: Date.now().toString(), name: nm, amount: amt, day,
@@ -1032,6 +1005,25 @@ function Onboarding({ onDone, onLogin }) {
     if (fiAmtRef.current) fiAmtRef.current.value = '';
     if (fiDayRef.current) fiDayRef.current.value = '';
     setFiForm(prev => ({ ...prev, type: 'account', accId: '' }));
+    return true;
+  };
+
+  const getPendingFixedInc = () => {
+    const name = fiNameRef.current?.value?.trim() || '';
+    const amount = fiAmtRef.current?.value || '';
+    const day = fiDayRef.current?.value || '';
+    const hasPending = !!(name || amount || day || (fiForm.type === 'account' ? fiForm.accId : fiForm.type !== 'account'));
+    if (!hasPending) return null;
+    return {
+      id: Date.now().toString(),
+      name: name || '고정수입',
+      amount,
+      day,
+      currency: fiForm.cur,
+      frequency: fiForm.freq,
+      accountId: fiForm.type === 'account' ? fiForm.accId : '',
+      incomeType: fiForm.type,
+    };
   };
 
   const finish = async () => {
@@ -1047,7 +1039,9 @@ function Onboarding({ onDone, onLogin }) {
       }),
       ...fixedExpExtra.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })),
     ]);
-    setFixedInc(fixedIncList.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })));
+    const pendingFixedInc = getPendingFixedInc();
+    const finalFixedIncList = pendingFixedInc ? [...fixedIncList, pendingFixedInc] : fixedIncList;
+    setFixedInc(finalFixedIncList.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })));
     syncFixedCosts(); setOnboarded(); onDone();
   };
 
@@ -1069,8 +1063,8 @@ function Onboarding({ onDone, onLogin }) {
     ] }),
     jsxs('div', { children: [
       jsx('button', { className: 'btn', onClick: () => setStep(1), children: '시작하기' }),
-      jsx('button', { className: 'btn-ghost', onClick: onLogin, children: '로그인 / 회원가입' }),
-      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', textAlign: 'center', marginTop: 12, lineHeight: 1.7 }, children: '로그인 없이도 바로 사용할 수 있어요' }),
+      jsx('button', { className: 'btn-ghost', onClick: () => onShowAuth && onShowAuth(), children: '로그인 / 회원가입' }),
+      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', textAlign: 'center', marginTop: 12 }, children: '로그인 없이도 바로 사용할 수 있어요' }),
     ] }),
   ] }) });
 
@@ -1386,11 +1380,11 @@ function HomeTab({ onOpenSettings, onDetailOpen, authUser, globalRate }) {
         jsxs('div', { style: { textAlign: 'right', maxWidth: '55%' }, children: [
           jsx('p', { style: { fontSize: t.type === 'transfer' ? 10 : 13, fontWeight: 500, color: t.type === 'expense' ? 'var(--accent)' : undefined, wordBreak: 'break-all' }, children: fmtEntry(t) }),
           jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: fmtAlt(t) }),
-          t.type !== 'transfer' && t.rateAtTime && jsx('p', { style: { fontSize: 10, color: 'var(--gray-400)' }, children: `1€=₩${formatRate(t.rateAtTime)}` }),
+          t.type !== 'transfer' && t.rateAtTime && jsx('p', { style: { fontSize: 10, color: 'var(--gray-400)' }, children: `1€=₩${Math.round(t.rateAtTime).toLocaleString()}` }),
         ] }),
       ] }, t.id)),
     ] }),
-    jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', formatRate(rate), ' · ECB 기준 · 마지막 업데이트 ', formatRateUpdatedAt(getRate().updatedAt)] }),
+    jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', Math.round(rate).toLocaleString(), ' · 오늘 기준'] }),
   ] });
 }
 
@@ -1435,7 +1429,7 @@ function TxnDetail({ txn, onBack, onEdit, globalRate }) {
         ['날짜', txn.date],
         ['계좌', txn.accountName],
         ['결제 수단', txn.payMethod === 'card' ? '카드' : txn.payMethod === 'voucher' ? '상품권/쿠폰' : '현금'],
-        ['환율', txn.rateAtTime ? `1 EUR = ₩${formatRate(txn.rateAtTime)} (${txn.rateDate || txn.date} 기준)` : '-'],
+        ['환율', txn.rateAtTime ? `1 EUR = ₩${Math.round(txn.rateAtTime).toLocaleString()} (${txn.rateDate || txn.date} 기준)` : '-'],
         txn.memo ? ['메모', txn.memo] : null,
       ]).filter(Boolean)
       .map(([label, val]) => jsxs('div', { className: 'row', children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: label }), jsx('span', { style: { fontSize: 13, textAlign: 'right', maxWidth: '60%' }, children: val })] }, label))
@@ -1872,7 +1866,7 @@ function AddTransaction({ onDone, editing = null }) {
       ] }),
       jsxs('div', { style: { padding: '10px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
         jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' }, children: [
-          jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: rateLoading ? '환율 조회 중...' : `1 EUR = ₩${formatRate(effectiveRate)} (${rateInfo?.date || date} 기준)` }),
+          jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: rateLoading ? '환율 조회 중...' : `1 EUR = ₩${Math.round(effectiveRate).toLocaleString()} (${rateInfo?.date || date} 기준)` }),
           jsx('button', { style: { background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: 'var(--gray-400)', textDecoration: 'underline' }, onClick: () => setManualRate(r => !r), children: manualRate ? '자동으로' : '직접 입력' }),
         ] }),
         manualRate && jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6, marginTop: 8 }, children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '1 EUR = ₩' }), jsx('input', { className: 'field-sm', placeholder: '1480', style: { width: 70 }, value: manualRateVal, onChange: e => setManualRateVal(e.target.value) })] }),
@@ -2098,7 +2092,7 @@ function AccountsTab({ globalRate }) {
       } ))
     }),
     !isHistoryMode && jsx(AddRow, { label: '계좌 추가', onClick: () => { setAddMode(o => !o); setEditId(null); setCorrectId(null); } }),
-    jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', formatRate(rate), ' · ECB 기준 · 마지막 업데이트 ', formatRateUpdatedAt(getRate().updatedAt)] }),
+    jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', Math.round(rate).toLocaleString(), ' · ECB 기준'] }),
   ] });
 }
 
@@ -2521,12 +2515,22 @@ function App() {
 
   // 수동으로 로그인 화면에 들어온 경우
   if (showAuth) return jsx(AuthPage, {
-    onAuth: () => setShowAuth(false),
+    onAuth: () => {
+      if (!isOnboarded()) {
+        ls.set(K.ONBOARDED, true);
+        if (!ls.get(K.START_MONTH)) {
+          const now = new Date();
+          ls.set(K.START_MONTH, { year: now.getFullYear(), month: now.getMonth() });
+        }
+      }
+      setOnboarded(true);
+      setShowAuth(false);
+    },
     onClose: () => setShowAuth(false),
   });
 
   // 온보딩 미완료
-  if (!onboarded) return jsx(Onboarding, { onDone: async () => {
+  if (!onboarded) return jsx(Onboarding, { onShowAuth: () => setShowAuth(true), onDone: async () => {
     if (authUser) {
       await Promise.all([
         dbSaveAccounts(getAccounts()),
@@ -2536,7 +2540,7 @@ function App() {
       ]);
     }
     setOnboarded(true);
-  }, onLogin: () => setShowAuth(true) });
+  }});
 
   if (settings) return jsx(SettingsPage, {
     onClose: () => setSettings(false),
