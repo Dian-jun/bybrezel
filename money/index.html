@@ -328,12 +328,14 @@ const dbSaveAccounts = async (accounts) => {
   setAccounts(accounts);   // localStorage
   const uid = await getCurrentUserId();
   if (!uid) return;
-  // 기존 전체 삭제 후 재삽입 (단순 전략)
-  await supabase.from('accounts').delete().eq('user_id', uid);
+  // 기존 전체 삭제 후 재삽입
+  const { error: delErr } = await supabase.from('accounts').delete().eq('user_id', uid);
+  if (delErr) { console.error('[DB] accounts 삭제 오류:', delErr); return; }
   if (accounts.length === 0) return;
-  await supabase.from('accounts').insert(
-    accounts.map(a => ({ ...toSnake(a), user_id: uid }))
-  );
+  const rows = accounts.map(a => ({ ...toSnake(a), user_id: uid }));
+  const { error: insErr } = await supabase.from('accounts').insert(rows);
+  if (insErr) console.error('[DB] accounts 저장 오류:', insErr, '데이터 샘플:', rows[0]);
+  else console.log('[DB] accounts 저장 완료:', accounts.length, '개');
 };
 
 const dbSaveTxns = async (txns) => {
@@ -429,13 +431,15 @@ const migrateLocalToDb = async () => {
   const uid = await getCurrentUserId();
   if (!uid) return;
   // DB에 데이터가 이미 있으면 스킵
-  const { data } = await supabase.from('accounts').select('id').eq('user_id', uid).limit(1);
-  if (data?.length) return;
+  const { data, error } = await supabase.from('accounts').select('id').eq('user_id', uid).limit(1);
+  if (error) { console.error('[DB] migrate 체크 오류:', error); return; }
+  if (data?.length) { console.log('[DB] migrate 스킵 — 이미 DB에 데이터 있음'); return; }
   // localStorage 데이터가 있으면 DB로 올리기
-  const accs    = getAccounts();
-  const txns    = getTxns();
-  const fixExp  = getFixedExp();
-  const fixInc  = getFixedInc();
+  const accs   = getAccounts();
+  const txns   = getTxns();
+  const fixExp = getFixedExp();
+  const fixInc = getFixedInc();
+  console.log('[DB] migrate 시작 — 계좌:', accs.length, '내역:', txns.length);
   if (accs.length || txns.length || fixExp.length || fixInc.length) {
     await Promise.all([
       dbSaveAccounts(accs),
@@ -444,6 +448,9 @@ const migrateLocalToDb = async () => {
       dbSaveFixedInc(fixInc),
       dbSaveSettings(),
     ]);
+    console.log('[DB] migrate 완료');
+  } else {
+    console.log('[DB] migrate 스킵 — localStorage도 비어있음');
   }
 };
 
@@ -1160,14 +1167,14 @@ function FixedExpOnboardItem({ item, accounts, onToggle, onUpdate }) {
 // ─── HOME TAB ─────────────────────────────────────────────────────────────────
 const LATEST_VERSION = 'v0.2';
 
-function HomeTab({ onOpenSettings, onDetailOpen, authUser }) {
+function HomeTab({ onOpenSettings, onDetailOpen, authUser, globalRate }) {
   const today = new Date();
   const [yr, setYr] = useState(today.getFullYear());
   const [mo, setMo] = useState(today.getMonth());
   const [selDay, setSelDay] = useState(today.getDate());
   const [cur, setCur] = useState('EUR');
   const [txns, setTxns] = useState([]);
-  const [rate, setRate] = useState(1480);
+  const rate = globalRate || getRate().rate;  // 최상위에서 받은 환율 사용
   const [budget, setBudgetState] = useState({ eur: null, excludeCategories: ['식비지원금'] });
   const [showBanner, setShowBanner] = useState(
     () => ls.get('gyembu_seen_version') !== LATEST_VERSION
@@ -1179,12 +1186,11 @@ function HomeTab({ onOpenSettings, onDetailOpen, authUser }) {
       ls.set('gyembu_seen_version', LATEST_VERSION);
       setShowBanner(false);
       setBannerExiting(false);
-    }, 250); // bannerOut 애니메이션 시간과 일치
+    }, 250);
   };
 
   useEffect(() => {
-    syncFixedCosts(); setTxns(getTxns()); setRate(getRate().rate); setBudgetState(getBudget());
-    fetchLatestRate().then(r => setRate(r));
+    syncFixedCosts(); setTxns(getTxns()); setBudgetState(getBudget());
   }, []);
 
   const firstDay = new Date(yr, mo, 1).getDay();
@@ -1323,8 +1329,8 @@ function HomeTab({ onOpenSettings, onDetailOpen, authUser }) {
 }
 
 // ─── HISTORY TAB ──────────────────────────────────────────────────────────────
-function TxnDetail({ txn, onBack, onEdit }) {
-  const { rate } = getRate();
+function TxnDetail({ txn, onBack, onEdit, globalRate }) {
+  const rate = globalRate || getRate().rate;
   const r = txn.rateAtTime || rate;
   const isTransfer = txn.type === 'transfer';
   const fmtAmt = (amount, currency) => currency === 'EUR' ? `€ ${amount.toFixed(2)}` : `₩ ${Math.round(amount).toLocaleString()}`;
@@ -1374,7 +1380,7 @@ function TxnDetail({ txn, onBack, onEdit }) {
   ] });
 }
 
-function HistoryTab({ onEdit }) {
+function HistoryTab({ onEdit, globalRate }) {
   const [txns, setTxnsState] = useState([]);
   const [cur, setCur] = useState('EUR');
   const [view, setView] = useState('list');
@@ -1388,11 +1394,15 @@ function HistoryTab({ onEdit }) {
   const [periodStart, setPeriodStart] = useState('');
   const [periodEnd, setPeriodEnd] = useState('');
   const [detail, setDetail] = useState(null);
-  const [cats] = useState(getCategories());
-  const [accs] = useState(getAccounts());
-  const { rate } = getRate();
+  const [cats, setCats] = useState([]);
+  const [accs, setAccs] = useState([]);
+  const rate = globalRate || getRate().rate;
 
-  useEffect(() => { setTxnsState(getTxns()); }, []);
+  useEffect(() => {
+    setTxnsState(getTxns());
+    setCats(getCategories());
+    setAccs(getAccounts());
+  }, []);
   const reload = () => setTxnsState(getTxns());
 
   const toDisplay = t => {
@@ -1480,7 +1490,7 @@ function HistoryTab({ onEdit }) {
   const prevTotal = txns.filter(t => { const d = new Date(t.date); return d.getFullYear() === prevYr && d.getMonth() === prevMo && t.type === 'expense'; }).reduce((s,t) => s + Math.abs(toDisplay(t)), 0);
   const maxBar = Math.max(thisTotal, prevTotal, 1);
 
-  if (detail) return jsx('div', { className: 'app-shell', children: jsx(TxnDetail, { txn: detail, onBack: () => { setDetail(null); reload(); }, onEdit: t => { setDetail(null); onEdit(t); } }) });
+  if (detail) return jsx('div', { className: 'app-shell', children: jsx(TxnDetail, { txn: detail, globalRate, onBack: () => { setDetail(null); reload(); }, onEdit: t => { setDetail(null); onEdit(t); } }) });
 
   return jsxs('div', { className: 'page', style: { paddingTop: 16 }, children: [
     jsx(PageHeader, { title: '내역', right: jsx(CurrencyToggle, { cur, onChange: setCur }) }),
@@ -1848,7 +1858,7 @@ function BalanceCorrectForm({ account, onSubmit, onCancel }) {
   ] });
 }
 
-function AccountsTab() {
+function AccountsTab({ globalRate }) {
   const [accs, setAccsState] = useState([]);
   const [txns, setTxnsState] = useState([]);
   const [cur, setCur] = useState('EUR');
@@ -1859,7 +1869,7 @@ function AccountsTab() {
   const [calMonth, setCalMonth] = useState(new Date().getMonth());
   const [calDay, setCalDay] = useState(null);
   const [showCal, setShowCal] = useState(false);
-  const { rate } = getRate();
+  const rate = globalRate || getRate().rate;
   const today = new Date(), todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 
   useEffect(() => { setAccsState(getAccounts()); setTxnsState(getTxns()); }, []);
@@ -2097,7 +2107,7 @@ function FixedItemForm({ initial, onSubmit, onCancel, submitLabel, isIncome = fa
   ] });
 }
 
-function FixedTab() {
+function FixedTab({ globalRate }) {
   const [expenses, setExpenses] = useState([]);
   const [incomes, setIncomes] = useState([]);
   const [cur, setCur] = useState('EUR');
@@ -2108,7 +2118,7 @@ function FixedTab() {
   // 내역 선택 시 펼침 (수정/삭제 버튼)
   const [expandedExpId, setExpandedExpId] = useState(null);
   const [expandedIncId, setExpandedIncId] = useState(null);
-  const { rate } = getRate();
+  const rate = globalRate || getRate().rate;
 
   useEffect(() => { setExpenses(getFixedExp()); setIncomes(getFixedInc()); }, []);
 
@@ -2389,14 +2399,16 @@ function BottomNav({ active, onChange }) {
 
 // ─── ROOT APP ─────────────────────────────────────────────────────────────────
 function App() {
-  const [authUser, setAuthUser]   = useState(undefined);  // undefined=확인중, null=비로그인, obj=로그인
+  const [authUser, setAuthUser]   = useState(undefined);
+  const [dbReady, setDbReady]     = useState(false);   // DB 로드 완료 여부
   const [onboarded, setOnboarded] = useState(null);
   const [tab, setTab]             = useState('home');
   const [prevTab, setPrevTab]     = useState('home');
   const [editing, setEditing]     = useState(null);
   const [settings, setSettings]   = useState(false);
   const [homeTxnDetail, setHomeTxnDetail] = useState(null);
-  const [showAuth, setShowAuth]   = useState(false);  // 로그인 화면 수동 진입
+  const [showAuth, setShowAuth]   = useState(false);
+  const [globalRate, setGlobalRate] = useState(getRate().rate);  // 최상위 환율 state
 
   // ── 인증 상태 감지 ──────────────────────────────────────────────
   useEffect(() => {
@@ -2409,18 +2421,25 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // ── 환율 최상위 1회 fetch ────────────────────────────────────────
+  useEffect(() => {
+    fetchLatestRate().then(r => setGlobalRate(r));
+  }, []);
+
   // ── 세션 확인 완료 후 온보딩 상태 세팅 ─────────────────────────
   useEffect(() => {
     if (authUser === undefined) return;
     setOnboarded(isOnboarded());
   }, [authUser]);
 
-  // ── 로그인 후 DB 동기화 (백그라운드) ────────────────────────────
+  // ── 로그인 후 DB 동기화 — 완료 전까지 탭 렌더링 보류 ────────────
   useEffect(() => {
-    if (!authUser) return;
+    if (!authUser) { setDbReady(false); return; }
+    setDbReady(false);
     (async () => {
       await migrateLocalToDb();
       await dbLoadAll();
+      setDbReady(true);   // 완료 후 탭 렌더링 허용
     })();
   }, [authUser]);
 
@@ -2431,6 +2450,8 @@ function App() {
 
   // ── 렌더링 분기 ─────────────────────────────────────────────────
   if (authUser === undefined || onboarded === null) return null;  // 초기 세션 확인 중
+  // 로그인 상태이고 DB 로드 미완료면 잠깐 대기
+  if (authUser && !dbReady) return null;
 
   // 수동으로 로그인 화면에 들어온 경우
   if (showAuth) return jsx(AuthPage, {
@@ -2457,14 +2478,14 @@ function App() {
     onShowAuth: () => { setSettings(false); setShowAuth(true); },
     authUser,
   });
-  if (homeTxnDetail) return jsx('div', { className: 'app-shell', children: jsx(TxnDetail, { txn: homeTxnDetail, onBack: () => setHomeTxnDetail(null), onEdit: t => { setHomeTxnDetail(null); setEditing(t); setPrevTab('home'); setTab('add'); } }) });
+  if (homeTxnDetail) return jsx('div', { className: 'app-shell', children: jsx(TxnDetail, { txn: homeTxnDetail, globalRate, onBack: () => setHomeTxnDetail(null), onEdit: t => { setHomeTxnDetail(null); setEditing(t); setPrevTab('home'); setTab('add'); } }) });
   if (tab === 'add') return jsx('div', { className: 'app-shell', children: jsx(AddTransaction, { editing, onDone: () => { setEditing(null); setTab(prevTab); } }) });
 
   return jsxs('div', { className: 'app-shell', children: [
-    tab === 'home'     && jsx(HomeTab,     { onOpenSettings: () => setSettings(true), onDetailOpen: t => setHomeTxnDetail(t), authUser }),
-    tab === 'history'  && jsx(HistoryTab,  { onEdit: t => { setEditing(t); setPrevTab(tab); setTab('add'); } }),
-    tab === 'accounts' && jsx(AccountsTab, {}),
-    tab === 'fixed'    && jsx(FixedTab,    {}),
+    tab === 'home'     && jsx(HomeTab,     { onOpenSettings: () => setSettings(true), onDetailOpen: t => setHomeTxnDetail(t), authUser, globalRate }),
+    tab === 'history'  && jsx(HistoryTab,  { onEdit: t => { setEditing(t); setPrevTab(tab); setTab('add'); }, globalRate }),
+    tab === 'accounts' && jsx(AccountsTab, { globalRate }),
+    tab === 'fixed'    && jsx(FixedTab,    { globalRate }),
     jsx(BottomNav, { active: tab, onChange: t => { if (t === 'add') { setEditing(null); setPrevTab(tab); setTab('add'); } else setTab(t); } }),
   ] });
 }
