@@ -182,7 +182,13 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 // ─── Supabase 클라이언트 ──────────────────────────────────────────────────────
 const SUPABASE_URL = 'https://yknhizzyzxrurgkkknsx.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_JXT1WB2T1NZMMzSG7hNW9w_NrkvyNKu';
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  },
+});
 
 // ─── lucide icons (inline SVG helpers) ───────────────────────────────────────
 const Icon = ({ d, size=24, color='currentColor', sw=2, ...p }) =>
@@ -332,11 +338,38 @@ const toCamel = obj => {
   );
 };
 
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+const waitForSession = async (timeout = 6000) => {
+  const started = Date.now();
+
+  while (Date.now() - started < timeout) {
+    const { data, error } = await supabase.auth.getSession();
+    if (error) console.error('[AUTH] getSession 오류:', error);
+
+    const session = data?.session;
+    if (session?.access_token && session?.user?.id) return session;
+
+    await wait(150);
+  }
+
+  throw new Error('세션이 아직 준비되지 않았습니다.');
+};
+
 // 현재 로그인한 유저 ID
 const getCurrentUserId = async () => {
-  const { data } = await supabase.auth.getUser();
+  const { data: sessData, error: sessErr } = await supabase.auth.getSession();
+  if (sessErr) console.error('[AUTH] session 조회 오류:', sessErr);
+
+  const sessionUserId = sessData?.session?.user?.id;
+  if (sessionUserId) return sessionUserId;
+
+  const { data, error } = await supabase.auth.getUser();
+  if (error) console.error('[AUTH] user 조회 오류:', error);
+
   return data?.user?.id || null;
 };
+
 
 
 // ── 계좌 데이터 정규화 ─────────────────────────────────────────────
@@ -385,51 +418,103 @@ const dbSaveAccounts = async (accounts) => {
 };
 
 const dbSaveTxns = async (txns) => {
-  setTxns(txns);   // localStorage
+  setTxns(txns);
   const uid = await getCurrentUserId();
-  if (!uid) return;
-  await supabase.from('transactions').delete().eq('user_id', uid);
+  if (!uid) {
+    console.error('[DB] transactions 저장 스킵 — uid 없음');
+    return;
+  }
+
+  const { error: delErr } = await supabase.from('transactions').delete().eq('user_id', uid);
+  if (delErr) {
+    console.error('[DB] transactions 삭제 오류:', delErr);
+    return;
+  }
+
   if (txns.length === 0) return;
-  // 500개씩 배치 삽입
+
   const BATCH = 500;
   for (let i = 0; i < txns.length; i += BATCH) {
-    await supabase.from('transactions').insert(
-      txns.slice(i, i + BATCH).map(t => ({ ...toSnake(t), user_id: uid }))
-    );
+    const batch = txns.slice(i, i + BATCH).map(t => ({ ...toSnake(t), user_id: uid }));
+    const { error: insErr } = await supabase.from('transactions').insert(batch);
+
+    if (insErr) {
+      console.error('[DB] transactions 저장 오류:', insErr, '배치 시작 index:', i, '샘플:', batch[0]);
+      return;
+    }
   }
+
+  console.log('[DB] transactions 저장 완료:', txns.length, '개');
 };
 
 const dbSaveFixedExp = async (items) => {
   setFixedExp(items);
   const uid = await getCurrentUserId();
-  if (!uid) return;
-  await supabase.from('fixed_expenses').delete().eq('user_id', uid);
+  if (!uid) {
+    console.error('[DB] fixed_expenses 저장 스킵 — uid 없음');
+    return;
+  }
+
+  const { error: delErr } = await supabase.from('fixed_expenses').delete().eq('user_id', uid);
+  if (delErr) {
+    console.error('[DB] fixed_expenses 삭제 오류:', delErr);
+    return;
+  }
+
   if (items.length === 0) return;
-  await supabase.from('fixed_expenses').insert(
-    items.map(i => ({ ...toSnake(i), user_id: uid }))
-  );
+
+  const rows = items.map(i => ({ ...toSnake(i), user_id: uid }));
+  const { error: insErr } = await supabase.from('fixed_expenses').insert(rows);
+
+  if (insErr) {
+    console.error('[DB] fixed_expenses 저장 오류:', insErr, '샘플:', rows[0]);
+    return;
+  }
+
+  console.log('[DB] fixed_expenses 저장 완료:', items.length, '개');
 };
 
 const dbSaveFixedInc = async (items) => {
   setFixedInc(items);
   const uid = await getCurrentUserId();
-  if (!uid) return;
-  await supabase.from('fixed_incomes').delete().eq('user_id', uid);
+  if (!uid) {
+    console.error('[DB] fixed_incomes 저장 스킵 — uid 없음');
+    return;
+  }
+
+  const { error: delErr } = await supabase.from('fixed_incomes').delete().eq('user_id', uid);
+  if (delErr) {
+    console.error('[DB] fixed_incomes 삭제 오류:', delErr);
+    return;
+  }
+
   if (items.length === 0) return;
-  await supabase.from('fixed_incomes').insert(
-    items.map(i => ({ ...toSnake(i), user_id: uid }))
-  );
+
+  const rows = items.map(i => ({ ...toSnake(i), user_id: uid }));
+  const { error: insErr } = await supabase.from('fixed_incomes').insert(rows);
+
+  if (insErr) {
+    console.error('[DB] fixed_incomes 저장 오류:', insErr, '샘플:', rows[0]);
+    return;
+  }
+
+  console.log('[DB] fixed_incomes 저장 완료:', items.length, '개');
 };
 
 const dbSaveSettings = async () => {
   const uid = await getCurrentUserId();
-  if (!uid) return;
+  if (!uid) {
+    console.error('[DB] user_settings 저장 스킵 — uid 없음');
+    return;
+  }
+
   const budget = getBudget();
   const rate   = getRate();
   const cats   = getCategories();
   const synced = ls.get(K.SYNCED) || {};
   const start  = ls.get(K.START_MONTH);
-  await supabase.from('user_settings').upsert({
+
+  const payload = {
     user_id: uid,
     rate: rate.rate,
     rate_updated_at: rate.updatedAt,
@@ -439,7 +524,15 @@ const dbSaveSettings = async () => {
     synced_months: synced,
     start_month: start,
     updated_at: new Date().toISOString(),
-  });
+  };
+
+  const { error } = await supabase.from('user_settings').upsert(payload);
+  if (error) {
+    console.error('[DB] user_settings 저장 오류:', error, payload);
+    return;
+  }
+
+  console.log('[DB] user_settings 저장 완료');
 };
 
 // ── DB에서 전체 데이터 불러오기 (로그인 후 1회) ──────────────────
@@ -633,6 +726,15 @@ const fetchRateForDate = async date => {
   }
 };
 
+window.__debug = {
+  supabase,
+  getRate,
+  setRate,
+  fetchLatestRate,
+  fetchRateForDate,
+  formatRate,
+};
+
 // ─── fixed cost auto-sync ─────────────────────────────────────────────────────
 const shouldApplyFixed = (item, yr, mo) => {
   if (!item.frequency || item.frequency === 'monthly') return true;
@@ -722,7 +824,7 @@ const exportCSV = () => {
       t.fromAccountName, t.fromAmount, t.fromCurrency,
       t.toAccountName, t.toAmount, t.toCurrency,
       t.fee || 0, t.feeCurrency || t.fromCurrency,
-      '송금', '', t.memo || '', t.rateAtTime || '',
+      '송금', '', t.memo || '', t.rateAtTime ? formatRate(t.rateAtTime) : '',
     ];
     return [
       t.date, t.title, t.type === 'expense' ? '지출' : '수입',
@@ -731,7 +833,7 @@ const exportCSV = () => {
       '', '',
       t.category,
       t.payMethod === 'card' ? '카드' : t.payMethod === 'voucher' ? '상품권/쿠폰' : '현금',
-      t.memo || '', t.rateAtTime || '',
+      t.memo || '', t.rateAtTime ? formatRate(t.rateAtTime) : '',
     ];
   });
   const csv = [header, ...rows]
@@ -749,14 +851,18 @@ const exportCSV = () => {
 // 데이터 가져오기
 const importData = (file) => {
   const reader = new FileReader();
+
   reader.onload = async e => {
     try {
       const data = JSON.parse(e.target.result);
+
       if (!data.version || !data.accounts) {
         alert('올바른 백업 파일이 아니에요.');
         return;
       }
+
       if (!window.confirm('현재 데이터를 백업 파일로 덮어쓸까요? 기존 데이터는 사라져요.')) return;
+
       if (data.accounts)     setAccounts(normalizeAccounts(data.accounts));
       if (data.fixedExp)     setFixedExp(data.fixedExp);
       if (data.fixedInc)     setFixedInc(data.fixedInc);
@@ -765,20 +871,35 @@ const importData = (file) => {
       if (data.budget)       setBudget(data.budget);
       if (data.startMonth)   ls.set(K.START_MONTH, data.startMonth);
       ls.set(K.ONBOARDED, true);
-      // DB에도 동기화 (로그인 상태일 때만)
-      await Promise.all([
-        dbSaveAccounts(normalizeAccounts(data.accounts || [])),
-        dbSaveTxns(data.transactions || []),
-        dbSaveFixedExp(data.fixedExp || []),
-        dbSaveFixedInc(data.fixedInc || []),
-        dbSaveSettings(),
-      ]);
-      alert('데이터를 성공적으로 가져왔어요. 앱을 새로고침할게요.');
+
+      let loggedIn = false;
+      try {
+        await waitForSession();
+        loggedIn = true;
+      } catch (authErr) {
+        console.warn('[IMPORT] 세션 준비 전이라 DB 동기화는 건너뜀:', authErr);
+      }
+
+      if (loggedIn) {
+        await dbSaveAccounts(normalizeAccounts(data.accounts || []));
+        await dbSaveTxns(data.transactions || []);
+        await dbSaveFixedExp(data.fixedExp || []);
+        await dbSaveFixedInc(data.fixedInc || []);
+        await dbSaveSettings();
+      }
+
+      alert(loggedIn
+        ? '데이터를 성공적으로 가져왔어요. 앱을 새로고침할게요.'
+        : '기기에는 데이터를 가져왔어요. 로그인 세션이 아직 준비되지 않아 DB 동기화는 건너뛰었어요. 새로고침 후 다시 동기화해주세요.'
+      );
+
       window.location.reload();
-    } catch {
-      alert('파일을 읽는 중 오류가 발생했어요.');
+    } catch (err) {
+      console.error('[IMPORT] 오류:', err);
+      alert('파일을 읽거나 동기화하는 중 오류가 발생했어요.');
     }
   };
+
   reader.readAsText(file);
 };
 
@@ -1390,7 +1511,7 @@ function HomeTab({ onOpenSettings, onDetailOpen, authUser, globalRate }) {
         ] }),
       ] }, t.id)),
     ] }),
-    jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', Math.round(rate).toLocaleString(), ' · 오늘 기준'] }),
+    jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', formatRate(rate), ' · 오늘 기준'] }),
   ] });
 }
 
@@ -1435,7 +1556,7 @@ function TxnDetail({ txn, onBack, onEdit, globalRate }) {
         ['날짜', txn.date],
         ['계좌', txn.accountName],
         ['결제 수단', txn.payMethod === 'card' ? '카드' : txn.payMethod === 'voucher' ? '상품권/쿠폰' : '현금'],
-        ['환율', txn.rateAtTime ? `1 EUR = ₩${Math.round(txn.rateAtTime).toLocaleString()} (${txn.rateDate || txn.date} 기준)` : '-'],
+        ['환율', txn.rateAtTime ? `1 EUR = ₩${formatRate(txn.rateAtTime)} (${txn.rateDate || txn.date} 기준)` : '-'],
         txn.memo ? ['메모', txn.memo] : null,
       ]).filter(Boolean)
       .map(([label, val]) => jsxs('div', { className: 'row', children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: label }), jsx('span', { style: { fontSize: 13, textAlign: 'right', maxWidth: '60%' }, children: val })] }, label))
@@ -1872,7 +1993,7 @@ function AddTransaction({ onDone, editing = null }) {
       ] }),
       jsxs('div', { style: { padding: '10px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
         jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' }, children: [
-          jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: rateLoading ? '환율 조회 중...' : `1 EUR = ₩${Math.round(effectiveRate).toLocaleString()} (${rateInfo?.date || date} 기준)` }),
+          jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: rateLoading ? '환율 조회 중...' : `1 EUR = ₩${formatRate(effectiveRate)} (${rateInfo?.date || date} 기준)` }),
           jsx('button', { style: { background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: 'var(--gray-400)', textDecoration: 'underline' }, onClick: () => setManualRate(r => !r), children: manualRate ? '자동으로' : '직접 입력' }),
         ] }),
         manualRate && jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6, marginTop: 8 }, children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '1 EUR = ₩' }), jsx('input', { className: 'field-sm', placeholder: '1480', style: { width: 70 }, value: manualRateVal, onChange: e => setManualRateVal(e.target.value) })] }),
@@ -2098,7 +2219,7 @@ function AccountsTab({ globalRate }) {
       } ))
     }),
     !isHistoryMode && jsx(AddRow, { label: '계좌 추가', onClick: () => { setAddMode(o => !o); setEditId(null); setCorrectId(null); } }),
-    jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', Math.round(rate).toLocaleString(), ' · ECB 기준'] }),
+    jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', formatRate(rate), ' · ECB 기준'] }),
   ] });
 }
 
