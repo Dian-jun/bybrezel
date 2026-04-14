@@ -542,7 +542,11 @@ const fetchLatestRate = async () => {
     const res = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json');
     const data = await res.json();
     const rate = data.eur?.krw;
-    if (rate) { setRate(rate); return rate; }
+    if (rate) {
+      setRate(rate);
+      await dbSaveSettings();  // 모든 기기가 같은 환율을 쓰도록 DB에도 저장
+      return rate;
+    }
     return getRate().rate;
   } catch { return getRate().rate; }
 };
