@@ -323,19 +323,35 @@ const getCurrentUserId = async () => {
   return data?.user?.id || null;
 };
 
+// ── 계좌 데이터 정규화 ─────────────────────────────────────────────
+const normalizeAccounts = (accounts) =>
+  (accounts || []).map(a => {
+    const initialBalance =
+      a.initialBalance ??
+      a.balance ??
+      a.initial_balance ??
+      0;
+
+    return {
+      ...a,
+      initialBalance,
+    };
+  });
+
 // ── DB 저장 함수들 (localStorage 동시 저장) ──────────────────────
 const dbSaveAccounts = async (accounts) => {
-  setAccounts(accounts);   // localStorage
+  const normalized = normalizeAccounts(accounts);
+  setAccounts(normalized);   // localStorage
   const uid = await getCurrentUserId();
   if (!uid) return;
   // 기존 전체 삭제 후 재삽입
   const { error: delErr } = await supabase.from('accounts').delete().eq('user_id', uid);
   if (delErr) { console.error('[DB] accounts 삭제 오류:', delErr); return; }
-  if (accounts.length === 0) return;
-  const rows = accounts.map(a => ({ ...toSnake(a), user_id: uid }));
+  if (normalized.length === 0) return;
+  const rows = normalized.map(a => ({ ...toSnake(a), user_id: uid }));
   const { error: insErr } = await supabase.from('accounts').insert(rows);
   if (insErr) console.error('[DB] accounts 저장 오류:', insErr, '데이터 샘플:', rows[0]);
-  else console.log('[DB] accounts 저장 완료:', accounts.length, '개');
+  else console.log('[DB] accounts 저장 완료:', normalized.length, '개');
 };
 
 const dbSaveTxns = async (txns) => {
@@ -410,7 +426,7 @@ const dbLoadAll = async () => {
   ]);
 
   // DB 데이터가 있으면 localStorage 덮어쓰기
-  if (accsRes.data?.length)   setAccounts(accsRes.data.map(toCamel));
+  if (accsRes.data?.length)   setAccounts(normalizeAccounts(accsRes.data.map(toCamel)));
   if (txnsRes.data?.length)   setTxns(txnsRes.data.map(toCamel));
   if (fixExpRes.data?.length) setFixedExp(fixExpRes.data.map(toCamel));
   if (fixIncRes.data?.length) setFixedInc(fixIncRes.data.map(toCamel));
@@ -692,7 +708,7 @@ const importData = (file) => {
         return;
       }
       if (!window.confirm('현재 데이터를 백업 파일로 덮어쓸까요? 기존 데이터는 사라져요.')) return;
-      if (data.accounts)     setAccounts(data.accounts);
+      if (data.accounts)     setAccounts(normalizeAccounts(data.accounts));
       if (data.fixedExp)     setFixedExp(data.fixedExp);
       if (data.fixedInc)     setFixedInc(data.fixedInc);
       if (data.transactions) setTxns(data.transactions);
@@ -702,7 +718,7 @@ const importData = (file) => {
       ls.set(K.ONBOARDED, true);
       // DB에도 동기화 (로그인 상태일 때만)
       await Promise.all([
-        dbSaveAccounts(data.accounts || []),
+        dbSaveAccounts(normalizeAccounts(data.accounts || [])),
         dbSaveTxns(data.transactions || []),
         dbSaveFixedExp(data.fixedExp || []),
         dbSaveFixedInc(data.fixedInc || []),
@@ -895,7 +911,7 @@ const PageHeader = ({ title, right, mb = 18 }) =>
   ] });
 
 // ─── ONBOARDING ───────────────────────────────────────────────────────────────
-function Onboarding({ onDone, onLogin }) {
+function Onboarding({ onDone, onShowAuth }) {
   const [step, setStep] = useState(0);
 
   // ── 계좌 관련 상태 ────────────────────────────────────────────────────────
@@ -955,7 +971,7 @@ function Onboarding({ onDone, onLogin }) {
 
   const addFixedInc = () => {
     const nm = fiNameRef.current?.value;
-    if (!nm?.trim()) return;
+    if (!nm?.trim()) return false;
     const amt = fiAmtRef.current?.value, day = fiDayRef.current?.value;
     setFixedIncList(prev => [...prev, {
       id: Date.now().toString(), name: nm, amount: amt, day,
@@ -967,6 +983,25 @@ function Onboarding({ onDone, onLogin }) {
     if (fiAmtRef.current) fiAmtRef.current.value = '';
     if (fiDayRef.current) fiDayRef.current.value = '';
     setFiForm(prev => ({ ...prev, type: 'account', accId: '' }));
+    return true;
+  };
+
+  const getPendingFixedInc = () => {
+    const name = fiNameRef.current?.value?.trim() || '';
+    const amount = fiAmtRef.current?.value || '';
+    const day = fiDayRef.current?.value || '';
+    const hasPending = !!(name || amount || day || (fiForm.type === 'account' ? fiForm.accId : fiForm.type !== 'account'));
+    if (!hasPending) return null;
+    return {
+      id: Date.now().toString(),
+      name: name || '고정수입',
+      amount,
+      day,
+      currency: fiForm.cur,
+      frequency: fiForm.freq,
+      accountId: fiForm.type === 'account' ? fiForm.accId : '',
+      incomeType: fiForm.type,
+    };
   };
 
   const finish = async () => {
@@ -982,7 +1017,9 @@ function Onboarding({ onDone, onLogin }) {
       }),
       ...fixedExpExtra.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })),
     ]);
-    setFixedInc(fixedIncList.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })));
+    const pendingFixedInc = getPendingFixedInc();
+    const finalFixedIncList = pendingFixedInc ? [...fixedIncList, pendingFixedInc] : fixedIncList;
+    setFixedInc(finalFixedIncList.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })));
     syncFixedCosts(); setOnboarded(); onDone();
   };
 
@@ -1004,8 +1041,8 @@ function Onboarding({ onDone, onLogin }) {
     ] }),
     jsxs('div', { children: [
       jsx('button', { className: 'btn', onClick: () => setStep(1), children: '시작하기' }),
-      jsx('button', { className: 'btn-ghost', onClick: onLogin, children: '로그인 / 회원가입' }),
-      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', textAlign: 'center', marginTop: 12, lineHeight: 1.7 }, children: '로그인 없이도 바로 사용할 수 있어요' }),
+      jsx('button', { className: 'btn-ghost', onClick: () => onShowAuth && onShowAuth(), children: '로그인 / 회원가입' }),
+      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', textAlign: 'center', marginTop: 12 }, children: '로그인 없이도 바로 사용할 수 있어요' }),
     ] }),
   ] }) });
 
@@ -2456,12 +2493,22 @@ function App() {
 
   // 수동으로 로그인 화면에 들어온 경우
   if (showAuth) return jsx(AuthPage, {
-    onAuth: () => setShowAuth(false),
+    onAuth: () => {
+      if (!isOnboarded()) {
+        ls.set(K.ONBOARDED, true);
+        if (!ls.get(K.START_MONTH)) {
+          const now = new Date();
+          ls.set(K.START_MONTH, { year: now.getFullYear(), month: now.getMonth() });
+        }
+      }
+      setOnboarded(true);
+      setShowAuth(false);
+    },
     onClose: () => setShowAuth(false),
   });
 
   // 온보딩 미완료
-  if (!onboarded) return jsx(Onboarding, { onDone: async () => {
+  if (!onboarded) return jsx(Onboarding, { onShowAuth: () => setShowAuth(true), onDone: async () => {
     if (authUser) {
       await Promise.all([
         dbSaveAccounts(getAccounts()),
@@ -2471,7 +2518,7 @@ function App() {
       ]);
     }
     setOnboarded(true);
-  }, onLogin: () => setShowAuth(true) });
+  }});
 
   if (settings) return jsx(SettingsPage, {
     onClose: () => setSettings(false),
