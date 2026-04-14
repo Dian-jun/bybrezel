@@ -895,7 +895,7 @@ const PageHeader = ({ title, right, mb = 18 }) =>
   ] });
 
 // ─── ONBOARDING ───────────────────────────────────────────────────────────────
-function Onboarding({ onDone }) {
+function Onboarding({ onDone, onLogin }) {
   const [step, setStep] = useState(0);
 
   // ── 계좌 관련 상태 ────────────────────────────────────────────────────────
@@ -1004,7 +1004,8 @@ function Onboarding({ onDone }) {
     ] }),
     jsxs('div', { children: [
       jsx('button', { className: 'btn', onClick: () => setStep(1), children: '시작하기' }),
-      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', textAlign: 'center', marginTop: 12 }, children: '설정은 언제든 변경할 수 있어요' }),
+      jsx('button', { className: 'btn-ghost', onClick: onLogin, children: '로그인 / 회원가입' }),
+      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', textAlign: 'center', marginTop: 12, lineHeight: 1.7 }, children: '로그인 없이도 바로 사용할 수 있어요' }),
     ] }),
   ] }) });
 
@@ -2470,7 +2471,7 @@ function App() {
       ]);
     }
     setOnboarded(true);
-  }});
+  }, onLogin: () => setShowAuth(true) });
 
   if (settings) return jsx(SettingsPage, {
     onClose: () => setSettings(false),
