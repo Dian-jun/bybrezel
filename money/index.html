@@ -400,6 +400,14 @@ const getCurrentUserId = async () => {
 };
 
 
+const saveSettingsIfLoggedIn = async () => {
+  const uid = await getCurrentUserId();
+  if (!uid) return false;
+  await dbSaveSettings();
+  return true;
+};
+
+
 
 // ── 계좌 데이터 정규화 ─────────────────────────────────────────────
 const normalizeAccounts = (accounts) =>
@@ -533,7 +541,7 @@ const dbSaveFixedInc = async (items) => {
 const dbSaveSettings = async () => {
   const uid = await getCurrentUserId();
   if (!uid) {
-    console.error('[DB] user_settings 저장 스킵 — uid 없음');
+    console.log('[DB] user_settings 저장 생략 — 비로그인 상태');
     return;
   }
 
@@ -736,7 +744,7 @@ const fetchLatestRate = async () => {
     const rateDate = data?.date || null;
     if (rate) {
       setRate(rate, rateDate);
-      await dbSaveSettings();
+      await saveSettingsIfLoggedIn();
       return rate;
     }
     return roundRate2(getRate().rate);
