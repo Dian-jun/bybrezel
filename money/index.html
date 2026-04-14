@@ -265,7 +265,22 @@ const setFixedInc   = v  => ls.set(K.FIXED_INC, v);
 const getTxns       = () => ls.get(K.TRANSACTIONS) || [];
 const setTxns       = v  => ls.set(K.TRANSACTIONS, v);
 const getRate       = () => ls.get(K.RATE) || { rate: 1480, updatedAt: null };
-const setRate       = v  => ls.set(K.RATE, { rate: v, updatedAt: new Date().toISOString() });
+
+const formatRate = (rate) => {
+  const n = Number(rate);
+  if (!Number.isFinite(n)) return '0.00';
+  return n.toLocaleString('ko-KR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+};
+
+const roundRate2 = v => {
+  const n = Number(v);
+  return Number.isFinite(n) ? Math.round(n * 100) / 100 : 0;
+};
+
+const setRate       = v  => ls.set(K.RATE, { rate: roundRate2(v), updatedAt: new Date().toISOString() });
 const getCategories = () => ls.get(K.CATEGORIES) || DEFAULT_CATS;
 const setCategories = v  => ls.set(K.CATEGORIES, v);
 const getBudget     = () => ls.get(K.BUDGET) || { eur: null, excludeCategories: ['식비지원금'] };
@@ -323,13 +338,14 @@ const getCurrentUserId = async () => {
   return data?.user?.id || null;
 };
 
+
 // ── 계좌 데이터 정규화 ─────────────────────────────────────────────
 const normalizeAccounts = (accounts) =>
   (accounts || []).map(a => {
     const initialBalance =
-      a.initialBalance ??
-      a.balance ??
-      a.initial_balance ??
+      a?.initialBalance ??
+      a?.balance ??
+      a?.initial_balance ??
       0;
 
     const { balance, initial_balance, ...rest } = a || {};
@@ -344,17 +360,24 @@ const normalizeAccounts = (accounts) =>
 const dbSaveAccounts = async (accounts) => {
   const normalized = normalizeAccounts(accounts);
   setAccounts(normalized);   // localStorage
+
   const uid = await getCurrentUserId();
   if (!uid) return;
-  // 기존 전체 삭제 후 재삽입
+
   const { error: delErr } = await supabase.from('accounts').delete().eq('user_id', uid);
-  if (delErr) { console.error('[DB] accounts 삭제 오류:', delErr); return; }
+  if (delErr) {
+    console.error('[DB] accounts 삭제 오류:', delErr);
+    return;
+  }
+
   if (normalized.length === 0) return;
 
   const rows = normalized.map(a => {
     const { balance, initial_balance, ...clean } = a || {};
     return { ...toSnake(clean), user_id: uid };
   });
+
+  console.log('[DB] accounts rows sample:', rows[0]);
 
   const { error: insErr } = await supabase.from('accounts').insert(rows);
   if (insErr) console.error('[DB] accounts 저장 오류:', insErr, '데이터 샘플:', rows[0]);
@@ -442,7 +465,7 @@ const dbLoadAll = async () => {
   }
   if (settRes.data) {
     const s = settRes.data;
-    if (s.rate)               setRate(s.rate);
+    if (s.rate)               setRate(roundRate2 ? roundRate2(s.rate) : s.rate);
     if (s.budget_eur !== null || s.exclude_categories)
       ls.set(K.BUDGET, { eur: s.budget_eur, excludeCategories: s.exclude_categories || ['식비지원금'] });
     if (s.categories)         setCategories(s.categories);
@@ -470,7 +493,7 @@ const migrateLocalToDb = async () => {
     if (error) { console.error('[DB] migrate 체크 오류:', error); return; }
     if (data?.length) { console.log('[DB] migrate 스킵 — 이미 DB에 데이터 있음'); return; }
     // localStorage 데이터가 있으면 DB로 올리기
-    const accs   = getAccounts();
+    const accs   = normalizeAccounts(getAccounts());
     const txns   = getTxns();
     const fixExp = getFixedExp();
     const fixInc = getFixedInc();
@@ -581,29 +604,33 @@ const correctBalance = (accountId, newBalance) => {
 };
 
 // ─── exchange rate ────────────────────────────────────────────────────────────
-// Frankfurter does NOT support KRW. Using fawazahmed0 currency API instead.
+// ECB 기준 환율: Frankfurter 단일 페어 endpoint 사용
 const fetchLatestRate = async () => {
   try {
-    const res = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json');
+    const res = await fetch('https://api.frankfurter.dev/v2/rate/EUR/KRW?providers=ECB');
     const data = await res.json();
-    const rate = data.eur?.krw;
+    const rate = roundRate2(data?.rate);
     if (rate) {
       setRate(rate);
-      await dbSaveSettings();  // 모든 기기가 같은 환율을 쓰도록 DB에도 저장
+      await dbSaveSettings();
       return rate;
     }
-    return getRate().rate;
-  } catch { return getRate().rate; }
+    return roundRate2(getRate().rate);
+  } catch (e) {
+    console.error('[RATE] latest fetch 실패:', e);
+    return roundRate2(getRate().rate);
+  }
 };
 const fetchRateForDate = async date => {
-  const today = new Date().toISOString().split('T')[0];
   try {
-    const dateKey = date >= today ? 'latest' : date;
-    const res = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${dateKey}/v1/currencies/eur.json`);
+    const res = await fetch(`https://api.frankfurter.dev/v2/rate/EUR/KRW?providers=ECB&date=${date}`);
     const data = await res.json();
-    const rate = data.eur?.krw;
-    return { rate: rate || getRate().rate, date };
-  } catch { return { rate: getRate().rate, date }; }
+    const rate = roundRate2(data?.rate);
+    return { rate: rate || roundRate2(getRate().rate), date };
+  } catch (e) {
+    console.error('[RATE] historical fetch 실패:', e);
+    return { rate: roundRate2(getRate().rate), date };
+  }
 };
 
 // ─── fixed cost auto-sync ─────────────────────────────────────────────────────
@@ -933,7 +960,7 @@ const PageHeader = ({ title, right, mb = 18 }) =>
   ] });
 
 // ─── ONBOARDING ───────────────────────────────────────────────────────────────
-function Onboarding({ onDone, onShowAuth }) {
+function Onboarding({ onDone, onLogin }) {
   const [step, setStep] = useState(0);
 
   // ── 계좌 관련 상태 ────────────────────────────────────────────────────────
@@ -993,7 +1020,7 @@ function Onboarding({ onDone, onShowAuth }) {
 
   const addFixedInc = () => {
     const nm = fiNameRef.current?.value;
-    if (!nm?.trim()) return false;
+    if (!nm?.trim()) return;
     const amt = fiAmtRef.current?.value, day = fiDayRef.current?.value;
     setFixedIncList(prev => [...prev, {
       id: Date.now().toString(), name: nm, amount: amt, day,
@@ -1005,25 +1032,6 @@ function Onboarding({ onDone, onShowAuth }) {
     if (fiAmtRef.current) fiAmtRef.current.value = '';
     if (fiDayRef.current) fiDayRef.current.value = '';
     setFiForm(prev => ({ ...prev, type: 'account', accId: '' }));
-    return true;
-  };
-
-  const getPendingFixedInc = () => {
-    const name = fiNameRef.current?.value?.trim() || '';
-    const amount = fiAmtRef.current?.value || '';
-    const day = fiDayRef.current?.value || '';
-    const hasPending = !!(name || amount || day || (fiForm.type === 'account' ? fiForm.accId : fiForm.type !== 'account'));
-    if (!hasPending) return null;
-    return {
-      id: Date.now().toString(),
-      name: name || '고정수입',
-      amount,
-      day,
-      currency: fiForm.cur,
-      frequency: fiForm.freq,
-      accountId: fiForm.type === 'account' ? fiForm.accId : '',
-      incomeType: fiForm.type,
-    };
   };
 
   const finish = async () => {
@@ -1039,9 +1047,7 @@ function Onboarding({ onDone, onShowAuth }) {
       }),
       ...fixedExpExtra.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })),
     ]);
-    const pendingFixedInc = getPendingFixedInc();
-    const finalFixedIncList = pendingFixedInc ? [...fixedIncList, pendingFixedInc] : fixedIncList;
-    setFixedInc(finalFixedIncList.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })));
+    setFixedInc(fixedIncList.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })));
     syncFixedCosts(); setOnboarded(); onDone();
   };
 
@@ -1063,8 +1069,8 @@ function Onboarding({ onDone, onShowAuth }) {
     ] }),
     jsxs('div', { children: [
       jsx('button', { className: 'btn', onClick: () => setStep(1), children: '시작하기' }),
-      jsx('button', { className: 'btn-ghost', onClick: () => onShowAuth && onShowAuth(), children: '로그인 / 회원가입' }),
-      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', textAlign: 'center', marginTop: 12 }, children: '로그인 없이도 바로 사용할 수 있어요' }),
+      jsx('button', { className: 'btn-ghost', onClick: onLogin, children: '로그인 / 회원가입' }),
+      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', textAlign: 'center', marginTop: 12, lineHeight: 1.7 }, children: '로그인 없이도 바로 사용할 수 있어요' }),
     ] }),
   ] }) });
 
@@ -2515,22 +2521,12 @@ function App() {
 
   // 수동으로 로그인 화면에 들어온 경우
   if (showAuth) return jsx(AuthPage, {
-    onAuth: () => {
-      if (!isOnboarded()) {
-        ls.set(K.ONBOARDED, true);
-        if (!ls.get(K.START_MONTH)) {
-          const now = new Date();
-          ls.set(K.START_MONTH, { year: now.getFullYear(), month: now.getMonth() });
-        }
-      }
-      setOnboarded(true);
-      setShowAuth(false);
-    },
+    onAuth: () => setShowAuth(false),
     onClose: () => setShowAuth(false),
   });
 
   // 온보딩 미완료
-  if (!onboarded) return jsx(Onboarding, { onShowAuth: () => setShowAuth(true), onDone: async () => {
+  if (!onboarded) return jsx(Onboarding, { onDone: async () => {
     if (authUser) {
       await Promise.all([
         dbSaveAccounts(getAccounts()),
@@ -2540,7 +2536,7 @@ function App() {
       ]);
     }
     setOnboarded(true);
-  }});
+  }, onLogin: () => setShowAuth(true) });
 
   if (settings) return jsx(SettingsPage, {
     onClose: () => setSettings(false),
