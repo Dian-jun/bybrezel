@@ -270,7 +270,16 @@ const getFixedInc   = () => ls.get(K.FIXED_INC) || [];
 const setFixedInc   = v  => ls.set(K.FIXED_INC, v);
 const getTxns       = () => ls.get(K.TRANSACTIONS) || [];
 const setTxns       = v  => ls.set(K.TRANSACTIONS, v);
-const getRate       = () => ls.get(K.RATE) || { rate: 1480, updatedAt: null };
+const getRate       = () => {
+  const saved = ls.get(K.RATE);
+  if (!saved) return { rate: 1480, date: null, updatedAt: null };
+  return {
+    ...saved,
+    rate: roundRate2(saved.rate),
+    date: saved.date || null,
+    updatedAt: saved.updatedAt || null,
+  };
+};
 
 const formatRate = (rate) => {
   const n = Number(rate);
@@ -285,8 +294,27 @@ const roundRate2 = v => {
   const n = Number(v);
   return Number.isFinite(n) ? Math.round(n * 100) / 100 : 0;
 };
+const roundEur2 = v => {
+  const n = Number(v);
+  return Number.isFinite(n) ? Math.round(n * 100) / 100 : 0;
+};
+const roundKrw0 = v => {
+  const n = Number(v);
+  return Number.isFinite(n) ? Math.round(n) : 0;
+};
+const normalizeRate = rate => roundRate2(rate || getRate().rate);
+const convertByRate = (amount, fromCurrency, toCurrency, rate) => {
+  const a = Number(amount);
+  if (!Number.isFinite(a)) return 0;
+  if (fromCurrency === toCurrency) return a;
+  const r = normalizeRate(rate);
+  if (!Number.isFinite(r) || r <= 0) return 0;
+  if (fromCurrency === 'EUR' && toCurrency === 'KRW') return roundKrw0(a * r);
+  if (fromCurrency === 'KRW' && toCurrency === 'EUR') return roundEur2(a / r);
+  return a;
+};
 
-const setRate       = v  => ls.set(K.RATE, { rate: roundRate2(v), updatedAt: new Date().toISOString() });
+const setRate       = (v, date = null) => ls.set(K.RATE, { rate: roundRate2(v), date, updatedAt: new Date().toISOString() });
 const getCategories = () => ls.get(K.CATEGORIES) || DEFAULT_CATS;
 const setCategories = v  => ls.set(K.CATEGORIES, v);
 const getBudget     = () => ls.get(K.BUDGET) || { eur: null, excludeCategories: ['식비지원금'] };
@@ -309,6 +337,7 @@ const toSnake = obj => {
     incomeType:'income_type', startMonth:'start_month',
     syncedMonths:'synced_months', budgetEur:'budget_eur',
     excludeCategories:'exclude_categories', rateUpdatedAt:'rate_updated_at',
+    rateDate:'rate_date',
   };
   return Object.fromEntries(
     Object.entries(obj).map(([k, v]) => [map[k] || k, v])
@@ -517,6 +546,7 @@ const dbSaveSettings = async () => {
   const payload = {
     user_id: uid,
     rate: rate.rate,
+    rate_date: rate.date || null,
     rate_updated_at: rate.updatedAt,
     budget_eur: budget.eur,
     exclude_categories: budget.excludeCategories,
@@ -558,7 +588,7 @@ const dbLoadAll = async () => {
   }
   if (settRes.data) {
     const s = settRes.data;
-    if (s.rate)               setRate(roundRate2 ? roundRate2(s.rate) : s.rate);
+    if (s.rate)               setRate(roundRate2 ? roundRate2(s.rate) : s.rate, s.rate_date || null);
     if (s.budget_eur !== null || s.exclude_categories)
       ls.set(K.BUDGET, { eur: s.budget_eur, excludeCategories: s.exclude_categories || ['식비지원금'] });
     if (s.categories)         setCategories(s.categories);
@@ -690,7 +720,7 @@ const correctBalance = (accountId, newBalance) => {
     accountId, accountName: acc.name,
     category: '기타', payMethod: 'card', memo: '수동 잔액 보정',
     date: new Date().toISOString().split('T')[0],
-    rateAtTime: getRate().rate, rateDate: new Date().toISOString().split('T')[0],
+    rateAtTime: normalizeRate(getRate().rate), rateDate: new Date().toISOString().split('T')[0],
     createdAt: new Date().toISOString(), isCorrection: true,
   };
   setTxns([entry, ...getTxns()]);
@@ -703,8 +733,9 @@ const fetchLatestRate = async () => {
     const res = await fetch('https://api.frankfurter.dev/v2/rate/EUR/KRW?providers=ECB');
     const data = await res.json();
     const rate = roundRate2(data?.rate);
+    const rateDate = data?.date || null;
     if (rate) {
-      setRate(rate);
+      setRate(rate, rateDate);
       await dbSaveSettings();
       return rate;
     }
@@ -746,7 +777,7 @@ const shouldApplyFixed = (item, yr, mo) => {
 const syncFixedCosts = () => {
   const now = new Date(), yr = now.getFullYear(), mo = now.getMonth();
   const synced = ls.get(K.SYNCED) || {};
-  const rate = getRate().rate;
+  const rate = normalizeRate(getRate().rate);
   const accs = getAccounts();
   let txns = getTxns(), changed = false;
 
@@ -949,6 +980,11 @@ const fmtComma = val => {
   return parts.length > 1 ? parts[0] + '.' + parts[1].replace(/\D/g, '') : parts[0];
 };
 const parseComma = val => parseFloat(String(val).replace(/,/g, '')) || 0;
+const formatDateKR = (isoDate) => {
+  if (!isoDate) return '-';
+  const [y, m, d] = isoDate.split('-');
+  return `${Number(m)}월 ${Number(d)}일`;
+};
 
 const MONTHS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 const DAYS   = ['일','월','화','수','목','금','토'];
@@ -1361,7 +1397,7 @@ function HomeTab({ onOpenSettings, onDetailOpen, authUser, globalRate }) {
   const [selDay, setSelDay] = useState(today.getDate());
   const [cur, setCur] = useState('EUR');
   const [txns, setTxns] = useState([]);
-  const rate = globalRate || getRate().rate;  // 최상위에서 받은 환율 사용
+  const rate = normalizeRate(globalRate || getRate().rate);  // 최상위에서 받은 환율 사용
   const [budget, setBudgetState] = useState({ eur: null, excludeCategories: ['식비지원금'] });
   const [showBanner, setShowBanner] = useState(
     () => ls.get('gyembu_seen_version') !== LATEST_VERSION
@@ -1384,16 +1420,16 @@ function HomeTab({ onOpenSettings, onDetailOpen, authUser, globalRate }) {
   const daysInMonth = new Date(yr, mo + 1, 0).getDate();
   const grid = Array.from({ length: 42 }, (_, i) => { const d = i - firstDay + 1; return d >= 1 && d <= daysInMonth ? d : null; });
   const monthTxns = txns.filter(t => { const d = new Date(t.date); return d.getFullYear() === yr && d.getMonth() === mo; });
-  const toEur = t => t.currency === 'EUR' ? t.amount : t.amount / (t.rateAtTime || rate);
-  const toDisplay = t => { const r2 = t.rateAtTime || rate; return cur === 'EUR' ? (t.currency === 'EUR' ? t.amount : t.amount / r2) : (t.currency === 'KRW' ? t.amount : t.amount * r2); };
+  const toEur = t => t.currency === 'EUR' ? roundEur2(t.amount) : convertByRate(t.amount, 'KRW', 'EUR', t.rateAtTime || rate);
+  const toDisplay = t => { const r2 = normalizeRate(t.rateAtTime || rate); return cur === 'EUR' ? convertByRate(t.amount, t.currency, 'EUR', r2) : convertByRate(t.amount, t.currency, 'KRW', r2); };
   const fmt = v => cur === 'EUR' ? `€ ${Math.abs(v).toFixed(2)}` : `₩ ${Math.round(Math.abs(v)).toLocaleString()}`;
   const totalInc = monthTxns.filter(t => t.type === 'income').reduce((s, t) => s + toDisplay(t), 0);
   const totalExp = monthTxns.filter(t => t.type === 'expense').reduce((s, t) => s + toDisplay(t), 0);
   const excl = budget.excludeCategories || ['식비지원금'];
   const budgetExp = monthTxns.filter(t => t.type === 'expense' && !excl.includes(t.category)).reduce((s, t) => s + toEur(t), 0);
   const budgetLimit = budget.eur;
-  const budgetDisplay = budgetLimit ? (cur === 'EUR' ? budgetLimit : budgetLimit * rate) : null;
-  const budgetUsedDisplay = cur === 'EUR' ? budgetExp : budgetExp * rate;
+  const budgetDisplay = budgetLimit ? (cur === 'EUR' ? roundEur2(budgetLimit) : convertByRate(budgetLimit, 'EUR', 'KRW', rate)) : null;
+  const budgetUsedDisplay = cur === 'EUR' ? roundEur2(budgetExp) : convertByRate(budgetExp, 'EUR', 'KRW', rate);
   const budgetPct = budgetLimit ? Math.min(budgetExp / budgetLimit * 100, 100) : null;
   const overBudget = budgetLimit && budgetExp > budgetLimit;
   const hasDot = new Set(monthTxns.map(t => new Date(t.date).getDate()));
@@ -1511,13 +1547,13 @@ function HomeTab({ onOpenSettings, onDetailOpen, authUser, globalRate }) {
         ] }),
       ] }, t.id)),
     ] }),
-    jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', formatRate(rate), ' · 오늘 기준'] }),
+    jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', formatRate(rate), ' · ', getRate().date || '최근 기준'] }),
   ] });
 }
 
 // ─── HISTORY TAB ──────────────────────────────────────────────────────────────
 function TxnDetail({ txn, onBack, onEdit, globalRate }) {
-  const rate = globalRate || getRate().rate;
+  const rate = normalizeRate(globalRate || getRate().rate);
   const r = txn.rateAtTime || rate;
   const isTransfer = txn.type === 'transfer';
   const fmtAmt = (amount, currency) => currency === 'EUR' ? `€ ${amount.toFixed(2)}` : `₩ ${Math.round(amount).toLocaleString()}`;
@@ -1583,7 +1619,7 @@ function HistoryTab({ onEdit, globalRate }) {
   const [detail, setDetail] = useState(null);
   const [cats, setCats] = useState([]);
   const [accs, setAccs] = useState([]);
-  const rate = globalRate || getRate().rate;
+  const rate = normalizeRate(globalRate || getRate().rate);
 
   useEffect(() => {
     setTxnsState(getTxns());
@@ -1827,7 +1863,7 @@ function AddTransaction({ onDone, editing = null }) {
   }, [date]);
 
   const isVoucher = payMethod === 'voucher' || VOUCHER_CATS.includes(cat);
-  const effectiveRate = manualRate && manualRateVal ? parseFloat(manualRateVal) : rateInfo?.rate || getRate().rate;
+  const effectiveRate = normalizeRate(manualRate && manualRateVal ? parseFloat(manualRateVal) : rateInfo?.rate || getRate().rate);
 
   const runAI = async () => {
     if (!aiText.trim()) return;
@@ -1880,7 +1916,7 @@ function AddTransaction({ onDone, editing = null }) {
         toAccountId: toAccId, toAccountName: toAcc?.name || '',
         toAmount: parseComma(toAmtStr), toCurrency: toCur,
         fee: parseComma(feeStr) || 0, feeCurrency: feeCur,
-        date, memo, rateAtTime: effectiveRate, rateDate: rateInfo?.date || date,
+        date, memo, rateAtTime: normalizeRate(effectiveRate), rateDate: rateInfo?.date || date,
       };
       if (editing) updateTxn(editing.id, entry);
       else addTxn(entry);
@@ -2056,14 +2092,14 @@ function AccountsTab({ globalRate }) {
   const [calMonth, setCalMonth] = useState(new Date().getMonth());
   const [calDay, setCalDay] = useState(null);
   const [showCal, setShowCal] = useState(false);
-  const rate = globalRate || getRate().rate;
+  const rate = normalizeRate(globalRate || getRate().rate);
   const today = new Date(), todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 
   useEffect(() => { setAccsState(getAccounts()); setTxnsState(getTxns()); }, []);
   const reload = async newAccs => { setAccounts(newAccs); setAccsState(newAccs); setTxnsState(getTxns()); await dbSaveAccounts(newAccs); };
 
-  const toEur = (bal, currency) => currency === 'EUR' ? bal : bal / rate;
-  const toKrw = (bal, currency) => currency === 'KRW' ? bal : bal * rate;
+  const toEur = (bal, currency) => convertByRate(bal, currency, 'EUR', rate);
+  const toKrw = (bal, currency) => convertByRate(bal, currency, 'KRW', rate);
 
   // 컴포넌트 state 기반 잔액 계산 (전역 calcBalance는 localStorage를 읽으므로
   // 렌더 중 state와 동기화된 값이 필요할 때 이 버전을 사용)
@@ -2115,8 +2151,8 @@ function AccountsTab({ globalRate }) {
         for (let mi = 1; mi <= months; mi++) {
           const mDate = new Date(today.getFullYear(), today.getMonth() + mi, 1);
           const myr = mDate.getFullYear(), mmo = mDate.getMonth();
-          fixedExp.forEach(item => { if (item.accountId === a.id && shouldApplyFixed(item, myr, mmo)) delta -= (item.currency === a.currency ? item.amount : item.currency === 'EUR' ? item.amount * rate : item.amount / rate); });
-          fixedInc.forEach(item => { if (item.accountId === a.id && shouldApplyFixed(item, myr, mmo)) delta += (item.currency === a.currency ? item.amount : item.currency === 'EUR' ? item.amount * rate : item.amount / rate); });
+          fixedExp.forEach(item => { if (item.accountId === a.id && shouldApplyFixed(item, myr, mmo)) delta -= (item.currency === a.currency ? item.amount : convertByRate(item.amount, item.currency, a.currency, rate)); });
+          fixedInc.forEach(item => { if (item.accountId === a.id && shouldApplyFixed(item, myr, mmo)) delta += (item.currency === a.currency ? item.amount : convertByRate(item.amount, item.currency, a.currency, rate)); });
         }
       }
       return { ...a, snapBalance: base + delta };
@@ -2219,7 +2255,7 @@ function AccountsTab({ globalRate }) {
       } ))
     }),
     !isHistoryMode && jsx(AddRow, { label: '계좌 추가', onClick: () => { setAddMode(o => !o); setEditId(null); setCorrectId(null); } }),
-    jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', formatRate(rate), ' · ECB 기준'] }),
+    jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', formatRate(rate), ' · ', getRate().date || 'ECB 최근값'] }),
   ] });
 }
 
@@ -2305,7 +2341,7 @@ function FixedTab({ globalRate }) {
   // 내역 선택 시 펼침 (수정/삭제 버튼)
   const [expandedExpId, setExpandedExpId] = useState(null);
   const [expandedIncId, setExpandedIncId] = useState(null);
-  const rate = globalRate || getRate().rate;
+  const rate = normalizeRate(globalRate || getRate().rate);
 
   useEffect(() => { setExpenses(getFixedExp()); setIncomes(getFixedInc()); }, []);
 
@@ -2313,7 +2349,7 @@ function FixedTab({ globalRate }) {
   const saveInc = async items => { setFixedInc(items); setIncomes(items); ls.set(K.SYNCED, {}); syncFixedCosts(); await dbSaveFixedInc(items); };
 
   const today = new Date().getDate();
-  const toDisplay = item => { const v = item.currency === 'EUR' ? (cur === 'EUR' ? item.amount : item.amount * rate) : (cur === 'KRW' ? item.amount : item.amount / rate); return v; };
+  const toDisplay = item => convertByRate(item.amount, item.currency, cur, rate);
   const fmt = v => cur === 'EUR' ? `€ ${v.toFixed(2)}` : `₩ ${Math.round(v).toLocaleString()}`;
   const fmtItem = item => fmt(toDisplay(item)) + (item.currency === 'EUR' ? (cur === 'KRW' ? ` (€ ${item.amount})` : '') : (cur === 'EUR' ? ` (₩ ${Math.round(item.amount).toLocaleString()})` : ''));
   const dday = d => { const diff = d - today; return diff === 0 ? 'D-day' : diff > 0 ? `D-${diff}` : `D-${new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate() - today + d}`; };
@@ -2595,7 +2631,7 @@ function App() {
   const [settings, setSettings]   = useState(false);
   const [homeTxnDetail, setHomeTxnDetail] = useState(null);
   const [showAuth, setShowAuth]   = useState(false);
-  const [globalRate, setGlobalRate] = useState(getRate().rate);  // 최상위 환율 state
+  const [globalRate, setGlobalRate] = useState(normalizeRate(getRate().rate));  // 최상위 환율 state
 
   // ── 인증 상태 감지 ──────────────────────────────────────────────
   useEffect(() => {
@@ -2610,7 +2646,7 @@ function App() {
 
   // ── 환율 최상위 1회 fetch ────────────────────────────────────────
   useEffect(() => {
-    fetchLatestRate().then(r => setGlobalRate(r));
+    fetchLatestRate().then(r => setGlobalRate(normalizeRate(r)));
   }, []);
 
   // ── 세션 확인 완료 후 온보딩 상태 세팅 ─────────────────────────
