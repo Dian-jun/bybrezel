@@ -986,6 +986,12 @@ const formatDateKR = (isoDate) => {
   return `${Number(m)}월 ${Number(d)}일`;
 };
 
+const renderUnifiedRateBlock = (rateValue, rateDate, extraStyle = {}) => jsxs('div', { style: { marginTop: 12, ...extraStyle }, children: [
+  jsx('div', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: `1 EUR = ₩${formatRate(rateValue)}` }),
+  jsx('div', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 4 }, children: rateDate ? `(${formatDateKR(rateDate)} 기준 · ECB)` : '(최근 기준 · ECB)' }),
+] });
+
+
 const MONTHS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 const DAYS   = ['일','월','화','수','목','금','토'];
 
@@ -1547,7 +1553,7 @@ function HomeTab({ onOpenSettings, onDetailOpen, authUser, globalRate }) {
         ] }),
       ] }, t.id)),
     ] }),
-    jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', formatRate(rate), ' · ', getRate().date || '최근 기준'] }),
+    renderUnifiedRateBlock(rate, getRate().date),
   ] });
 }
 
@@ -2255,7 +2261,7 @@ function AccountsTab({ globalRate }) {
       } ))
     }),
     !isHistoryMode && jsx(AddRow, { label: '계좌 추가', onClick: () => { setAddMode(o => !o); setEditId(null); setCorrectId(null); } }),
-    jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 12 }, children: ['1 EUR = ₩', formatRate(rate), ' · ', getRate().date || 'ECB 최근값'] }),
+    renderUnifiedRateBlock(rate, getRate().date),
   ] });
 }
 
@@ -2375,6 +2381,7 @@ function FixedTab({ globalRate }) {
       jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '예상 잔여금' }),
       jsxs('p', { style: { fontSize: 22, fontWeight: 500 }, children: [totalInc - totalExp >= 0 ? '+' : '', fmt(totalInc - totalExp)] }),
     ] }),
+    renderUnifiedRateBlock(rate, getRate().date, { marginBottom: 20 }),
     jsx('p', { className: 'section-title', children: '고정 수입' }),
     addIncOpen && jsx(FixedItemForm, { isIncome: true, onSubmit: v => { if (!v.name.trim()) return; saveInc([...incomes, { id: makeId(), name: v.name.trim(), label: '', amount: parseFloat(v.amount) || 0, day: parseInt(v.day) || 1, currency: v.currency, frequency: v.frequency, accountId: v.accountId, incomeType: v.incomeType }]); setAddIncOpen(false); }, onCancel: () => setAddIncOpen(false), submitLabel: '추가' }),
     jsx('div', { className: 'border-top', style: { marginBottom: 8 }, children: incomes.length === 0 ? jsx('p', { className: 'text-13 color-muted', style: { padding: '12px 0' }, children: '등록된 고정 수입이 없어요' }) :
