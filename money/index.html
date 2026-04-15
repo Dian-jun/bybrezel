@@ -432,15 +432,14 @@ const getCurrentUserId = async () => {
 const saveSettingsIfLoggedIn = async () => {
   const uid = await getCurrentUserId();
   if (!uid) return false;
-  await dbSaveSettings();
-  log.info('GUEST', `${opId} 가져오기 완료`, {
-    accounts: guestAccounts.length,
-    txns: guestTxns.length,
-    fixedExp: guestFixedExp.length,
-    fixedInc: guestFixedInc.length,
-  });
-  log.groupEnd();
-  return true;
+
+  try {
+    await dbSaveSettings();
+    return true;
+  } catch (e) {
+    log.error('DB', 'saveSettingsIfLoggedIn 실패:', e);
+    return false;
+  }
 };
 
 
@@ -2762,14 +2761,45 @@ function App() {
 
   // ── 로그인 후 DB 동기화 — 완료 전까지 탭 렌더링 보류 ────────────
   useEffect(() => {
-    if (!authUser) { setDbReady(false); return; }
+    if (!authUser) {
+      setActiveScopeUserId(null);
+      setDbReady(false);
+      return;
+    }
+
+    let cancelled = false;
     setDbReady(false);
+
     (async () => {
-      setActiveScopeUserId(authUser.id);
-      await dbLoadAll();
-      if (hasGuestData() && localStorage.getItem(META.GUEST_IMPORT_DISMISSED(authUser.id)) !== '1') setShowGuestImportPrompt(true);
-      setDbReady(true);   // 완료 후 탭 렌더링 허용
+      try {
+        const uid = authUser?.id;
+        if (!uid) {
+          if (!cancelled) setDbReady(true);
+          return;
+        }
+
+        setActiveScopeUserId(uid);
+        await dbLoadAll();
+
+        const shouldImportGuest =
+          hasGuestData() &&
+          localStorage.getItem(META.GUEST_IMPORT_DISMISSED(uid)) !== '1';
+
+        if (shouldImportGuest) {
+          await migrateGuestToCurrentUser();
+          localStorage.setItem(META.GUEST_IMPORT_DISMISSED(uid), '1');
+          await dbLoadAll();
+        }
+      } catch (e) {
+        log.error('AUTH', '로그인 후 초기화 실패:', e);
+      } finally {
+        if (!cancelled) setDbReady(true);   // 완료 후 탭 렌더링 허용
+      }
     })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [authUser]);
 
   const handleSignOut = async () => {
