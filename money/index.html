@@ -2765,9 +2765,9 @@ function App() {
     if (!authUser) { setDbReady(false); return; }
     setDbReady(false);
     (async () => {
-      setActiveScopeUserId(user.id);
+      setActiveScopeUserId(authUser.id);
       await dbLoadAll();
-      if (hasGuestData() && localStorage.getItem(META.GUEST_IMPORT_DISMISSED(user.id)) !== '1') setShowGuestImportPrompt(true);
+      if (hasGuestData() && localStorage.getItem(META.GUEST_IMPORT_DISMISSED(authUser.id)) !== '1') setShowGuestImportPrompt(true);
       setDbReady(true);   // 완료 후 탭 렌더링 허용
     })();
   }, [authUser]);
