@@ -258,7 +258,6 @@ let activeScopeUserId = null;
 const META = {
   GUEST_IMPORT_DISMISSED: uid => `gyembu:meta:guest_import_dismissed:${uid}`,
   MIGRATION_DONE: uid => `gyembu:meta:migration_done:${uid}`,
-  LAST_AUTH_SUMMARY: uid => `gyembu:meta:last_auth_summary:${uid}`,
 };
 const getStorageScope = (uid = activeScopeUserId) => uid ? `gyembu:user:${uid}` : 'gyembu:guest';
 const scopedKey = (baseKey, uid = activeScopeUserId) => `${getStorageScope(uid)}:${baseKey}`;
@@ -276,29 +275,36 @@ const hasGuestData = () =>
   (ls.get(BASE_KEYS.FIXED_EXP, null) || []).length > 0 ||
   (ls.get(BASE_KEYS.FIXED_INC, null) || []).length > 0;
 
+const getGuestDataset = () => ({
+  accounts: normalizeAccounts(ls.get(BASE_KEYS.ACCOUNTS, null) || []),
+  txns: ls.get(BASE_KEYS.TRANSACTIONS, null) || [],
+  fixedExp: ls.get(BASE_KEYS.FIXED_EXP, null) || [],
+  fixedInc: ls.get(BASE_KEYS.FIXED_INC, null) || [],
+  budget: ls.get(BASE_KEYS.BUDGET, null),
+  categories: ls.get(BASE_KEYS.CATEGORIES, null),
+  synced: ls.get(BASE_KEYS.SYNCED, null),
+  startMonth: ls.get(BASE_KEYS.START_MONTH, null),
+  rate: ls.get(BASE_KEYS.RATE, null),
+  onboarded: ls.get(BASE_KEYS.ONBOARDED, null),
+});
+const summarizeDataset = ds => ({
+  accounts: ds?.accounts?.length || 0,
+  txns: ds?.txns?.length || 0,
+  fixedExp: ds?.fixedExp?.length || 0,
+  fixedInc: ds?.fixedInc?.length || 0,
+  hasBudget: !!ds?.budget,
+  hasCategories: !!(ds?.categories?.length),
+  hasRate: !!ds?.rate,
+  hasStartMonth: !!ds?.startMonth,
+});
+
 const makeOpId = prefix => `${prefix}#${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
-const stamp = () => new Date().toISOString();
 const log = {
-  info: (tag, ...args) => console.log(`[${tag}] ${stamp()}`, ...args),
-  warn: (tag, ...args) => console.warn(`[${tag}] ${stamp()}`, ...args),
-  error: (tag, ...args) => console.error(`[${tag}] ${stamp()}`, ...args),
-  group: (tag, title, payload) => {
-    console.groupCollapsed(`[${tag}] ${stamp()} ${title}`);
-    if (payload !== undefined) console.log(payload);
-  },
+  info: (tag, ...args) => console.log(`[${tag}]`, ...args),
+  warn: (tag, ...args) => console.warn(`[${tag}]`, ...args),
+  error: (tag, ...args) => console.error(`[${tag}]`, ...args),
+  group: (tag, title) => console.groupCollapsed(`[${tag}] ${title}`),
   groupEnd: () => console.groupEnd(),
-  table: (tag, value) => {
-    try { console.groupCollapsed(`[${tag}] ${stamp()} table`); console.table(value); console.groupEnd(); }
-    catch { console.log(`[${tag}] ${stamp()}`, value); }
-  },
-  snapshot: (tag, label, value) => {
-    try {
-      const cloned = JSON.parse(JSON.stringify(value));
-      console.log(`[${tag}] ${stamp()} ${label}`, cloned);
-    } catch {
-      console.log(`[${tag}] ${stamp()} ${label}`, value);
-    }
-  },
 };
 const isOnboarded   = () => !!ls.get(BASE_KEYS.ONBOARDED);
 const setOnboarded  = () => {
@@ -451,178 +457,205 @@ const saveSettingsIfLoggedIn = async () => {
   const uid = await getCurrentUserId();
   if (!uid) return false;
   await dbSaveSettings();
+  log.info('GUEST', `${opId} 가져오기 완료`, {
+    accounts: guestAccounts.length,
+    txns: guestTxns.length,
+    fixedExp: guestFixedExp.length,
+    fixedInc: guestFixedInc.length,
+  });
+  log.groupEnd();
   return true;
 };
 
-const applyLocalSnapshot = ({ accounts = [], txns = [], fixedExp = [], fixedInc = [], budget = null, categories = null, synced = null, start = null, rate = null } = {}, uid = activeScopeUserId) => {
-  setAccounts(normalizeAccounts(accounts || []));
-  setTxns(txns || []);
-  setFixedExp(fixedExp || []);
-  setFixedInc(fixedInc || []);
-  if (budget) ls.set(BASE_KEYS.BUDGET, budget, uid); else ls.remove(BASE_KEYS.BUDGET, uid);
-  if (categories) ls.set(BASE_KEYS.CATEGORIES, categories, uid); else ls.remove(BASE_KEYS.CATEGORIES, uid);
-  if (synced) ls.set(BASE_KEYS.SYNCED, synced, uid); else ls.remove(BASE_KEYS.SYNCED, uid);
-  if (start) ls.set(BASE_KEYS.START_MONTH, start, uid); else ls.remove(BASE_KEYS.START_MONTH, uid);
-  if (rate) ls.set(BASE_KEYS.RATE, rate, uid);
-};
-
-const getGuestSnapshot = () => ({
-  accounts: normalizeAccounts(ls.get(BASE_KEYS.ACCOUNTS, null) || []),
-  txns: ls.get(BASE_KEYS.TRANSACTIONS, null) || [],
-  fixedExp: ls.get(BASE_KEYS.FIXED_EXP, null) || [],
-  fixedInc: ls.get(BASE_KEYS.FIXED_INC, null) || [],
-  budget: ls.get(BASE_KEYS.BUDGET, null),
-  categories: ls.get(BASE_KEYS.CATEGORIES, null),
-  synced: ls.get(BASE_KEYS.SYNCED, null),
-  start: ls.get(BASE_KEYS.START_MONTH, null),
-  rate: ls.get(BASE_KEYS.RATE, null),
-  onboarded: !!ls.get(BASE_KEYS.ONBOARDED, null),
+const getCurrentScopedDataset = () => ({
+  accounts: normalizeAccounts(getAccounts()),
+  txns: getTxns(),
+  fixedExp: getFixedExp(),
+  fixedInc: getFixedInc(),
+  budget: getBudget(),
+  categories: getCategories(),
+  synced: ls.get(BASE_KEYS.SYNCED) || {},
+  startMonth: ls.get(BASE_KEYS.START_MONTH) || null,
+  rate: getRate(),
+  onboarded: isOnboarded(),
 });
 
-const getGuestDataSummary = () => {
-  const snap = getGuestSnapshot();
-  return {
-    accounts: snap.accounts.length,
-    txns: snap.txns.length,
-    fixedExp: snap.fixedExp.length,
-    fixedInc: snap.fixedInc.length,
-    hasBudget: !!snap.budget,
-    hasCategories: !!snap.categories,
-    hasRate: !!snap.rate,
-    hasAnyData: !!(snap.accounts.length || snap.txns.length || snap.fixedExp.length || snap.fixedInc.length || snap.budget || snap.categories || snap.rate),
-  };
+const hasAnyAppDataInDataset = ds =>
+  (ds?.accounts?.length || 0) > 0 ||
+  (ds?.txns?.length || 0) > 0 ||
+  (ds?.fixedExp?.length || 0) > 0 ||
+  (ds?.fixedInc?.length || 0) > 0;
+
+const isFirstAppLoginForUid = async (uid) => {
+  const [accsRes, txnsRes, fixExpRes, fixIncRes, settRes] = await Promise.all([
+    supabase.from('accounts').select('id').eq('user_id', uid).limit(1),
+    supabase.from('transactions').select('id').eq('user_id', uid).limit(1),
+    supabase.from('fixed_expenses').select('id').eq('user_id', uid).limit(1),
+    supabase.from('fixed_incomes').select('id').eq('user_id', uid).limit(1),
+    supabase.from('user_settings').select('user_id').eq('user_id', uid).maybeSingle(),
+  ]);
+  const hasData =
+    (accsRes.data?.length || 0) > 0 ||
+    (txnsRes.data?.length || 0) > 0 ||
+    (fixExpRes.data?.length || 0) > 0 ||
+    (fixIncRes.data?.length || 0) > 0 ||
+    !!settRes.data;
+  log.info('AUTH', 'first-login 판정', { uid, hasData });
+  return !hasData;
 };
 
-const hasMigrationDoneForUser = uid => localStorage.getItem(META.MIGRATION_DONE(uid)) === '1';
-const markMigrationDoneForUser = (uid, payload = null) => {
-  localStorage.setItem(META.MIGRATION_DONE(uid), '1');
-  if (payload) localStorage.setItem(META.LAST_AUTH_SUMMARY(uid), JSON.stringify({ ...payload, markedAt: new Date().toISOString() }));
-};
-
-const inspectDbStateForUser = async (uid) => {
-  const opId = makeOpId('dbState');
-  log.group('AUTH', `${opId} inspectDbStateForUser`, { uid });
-  try {
-    const [accsRes, txnsRes, fixExpRes, fixIncRes, settingsRes] = await Promise.all([
-      supabase.from('accounts').select('id').eq('user_id', uid).limit(1),
-      supabase.from('transactions').select('id').eq('user_id', uid).limit(1),
-      supabase.from('fixed_expenses').select('id').eq('user_id', uid).limit(1),
-      supabase.from('fixed_incomes').select('id').eq('user_id', uid).limit(1),
-      supabase.from('user_settings').select('user_id').eq('user_id', uid).maybeSingle(),
-    ]);
-    const status = {
-      uid,
-      accounts: accsRes.data?.length || 0,
-      txns: txnsRes.data?.length || 0,
-      fixedExp: fixExpRes.data?.length || 0,
-      fixedInc: fixIncRes.data?.length || 0,
-      hasSettings: !!settingsRes.data,
-    };
-    status.hasAnyData = !!(status.accounts || status.txns || status.fixedExp || status.fixedInc || status.hasSettings);
-    log.info('AUTH', `${opId} inspectDbStateForUser result`, status);
-    if (accsRes.error || txnsRes.error || fixExpRes.error || fixIncRes.error || settingsRes.error) {
-      log.error('AUTH', `${opId} inspectDbStateForUser error`, {
-        accs: accsRes.error,
-        txns: txnsRes.error,
-        fixedExp: fixExpRes.error,
-        fixedInc: fixIncRes.error,
-        settings: settingsRes.error,
-      });
-    }
-    return status;
-  } finally {
-    log.groupEnd();
-  }
-};
-
-const persistAllForCurrentUser = async (snapshot, reason = 'manual') => {
+const dbSaveAll = async (dataset = getCurrentScopedDataset()) => {
   const uid = await getCurrentUserId();
-  const opId = makeOpId('persistAll');
   if (!uid) {
-    log.warn('SYNC', `${opId} persistAllForCurrentUser skipped — no uid`, { reason });
+    log.warn('SYNC', 'dbSaveAll 스킵 — uid 없음');
     return false;
   }
-  log.group('SYNC', `${opId} persistAllForCurrentUser`, { uid, reason });
-  try {
-    const normalized = {
-      accounts: normalizeAccounts(snapshot.accounts || []),
-      txns: snapshot.txns || [],
-      fixedExp: snapshot.fixedExp || [],
-      fixedInc: snapshot.fixedInc || [],
-      budget: snapshot.budget ?? getBudget(),
-      categories: snapshot.categories ?? getCategories(),
-      synced: snapshot.synced ?? (ls.get(BASE_KEYS.SYNCED) || {}),
-      start: snapshot.start ?? ls.get(BASE_KEYS.START_MONTH),
-      rate: snapshot.rate ?? getRate(),
-    };
-    log.snapshot('SYNC', `${opId} normalized snapshot`, {
-      accounts: normalized.accounts.length,
-      txns: normalized.txns.length,
-      fixedExp: normalized.fixedExp.length,
-      fixedInc: normalized.fixedInc.length,
-      hasBudget: !!normalized.budget,
-      hasCategories: !!normalized.categories,
-      hasSynced: !!normalized.synced,
-      hasStart: !!normalized.start,
-      hasRate: !!normalized.rate,
-    });
-    applyLocalSnapshot(normalized, uid);
-    await dbSaveAccounts(normalized.accounts);
-    await dbSaveTxns(normalized.txns);
-    await dbSaveFixedExp(normalized.fixedExp);
-    await dbSaveFixedInc(normalized.fixedInc);
-    if (normalized.budget) ls.set(BASE_KEYS.BUDGET, normalized.budget, uid);
-    if (normalized.categories) ls.set(BASE_KEYS.CATEGORIES, normalized.categories, uid);
-    if (normalized.synced) ls.set(BASE_KEYS.SYNCED, normalized.synced, uid);
-    if (normalized.start) ls.set(BASE_KEYS.START_MONTH, normalized.start, uid);
-    if (normalized.rate) ls.set(BASE_KEYS.RATE, normalized.rate, uid);
-    await dbSaveSettings();
-    log.info('SYNC', `${opId} persistAllForCurrentUser success`, { uid, reason });
-    return true;
-  } catch (error) {
-    log.error('SYNC', `${opId} persistAllForCurrentUser failed`, error);
-    throw error;
-  } finally {
-    log.groupEnd();
+
+  const normalizedAccounts = normalizeAccounts(dataset.accounts || []);
+  const txns = dataset.txns || [];
+  const fixedExp = dataset.fixedExp || [];
+  const fixedInc = dataset.fixedInc || [];
+  const budget = dataset.budget || { eur: null, excludeCategories: ['식비지원금'] };
+  const categories = dataset.categories || DEFAULT_CATS;
+  const synced = dataset.synced || {};
+  const startMonth = dataset.startMonth || null;
+  const rate = dataset.rate || getRate();
+  const opId = makeOpId('saveall');
+
+  log.group('SYNC', `${opId} dbSaveAll`);
+  log.info('SYNC', '저장 스냅샷', {
+    uid,
+    accounts: normalizedAccounts.length,
+    txns: txns.length,
+    fixedExp: fixedExp.length,
+    fixedInc: fixedInc.length,
+    hasBudget: !!budget,
+    hasCategories: !!categories?.length,
+    hasStartMonth: !!startMonth,
+    rate: rate?.rate || null,
+  });
+
+  setAccounts(normalizedAccounts);
+  setTxns(txns);
+  setFixedExp(fixedExp);
+  setFixedInc(fixedInc);
+  setBudget(budget);
+  setCategories(categories);
+  ls.set(BASE_KEYS.SYNCED, synced);
+  if (startMonth) ls.set(BASE_KEYS.START_MONTH, startMonth);
+  if (rate) ls.set(BASE_KEYS.RATE, rate);
+  if (dataset.onboarded) ls.set(BASE_KEYS.ONBOARDED, true);
+
+  const settingsPayload = {
+    user_id: uid,
+    rate: rate?.rate ?? 1480,
+    rate_date: rate?.date || null,
+    rate_updated_at: rate?.updatedAt || new Date().toISOString(),
+    budget_eur: budget?.eur ?? null,
+    exclude_categories: budget?.excludeCategories || ['식비지원금'],
+    categories,
+    synced_months: synced,
+    start_month: startMonth,
+    updated_at: new Date().toISOString(),
+  };
+
+  const accountRows = normalizedAccounts.map(a => {
+    const { balance, initial_balance, ...clean } = a || {};
+    return { ...toSnake(clean), user_id: uid };
+  });
+  const txnRows = txns.map(t => ({ ...toSnake(t), user_id: uid }));
+  const fixedExpRows = fixedExp.map(i => ({ ...toSnake(i), user_id: uid }));
+  const fixedIncRows = fixedInc.map(i => ({ ...toSnake(i), user_id: uid }));
+
+  const delTargets = [
+    ['transactions', supabase.from('transactions').delete().eq('user_id', uid)],
+    ['fixed_expenses', supabase.from('fixed_expenses').delete().eq('user_id', uid)],
+    ['fixed_incomes', supabase.from('fixed_incomes').delete().eq('user_id', uid)],
+    ['accounts', supabase.from('accounts').delete().eq('user_id', uid)],
+  ];
+
+  for (const [name, req] of delTargets) {
+    const { error } = await req;
+    if (error) {
+      log.error('SYNC', `${opId} ${name} 삭제 실패`, error);
+      log.groupEnd();
+      throw error;
+    }
   }
+
+  if (accountRows.length) {
+    const { error } = await supabase.from('accounts').insert(accountRows);
+    if (error) { log.error('SYNC', `${opId} accounts insert 실패`, error, accountRows[0]); log.groupEnd(); throw error; }
+  }
+
+  if (txnRows.length) {
+    const BATCH = 500;
+    for (let i = 0; i < txnRows.length; i += BATCH) {
+      const batch = txnRows.slice(i, i + BATCH);
+      const { error } = await supabase.from('transactions').insert(batch);
+      if (error) { log.error('SYNC', `${opId} transactions insert 실패`, error, batch[0]); log.groupEnd(); throw error; }
+    }
+  }
+
+  if (fixedExpRows.length) {
+    const { error } = await supabase.from('fixed_expenses').insert(fixedExpRows);
+    if (error) { log.error('SYNC', `${opId} fixed_expenses insert 실패`, error, fixedExpRows[0]); log.groupEnd(); throw error; }
+  }
+
+  if (fixedIncRows.length) {
+    const { error } = await supabase.from('fixed_incomes').insert(fixedIncRows);
+    if (error) { log.error('SYNC', `${opId} fixed_incomes insert 실패`, error, fixedIncRows[0]); log.groupEnd(); throw error; }
+  }
+
+  const { error: settingsError } = await supabase.from('user_settings').upsert(settingsPayload);
+  if (settingsError) {
+    log.error('SYNC', `${opId} user_settings upsert 실패`, settingsError, settingsPayload);
+    log.groupEnd();
+    throw settingsError;
+  }
+
+  log.info('SYNC', `${opId} dbSaveAll 완료`);
+  log.groupEnd();
+  return true;
 };
 
-const migrateGuestToCurrentUserSafely = async (uid, { requireEmptyDb = true } = {}) => {
-  const opId = makeOpId('firstLoginImport');
-  log.group('GUEST', `${opId} migrateGuestToCurrentUserSafely`, { uid, requireEmptyDb });
-  try {
-    if (!uid) {
-      log.warn('GUEST', `${opId} skipped — no uid`);
-      return { ok: false, reason: 'no_uid' };
-    }
-    if (hasMigrationDoneForUser(uid)) {
-      log.warn('GUEST', `${opId} skipped — migration already done`, { uid });
-      return { ok: false, reason: 'already_done' };
-    }
-    const dbState = await inspectDbStateForUser(uid);
-    if (requireEmptyDb && dbState.hasAnyData) {
-      log.warn('GUEST', `${opId} blocked — db already has data`, dbState);
-      return { ok: false, reason: 'db_not_empty', dbState };
-    }
-    const guest = getGuestSnapshot();
-    const guestSummary = getGuestDataSummary();
-    log.info('GUEST', `${opId} guest summary`, guestSummary);
-    if (!guestSummary.hasAnyData) {
-      log.warn('GUEST', `${opId} skipped — guest empty`);
-      return { ok: false, reason: 'guest_empty' };
-    }
-    setActiveScopeUserId(uid);
-    await persistAllForCurrentUser(guest, 'first_login_guest_import');
-    markMigrationDoneForUser(uid, { uid, guestSummary, dbStateBefore: dbState });
-    log.info('GUEST', `${opId} success`, { uid, guestSummary });
-    return { ok: true, guestSummary };
-  } catch (error) {
-    log.error('GUEST', `${opId} failed`, error);
-    return { ok: false, reason: 'exception', error };
-  } finally {
+const migrateGuestToCurrentUserSafely = async (uid) => {
+  const guest = getGuestDataset();
+  log.group('GUEST', `safe-import:${uid}`);
+  log.info('GUEST', 'guest 요약', summarizeDataset(guest));
+
+  if (!hasAnyAppDataInDataset(guest)) {
+    log.warn('GUEST', 'guest 데이터가 비어 있어 가져오지 않음');
     log.groupEnd();
+    return false;
   }
+
+  const firstLogin = await isFirstAppLoginForUid(uid);
+  if (!firstLogin) {
+    log.warn('GUEST', '첫 로그인 조건 불충족 — 가져오기 중단', { uid });
+    log.groupEnd();
+    return false;
+  }
+
+  await dbSaveAll({
+    accounts: guest.accounts,
+    txns: guest.txns,
+    fixedExp: guest.fixedExp,
+    fixedInc: guest.fixedInc,
+    budget: guest.budget || getBudget(),
+    categories: guest.categories || getCategories(),
+    synced: guest.synced || {},
+    startMonth: guest.startMonth || ls.get(BASE_KEYS.START_MONTH, null) || null,
+    rate: guest.rate || getRate(),
+    onboarded: true,
+  });
+
+  localStorage.setItem(META.MIGRATION_DONE(uid), '1');
+  log.info('GUEST', 'safe import 완료', { uid });
+  log.groupEnd();
+  return true;
 };
+
 
 
 // ── 계좌 데이터 정규화 ─────────────────────────────────────────────
@@ -792,12 +825,7 @@ const dbSaveSettings = async () => {
 // ── DB에서 전체 데이터 불러오기 (로그인 후 1회) ──────────────────
 const dbLoadAll = async () => {
   const uid = await getCurrentUserId();
-  const opId = makeOpId('dbLoad');
-  if (!uid) {
-    log.warn('DB', `${opId} dbLoadAll skipped — no uid`);
-    return false;
-  }
-  log.group('DB', `${opId} dbLoadAll`, { uid, scope: getStorageScope(uid) });
+  if (!uid) return false;
 
   const [accsRes, txnsRes, fixExpRes, fixIncRes, settRes] = await Promise.all([
     supabase.from('accounts').select('*').eq('user_id', uid),
@@ -831,21 +859,59 @@ const dbLoadAll = async () => {
     if (s.synced_months)      ls.set(BASE_KEYS.SYNCED, s.synced_months);
     if (s.start_month)        ls.set(BASE_KEYS.START_MONTH, s.start_month);
   }
-  log.groupEnd();
   return true;
 };
 
 let isMigratingToDb = false;
 
-// ── guest → DB 1회성 마이그레이션은 첫 로그인 예외에서만 허용 ─────────────
+// ── localStorage → DB 마이그레이션 (최초 로그인 시) ─────────────
 const migrateLocalToDb = async () => {
-  const uid = await getCurrentUserId();
-  return migrateGuestToCurrentUserSafely(uid, { requireEmptyDb: true });
+  if (isMigratingToDb) {
+    log.warn('SYNC', 'migrate 스킵 — 이미 실행 중');
+    return;
+  }
+  isMigratingToDb = true;
+
+  try {
+    const uid = await getCurrentUserId();
+    if (!uid) return;
+    // DB에 데이터가 이미 있으면 스킵
+    const { data, error } = await supabase.from('accounts').select('id').eq('user_id', uid).limit(1);
+    if (error) { log.error('SYNC', 'migrate 체크 오류:', error); return; }
+    if (data?.length) { log.info('SYNC', 'migrate 스킵 — 이미 DB에 데이터 있음'); return; }
+    // localStorage 데이터가 있으면 DB로 올리기
+    const accs   = normalizeAccounts(getAccounts());
+    const txns   = getTxns();
+    const fixExp = getFixedExp();
+    const fixInc = getFixedInc();
+    log.group('SYNC', 'migrateLocalToDb');
+    log.info('SYNC', 'migrate 시작 — 계좌:', accs.length, '내역:', txns.length);
+    if (accs.length || txns.length || fixExp.length || fixInc.length) {
+      await Promise.all([
+        dbSaveAccounts(accs),
+        dbSaveTxns(txns),
+        dbSaveFixedExp(fixExp),
+        dbSaveFixedInc(fixInc),
+        dbSaveSettings(),
+      ]);
+      log.info('SYNC', 'migrate 완료');
+    } else {
+      log.info('SYNC', 'migrate 스킵 — localStorage도 비어있음');
+    }
+  } finally {
+    isMigratingToDb = false;
+    log.groupEnd();
+  }
 };
+
 
 const migrateGuestToCurrentUser = async () => {
   const uid = await getCurrentUserId();
-  return migrateGuestToCurrentUserSafely(uid, { requireEmptyDb: true });
+  if (!uid) {
+    log.warn('GUEST', '가져오기 생략 — 로그인 상태 아님');
+    return false;
+  }
+  return migrateGuestToCurrentUserSafely(uid);
 };
 
 // ─── transaction helpers ──────────────────────────────────────────────────────
@@ -975,13 +1041,13 @@ window.__debug = {
   fetchRateForDate,
   formatRate,
   getCurrentUserId,
-  inspectDbStateForUser,
-  getGuestSnapshot,
-  getGuestDataSummary,
+  dbLoadAll,
+  dbSaveAll,
+  getGuestDataset,
+  summarizeDataset,
+  isFirstAppLoginForUid,
   migrateGuestToCurrentUserSafely,
-  hasMigrationDoneForUser,
-  persistAllForCurrentUser,
-  activeScope: () => activeScopeUserId,
+  getCurrentScopedDataset,
 };
 
 // ─── fixed cost auto-sync ─────────────────────────────────────────────────────
@@ -1130,17 +1196,11 @@ const importData = (file) => {
       }
 
       if (loggedIn) {
-        await persistAllForCurrentUser({
-          accounts: normalizeAccounts(data.accounts || []),
-          txns: data.transactions || [],
-          fixedExp: data.fixedExp || [],
-          fixedInc: data.fixedInc || [],
-          categories: data.categories || null,
-          budget: data.budget || null,
-          start: data.startMonth || null,
-          synced: ls.get(BASE_KEYS.SYNCED),
-          rate: getRate(),
-        }, 'import_backup_file');
+        await dbSaveAccounts(normalizeAccounts(data.accounts || []));
+        await dbSaveTxns(data.transactions || []);
+        await dbSaveFixedExp(data.fixedExp || []);
+        await dbSaveFixedInc(data.fixedInc || []);
+        await dbSaveSettings();
       }
 
       alert(loggedIn
@@ -1426,16 +1486,54 @@ function Onboarding({ onDone, onLogin }) {
     const accs = buildAccounts();
     const deMain = accs.find(a => a.country === 'DE' && !a.isCash);
     const krMain = accs.find(a => a.country === 'KR' && !a.isCash);
-    setAccounts(accs);
-    setFixedExp([
+
+    const pendingFixedExp = feNameRef.current?.value?.trim()
+      ? [{
+          id: `fe_${Date.now()}`,
+          name: feNameRef.current.value.trim(),
+          amount: feAmtRef.current?.value || '',
+          day: feDayRef.current?.value || '',
+          currency: feForm.cur,
+          frequency: feForm.freq,
+          accountId: feForm.accId || '',
+        }]
+      : [];
+
+    const pendingFixedInc = fiNameRef.current?.value?.trim()
+      ? [{
+          id: `fi_${Date.now()}`,
+          name: fiNameRef.current.value.trim(),
+          amount: fiAmtRef.current?.value || '',
+          day: fiDayRef.current?.value || '',
+          currency: fiForm.cur,
+          frequency: fiForm.freq,
+          accountId: fiForm.type === 'account' ? (fiForm.accId || '') : '',
+          incomeType: fiForm.type,
+        }]
+      : [];
+
+    const finalFixedExp = [
       ...fixedExpChecks.filter(i => i.checked).map(i => {
         const cfg = fixedExpCfg[i.id] || {};
         return { id: i.id, name: i.name, label: i.label, amount: parseComma(cfg.amount || i.amount) || 0, day: parseInt(cfg.day || i.day) || 1, currency: cfg.currency || i.currency, frequency: cfg.frequency || i.frequency, category: i.category || '공과금', accountId: cfg.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) };
       }),
-      ...fixedExpExtra.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })),
-    ]);
-    setFixedInc(fixedIncList.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })));
-    syncFixedCosts(); setOnboarded(); onDone();
+      ...fixedExpExtra,
+      ...pendingFixedExp,
+    ].map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) }));
+
+    const finalFixedInc = [...fixedIncList, ...pendingFixedInc]
+      .map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.incomeType === 'voucher' ? '' : (i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id)) }));
+
+    setAccounts(accs);
+    setFixedExp(finalFixedExp);
+    setFixedInc(finalFixedInc);
+    setOnboarded();
+
+    onDone({
+      accounts: accs,
+      fixedExp: finalFixedExp,
+      fixedInc: finalFixedInc,
+    });
   };
 
   const Step = ({ to }) => jsx('button', { onClick: () => setStep(to), style: { background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: 'var(--gray-400)', padding: 0 }, children: '‹' });
@@ -2856,6 +2954,7 @@ function App() {
   const [authUser, setAuthUser]   = useState(undefined);
   const [dbReady, setDbReady]     = useState(false);   // DB 로드 완료 여부
   const [onboarded, setOnboardedState] = useState(null);
+  const [syncStatus, setSyncStatus] = useState({ phase: 'idle', message: '' });
   const [tab, setTab]             = useState('home');
   const [prevTab, setPrevTab]     = useState('home');
   const [editing, setEditing]     = useState(null);
@@ -2866,16 +2965,11 @@ function App() {
 
   // ── 인증 상태 감지 ──────────────────────────────────────────────
   useEffect(() => {
-    supabase.auth.getSession().then(({ data, error }) => {
-      if (error) log.error('AUTH', 'initial getSession failed', error);
-      const nextUser = data?.session?.user ?? null;
-      log.info('AUTH', 'initial session resolved', { uid: nextUser?.id || null, email: nextUser?.email || null });
-      setAuthUser(nextUser);
+    supabase.auth.getSession().then(({ data }) => {
+      setAuthUser(data.session?.user ?? null);
     });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      const nextUser = session?.user ?? null;
-      log.info('AUTH', 'onAuthStateChange', { event, uid: nextUser?.id || null, email: nextUser?.email || null });
-      setAuthUser(nextUser);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthUser(session?.user ?? null);
     });
     return () => subscription.unsubscribe();
   }, []);
@@ -2885,101 +2979,77 @@ function App() {
     fetchLatestRate().then(r => setGlobalRate(normalizeRate(r)));
   }, []);
 
-  // ── 인증/스코프/첫 로그인 분기 ─────────────────────────────────
+  // ── 세션 확인 완료 후 온보딩 상태 세팅 ─────────────────────────
   useEffect(() => {
     if (authUser === undefined) return;
+    if (!authUser) {
+      setActiveScopeUserId(null);
+      setOnboardedState(isOnboarded());
+      setDbReady(true);
+      setSyncStatus({ phase: 'idle', message: 'guest mode' });
+      return;
+    }
 
-    const opId = makeOpId('authFlow');
-    let cancelled = false;
+    setDbReady(false);
+    setOnboardedState(null);
+    setSyncStatus({ phase: 'loading', message: 'DB 로드 중' });
 
     (async () => {
       try {
-        if (!authUser) {
-          log.group('AUTH', `${opId} guest flow`);
-          setActiveScopeUserId(null);
-          if (cancelled) return;
-          setOnboardedState(isOnboarded());
-          setDbReady(true);
-          log.info('AUTH', `${opId} guest flow ready`, { onboarded: isOnboarded(), guestSummary: getGuestDataSummary() });
-          return;
-        }
-
-        setDbReady(false);
-        setOnboardedState(null);
         setActiveScopeUserId(authUser.id);
-        log.group('AUTH', `${opId} authenticated flow start`, { uid: authUser.id, email: authUser.email || null });
-
-        const dbStateBeforeLoad = await inspectDbStateForUser(authUser.id);
-        if (cancelled) return;
-
         await dbLoadAll();
-        if (cancelled) return;
 
-        const guestSummary = getGuestDataSummary();
-        const migrationDone = hasMigrationDoneForUser(authUser.id);
-        log.info('AUTH', `${opId} post-load summary`, { dbStateBeforeLoad, guestSummary, migrationDone });
+        const firstLogin = await isFirstAppLoginForUid(authUser.id);
+        const guestExists = hasGuestData();
+        const migrationDone = localStorage.getItem(META.MIGRATION_DONE(authUser.id)) === '1';
 
-        if (!dbStateBeforeLoad.hasAnyData && guestSummary.hasAnyData && !migrationDone) {
-          const message = [
-            '현재 계정은 처음 로그인한 상태예요.',
-            '이 기기의 비로그인 데이터를 현재 계정으로 가져올까요?',
-            '한 번만 실행되며, 다른 계정 데이터와 자동으로 섞이지 않습니다.'
-          ].join('\n');
-          const shouldImport = window.confirm(message);
-          log.info('AUTH', `${opId} first-login import decision`, { shouldImport, uid: authUser.id });
-          if (shouldImport) {
-            const imported = await migrateGuestToCurrentUserSafely(authUser.id, { requireEmptyDb: true });
-            log.info('AUTH', `${opId} first-login import result`, imported);
-            await dbLoadAll();
+        log.info('AUTH', 'login flow 상태', {
+          uid: authUser.id,
+          firstLogin,
+          guestExists,
+          migrationDone,
+          currentScope: getStorageScope(),
+          currentDataset: summarizeDataset(getCurrentScopedDataset()),
+        });
+
+        if (firstLogin && guestExists && !migrationDone) {
+          const ok = window.confirm('이 기기의 비로그인 데이터를 현재 계정으로 처음 가져올까요?');
+          if (ok) {
+            setSyncStatus({ phase: 'syncing', message: '첫 로그인 데이터 가져오는 중' });
+            const imported = await migrateGuestToCurrentUserSafely(authUser.id);
+            if (imported) {
+              await dbLoadAll();
+              setOnboarded();
+              setOnboardedState(true);
+              setSyncStatus({ phase: 'success', message: '첫 로그인 데이터 가져오기 완료' });
+              setDbReady(true);
+              return;
+            }
           } else {
             localStorage.setItem(META.GUEST_IMPORT_DISMISSED(authUser.id), '1');
           }
         }
 
-        const finalDbState = await inspectDbStateForUser(authUser.id);
-        const shouldBeOnboarded = finalDbState.hasAnyData || isOnboarded();
-        if (shouldBeOnboarded) setOnboarded();
-        if (cancelled) return;
-        setOnboardedState(shouldBeOnboarded);
-        setDbReady(true);
-        log.info('AUTH', `${opId} authenticated flow ready`, {
-          uid: authUser.id,
-          finalDbState,
-          onboarded: shouldBeOnboarded,
-          activeScope: activeScopeUserId,
-        });
-      } catch (error) {
-        log.error('AUTH', `${opId} authenticated flow failed`, error);
-        if (!cancelled) {
-          setDbReady(true);
-          setOnboardedState(isOnboarded());
-        }
+        const current = getCurrentScopedDataset();
+        const hasData = hasAnyAppDataInDataset(current);
+        if (hasData && !isOnboarded()) setOnboarded();
+        setOnboardedState(isOnboarded() || hasData);
+        setSyncStatus({ phase: 'success', message: hasData ? '동기화 완료' : '빈 계정 시작' });
+      } catch (e) {
+        log.error('AUTH', 'login flow 실패', e);
+        setSyncStatus({ phase: 'error', message: '동기화 실패' });
+        setOnboardedState(isOnboarded());
       } finally {
-        log.groupEnd();
+        setDbReady(true);
       }
     })();
-
-    return () => {
-      cancelled = true;
-      log.warn('AUTH', `${opId} cancelled`);
-    };
   }, [authUser]);
 
   const handleSignOut = async () => {
-    const opId = makeOpId('signOut');
-    log.group('AUTH', `${opId} signOut start`);
-    try {
-      await supabase.auth.signOut();
-      setActiveScopeUserId(null);
-      setShowAuth(false);
-      setDbReady(true);
-      setOnboardedState(isOnboarded());
-      log.info('AUTH', `${opId} signOut complete`, { guestSummary: getGuestDataSummary() });
-    } catch (error) {
-      log.error('AUTH', `${opId} signOut failed`, error);
-    } finally {
-      log.groupEnd();
-    }
+    await supabase.auth.signOut();
+    setActiveScopeUserId(null);
+    setShowAuth(false);
+    setSyncStatus({ phase: 'idle', message: 'signed out' });
   };
 
   // ── 렌더링 분기 ─────────────────────────────────────────────────
@@ -2994,22 +3064,32 @@ function App() {
   });
 
   // 온보딩 미완료
-  if (!onboarded) return jsx(Onboarding, { onDone: async () => {
-    setOnboarded();
-    if (authUser) {
-      await persistAllForCurrentUser({
-        accounts: getAccounts(),
-        txns: getTxns(),
-        fixedExp: getFixedExp(),
-        fixedInc: getFixedInc(),
-        categories: getCategories(),
-        budget: getBudget(),
-        start: ls.get(BASE_KEYS.START_MONTH),
-        synced: ls.get(BASE_KEYS.SYNCED),
-        rate: getRate(),
-      }, 'onboarding_complete');
+  if (!onboarded) return jsx(Onboarding, { onDone: async (payload = {}) => {
+    try {
+      setSyncStatus({ phase: 'syncing', message: '온보딩 저장 중' });
+      if (authUser) {
+        await dbSaveAll({
+          accounts: payload.accounts ?? getAccounts(),
+          txns: getTxns(),
+          fixedExp: payload.fixedExp ?? getFixedExp(),
+          fixedInc: payload.fixedInc ?? getFixedInc(),
+          budget: getBudget(),
+          categories: getCategories(),
+          synced: ls.get(BASE_KEYS.SYNCED) || {},
+          startMonth: ls.get(BASE_KEYS.START_MONTH) || null,
+          rate: getRate(),
+          onboarded: true,
+        });
+        await dbLoadAll();
+      }
+      setOnboarded();
+      setOnboardedState(true);
+      setSyncStatus({ phase: 'success', message: '온보딩 저장 완료' });
+    } catch (e) {
+      log.error('AUTH', '온보딩 저장 실패', e);
+      setSyncStatus({ phase: 'error', message: '온보딩 저장 실패' });
+      alert('저장 중 오류가 발생했어요. 콘솔 로그를 확인해주세요.');
     }
-    setOnboardedState(true);
   }, onLogin: () => setShowAuth(true) });
 
   if (settings) return jsx(SettingsPage, {
@@ -3022,6 +3102,7 @@ function App() {
   if (tab === 'add') return jsx('div', { className: 'app-shell', children: jsx(AddTransaction, { editing, onDone: () => { setEditing(null); setTab(prevTab); } }) });
 
   return jsxs('div', { className: 'app-shell', children: [
+    syncStatus.phase !== 'idle' && jsx('div', { className: 'banner-enter', style: { background: 'var(--gray-50)', borderBottom: '0.5px solid var(--gray-100)', padding: '11px 16px', fontSize: 12, color: syncStatus.phase === 'error' ? '#C04B1E' : 'var(--gray-600)' }, children: `[${syncStatus.phase}] ${syncStatus.message}` }),
     tab === 'home'     && jsx(HomeTab,     { onOpenSettings: () => setSettings(true), onDetailOpen: t => setHomeTxnDetail(t), authUser, globalRate }),
     tab === 'history'  && jsx(HistoryTab,  { onEdit: t => { setEditing(t); setPrevTab(tab); setTab('add'); }, globalRate }),
     tab === 'accounts' && jsx(AccountsTab, { globalRate }),
