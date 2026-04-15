@@ -257,7 +257,6 @@ const BASE_KEYS = {
 let activeScopeUserId = null;
 const META = {
   GUEST_IMPORT_DISMISSED: uid => `gyembu:meta:guest_import_dismissed:${uid}`,
-  MIGRATION_DONE: uid => `gyembu:meta:migration_done:${uid}`,
 };
 const getStorageScope = (uid = activeScopeUserId) => uid ? `gyembu:user:${uid}` : 'gyembu:guest';
 const scopedKey = (baseKey, uid = activeScopeUserId) => `${getStorageScope(uid)}:${baseKey}`;
@@ -434,6 +433,13 @@ const saveSettingsIfLoggedIn = async () => {
   const uid = await getCurrentUserId();
   if (!uid) return false;
   await dbSaveSettings();
+  log.info('GUEST', `${opId} 가져오기 완료`, {
+    accounts: guestAccounts.length,
+    txns: guestTxns.length,
+    fixedExp: guestFixedExp.length,
+    fixedInc: guestFixedInc.length,
+  });
+  log.groupEnd();
   return true;
 };
 
@@ -604,21 +610,6 @@ const dbSaveSettings = async () => {
 };
 
 // ── DB에서 전체 데이터 불러오기 (로그인 후 1회) ──────────────────
-
-const isFirstAppLogin = async (uid) => {
-  if (!uid) return false;
-  const [accsRes, txnsRes, fixExpRes, fixIncRes, settRes] = await Promise.all([
-    supabase.from('accounts').select('id').eq('user_id', uid).limit(1),
-    supabase.from('transactions').select('id').eq('user_id', uid).limit(1),
-    supabase.from('fixed_expenses').select('id').eq('user_id', uid).limit(1),
-    supabase.from('fixed_incomes').select('id').eq('user_id', uid).limit(1),
-    supabase.from('user_settings').select('user_id').eq('user_id', uid).maybeSingle(),
-  ]);
-  const hasData = !!(accsRes.data?.length || txnsRes.data?.length || fixExpRes.data?.length || fixIncRes.data?.length || settRes.data);
-  log.info('AUTH', 'first-login 판정', { uid, hasData });
-  return !hasData;
-};
-
 const dbLoadAll = async () => {
   const uid = await getCurrentUserId();
   if (!uid) return false;
@@ -735,8 +726,6 @@ const migrateGuestToCurrentUser = async () => {
   await dbSaveFixedExp(guestFixedExp);
   await dbSaveFixedInc(guestFixedInc);
   await dbSaveSettings();
-  localStorage.setItem(META.MIGRATION_DONE(uid), '1');
-  await dbLoadAll();
   log.info('GUEST', `${opId} 가져오기 완료`, {
     accounts: guestAccounts.length,
     txns: guestTxns.length,
@@ -873,15 +862,6 @@ window.__debug = {
   fetchLatestRate,
   fetchRateForDate,
   formatRate,
-  getCurrentUserId,
-  dbLoadAll,
-  isFirstAppLogin,
-  getGuestDataSummary: () => ({
-    accounts: (ls.get(BASE_KEYS.ACCOUNTS, null) || []).length,
-    txns: (ls.get(BASE_KEYS.TRANSACTIONS, null) || []).length,
-    fixedExp: (ls.get(BASE_KEYS.FIXED_EXP, null) || []).length,
-    fixedInc: (ls.get(BASE_KEYS.FIXED_INC, null) || []).length,
-  }),
 };
 
 // ─── fixed cost auto-sync ─────────────────────────────────────────────────────
@@ -1320,55 +1300,16 @@ function Onboarding({ onDone, onLogin }) {
     const accs = buildAccounts();
     const deMain = accs.find(a => a.country === 'DE' && !a.isCash);
     const krMain = accs.find(a => a.country === 'KR' && !a.isCash);
-
-    const pendingFixedExp = (feNameRef.current?.value || '').trim()
-      ? [{
-          id: `custom_fe_${Date.now()}`,
-          name: (feNameRef.current?.value || '').trim(),
-          label: '',
-          amount: feAmtRef.current?.value || 0,
-          day: feDayRef.current?.value || 1,
-          currency: feCur,
-          frequency: feFreq,
-          category: '공과금',
-          accountId: feAccId || (feCur === 'KRW' ? krMain?.id : deMain?.id),
-        }]
-      : [];
-
-    const pendingFixedInc = (fiNameRef.current?.value || '').trim()
-      ? [{
-          id: `custom_fi_${Date.now()}`,
-          name: (fiNameRef.current?.value || '').trim(),
-          label: '',
-          amount: fiAmtRef.current?.value || 0,
-          day: fiDayRef.current?.value || 1,
-          currency: fiCur,
-          frequency: fiFreq,
-          accountId: fiAccId || (fiCur === 'KRW' ? krMain?.id : deMain?.id),
-          incomeType: 'account',
-        }]
-      : [];
-
-    const finalFixedExp = [
+    setAccounts(accs);
+    setFixedExp([
       ...fixedExpChecks.filter(i => i.checked).map(i => {
         const cfg = fixedExpCfg[i.id] || {};
         return { id: i.id, name: i.name, label: i.label, amount: parseComma(cfg.amount || i.amount) || 0, day: parseInt(cfg.day || i.day) || 1, currency: cfg.currency || i.currency, frequency: cfg.frequency || i.frequency, category: i.category || '공과금', accountId: cfg.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) };
       }),
       ...fixedExpExtra.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })),
-      ...pendingFixedExp.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1 })),
-    ];
-
-    const finalFixedInc = [
-      ...fixedIncList.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })),
-      ...pendingFixedInc.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1 })),
-    ];
-
-    setAccounts(accs);
-    setFixedExp(finalFixedExp);
-    setFixedInc(finalFixedInc);
-    syncFixedCosts();
-    setOnboarded();
-    onDone({ accounts: accs, fixedExp: finalFixedExp, fixedInc: finalFixedInc });
+    ]);
+    setFixedInc(fixedIncList.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })));
+    syncFixedCosts(); setOnboarded(); onDone();
   };
 
   const Step = ({ to }) => jsx('button', { onClick: () => setStep(to), style: { background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: 'var(--gray-400)', padding: 0 }, children: '‹' });
@@ -2813,47 +2754,38 @@ function App() {
     fetchLatestRate().then(r => setGlobalRate(normalizeRate(r)));
   }, []);
 
-  // ── 세션 확인 완료 후 온보딩 상태 세팅 ─────────────────────────
+  // ── 세션/스코프 기준 온보딩 + DB 로드 ──────────────────────────
   useEffect(() => {
     if (authUser === undefined) return;
-    setOnboardedState(isOnboarded());
-  }, [authUser]);
 
-  // ── 로그인 후 DB 동기화 — 완료 전까지 탭 렌더링 보류 ────────────
-  useEffect(() => {
     if (!authUser) {
       setActiveScopeUserId(null);
       setDbReady(true);
       setOnboardedState(isOnboarded());
       return;
     }
+
     setDbReady(false);
+    setOnboardedState(null);
+
     (async () => {
       try {
         setActiveScopeUserId(authUser.id);
         await dbLoadAll();
-        const firstLogin = await isFirstAppLogin(authUser.id);
-        const guestExists = hasGuestData();
-        const migrationDone = localStorage.getItem(META.MIGRATION_DONE(authUser.id)) === '1';
-        log.info('AUTH', 'login flow 상태', { uid: authUser.id, firstLogin, guestExists, migrationDone, currentScope: getStorageScope() });
 
-        if (firstLogin && guestExists && !migrationDone) {
-          const ok = window.confirm('첫 로그인 데이터 가져올까요? 이 기기의 비로그인 데이터를 현재 계정으로 1회만 가져옵니다.');
-          if (ok) {
-            await migrateGuestToCurrentUser();
-            setOnboarded();
-            setOnboardedState(true);
-          } else {
-            localStorage.setItem(META.GUEST_IMPORT_DISMISSED(authUser.id), '1');
-            setOnboardedState(isOnboarded());
-          }
-        } else {
-          const hasExistingUserData = getAccounts().length > 0 || getTxns().length > 0 || getFixedExp().length > 0 || getFixedInc().length > 0;
-          if (hasExistingUserData && !isOnboarded()) setOnboarded();
-          setOnboardedState(isOnboarded() || hasExistingUserData);
+        const hasExistingUserData =
+          getAccounts().length > 0 ||
+          getTxns().length > 0 ||
+          getFixedExp().length > 0 ||
+          getFixedInc().length > 0;
+
+        if (hasExistingUserData && !isOnboarded()) {
+          setOnboarded();
         }
+
+        setOnboardedState(isOnboarded() || hasExistingUserData);
       } catch (e) {
-        log.error('AUTH', 'login flow 오류:', e);
+        console.error('[AUTH FLOW ERROR]', e);
         setOnboardedState(isOnboarded());
       } finally {
         setDbReady(true);
@@ -2878,17 +2810,16 @@ function App() {
   });
 
   // 온보딩 미완료
-  if (!onboarded) return jsx(Onboarding, { onDone: async (payload = null) => {
+  if (!onboarded) return jsx(Onboarding, { onDone: async () => {
     if (authUser) {
-      const accounts = normalizeAccounts(payload?.accounts || getAccounts());
-      const fixedExp = payload?.fixedExp || getFixedExp();
-      const fixedInc = payload?.fixedInc || getFixedInc();
-      await dbSaveAccounts(accounts);
-      await dbSaveFixedExp(fixedExp);
-      await dbSaveFixedInc(fixedInc);
-      await dbSaveSettings();
-      await dbLoadAll();
+      await Promise.all([
+        dbSaveAccounts(getAccounts()),
+        dbSaveFixedExp(getFixedExp()),
+        dbSaveFixedInc(getFixedInc()),
+        dbSaveSettings(),
+      ]);
     }
+    setOnboarded();
     setOnboardedState(true);
   }, onLogin: () => setShowAuth(true) });
 
