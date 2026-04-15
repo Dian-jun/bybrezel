@@ -2747,31 +2747,43 @@ function App() {
     fetchLatestRate().then(r => setGlobalRate(normalizeRate(r)));
   }, []);
 
-  // ── 세션 확인 완료 후 온보딩 상태 세팅 ─────────────────────────
+  // ── 세션/사용자별 scope 전환 + 온보딩 상태 동기화 ─────────────────
   useEffect(() => {
     if (authUser === undefined) return;
-    setOnboarded(isOnboarded());
-  }, [authUser]);
 
-  // ── 로그인 후 DB 동기화 — 완료 전까지 탭 렌더링 보류 ────────────
-  useEffect(() => {
     if (!authUser) {
       setActiveScopeUserId(null);
-      setDbReady(false);
+      setDbReady(true);
+      setOnboarded(isOnboarded());
       return;
     }
 
     setDbReady(false);
+    setOnboarded(null);
 
     (async () => {
       try {
         setActiveScopeUserId(authUser.id);
         await dbLoadAll();
+
         if (hasGuestData()) {
           await migrateGuestToCurrentUser();
         }
+
+        const hasExistingUserData =
+          getAccounts().length > 0 ||
+          getTxns().length > 0 ||
+          getFixedExp().length > 0 ||
+          getFixedInc().length > 0;
+
+        if (hasExistingUserData && !isOnboarded()) {
+          setOnboarded();
+        }
+
+        setOnboarded(isOnboarded() || hasExistingUserData);
       } catch (e) {
         log.error('AUTH', '로그인 후 초기화 실패:', e);
+        setOnboarded(isOnboarded());
       } finally {
         setDbReady(true);   // 완료 후 탭 렌더링 허용
       }
