@@ -433,13 +433,6 @@ const saveSettingsIfLoggedIn = async () => {
   const uid = await getCurrentUserId();
   if (!uid) return false;
   await dbSaveSettings();
-  log.info('GUEST', `${opId} 가져오기 완료`, {
-    accounts: guestAccounts.length,
-    txns: guestTxns.length,
-    fixedExp: guestFixedExp.length,
-    fixedInc: guestFixedInc.length,
-  });
-  log.groupEnd();
   return true;
 };
 
@@ -1221,8 +1214,12 @@ const PageHeader = ({ title, right, mb = 18 }) =>
   ] });
 
 // ─── ONBOARDING ───────────────────────────────────────────────────────────────
-function Onboarding({ onDone, onLogin }) {
-  const [step, setStep] = useState(0);
+function Onboarding({ onDone, onLogin, initialStep = 0, isLoggedIn = false }) {
+  const [step, setStep] = useState(initialStep);
+
+  useEffect(() => {
+    setStep(initialStep);
+  }, [initialStep]);
 
   // ── 계좌 관련 상태 ────────────────────────────────────────────────────────
   const [accounts, setAccountsForm] = useState({
@@ -1325,13 +1322,20 @@ function Onboarding({ onDone, onLogin }) {
         jsx('img', { src: '/money/icons/icon-192.png', style: { width: 40, height: 40, borderRadius: 10 } }),
         jsxs('p', { style: { fontSize: 20, fontWeight: 600, letterSpacing: '-0.5px' }, children: ['Brezel ', jsx('span', { style: { fontWeight: 300 }, children: 'Money' })] }),
     ] }),
-    jsxs('h1', { style: { marginBottom: 20 }, children: ['한국과 독일,', jsx('br',{}), '두 통장을', jsx('br',{}), '한 곳에서.'] }),
-      jsxs('p', { style: { fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.9 }, children: ['KRW · EUR 동시 관리', jsx('br',{}), '송금 내역 · 고정비 · 자연어 입력'] }),
+    isLoggedIn
+      ? jsxs(Fragment, { children: [
+          jsxs('h1', { style: { marginBottom: 20 }, children: ['이제 계좌를', jsx('br',{}), '등록해볼게요.'] }),
+          jsx('p', { style: { fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.9 }, children: '현재 계정에는 아직 가계부 데이터가 없어요.' }),
+        ] })
+      : jsxs(Fragment, { children: [
+          jsxs('h1', { style: { marginBottom: 20 }, children: ['한국과 독일,', jsx('br',{}), '두 통장을', jsx('br',{}), '한 곳에서.'] }),
+          jsxs('p', { style: { fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.9 }, children: ['KRW · EUR 동시 관리', jsx('br',{}), '송금 내역 · 고정비 · 자연어 입력'] }),
+        ] }),
     ] }),
     jsxs('div', { children: [
-      jsx('button', { className: 'btn', onClick: () => setStep(1), children: '시작하기' }),
-      jsx('button', { className: 'btn-ghost', onClick: onLogin, children: '로그인 / 회원가입' }),
-      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', textAlign: 'center', marginTop: 12, lineHeight: 1.7 }, children: '로그인 없이도 바로 사용할 수 있어요' }),
+      jsx('button', { className: 'btn', onClick: () => setStep(1), children: isLoggedIn ? '계좌 등록 시작' : '시작하기' }),
+      !isLoggedIn && jsx('button', { className: 'btn-ghost', onClick: onLogin, children: '로그인 / 회원가입' }),
+      jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', textAlign: 'center', marginTop: 12, lineHeight: 1.7 }, children: isLoggedIn ? '계좌를 등록하면 바로 홈에서 사용할 수 있어요' : '로그인 없이도 바로 사용할 수 있어요' }),
     ] }),
   ] }) });
 
@@ -2730,6 +2734,7 @@ function App() {
   const [authUser, setAuthUser]   = useState(undefined);
   const [dbReady, setDbReady]     = useState(false);   // DB 로드 완료 여부
   const [onboarded, setOnboardedState] = useState(null);
+  const [onboardingInitialStep, setOnboardingInitialStep] = useState(0);
   const [tab, setTab]             = useState('home');
   const [prevTab, setPrevTab]     = useState('home');
   const [editing, setEditing]     = useState(null);
@@ -2754,14 +2759,15 @@ function App() {
     fetchLatestRate().then(r => setGlobalRate(normalizeRate(r)));
   }, []);
 
-  // ── 세션/스코프 기준 온보딩 + DB 로드 ──────────────────────────
+  // ── 세션 확인 완료 후 scope/DB/온보딩 상태 동기화 ───────────────
   useEffect(() => {
     if (authUser === undefined) return;
 
     if (!authUser) {
       setActiveScopeUserId(null);
-      setDbReady(true);
       setOnboardedState(isOnboarded());
+      setOnboardingInitialStep(0);
+      setDbReady(true);
       return;
     }
 
@@ -2779,14 +2785,28 @@ function App() {
           getFixedExp().length > 0 ||
           getFixedInc().length > 0;
 
-        if (hasExistingUserData && !isOnboarded()) {
-          setOnboarded();
-        }
+        log.info('AUTH', 'post-login dataset check', {
+          uid: authUser.id,
+          hasExistingUserData,
+          accounts: getAccounts().length,
+          txns: getTxns().length,
+          fixedExp: getFixedExp().length,
+          fixedInc: getFixedInc().length,
+        });
 
-        setOnboardedState(isOnboarded() || hasExistingUserData);
+        if (hasExistingUserData) {
+          if (!isOnboarded()) setOnboarded();
+          setOnboardedState(true);
+          setOnboardingInitialStep(0);
+          setTab('home');
+        } else {
+          setOnboardedState(false);
+          setOnboardingInitialStep(1);
+        }
       } catch (e) {
-        console.error('[AUTH FLOW ERROR]', e);
-        setOnboardedState(isOnboarded());
+        log.error('AUTH', 'login flow 오류:', e);
+        setOnboardedState(false);
+        setOnboardingInitialStep(1);
       } finally {
         setDbReady(true);
       }
@@ -2796,6 +2816,7 @@ function App() {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     setShowAuth(false);
+    setOnboardingInitialStep(0);
   };
 
   // ── 렌더링 분기 ─────────────────────────────────────────────────
@@ -2810,7 +2831,7 @@ function App() {
   });
 
   // 온보딩 미완료
-  if (!onboarded) return jsx(Onboarding, { onDone: async () => {
+  if (!onboarded) return jsx(Onboarding, { initialStep: onboardingInitialStep, isLoggedIn: !!authUser, onDone: async () => {
     if (authUser) {
       await Promise.all([
         dbSaveAccounts(getAccounts()),
@@ -2821,6 +2842,8 @@ function App() {
     }
     setOnboarded();
     setOnboardedState(true);
+    setOnboardingInitialStep(0);
+    setTab('home');
   }, onLogin: () => setShowAuth(true) });
 
   if (settings) return jsx(SettingsPage, {
