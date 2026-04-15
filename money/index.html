@@ -259,6 +259,8 @@ const META = {
   GUEST_IMPORT_DISMISSED: uid => `gyembu:meta:guest_import_dismissed:${uid}`,
   MIGRATION_DONE: uid => `gyembu:meta:migration_done:${uid}`,
 };
+const getMigrationDone = uid => localStorage.getItem(META.MIGRATION_DONE(uid)) === '1';
+const setMigrationDone = uid => localStorage.setItem(META.MIGRATION_DONE(uid), '1');
 const getStorageScope = (uid = activeScopeUserId) => uid ? `gyembu:user:${uid}` : 'gyembu:guest';
 const scopedKey = (baseKey, uid = activeScopeUserId) => `${getStorageScope(uid)}:${baseKey}`;
 const ls = {
@@ -275,29 +277,6 @@ const hasGuestData = () =>
   (ls.get(BASE_KEYS.FIXED_EXP, null) || []).length > 0 ||
   (ls.get(BASE_KEYS.FIXED_INC, null) || []).length > 0;
 
-const getGuestDataset = () => ({
-  accounts: normalizeAccounts(ls.get(BASE_KEYS.ACCOUNTS, null) || []),
-  txns: ls.get(BASE_KEYS.TRANSACTIONS, null) || [],
-  fixedExp: ls.get(BASE_KEYS.FIXED_EXP, null) || [],
-  fixedInc: ls.get(BASE_KEYS.FIXED_INC, null) || [],
-  budget: ls.get(BASE_KEYS.BUDGET, null),
-  categories: ls.get(BASE_KEYS.CATEGORIES, null),
-  synced: ls.get(BASE_KEYS.SYNCED, null),
-  startMonth: ls.get(BASE_KEYS.START_MONTH, null),
-  rate: ls.get(BASE_KEYS.RATE, null),
-  onboarded: ls.get(BASE_KEYS.ONBOARDED, null),
-});
-const summarizeDataset = ds => ({
-  accounts: ds?.accounts?.length || 0,
-  txns: ds?.txns?.length || 0,
-  fixedExp: ds?.fixedExp?.length || 0,
-  fixedInc: ds?.fixedInc?.length || 0,
-  hasBudget: !!ds?.budget,
-  hasCategories: !!(ds?.categories?.length),
-  hasRate: !!ds?.rate,
-  hasStartMonth: !!ds?.startMonth,
-});
-
 const makeOpId = prefix => `${prefix}#${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 const log = {
   info: (tag, ...args) => console.log(`[${tag}]`, ...args),
@@ -306,8 +285,14 @@ const log = {
   group: (tag, title) => console.groupCollapsed(`[${tag}] ${title}`),
   groupEnd: () => console.groupEnd(),
 };
+let syncStatus = { state: 'idle', message: '' };
+const setSyncStatusGlobal = (state, message = '') => {
+  syncStatus = { state, message, at: new Date().toISOString() };
+  log.info('SYNC', 'status', syncStatus);
+};
+const getSyncStatusGlobal = () => syncStatus;
 const isOnboarded   = () => !!ls.get(BASE_KEYS.ONBOARDED);
-const setOnboarded  = () => {
+const markOnboarded  = () => {
   ls.set(BASE_KEYS.ONBOARDED, true);
   // 온보딩 완료 시점의 연월을 기록 — 고정비 소급 적용 방지
   if (!ls.get(BASE_KEYS.START_MONTH)) {
@@ -457,202 +442,6 @@ const saveSettingsIfLoggedIn = async () => {
   const uid = await getCurrentUserId();
   if (!uid) return false;
   await dbSaveSettings();
-  log.info('GUEST', `${opId} 가져오기 완료`, {
-    accounts: guestAccounts.length,
-    txns: guestTxns.length,
-    fixedExp: guestFixedExp.length,
-    fixedInc: guestFixedInc.length,
-  });
-  log.groupEnd();
-  return true;
-};
-
-const getCurrentScopedDataset = () => ({
-  accounts: normalizeAccounts(getAccounts()),
-  txns: getTxns(),
-  fixedExp: getFixedExp(),
-  fixedInc: getFixedInc(),
-  budget: getBudget(),
-  categories: getCategories(),
-  synced: ls.get(BASE_KEYS.SYNCED) || {},
-  startMonth: ls.get(BASE_KEYS.START_MONTH) || null,
-  rate: getRate(),
-  onboarded: isOnboarded(),
-});
-
-const hasAnyAppDataInDataset = ds =>
-  (ds?.accounts?.length || 0) > 0 ||
-  (ds?.txns?.length || 0) > 0 ||
-  (ds?.fixedExp?.length || 0) > 0 ||
-  (ds?.fixedInc?.length || 0) > 0;
-
-const isFirstAppLoginForUid = async (uid) => {
-  const [accsRes, txnsRes, fixExpRes, fixIncRes, settRes] = await Promise.all([
-    supabase.from('accounts').select('id').eq('user_id', uid).limit(1),
-    supabase.from('transactions').select('id').eq('user_id', uid).limit(1),
-    supabase.from('fixed_expenses').select('id').eq('user_id', uid).limit(1),
-    supabase.from('fixed_incomes').select('id').eq('user_id', uid).limit(1),
-    supabase.from('user_settings').select('user_id').eq('user_id', uid).maybeSingle(),
-  ]);
-  const hasData =
-    (accsRes.data?.length || 0) > 0 ||
-    (txnsRes.data?.length || 0) > 0 ||
-    (fixExpRes.data?.length || 0) > 0 ||
-    (fixIncRes.data?.length || 0) > 0 ||
-    !!settRes.data;
-  log.info('AUTH', 'first-login 판정', { uid, hasData });
-  return !hasData;
-};
-
-const dbSaveAll = async (dataset = getCurrentScopedDataset()) => {
-  const uid = await getCurrentUserId();
-  if (!uid) {
-    log.warn('SYNC', 'dbSaveAll 스킵 — uid 없음');
-    return false;
-  }
-
-  const normalizedAccounts = normalizeAccounts(dataset.accounts || []);
-  const txns = dataset.txns || [];
-  const fixedExp = dataset.fixedExp || [];
-  const fixedInc = dataset.fixedInc || [];
-  const budget = dataset.budget || { eur: null, excludeCategories: ['식비지원금'] };
-  const categories = dataset.categories || DEFAULT_CATS;
-  const synced = dataset.synced || {};
-  const startMonth = dataset.startMonth || null;
-  const rate = dataset.rate || getRate();
-  const opId = makeOpId('saveall');
-
-  log.group('SYNC', `${opId} dbSaveAll`);
-  log.info('SYNC', '저장 스냅샷', {
-    uid,
-    accounts: normalizedAccounts.length,
-    txns: txns.length,
-    fixedExp: fixedExp.length,
-    fixedInc: fixedInc.length,
-    hasBudget: !!budget,
-    hasCategories: !!categories?.length,
-    hasStartMonth: !!startMonth,
-    rate: rate?.rate || null,
-  });
-
-  setAccounts(normalizedAccounts);
-  setTxns(txns);
-  setFixedExp(fixedExp);
-  setFixedInc(fixedInc);
-  setBudget(budget);
-  setCategories(categories);
-  ls.set(BASE_KEYS.SYNCED, synced);
-  if (startMonth) ls.set(BASE_KEYS.START_MONTH, startMonth);
-  if (rate) ls.set(BASE_KEYS.RATE, rate);
-  if (dataset.onboarded) ls.set(BASE_KEYS.ONBOARDED, true);
-
-  const settingsPayload = {
-    user_id: uid,
-    rate: rate?.rate ?? 1480,
-    rate_date: rate?.date || null,
-    rate_updated_at: rate?.updatedAt || new Date().toISOString(),
-    budget_eur: budget?.eur ?? null,
-    exclude_categories: budget?.excludeCategories || ['식비지원금'],
-    categories,
-    synced_months: synced,
-    start_month: startMonth,
-    updated_at: new Date().toISOString(),
-  };
-
-  const accountRows = normalizedAccounts.map(a => {
-    const { balance, initial_balance, ...clean } = a || {};
-    return { ...toSnake(clean), user_id: uid };
-  });
-  const txnRows = txns.map(t => ({ ...toSnake(t), user_id: uid }));
-  const fixedExpRows = fixedExp.map(i => ({ ...toSnake(i), user_id: uid }));
-  const fixedIncRows = fixedInc.map(i => ({ ...toSnake(i), user_id: uid }));
-
-  const delTargets = [
-    ['transactions', supabase.from('transactions').delete().eq('user_id', uid)],
-    ['fixed_expenses', supabase.from('fixed_expenses').delete().eq('user_id', uid)],
-    ['fixed_incomes', supabase.from('fixed_incomes').delete().eq('user_id', uid)],
-    ['accounts', supabase.from('accounts').delete().eq('user_id', uid)],
-  ];
-
-  for (const [name, req] of delTargets) {
-    const { error } = await req;
-    if (error) {
-      log.error('SYNC', `${opId} ${name} 삭제 실패`, error);
-      log.groupEnd();
-      throw error;
-    }
-  }
-
-  if (accountRows.length) {
-    const { error } = await supabase.from('accounts').insert(accountRows);
-    if (error) { log.error('SYNC', `${opId} accounts insert 실패`, error, accountRows[0]); log.groupEnd(); throw error; }
-  }
-
-  if (txnRows.length) {
-    const BATCH = 500;
-    for (let i = 0; i < txnRows.length; i += BATCH) {
-      const batch = txnRows.slice(i, i + BATCH);
-      const { error } = await supabase.from('transactions').insert(batch);
-      if (error) { log.error('SYNC', `${opId} transactions insert 실패`, error, batch[0]); log.groupEnd(); throw error; }
-    }
-  }
-
-  if (fixedExpRows.length) {
-    const { error } = await supabase.from('fixed_expenses').insert(fixedExpRows);
-    if (error) { log.error('SYNC', `${opId} fixed_expenses insert 실패`, error, fixedExpRows[0]); log.groupEnd(); throw error; }
-  }
-
-  if (fixedIncRows.length) {
-    const { error } = await supabase.from('fixed_incomes').insert(fixedIncRows);
-    if (error) { log.error('SYNC', `${opId} fixed_incomes insert 실패`, error, fixedIncRows[0]); log.groupEnd(); throw error; }
-  }
-
-  const { error: settingsError } = await supabase.from('user_settings').upsert(settingsPayload);
-  if (settingsError) {
-    log.error('SYNC', `${opId} user_settings upsert 실패`, settingsError, settingsPayload);
-    log.groupEnd();
-    throw settingsError;
-  }
-
-  log.info('SYNC', `${opId} dbSaveAll 완료`);
-  log.groupEnd();
-  return true;
-};
-
-const migrateGuestToCurrentUserSafely = async (uid) => {
-  const guest = getGuestDataset();
-  log.group('GUEST', `safe-import:${uid}`);
-  log.info('GUEST', 'guest 요약', summarizeDataset(guest));
-
-  if (!hasAnyAppDataInDataset(guest)) {
-    log.warn('GUEST', 'guest 데이터가 비어 있어 가져오지 않음');
-    log.groupEnd();
-    return false;
-  }
-
-  const firstLogin = await isFirstAppLoginForUid(uid);
-  if (!firstLogin) {
-    log.warn('GUEST', '첫 로그인 조건 불충족 — 가져오기 중단', { uid });
-    log.groupEnd();
-    return false;
-  }
-
-  await dbSaveAll({
-    accounts: guest.accounts,
-    txns: guest.txns,
-    fixedExp: guest.fixedExp,
-    fixedInc: guest.fixedInc,
-    budget: guest.budget || getBudget(),
-    categories: guest.categories || getCategories(),
-    synced: guest.synced || {},
-    startMonth: guest.startMonth || ls.get(BASE_KEYS.START_MONTH, null) || null,
-    rate: guest.rate || getRate(),
-    onboarded: true,
-  });
-
-  localStorage.setItem(META.MIGRATION_DONE(uid), '1');
-  log.info('GUEST', 'safe import 완료', { uid });
-  log.groupEnd();
   return true;
 };
 
@@ -676,130 +465,135 @@ const normalizeAccounts = (accounts) =>
   });
 
 // ── DB 저장 함수들 (localStorage 동시 저장) ──────────────────────
-const dbSaveAccounts = async (accounts) => {
-  const normalized = normalizeAccounts(accounts);
-  setAccounts(normalized);   // localStorage
-
-  const uid = await getCurrentUserId();
-  if (!uid) return;
-
-  const { error: delErr } = await supabase.from('accounts').delete().eq('user_id', uid);
-  if (delErr) {
-    console.error('[DB] accounts 삭제 오류:', delErr);
-    return;
+const summarizeDataset = (ds = {}) => ({
+  accounts: (ds.accounts || []).length,
+  txns: (ds.txns || []).length,
+  fixedExp: (ds.fixedExp || []).length,
+  fixedInc: (ds.fixedInc || []).length,
+});
+const getCurrentDataset = () => ({
+  accounts: normalizeAccounts(getAccounts()),
+  txns: getTxns(),
+  fixedExp: getFixedExp(),
+  fixedInc: getFixedInc(),
+  rate: getRate(),
+  budget: getBudget(),
+  categories: getCategories(),
+  synced: ls.get(BASE_KEYS.SYNCED) || {},
+  start: ls.get(BASE_KEYS.START_MONTH),
+  onboarded: isOnboarded(),
+});
+const applyDatasetToLocal = (dataset) => {
+  if (dataset.accounts) setAccounts(normalizeAccounts(dataset.accounts));
+  if (dataset.txns) setTxns(dataset.txns);
+  if (dataset.fixedExp) setFixedExp(dataset.fixedExp);
+  if (dataset.fixedInc) setFixedInc(dataset.fixedInc);
+  if (dataset.rate) ls.set(BASE_KEYS.RATE, dataset.rate);
+  if (dataset.budget) ls.set(BASE_KEYS.BUDGET, dataset.budget);
+  if (dataset.categories) ls.set(BASE_KEYS.CATEGORIES, dataset.categories);
+  if (dataset.synced) ls.set(BASE_KEYS.SYNCED, dataset.synced);
+  if (dataset.start) ls.set(BASE_KEYS.START_MONTH, dataset.start);
+  if (dataset.onboarded) markOnboarded();
+};
+const loadDbSnapshot = async (uid) => {
+  const [accsRes, txnsRes, fixExpRes, fixIncRes, settRes] = await Promise.all([
+    supabase.from('accounts').select('*').eq('user_id', uid),
+    supabase.from('transactions').select('*').eq('user_id', uid),
+    supabase.from('fixed_expenses').select('*').eq('user_id', uid),
+    supabase.from('fixed_incomes').select('*').eq('user_id', uid),
+    supabase.from('user_settings').select('*').eq('user_id', uid).maybeSingle(),
+  ]);
+  return {
+    accounts: normalizeAccounts((accsRes.data || []).map(toCamel)),
+    txns: (txnsRes.data || []).map(toCamel),
+    fixedExp: (fixExpRes.data || []).map(toCamel),
+    fixedInc: (fixIncRes.data || []).map(toCamel),
+    settings: settRes.data || null,
+    errors: [accsRes.error, txnsRes.error, fixExpRes.error, fixIncRes.error, settRes.error].filter(Boolean),
+  };
+};
+const hasAnyAppData = (dataset) =>
+  (dataset.accounts?.length || 0) > 0 ||
+  (dataset.txns?.length || 0) > 0 ||
+  (dataset.fixedExp?.length || 0) > 0 ||
+  (dataset.fixedInc?.length || 0) > 0 ||
+  !!dataset.settings;
+const shouldConfirmDestructiveSave = (remote, local) => (
+  ((remote.accounts?.length || 0) > 0 && (local.accounts?.length || 0) === 0) ||
+  ((remote.txns?.length || 0) > 0 && (local.txns?.length || 0) === 0) ||
+  ((remote.fixedExp?.length || 0) > 0 && (local.fixedExp?.length || 0) === 0) ||
+  ((remote.fixedInc?.length || 0) > 0 && (local.fixedInc?.length || 0) === 0)
+);
+const syncCollectionTable = async ({ table, rows, uid }) => {
+  const { data: remoteRows, error: loadErr } = await supabase.from(table).select('id').eq('user_id', uid);
+  if (loadErr) throw loadErr;
+  const remoteIds = new Set((remoteRows || []).map(r => r.id));
+  const localIds = new Set((rows || []).map(r => r.id));
+  const toDelete = [...remoteIds].filter(id => !localIds.has(id));
+  if (toDelete.length) {
+    const { error } = await supabase.from(table).delete().eq('user_id', uid).in('id', toDelete);
+    if (error) throw error;
   }
-
-  if (normalized.length === 0) return;
-
+  if (rows?.length) {
+    const { error } = await supabase.from(table).upsert(rows, { onConflict: 'id,user_id' });
+    if (error) throw error;
+  }
+};
+const dbSaveAccounts = async (accounts, options = {}) => {
+  const normalized = normalizeAccounts(accounts);
+  setAccounts(normalized);
+  if (options.localOnly) return true;
+  const uid = await getCurrentUserId();
+  if (!uid) return true;
   const rows = normalized.map(a => {
     const { balance, initial_balance, ...clean } = a || {};
     return { ...toSnake(clean), user_id: uid };
   });
-
-  log.info('DB', 'accounts rows sample:', rows[0]);
-
-  const { error: insErr } = await supabase.from('accounts').insert(rows);
-  if (insErr) log.error('DB', 'accounts 저장 오류:', insErr, '데이터 샘플:', rows[0]);
-  else log.info('DB', 'accounts 저장 완료:', normalized.length, '개');
+  await syncCollectionTable({ table: 'accounts', rows, uid });
+  log.info('DB', 'accounts 저장 완료:', normalized.length, '개');
+  return true;
 };
-
-const dbSaveTxns = async (txns) => {
+const dbSaveTxns = async (txns, options = {}) => {
   setTxns(txns);
+  if (options.localOnly) return true;
   const uid = await getCurrentUserId();
-  if (!uid) {
-    console.error('[DB] transactions 저장 스킵 — uid 없음');
-    return;
-  }
-
-  const { error: delErr } = await supabase.from('transactions').delete().eq('user_id', uid);
-  if (delErr) {
-    log.error('DB', 'transactions 삭제 오류:', delErr);
-    return;
-  }
-
-  if (txns.length === 0) return;
-
-  const BATCH = 500;
-  for (let i = 0; i < txns.length; i += BATCH) {
-    const batch = txns.slice(i, i + BATCH).map(t => ({ ...toSnake(t), user_id: uid }));
-    const { error: insErr } = await supabase.from('transactions').insert(batch);
-
-    if (insErr) {
-      log.error('DB', 'transactions 저장 오류:', insErr, '배치 시작 index:', i, '샘플:', batch[0]);
-      return;
-    }
-  }
-
+  if (!uid) return true;
+  const rows = (txns || []).map(t => ({ ...toSnake(t), user_id: uid }));
+  await syncCollectionTable({ table: 'transactions', rows, uid });
   log.info('DB', 'transactions 저장 완료:', txns.length, '개');
+  return true;
 };
-
-const dbSaveFixedExp = async (items) => {
+const dbSaveFixedExp = async (items, options = {}) => {
   setFixedExp(items);
+  if (options.localOnly) return true;
   const uid = await getCurrentUserId();
-  if (!uid) {
-    console.error('[DB] fixed_expenses 저장 스킵 — uid 없음');
-    return;
-  }
-
-  const { error: delErr } = await supabase.from('fixed_expenses').delete().eq('user_id', uid);
-  if (delErr) {
-    log.error('DB', 'fixed_expenses 삭제 오류:', delErr);
-    return;
-  }
-
-  if (items.length === 0) return;
-
-  const rows = items.map(i => ({ ...toSnake(i), user_id: uid }));
-  const { error: insErr } = await supabase.from('fixed_expenses').insert(rows);
-
-  if (insErr) {
-    log.error('DB', 'fixed_expenses 저장 오류:', insErr, '샘플:', rows[0]);
-    return;
-  }
-
+  if (!uid) return true;
+  const rows = (items || []).map(i => ({ ...toSnake(i), user_id: uid }));
+  await syncCollectionTable({ table: 'fixed_expenses', rows, uid });
   log.info('DB', 'fixed_expenses 저장 완료:', items.length, '개');
+  return true;
 };
-
-const dbSaveFixedInc = async (items) => {
+const dbSaveFixedInc = async (items, options = {}) => {
   setFixedInc(items);
+  if (options.localOnly) return true;
   const uid = await getCurrentUserId();
-  if (!uid) {
-    console.error('[DB] fixed_incomes 저장 스킵 — uid 없음');
-    return;
-  }
-
-  const { error: delErr } = await supabase.from('fixed_incomes').delete().eq('user_id', uid);
-  if (delErr) {
-    log.error('DB', 'fixed_incomes 삭제 오류:', delErr);
-    return;
-  }
-
-  if (items.length === 0) return;
-
-  const rows = items.map(i => ({ ...toSnake(i), user_id: uid }));
-  const { error: insErr } = await supabase.from('fixed_incomes').insert(rows);
-
-  if (insErr) {
-    log.error('DB', 'fixed_incomes 저장 오류:', insErr, '샘플:', rows[0]);
-    return;
-  }
-
+  if (!uid) return true;
+  const rows = (items || []).map(i => ({ ...toSnake(i), user_id: uid }));
+  await syncCollectionTable({ table: 'fixed_incomes', rows, uid });
   log.info('DB', 'fixed_incomes 저장 완료:', items.length, '개');
+  return true;
 };
-
 const dbSaveSettings = async () => {
   const uid = await getCurrentUserId();
   if (!uid) {
     log.info('DB', 'user_settings 저장 생략 — 비로그인 상태');
-    return;
+    return true;
   }
-
   const budget = getBudget();
   const rate   = getRate();
   const cats   = getCategories();
   const synced = ls.get(BASE_KEYS.SYNCED) || {};
   const start  = ls.get(BASE_KEYS.START_MONTH);
-
   const payload = {
     user_id: uid,
     rate: rate.rate,
@@ -812,105 +606,145 @@ const dbSaveSettings = async () => {
     start_month: start,
     updated_at: new Date().toISOString(),
   };
-
   const { error } = await supabase.from('user_settings').upsert(payload);
-  if (error) {
-    log.error('DB', 'user_settings 저장 오류:', error, payload);
-    return;
-  }
-
+  if (error) throw error;
   log.info('DB', 'user_settings 저장 완료');
+  return true;
+};
+const dbSaveAll = async (options = {}) => {
+  const uid = await getCurrentUserId();
+  const opId = makeOpId('saveall');
+  const dataset = options.dataset || getCurrentDataset();
+  log.group('SYNC', `${opId} dbSaveAll`);
+  log.info('SYNC', `${opId} local snapshot`, summarizeDataset(dataset));
+  setSyncStatusGlobal('syncing', options.reason || '동기화 중');
+  try {
+    if (!uid) {
+      applyDatasetToLocal(dataset);
+      setSyncStatusGlobal('success', '비로그인 로컬 저장 완료');
+      return true;
+    }
+    const remote = await loadDbSnapshot(uid);
+    log.info('SYNC', `${opId} remote snapshot`, summarizeDataset(remote));
+    if (remote.errors?.length) throw remote.errors[0];
+    if (!options.allowDestructive && shouldConfirmDestructiveSave(remote, dataset)) {
+      const ok = window.confirm('기존 데이터 일부 또는 전체가 삭제됩니다. 정말 저장할까요?');
+      if (!ok) {
+        setSyncStatusGlobal('idle', '저장 취소');
+        return false;
+      }
+    }
+    applyDatasetToLocal(dataset);
+    await dbSaveAccounts(dataset.accounts || [], { localOnly: true });
+    await dbSaveTxns(dataset.txns || [], { localOnly: true });
+    await dbSaveFixedExp(dataset.fixedExp || [], { localOnly: true });
+    await dbSaveFixedInc(dataset.fixedInc || [], { localOnly: true });
+    await syncCollectionTable({ table: 'accounts', rows: (dataset.accounts || []).map(a => ({ ...toSnake((({ balance, initial_balance, ...rest }) => rest)(a || {})), user_id: uid })), uid });
+    await syncCollectionTable({ table: 'transactions', rows: (dataset.txns || []).map(t => ({ ...toSnake(t), user_id: uid })), uid });
+    await syncCollectionTable({ table: 'fixed_expenses', rows: (dataset.fixedExp || []).map(i => ({ ...toSnake(i), user_id: uid })), uid });
+    await syncCollectionTable({ table: 'fixed_incomes', rows: (dataset.fixedInc || []).map(i => ({ ...toSnake(i), user_id: uid })), uid });
+    await dbSaveSettings();
+    await dbLoadAll();
+    setSyncStatusGlobal('success', options.reason || '동기화 완료');
+    log.info('SYNC', `${opId} 완료`);
+    return true;
+  } catch (e) {
+    setSyncStatusGlobal('error', e?.message || '동기화 실패');
+    log.error('SYNC', `${opId} 실패`, e);
+    throw e;
+  } finally {
+    log.groupEnd();
+  }
 };
 
 // ── DB에서 전체 데이터 불러오기 (로그인 후 1회) ──────────────────
 const dbLoadAll = async () => {
   const uid = await getCurrentUserId();
   if (!uid) return false;
-
-  const [accsRes, txnsRes, fixExpRes, fixIncRes, settRes] = await Promise.all([
-    supabase.from('accounts').select('*').eq('user_id', uid),
-    supabase.from('transactions').select('*').eq('user_id', uid).order('date', { ascending: false }),
-    supabase.from('fixed_expenses').select('*').eq('user_id', uid),
-    supabase.from('fixed_incomes').select('*').eq('user_id', uid),
-    supabase.from('user_settings').select('*').eq('user_id', uid).maybeSingle(),
-  ]);
-
-  // DB 데이터를 현재 계정 scope 캐시에 완전 덮어쓰기
-  setAccounts(normalizeAccounts((accsRes.data || []).map(toCamel)));
-  setTxns((txnsRes.data || []).map(toCamel));
-  setFixedExp((fixExpRes.data || []).map(toCamel));
-  setFixedInc((fixIncRes.data || []).map(toCamel));
-  if (settRes.error) {
-    log.error('DB', 'user_settings load 오류:', settRes.error);
+  const snapshot = await loadDbSnapshot(uid);
+  if (snapshot.errors?.length) {
+    log.error('DB', 'load 오류', snapshot.errors[0]);
+    throw snapshot.errors[0];
   }
+  setAccounts(snapshot.accounts || []);
+  setTxns((snapshot.txns || []).sort((a, b) => String(b.date || '').localeCompare(String(a.date || ''))));
+  setFixedExp(snapshot.fixedExp || []);
+  setFixedInc(snapshot.fixedInc || []);
+  const s = snapshot.settings;
   log.info('DB', 'load 완료', {
-    accounts: accsRes.data?.length || 0,
-    txns: txnsRes.data?.length || 0,
-    fixedExp: fixExpRes.data?.length || 0,
-    fixedInc: fixIncRes.data?.length || 0,
-    hasSettings: !!settRes.data,
+    accounts: snapshot.accounts?.length || 0,
+    txns: snapshot.txns?.length || 0,
+    fixedExp: snapshot.fixedExp?.length || 0,
+    fixedInc: snapshot.fixedInc?.length || 0,
+    hasSettings: !!s,
   });
-  if (settRes.data) {
-    const s = settRes.data;
-    if (s.rate)               setRate(roundRate2 ? roundRate2(s.rate) : s.rate, s.rate_date || null);
-    if (s.budget_eur !== null || s.exclude_categories)
-      ls.set(BASE_KEYS.BUDGET, { eur: s.budget_eur, excludeCategories: s.exclude_categories || ['식비지원금'] });
-    if (s.categories)         setCategories(s.categories);
-    if (s.synced_months)      ls.set(BASE_KEYS.SYNCED, s.synced_months);
-    if (s.start_month)        ls.set(BASE_KEYS.START_MONTH, s.start_month);
+  if (s) {
+    if (s.rate) setRate(roundRate2(s.rate), s.rate_date || null);
+    ls.set(BASE_KEYS.BUDGET, { eur: s.budget_eur, excludeCategories: s.exclude_categories || ['식비지원금'] });
+    if (s.categories) setCategories(s.categories);
+    if (s.synced_months) ls.set(BASE_KEYS.SYNCED, s.synced_months);
+    if (s.start_month) ls.set(BASE_KEYS.START_MONTH, s.start_month);
   }
+  if (hasAnyAppData(snapshot)) markOnboarded();
   return true;
 };
 
 let isMigratingToDb = false;
-
-// ── localStorage → DB 마이그레이션 (최초 로그인 시) ─────────────
-const migrateLocalToDb = async () => {
-  if (isMigratingToDb) {
-    log.warn('SYNC', 'migrate 스킵 — 이미 실행 중');
-    return;
-  }
-  isMigratingToDb = true;
-
+const isFirstAppLogin = async (uid) => {
+  const snapshot = await loadDbSnapshot(uid);
+  if (snapshot.errors?.length) throw snapshot.errors[0];
+  const hasData = hasAnyAppData(snapshot);
+  log.info('AUTH', 'first-login 판정', { uid, hasData });
+  return !hasData;
+};
+const getGuestDataset = () => ({
+  accounts: normalizeAccounts(ls.get(BASE_KEYS.ACCOUNTS, null) || []),
+  txns: ls.get(BASE_KEYS.TRANSACTIONS, null) || [],
+  fixedExp: ls.get(BASE_KEYS.FIXED_EXP, null) || [],
+  fixedInc: ls.get(BASE_KEYS.FIXED_INC, null) || [],
+  budget: ls.get(BASE_KEYS.BUDGET, null),
+  categories: ls.get(BASE_KEYS.CATEGORIES, null),
+  synced: ls.get(BASE_KEYS.SYNCED, null),
+  start: ls.get(BASE_KEYS.START_MONTH, null),
+  rate: ls.get(BASE_KEYS.RATE, null),
+  onboarded: !!ls.get(BASE_KEYS.ONBOARDED, null),
+});
+const migrateGuestToCurrentUserSafely = async (uid) => {
+  if (!uid) throw new Error('uid 없음');
+  const opId = `safe-import:${uid}`;
+  log.group('GUEST', opId);
   try {
-    const uid = await getCurrentUserId();
-    if (!uid) return;
-    // DB에 데이터가 이미 있으면 스킵
-    const { data, error } = await supabase.from('accounts').select('id').eq('user_id', uid).limit(1);
-    if (error) { log.error('SYNC', 'migrate 체크 오류:', error); return; }
-    if (data?.length) { log.info('SYNC', 'migrate 스킵 — 이미 DB에 데이터 있음'); return; }
-    // localStorage 데이터가 있으면 DB로 올리기
-    const accs   = normalizeAccounts(getAccounts());
-    const txns   = getTxns();
-    const fixExp = getFixedExp();
-    const fixInc = getFixedInc();
-    log.group('SYNC', 'migrateLocalToDb');
-    log.info('SYNC', 'migrate 시작 — 계좌:', accs.length, '내역:', txns.length);
-    if (accs.length || txns.length || fixExp.length || fixInc.length) {
-      await Promise.all([
-        dbSaveAccounts(accs),
-        dbSaveTxns(txns),
-        dbSaveFixedExp(fixExp),
-        dbSaveFixedInc(fixInc),
-        dbSaveSettings(),
-      ]);
-      log.info('SYNC', 'migrate 완료');
-    } else {
-      log.info('SYNC', 'migrate 스킵 — localStorage도 비어있음');
+    const firstLogin = await isFirstAppLogin(uid);
+    if (!firstLogin) {
+      log.warn('GUEST', '첫 로그인 아님 — import 차단');
+      return false;
     }
+    if (getMigrationDone(uid)) {
+      log.warn('GUEST', '이미 import 완료됨');
+      return false;
+    }
+    const guest = getGuestDataset();
+    log.info('GUEST', 'guest snapshot', summarizeDataset(guest));
+    if (!hasAnyAppData(guest)) {
+      log.warn('GUEST', 'guest 데이터 없음');
+      return false;
+    }
+    setActiveScopeUserId(uid);
+    applyDatasetToLocal(guest);
+    if (guest.onboarded || hasAnyAppData(guest)) markOnboarded();
+    await dbSaveAll({ dataset: guest, allowDestructive: true, reason: '첫 로그인 데이터 가져오기' });
+    setMigrationDone(uid);
+    await dbLoadAll();
+    markOnboarded();
+    log.info('GUEST', 'safe import 완료');
+    return true;
   } finally {
-    isMigratingToDb = false;
     log.groupEnd();
   }
 };
-
-
 const migrateGuestToCurrentUser = async () => {
   const uid = await getCurrentUserId();
-  if (!uid) {
-    log.warn('GUEST', '가져오기 생략 — 로그인 상태 아님');
-    return false;
-  }
+  if (!uid) return false;
   return migrateGuestToCurrentUserSafely(uid);
 };
 
@@ -1043,11 +877,12 @@ window.__debug = {
   getCurrentUserId,
   dbLoadAll,
   dbSaveAll,
+  loadDbSnapshot,
+  isFirstAppLogin,
   getGuestDataset,
   summarizeDataset,
-  isFirstAppLoginForUid,
+  getSyncStatusGlobal,
   migrateGuestToCurrentUserSafely,
-  getCurrentScopedDataset,
 };
 
 // ─── fixed cost auto-sync ─────────────────────────────────────────────────────
@@ -1196,11 +1031,22 @@ const importData = (file) => {
       }
 
       if (loggedIn) {
-        await dbSaveAccounts(normalizeAccounts(data.accounts || []));
-        await dbSaveTxns(data.transactions || []);
-        await dbSaveFixedExp(data.fixedExp || []);
-        await dbSaveFixedInc(data.fixedInc || []);
-        await dbSaveSettings();
+        await dbSaveAll({
+          dataset: {
+            accounts: normalizeAccounts(data.accounts || []),
+            txns: data.transactions || [],
+            fixedExp: data.fixedExp || [],
+            fixedInc: data.fixedInc || [],
+            categories: data.categories || getCategories(),
+            budget: data.budget || getBudget(),
+            start: data.startMonth || ls.get(BASE_KEYS.START_MONTH),
+            rate: getRate(),
+            synced: ls.get(BASE_KEYS.SYNCED) || {},
+            onboarded: true,
+          },
+          allowDestructive: true,
+          reason: '백업 복원'
+        });
       }
 
       alert(loggedIn
@@ -1486,54 +1332,28 @@ function Onboarding({ onDone, onLogin }) {
     const accs = buildAccounts();
     const deMain = accs.find(a => a.country === 'DE' && !a.isCash);
     const krMain = accs.find(a => a.country === 'KR' && !a.isCash);
-
-    const pendingFixedExp = feNameRef.current?.value?.trim()
-      ? [{
-          id: `fe_${Date.now()}`,
-          name: feNameRef.current.value.trim(),
-          amount: feAmtRef.current?.value || '',
-          day: feDayRef.current?.value || '',
-          currency: feForm.cur,
-          frequency: feForm.freq,
-          accountId: feForm.accId || '',
-        }]
-      : [];
-
-    const pendingFixedInc = fiNameRef.current?.value?.trim()
-      ? [{
-          id: `fi_${Date.now()}`,
-          name: fiNameRef.current.value.trim(),
-          amount: fiAmtRef.current?.value || '',
-          day: fiDayRef.current?.value || '',
-          currency: fiForm.cur,
-          frequency: fiForm.freq,
-          accountId: fiForm.type === 'account' ? (fiForm.accId || '') : '',
-          incomeType: fiForm.type,
-        }]
-      : [];
-
+    const pendingFeName = feNameRef.current?.value?.trim();
+    const pendingFeAmt = feAmtRef.current?.value;
+    const pendingFeDay = feDayRef.current?.value;
+    const pendingFiName = fiNameRef.current?.value?.trim();
+    const pendingFiAmt = fiAmtRef.current?.value;
+    const pendingFiDay = fiDayRef.current?.value;
     const finalFixedExp = [
       ...fixedExpChecks.filter(i => i.checked).map(i => {
         const cfg = fixedExpCfg[i.id] || {};
         return { id: i.id, name: i.name, label: i.label, amount: parseComma(cfg.amount || i.amount) || 0, day: parseInt(cfg.day || i.day) || 1, currency: cfg.currency || i.currency, frequency: cfg.frequency || i.frequency, category: i.category || '공과금', accountId: cfg.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) };
       }),
-      ...fixedExpExtra,
-      ...pendingFixedExp,
-    ].map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) }));
-
-    const finalFixedInc = [...fixedIncList, ...pendingFixedInc]
-      .map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.incomeType === 'voucher' ? '' : (i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id)) }));
-
+      ...fixedExpExtra.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })),
+      ...(pendingFeName ? [{ id: `fx_${Date.now()}`, name: pendingFeName, amount: parseComma(pendingFeAmt) || 0, day: parseInt(pendingFeDay) || 1, currency: feForm.cur, frequency: feForm.freq, category: '공과금', accountId: feForm.accId || (feForm.cur === 'KRW' ? krMain?.id : deMain?.id) }] : []),
+    ];
+    const finalFixedInc = [
+      ...fixedIncList.map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })),
+      ...(pendingFiName ? [{ id: `fi_${Date.now()}`, name: pendingFiName, amount: parseComma(pendingFiAmt) || 0, day: parseInt(pendingFiDay) || 1, currency: fiForm.cur, frequency: fiForm.freq, accountId: fiForm.type === 'account' ? (fiForm.accId || (fiForm.cur === 'KRW' ? krMain?.id : deMain?.id)) : '', incomeType: fiForm.type }] : []),
+    ];
     setAccounts(accs);
     setFixedExp(finalFixedExp);
     setFixedInc(finalFixedInc);
-    setOnboarded();
-
-    onDone({
-      accounts: accs,
-      fixedExp: finalFixedExp,
-      fixedInc: finalFixedInc,
-    });
+    syncFixedCosts(); markOnboarded(); onDone({ accounts: accs, fixedExp: finalFixedExp, fixedInc: finalFixedInc });
   };
 
   const Step = ({ to }) => jsx('button', { onClick: () => setStep(to), style: { background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: 'var(--gray-400)', padding: 0 }, children: '‹' });
@@ -2952,92 +2772,64 @@ function BottomNav({ active, onChange }) {
 // ─── ROOT APP ─────────────────────────────────────────────────────────────────
 function App() {
   const [authUser, setAuthUser]   = useState(undefined);
-  const [dbReady, setDbReady]     = useState(false);   // DB 로드 완료 여부
+  const [dbReady, setDbReady]     = useState(false);
   const [onboarded, setOnboardedState] = useState(null);
-  const [syncStatus, setSyncStatus] = useState({ phase: 'idle', message: '' });
   const [tab, setTab]             = useState('home');
   const [prevTab, setPrevTab]     = useState('home');
   const [editing, setEditing]     = useState(null);
   const [settings, setSettings]   = useState(false);
   const [homeTxnDetail, setHomeTxnDetail] = useState(null);
   const [showAuth, setShowAuth]   = useState(false);
-  const [globalRate, setGlobalRate] = useState(normalizeRate(getRate().rate));  // 최상위 환율 state
+  const [globalRate, setGlobalRate] = useState(normalizeRate(getRate().rate));
+  const [syncBadge, setSyncBadge] = useState(getSyncStatusGlobal());
 
-  // ── 인증 상태 감지 ──────────────────────────────────────────────
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setAuthUser(data.session?.user ?? null);
-    });
+    supabase.auth.getSession().then(({ data }) => setAuthUser(data.session?.user ?? null));
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setAuthUser(session?.user ?? null);
     });
     return () => subscription.unsubscribe();
   }, []);
 
-  // ── 환율 최상위 1회 fetch ────────────────────────────────────────
+  useEffect(() => { fetchLatestRate().then(r => setGlobalRate(normalizeRate(r))); }, []);
   useEffect(() => {
-    fetchLatestRate().then(r => setGlobalRate(normalizeRate(r)));
+    const id = setInterval(() => setSyncBadge(getSyncStatusGlobal()), 400);
+    return () => clearInterval(id);
   }, []);
 
-  // ── 세션 확인 완료 후 온보딩 상태 세팅 ─────────────────────────
   useEffect(() => {
     if (authUser === undefined) return;
     if (!authUser) {
       setActiveScopeUserId(null);
-      setOnboardedState(isOnboarded());
       setDbReady(true);
-      setSyncStatus({ phase: 'idle', message: 'guest mode' });
+      setOnboardedState(isOnboarded());
       return;
     }
-
     setDbReady(false);
     setOnboardedState(null);
-    setSyncStatus({ phase: 'loading', message: 'DB 로드 중' });
-
     (async () => {
       try {
         setActiveScopeUserId(authUser.id);
         await dbLoadAll();
-
-        const firstLogin = await isFirstAppLoginForUid(authUser.id);
-        const guestExists = hasGuestData();
-        const migrationDone = localStorage.getItem(META.MIGRATION_DONE(authUser.id)) === '1';
-
-        log.info('AUTH', 'login flow 상태', {
-          uid: authUser.id,
-          firstLogin,
-          guestExists,
-          migrationDone,
-          currentScope: getStorageScope(),
-          currentDataset: summarizeDataset(getCurrentScopedDataset()),
-        });
-
+        const firstLogin = await isFirstAppLogin(authUser.id);
+        const guestExists = hasAnyAppData(getGuestDataset());
+        const migrationDone = getMigrationDone(authUser.id);
+        log.info('AUTH', 'login flow 상태', { uid: authUser.id, firstLogin, guestExists, migrationDone, currentScope: getStorageScope(authUser.id) });
         if (firstLogin && guestExists && !migrationDone) {
-          const ok = window.confirm('이 기기의 비로그인 데이터를 현재 계정으로 처음 가져올까요?');
+          const ok = window.confirm('비로그인 상태에서 저장된 데이터를 현재 계정으로 가져올까요?');
           if (ok) {
-            setSyncStatus({ phase: 'syncing', message: '첫 로그인 데이터 가져오는 중' });
             const imported = await migrateGuestToCurrentUserSafely(authUser.id);
-            if (imported) {
-              await dbLoadAll();
-              setOnboarded();
-              setOnboardedState(true);
-              setSyncStatus({ phase: 'success', message: '첫 로그인 데이터 가져오기 완료' });
-              setDbReady(true);
-              return;
-            }
+            if (imported) alert('[success] 첫 로그인 데이터 가져오기 완료');
           } else {
             localStorage.setItem(META.GUEST_IMPORT_DISMISSED(authUser.id), '1');
+            alert('[success] 빈 계정 시작');
           }
         }
-
-        const current = getCurrentScopedDataset();
-        const hasData = hasAnyAppDataInDataset(current);
-        if (hasData && !isOnboarded()) setOnboarded();
-        setOnboardedState(isOnboarded() || hasData);
-        setSyncStatus({ phase: 'success', message: hasData ? '동기화 완료' : '빈 계정 시작' });
+        await dbLoadAll();
+        setOnboardedState(isOnboarded());
       } catch (e) {
-        log.error('AUTH', 'login flow 실패', e);
-        setSyncStatus({ phase: 'error', message: '동기화 실패' });
+        log.error('AUTH', 'login flow 오류', e);
+        setSyncStatusGlobal('error', e?.message || '로그인 동기화 실패');
         setOnboardedState(isOnboarded());
       } finally {
         setDbReady(true);
@@ -3047,67 +2839,37 @@ function App() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    setActiveScopeUserId(null);
     setShowAuth(false);
-    setSyncStatus({ phase: 'idle', message: 'signed out' });
+    setActiveScopeUserId(null);
+    setOnboardedState(isOnboarded());
   };
 
-  // ── 렌더링 분기 ─────────────────────────────────────────────────
-  if (authUser === undefined || onboarded === null) return null;  // 초기 세션 확인 중
-  // 로그인 상태이고 DB 로드 미완료면 잠깐 대기
-  if (authUser && !dbReady) return null;
-
-  // 수동으로 로그인 화면에 들어온 경우
-  if (showAuth) return jsx(AuthPage, {
-    onAuth: () => setShowAuth(false),
-    onClose: () => setShowAuth(false),
-  });
-
-  // 온보딩 미완료
+  if (authUser === undefined || onboarded === null || !dbReady) return null;
+  if (showAuth) return jsx(AuthPage, { onAuth: () => setShowAuth(false), onClose: () => setShowAuth(false) });
   if (!onboarded) return jsx(Onboarding, { onDone: async (payload = {}) => {
-    try {
-      setSyncStatus({ phase: 'syncing', message: '온보딩 저장 중' });
-      if (authUser) {
-        await dbSaveAll({
-          accounts: payload.accounts ?? getAccounts(),
-          txns: getTxns(),
-          fixedExp: payload.fixedExp ?? getFixedExp(),
-          fixedInc: payload.fixedInc ?? getFixedInc(),
-          budget: getBudget(),
-          categories: getCategories(),
-          synced: ls.get(BASE_KEYS.SYNCED) || {},
-          startMonth: ls.get(BASE_KEYS.START_MONTH) || null,
-          rate: getRate(),
-          onboarded: true,
-        });
-        await dbLoadAll();
-      }
-      setOnboarded();
-      setOnboardedState(true);
-      setSyncStatus({ phase: 'success', message: '온보딩 저장 완료' });
-    } catch (e) {
-      log.error('AUTH', '온보딩 저장 실패', e);
-      setSyncStatus({ phase: 'error', message: '온보딩 저장 실패' });
-      alert('저장 중 오류가 발생했어요. 콘솔 로그를 확인해주세요.');
-    }
+    const dataset = {
+      ...getCurrentDataset(),
+      accounts: payload.accounts || getAccounts(),
+      fixedExp: payload.fixedExp || getFixedExp(),
+      fixedInc: payload.fixedInc || getFixedInc(),
+      onboarded: true,
+    };
+    if (authUser) await dbSaveAll({ dataset, allowDestructive: true, reason: '온보딩 완료' });
+    else applyDatasetToLocal(dataset);
+    markOnboarded();
+    setOnboardedState(true);
   }, onLogin: () => setShowAuth(true) });
-
-  if (settings) return jsx(SettingsPage, {
-    onClose: () => setSettings(false),
-    onSignOut: handleSignOut,
-    onShowAuth: () => { setSettings(false); setShowAuth(true); },
-    authUser,
-  });
+  if (settings) return jsx(SettingsPage, { onClose: () => setSettings(false), onSignOut: handleSignOut, onShowAuth: () => { setSettings(false); setShowAuth(true); }, authUser });
   if (homeTxnDetail) return jsx('div', { className: 'app-shell', children: jsx(TxnDetail, { txn: homeTxnDetail, globalRate, onBack: () => setHomeTxnDetail(null), onEdit: t => { setHomeTxnDetail(null); setEditing(t); setPrevTab('home'); setTab('add'); } }) });
   if (tab === 'add') return jsx('div', { className: 'app-shell', children: jsx(AddTransaction, { editing, onDone: () => { setEditing(null); setTab(prevTab); } }) });
 
   return jsxs('div', { className: 'app-shell', children: [
-    syncStatus.phase !== 'idle' && jsx('div', { className: 'banner-enter', style: { background: 'var(--gray-50)', borderBottom: '0.5px solid var(--gray-100)', padding: '11px 16px', fontSize: 12, color: syncStatus.phase === 'error' ? '#C04B1E' : 'var(--gray-600)' }, children: `[${syncStatus.phase}] ${syncStatus.message}` }),
+    syncBadge.state !== 'idle' && jsx('div', { className: 'page', style: { paddingBottom: 0 }, children: jsx('div', { className: 'panel', style: { marginBottom: 0, padding: '10px 14px' }, children: `[${syncBadge.state}] ${syncBadge.message || ''}` }) }),
     tab === 'home'     && jsx(HomeTab,     { onOpenSettings: () => setSettings(true), onDetailOpen: t => setHomeTxnDetail(t), authUser, globalRate }),
     tab === 'history'  && jsx(HistoryTab,  { onEdit: t => { setEditing(t); setPrevTab(tab); setTab('add'); }, globalRate }),
+    tab === 'stats'    && jsx(StatsTab,    { globalRate }),
     tab === 'accounts' && jsx(AccountsTab, { globalRate }),
-    tab === 'fixed'    && jsx(FixedTab,    { globalRate }),
-    jsx(BottomNav, { active: tab, onChange: t => { if (t === 'add') { setEditing(null); setPrevTab(tab); setTab('add'); } else setTab(t); } }),
+    jsx(BottomNav, { tab, setTab })
   ] });
 }
 
