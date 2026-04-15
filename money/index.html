@@ -494,13 +494,6 @@ const saveSettingsIfLoggedIn = async () => {
   const uid = await getCurrentUserId();
   if (!uid) return false;
   await dbSaveSettings();
-  log.info('GUEST', `${opId} 가져오기 완료`, {
-    accounts: guestAccounts.length,
-    txns: guestTxns.length,
-    fixedExp: guestFixedExp.length,
-    fixedInc: guestFixedInc.length,
-  });
-  log.groupEnd();
   return true;
 };
 
@@ -2610,6 +2603,30 @@ function SettingsPage({ onClose, onSignOut, onShowAuth, authUser }) {
   const cats = getCategories();
   const [excluded, setExcluded] = useState(b.excludeCategories || ['식비지원금']);
   const toggle = c => setExcluded(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c]);
+
+  const clearAppCacheAndReload = async () => {
+    const ok = window.confirm('앱 캐시를 초기화하고 새로고침할까요?\n가계부 데이터는 삭제되지 않아요.');
+    if (!ok) return;
+
+    try {
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(key => caches.delete(key)));
+      }
+
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(reg => reg.unregister()));
+      }
+
+      alert('앱 캐시를 초기화했어요. 새 버전으로 다시 불러옵니다.');
+      window.location.reload();
+    } catch (e) {
+      console.error('[APP] 캐시 초기화 실패:', e);
+      alert('앱 캐시 초기화 중 문제가 발생했어요.');
+    }
+  };
+
   return jsx('div', { className: 'app-shell', children: jsx('div', { className: 'page', style: { paddingTop: 16 }, children: jsxs(Fragment, { children: [
     jsx(PageHeader, { mb: 28, title: '예산 설정', right:
       jsx('button', { className: 'btn-icon', onClick: onClose, children: jsx(IconX, { size: 20, color: 'var(--gray-400)', sw: 1.5 }) }),
@@ -2637,7 +2654,9 @@ function SettingsPage({ onClose, onSignOut, onShowAuth, authUser }) {
       jsx('input', { type: 'file', accept: '.json', style: { display: 'none' }, onChange: e => e.target.files[0] && importData(e.target.files[0]) }),
       jsx('span', { className: 'btn-ghost', style: { display: 'block', textAlign: 'center', cursor: 'pointer', marginTop: 0 }, children: '데이터 가져오기 (복원)' }),
     ] }),
-    jsx('button', { className: 'btn-ghost', style: { marginTop: 0 }, onClick: async () => { if (window.confirm('모든 데이터를 초기화할까요? 이 작업은 되돌릴 수 없어요.')) { const uid = await getCurrentUserId(); if (uid) { await Promise.all([ supabase.from('accounts').delete().eq('user_id', uid), supabase.from('transactions').delete().eq('user_id', uid), supabase.from('fixed_expenses').delete().eq('user_id', uid), supabase.from('fixed_incomes').delete().eq('user_id', uid), supabase.from('user_settings').delete().eq('user_id', uid), ]); } localStorage.clear(); window.location.reload(); } }, children: '앱 초기화 (전체 데이터 삭제)' }),
+    jsx('button', { className: 'btn-ghost', style: { marginTop: 0 }, onClick: clearAppCacheAndReload, children: '앱 캐시 초기화' }),
+    jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginTop: 8, lineHeight: 1.6 }, children: '예전 화면이 보이거나 홈 화면 앱이 최신 버전으로 갱신되지 않을 때 사용하세요. 가계부 데이터는 삭제되지 않아요.' }),
+    jsx('button', { className: 'btn-ghost', style: { marginTop: 8 }, onClick: async () => { if (window.confirm('모든 데이터를 초기화할까요? 이 작업은 되돌릴 수 없어요.')) { const uid = await getCurrentUserId(); if (uid) { await Promise.all([ supabase.from('accounts').delete().eq('user_id', uid), supabase.from('transactions').delete().eq('user_id', uid), supabase.from('fixed_expenses').delete().eq('user_id', uid), supabase.from('fixed_incomes').delete().eq('user_id', uid), supabase.from('user_settings').delete().eq('user_id', uid), ]); } localStorage.clear(); window.location.reload(); } }, children: '앱 초기화 (전체 데이터 삭제)' }),
     jsx('div', { className: 'divider', style: { margin: '24px 0 16px' } }),
     jsx('p', { className: 'section-title', children: '계정' }),
     authUser
@@ -2975,10 +2994,49 @@ createRoot(document.getElementById('root')).render(jsx(StrictMode, { children: j
 
 // ─── Service Worker 등록 ──────────────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/money/service-worker.js', { scope: '/money/' })
-      .then(reg => console.log('[SW] 등록 완료:', reg.scope))
-      .catch(err => console.warn('[SW] 등록 실패:', err));
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('/money/service-worker.js', {
+        scope: '/money/',
+      });
+
+      console.log('[SW] 등록 완료:', reg.scope);
+
+      reg.update();
+
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (!newWorker) return;
+
+        console.log('[SW] 새 버전 설치 시작');
+
+        newWorker.addEventListener('statechange', () => {
+          console.log('[SW] 상태:', newWorker.state);
+
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            console.log('[SW] 새 버전 설치 완료 → 자동 새로고침');
+            window.location.reload();
+          }
+        });
+      });
+
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        refreshing = true;
+        console.log('[SW] controller 변경 감지 → 자동 새로고침');
+        window.location.reload();
+      });
+
+      navigator.serviceWorker.addEventListener('message', event => {
+        if (event.data?.type === 'SW_UPDATED') {
+          console.log('[SW] 새 버전 활성화 메시지 수신 → 자동 새로고침');
+          window.location.reload();
+        }
+      });
+    } catch (e) {
+      console.error('[SW] 등록 실패:', e);
+    }
   });
 }
 </script>
