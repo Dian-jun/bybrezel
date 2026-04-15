@@ -242,36 +242,65 @@ const CategoryIcon = ({ cat, size=16, color='var(--gray-600)' }) => {
 };
 
 // ─── storage ─────────────────────────────────────────────────────────────────
-const K = {
-  ONBOARDED: 'gyembu_onboarded', ACCOUNTS: 'gyembu_accounts',
-  FIXED_EXP: 'gyembu_fixed', FIXED_INC: 'gyembu_fixed_income',
-  TRANSACTIONS: 'gyembu_transactions', RATE: 'gyembu_rate',
-  CATEGORIES: 'gyembu_categories', BUDGET: 'gyembu_budget',
-  SYNCED: 'gyembu_synced_months', START_MONTH: 'gyembu_start_month',
+const BASE_KEYS = {
+  ONBOARDED: 'onboarded',
+  ACCOUNTS: 'accounts',
+  FIXED_EXP: 'fixed_expenses',
+  FIXED_INC: 'fixed_incomes',
+  TRANSACTIONS: 'transactions',
+  RATE: 'rate',
+  CATEGORIES: 'categories',
+  BUDGET: 'budget',
+  SYNCED: 'synced_months',
+  START_MONTH: 'start_month',
 };
+let activeScopeUserId = null;
+const META = {
+  GUEST_IMPORT_DISMISSED: uid => `gyembu:meta:guest_import_dismissed:${uid}`,
+};
+const getStorageScope = (uid = activeScopeUserId) => uid ? `gyembu:user:${uid}` : 'gyembu:guest';
+const scopedKey = (baseKey, uid = activeScopeUserId) => `${getStorageScope(uid)}:${baseKey}`;
 const ls = {
-  get: k => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch { return null; } },
-  set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  get: (baseKey, uid = activeScopeUserId) => {
+    try { const v = localStorage.getItem(scopedKey(baseKey, uid)); return v ? JSON.parse(v) : null; } catch { return null; }
+  },
+  set: (baseKey, v, uid = activeScopeUserId) => { try { localStorage.setItem(scopedKey(baseKey, uid), JSON.stringify(v)); } catch {} },
+  remove: (baseKey, uid = activeScopeUserId) => { try { localStorage.removeItem(scopedKey(baseKey, uid)); } catch {} },
 };
-const isOnboarded   = () => !!ls.get(K.ONBOARDED);
+const setActiveScopeUserId = uid => { activeScopeUserId = uid || null; log.info('AUTH', 'active scope:', uid ? `user:${uid}` : 'guest'); };
+const hasGuestData = () =>
+  (ls.get(BASE_KEYS.ACCOUNTS, null) || []).length > 0 ||
+  (ls.get(BASE_KEYS.TRANSACTIONS, null) || []).length > 0 ||
+  (ls.get(BASE_KEYS.FIXED_EXP, null) || []).length > 0 ||
+  (ls.get(BASE_KEYS.FIXED_INC, null) || []).length > 0;
+
+const makeOpId = prefix => `${prefix}#${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+const log = {
+  info: (tag, ...args) => console.log(`[${tag}]`, ...args),
+  warn: (tag, ...args) => console.warn(`[${tag}]`, ...args),
+  error: (tag, ...args) => console.error(`[${tag}]`, ...args),
+  group: (tag, title) => console.groupCollapsed(`[${tag}] ${title}`),
+  groupEnd: () => console.groupEnd(),
+};
+const isOnboarded   = () => !!ls.get(BASE_KEYS.ONBOARDED);
 const setOnboarded  = () => {
-  ls.set(K.ONBOARDED, true);
+  ls.set(BASE_KEYS.ONBOARDED, true);
   // 온보딩 완료 시점의 연월을 기록 — 고정비 소급 적용 방지
-  if (!ls.get(K.START_MONTH)) {
+  if (!ls.get(BASE_KEYS.START_MONTH)) {
     const now = new Date();
-    ls.set(K.START_MONTH, { year: now.getFullYear(), month: now.getMonth() });
+    ls.set(BASE_KEYS.START_MONTH, { year: now.getFullYear(), month: now.getMonth() });
   }
 };
-const getAccounts   = () => ls.get(K.ACCOUNTS) || [];
-const setAccounts   = v  => ls.set(K.ACCOUNTS, v);
-const getFixedExp   = () => ls.get(K.FIXED_EXP) || [];
-const setFixedExp   = v  => ls.set(K.FIXED_EXP, v);
-const getFixedInc   = () => ls.get(K.FIXED_INC) || [];
-const setFixedInc   = v  => ls.set(K.FIXED_INC, v);
-const getTxns       = () => ls.get(K.TRANSACTIONS) || [];
-const setTxns       = v  => ls.set(K.TRANSACTIONS, v);
+const getAccounts   = () => ls.get(BASE_KEYS.ACCOUNTS) || [];
+const setAccounts   = v  => ls.set(BASE_KEYS.ACCOUNTS, v);
+const getFixedExp   = () => ls.get(BASE_KEYS.FIXED_EXP) || [];
+const setFixedExp   = v  => ls.set(BASE_KEYS.FIXED_EXP, v);
+const getFixedInc   = () => ls.get(BASE_KEYS.FIXED_INC) || [];
+const setFixedInc   = v  => ls.set(BASE_KEYS.FIXED_INC, v);
+const getTxns       = () => ls.get(BASE_KEYS.TRANSACTIONS) || [];
+const setTxns       = v  => ls.set(BASE_KEYS.TRANSACTIONS, v);
 const getRate       = () => {
-  const saved = ls.get(K.RATE);
+  const saved = ls.get(BASE_KEYS.RATE);
   if (!saved) return { rate: 1480, date: null, updatedAt: null };
   return {
     ...saved,
@@ -314,11 +343,11 @@ const convertByRate = (amount, fromCurrency, toCurrency, rate) => {
   return a;
 };
 
-const setRate       = (v, date = null) => ls.set(K.RATE, { rate: roundRate2(v), date, updatedAt: new Date().toISOString() });
-const getCategories = () => ls.get(K.CATEGORIES) || DEFAULT_CATS;
-const setCategories = v  => ls.set(K.CATEGORIES, v);
-const getBudget     = () => ls.get(K.BUDGET) || { eur: null, excludeCategories: ['식비지원금'] };
-const setBudget     = v  => ls.set(K.BUDGET, v);
+const setRate       = (v, date = null) => ls.set(BASE_KEYS.RATE, { rate: roundRate2(v), date, updatedAt: new Date().toISOString() });
+const getCategories = () => ls.get(BASE_KEYS.CATEGORIES) || DEFAULT_CATS;
+const setCategories = v  => ls.set(BASE_KEYS.CATEGORIES, v);
+const getBudget     = () => ls.get(BASE_KEYS.BUDGET) || { eur: null, excludeCategories: ['식비지원금'] };
+const setBudget     = v  => ls.set(BASE_KEYS.BUDGET, v);
 
 // ─── Supabase DB 동기화 레이어 ────────────────────────────────────────────────
 // camelCase(앱) ↔ snake_case(DB) 변환 헬퍼
@@ -404,6 +433,13 @@ const saveSettingsIfLoggedIn = async () => {
   const uid = await getCurrentUserId();
   if (!uid) return false;
   await dbSaveSettings();
+  log.info('GUEST', `${opId} 가져오기 완료`, {
+    accounts: guestAccounts.length,
+    txns: guestTxns.length,
+    fixedExp: guestFixedExp.length,
+    fixedInc: guestFixedInc.length,
+  });
+  log.groupEnd();
   return true;
 };
 
@@ -447,11 +483,11 @@ const dbSaveAccounts = async (accounts) => {
     return { ...toSnake(clean), user_id: uid };
   });
 
-  console.log('[DB] accounts rows sample:', rows[0]);
+  log.info('DB', 'accounts rows sample:', rows[0]);
 
   const { error: insErr } = await supabase.from('accounts').insert(rows);
-  if (insErr) console.error('[DB] accounts 저장 오류:', insErr, '데이터 샘플:', rows[0]);
-  else console.log('[DB] accounts 저장 완료:', normalized.length, '개');
+  if (insErr) log.error('DB', 'accounts 저장 오류:', insErr, '데이터 샘플:', rows[0]);
+  else log.info('DB', 'accounts 저장 완료:', normalized.length, '개');
 };
 
 const dbSaveTxns = async (txns) => {
@@ -464,7 +500,7 @@ const dbSaveTxns = async (txns) => {
 
   const { error: delErr } = await supabase.from('transactions').delete().eq('user_id', uid);
   if (delErr) {
-    console.error('[DB] transactions 삭제 오류:', delErr);
+    log.error('DB', 'transactions 삭제 오류:', delErr);
     return;
   }
 
@@ -476,12 +512,12 @@ const dbSaveTxns = async (txns) => {
     const { error: insErr } = await supabase.from('transactions').insert(batch);
 
     if (insErr) {
-      console.error('[DB] transactions 저장 오류:', insErr, '배치 시작 index:', i, '샘플:', batch[0]);
+      log.error('DB', 'transactions 저장 오류:', insErr, '배치 시작 index:', i, '샘플:', batch[0]);
       return;
     }
   }
 
-  console.log('[DB] transactions 저장 완료:', txns.length, '개');
+  log.info('DB', 'transactions 저장 완료:', txns.length, '개');
 };
 
 const dbSaveFixedExp = async (items) => {
@@ -494,7 +530,7 @@ const dbSaveFixedExp = async (items) => {
 
   const { error: delErr } = await supabase.from('fixed_expenses').delete().eq('user_id', uid);
   if (delErr) {
-    console.error('[DB] fixed_expenses 삭제 오류:', delErr);
+    log.error('DB', 'fixed_expenses 삭제 오류:', delErr);
     return;
   }
 
@@ -504,11 +540,11 @@ const dbSaveFixedExp = async (items) => {
   const { error: insErr } = await supabase.from('fixed_expenses').insert(rows);
 
   if (insErr) {
-    console.error('[DB] fixed_expenses 저장 오류:', insErr, '샘플:', rows[0]);
+    log.error('DB', 'fixed_expenses 저장 오류:', insErr, '샘플:', rows[0]);
     return;
   }
 
-  console.log('[DB] fixed_expenses 저장 완료:', items.length, '개');
+  log.info('DB', 'fixed_expenses 저장 완료:', items.length, '개');
 };
 
 const dbSaveFixedInc = async (items) => {
@@ -521,7 +557,7 @@ const dbSaveFixedInc = async (items) => {
 
   const { error: delErr } = await supabase.from('fixed_incomes').delete().eq('user_id', uid);
   if (delErr) {
-    console.error('[DB] fixed_incomes 삭제 오류:', delErr);
+    log.error('DB', 'fixed_incomes 삭제 오류:', delErr);
     return;
   }
 
@@ -531,25 +567,25 @@ const dbSaveFixedInc = async (items) => {
   const { error: insErr } = await supabase.from('fixed_incomes').insert(rows);
 
   if (insErr) {
-    console.error('[DB] fixed_incomes 저장 오류:', insErr, '샘플:', rows[0]);
+    log.error('DB', 'fixed_incomes 저장 오류:', insErr, '샘플:', rows[0]);
     return;
   }
 
-  console.log('[DB] fixed_incomes 저장 완료:', items.length, '개');
+  log.info('DB', 'fixed_incomes 저장 완료:', items.length, '개');
 };
 
 const dbSaveSettings = async () => {
   const uid = await getCurrentUserId();
   if (!uid) {
-    console.log('[DB] user_settings 저장 생략 — 비로그인 상태');
+    log.info('DB', 'user_settings 저장 생략 — 비로그인 상태');
     return;
   }
 
   const budget = getBudget();
   const rate   = getRate();
   const cats   = getCategories();
-  const synced = ls.get(K.SYNCED) || {};
-  const start  = ls.get(K.START_MONTH);
+  const synced = ls.get(BASE_KEYS.SYNCED) || {};
+  const start  = ls.get(BASE_KEYS.START_MONTH);
 
   const payload = {
     user_id: uid,
@@ -566,11 +602,11 @@ const dbSaveSettings = async () => {
 
   const { error } = await supabase.from('user_settings').upsert(payload);
   if (error) {
-    console.error('[DB] user_settings 저장 오류:', error, payload);
+    log.error('DB', 'user_settings 저장 오류:', error, payload);
     return;
   }
 
-  console.log('[DB] user_settings 저장 완료');
+  log.info('DB', 'user_settings 저장 완료');
 };
 
 // ── DB에서 전체 데이터 불러오기 (로그인 후 1회) ──────────────────
@@ -586,22 +622,29 @@ const dbLoadAll = async () => {
     supabase.from('user_settings').select('*').eq('user_id', uid).maybeSingle(),
   ]);
 
-  // DB 데이터가 있으면 localStorage 덮어쓰기
-  if (accsRes.data?.length)   setAccounts(normalizeAccounts(accsRes.data.map(toCamel)));
-  if (txnsRes.data?.length)   setTxns(txnsRes.data.map(toCamel));
-  if (fixExpRes.data?.length) setFixedExp(fixExpRes.data.map(toCamel));
-  if (fixIncRes.data?.length) setFixedInc(fixIncRes.data.map(toCamel));
+  // DB 데이터를 현재 계정 scope 캐시에 완전 덮어쓰기
+  setAccounts(normalizeAccounts((accsRes.data || []).map(toCamel)));
+  setTxns((txnsRes.data || []).map(toCamel));
+  setFixedExp((fixExpRes.data || []).map(toCamel));
+  setFixedInc((fixIncRes.data || []).map(toCamel));
   if (settRes.error) {
-    console.error('[DB] user_settings load 오류:', settRes.error);
+    log.error('DB', 'user_settings load 오류:', settRes.error);
   }
+  log.info('DB', 'load 완료', {
+    accounts: accsRes.data?.length || 0,
+    txns: txnsRes.data?.length || 0,
+    fixedExp: fixExpRes.data?.length || 0,
+    fixedInc: fixIncRes.data?.length || 0,
+    hasSettings: !!settRes.data,
+  });
   if (settRes.data) {
     const s = settRes.data;
     if (s.rate)               setRate(roundRate2 ? roundRate2(s.rate) : s.rate, s.rate_date || null);
     if (s.budget_eur !== null || s.exclude_categories)
-      ls.set(K.BUDGET, { eur: s.budget_eur, excludeCategories: s.exclude_categories || ['식비지원금'] });
+      ls.set(BASE_KEYS.BUDGET, { eur: s.budget_eur, excludeCategories: s.exclude_categories || ['식비지원금'] });
     if (s.categories)         setCategories(s.categories);
-    if (s.synced_months)      ls.set(K.SYNCED, s.synced_months);
-    if (s.start_month)        ls.set(K.START_MONTH, s.start_month);
+    if (s.synced_months)      ls.set(BASE_KEYS.SYNCED, s.synced_months);
+    if (s.start_month)        ls.set(BASE_KEYS.START_MONTH, s.start_month);
   }
   return true;
 };
@@ -611,7 +654,7 @@ let isMigratingToDb = false;
 // ── localStorage → DB 마이그레이션 (최초 로그인 시) ─────────────
 const migrateLocalToDb = async () => {
   if (isMigratingToDb) {
-    console.log('[DB] migrate 스킵 — 이미 실행 중');
+    log.warn('SYNC', 'migrate 스킵 — 이미 실행 중');
     return;
   }
   isMigratingToDb = true;
@@ -621,14 +664,15 @@ const migrateLocalToDb = async () => {
     if (!uid) return;
     // DB에 데이터가 이미 있으면 스킵
     const { data, error } = await supabase.from('accounts').select('id').eq('user_id', uid).limit(1);
-    if (error) { console.error('[DB] migrate 체크 오류:', error); return; }
-    if (data?.length) { console.log('[DB] migrate 스킵 — 이미 DB에 데이터 있음'); return; }
+    if (error) { log.error('SYNC', 'migrate 체크 오류:', error); return; }
+    if (data?.length) { log.info('SYNC', 'migrate 스킵 — 이미 DB에 데이터 있음'); return; }
     // localStorage 데이터가 있으면 DB로 올리기
     const accs   = normalizeAccounts(getAccounts());
     const txns   = getTxns();
     const fixExp = getFixedExp();
     const fixInc = getFixedInc();
-    console.log('[DB] migrate 시작 — 계좌:', accs.length, '내역:', txns.length);
+    log.group('SYNC', 'migrateLocalToDb');
+    log.info('SYNC', 'migrate 시작 — 계좌:', accs.length, '내역:', txns.length);
     if (accs.length || txns.length || fixExp.length || fixInc.length) {
       await Promise.all([
         dbSaveAccounts(accs),
@@ -637,13 +681,59 @@ const migrateLocalToDb = async () => {
         dbSaveFixedInc(fixInc),
         dbSaveSettings(),
       ]);
-      console.log('[DB] migrate 완료');
+      log.info('SYNC', 'migrate 완료');
     } else {
-      console.log('[DB] migrate 스킵 — localStorage도 비어있음');
+      log.info('SYNC', 'migrate 스킵 — localStorage도 비어있음');
     }
   } finally {
     isMigratingToDb = false;
+    log.groupEnd();
   }
+};
+
+
+const migrateGuestToCurrentUser = async () => {
+  const uid = await getCurrentUserId();
+  if (!uid) {
+    log.warn('GUEST', '가져오기 생략 — 로그인 상태 아님');
+    return false;
+  }
+  const opId = makeOpId('guest');
+  log.group('GUEST', `${opId} guest → current user 가져오기`);
+
+  const guestAccounts = normalizeAccounts(ls.get(BASE_KEYS.ACCOUNTS, null) || []);
+  const guestTxns = ls.get(BASE_KEYS.TRANSACTIONS, null) || [];
+  const guestFixedExp = ls.get(BASE_KEYS.FIXED_EXP, null) || [];
+  const guestFixedInc = ls.get(BASE_KEYS.FIXED_INC, null) || [];
+  const guestBudget = ls.get(BASE_KEYS.BUDGET, null);
+  const guestCategories = ls.get(BASE_KEYS.CATEGORIES, null);
+  const guestSynced = ls.get(BASE_KEYS.SYNCED, null);
+  const guestStart = ls.get(BASE_KEYS.START_MONTH, null);
+  const guestRate = ls.get(BASE_KEYS.RATE, null);
+
+  setAccounts(guestAccounts);
+  setTxns(guestTxns);
+  setFixedExp(guestFixedExp);
+  setFixedInc(guestFixedInc);
+  if (guestBudget) ls.set(BASE_KEYS.BUDGET, guestBudget, uid);
+  if (guestCategories) ls.set(BASE_KEYS.CATEGORIES, guestCategories, uid);
+  if (guestSynced) ls.set(BASE_KEYS.SYNCED, guestSynced, uid);
+  if (guestStart) ls.set(BASE_KEYS.START_MONTH, guestStart, uid);
+  if (guestRate) ls.set(BASE_KEYS.RATE, guestRate, uid);
+
+  await dbSaveAccounts(guestAccounts);
+  await dbSaveTxns(guestTxns);
+  await dbSaveFixedExp(guestFixedExp);
+  await dbSaveFixedInc(guestFixedInc);
+  await dbSaveSettings();
+  log.info('GUEST', `${opId} 가져오기 완료`, {
+    accounts: guestAccounts.length,
+    txns: guestTxns.length,
+    fixedExp: guestFixedExp.length,
+    fixedInc: guestFixedInc.length,
+  });
+  log.groupEnd();
+  return true;
 };
 
 // ─── transaction helpers ──────────────────────────────────────────────────────
@@ -749,7 +839,7 @@ const fetchLatestRate = async () => {
     }
     return roundRate2(getRate().rate);
   } catch (e) {
-    console.error('[RATE] latest fetch 실패:', e);
+    log.error('RATE', 'latest fetch 실패:', e);
     return roundRate2(getRate().rate);
   }
 };
@@ -760,7 +850,7 @@ const fetchRateForDate = async date => {
     const rate = roundRate2(data?.rate);
     return { rate: rate || roundRate2(getRate().rate), date };
   } catch (e) {
-    console.error('[RATE] historical fetch 실패:', e);
+    log.error('RATE', 'historical fetch 실패:', e);
     return { rate: roundRate2(getRate().rate), date };
   }
 };
@@ -784,15 +874,15 @@ const shouldApplyFixed = (item, yr, mo) => {
 };
 const syncFixedCosts = () => {
   const now = new Date(), yr = now.getFullYear(), mo = now.getMonth();
-  const synced = ls.get(K.SYNCED) || {};
+  const synced = ls.get(BASE_KEYS.SYNCED) || {};
   const rate = normalizeRate(getRate().rate);
   const accs = getAccounts();
   let txns = getTxns(), changed = false;
 
   // 앱 시작월 — 온보딩 완료 시점. 없으면 현재 달로 기록
-  const startData = ls.get(K.START_MONTH) || (() => {
+  const startData = ls.get(BASE_KEYS.START_MONTH) || (() => {
     const d = { year: yr, month: mo };
-    ls.set(K.START_MONTH, d);
+    ls.set(BASE_KEYS.START_MONTH, d);
     return d;
   })();
   const startYear = startData.year, startMo = startData.month;
@@ -828,7 +918,7 @@ const syncFixedCosts = () => {
     synced[key] = true;
   }
   if (changed) setTxns(txns);
-  ls.set(K.SYNCED, synced);
+  ls.set(BASE_KEYS.SYNCED, synced);
 };
 
 // 데이터 내보내기
@@ -842,7 +932,7 @@ const exportData = () => {
     transactions: getTxns(),
     categories: getCategories(),
     budget: getBudget(),
-    startMonth: ls.get(K.START_MONTH),
+    startMonth: ls.get(BASE_KEYS.START_MONTH),
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -908,8 +998,8 @@ const importData = (file) => {
       if (data.transactions) setTxns(data.transactions);
       if (data.categories)   setCategories(data.categories);
       if (data.budget)       setBudget(data.budget);
-      if (data.startMonth)   ls.set(K.START_MONTH, data.startMonth);
-      ls.set(K.ONBOARDED, true);
+      if (data.startMonth)   ls.set(BASE_KEYS.START_MONTH, data.startMonth);
+      ls.set(BASE_KEYS.ONBOARDED, true);
 
       let loggedIn = false;
       try {
@@ -2359,8 +2449,8 @@ function FixedTab({ globalRate }) {
 
   useEffect(() => { setExpenses(getFixedExp()); setIncomes(getFixedInc()); }, []);
 
-  const saveExp = async items => { setFixedExp(items); setExpenses(items); ls.set(K.SYNCED, {}); syncFixedCosts(); await dbSaveFixedExp(items); };
-  const saveInc = async items => { setFixedInc(items); setIncomes(items); ls.set(K.SYNCED, {}); syncFixedCosts(); await dbSaveFixedInc(items); };
+  const saveExp = async items => { setFixedExp(items); setExpenses(items); ls.set(BASE_KEYS.SYNCED, {}); syncFixedCosts(); await dbSaveFixedExp(items); };
+  const saveInc = async items => { setFixedInc(items); setIncomes(items); ls.set(BASE_KEYS.SYNCED, {}); syncFixedCosts(); await dbSaveFixedInc(items); };
 
   const today = new Date().getDate();
   const toDisplay = item => convertByRate(item.amount, item.currency, cur, rate);
@@ -2675,8 +2765,9 @@ function App() {
     if (!authUser) { setDbReady(false); return; }
     setDbReady(false);
     (async () => {
-      await migrateLocalToDb();
+      setActiveScopeUserId(user.id);
       await dbLoadAll();
+      if (hasGuestData() && localStorage.getItem(META.GUEST_IMPORT_DISMISSED(user.id)) !== '1') setShowGuestImportPrompt(true);
       setDbReady(true);   // 완료 후 탭 렌더링 허용
     })();
   }, [authUser]);
