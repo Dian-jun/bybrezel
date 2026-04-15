@@ -432,14 +432,8 @@ const getCurrentUserId = async () => {
 const saveSettingsIfLoggedIn = async () => {
   const uid = await getCurrentUserId();
   if (!uid) return false;
-
-  try {
-    await dbSaveSettings();
-    return true;
-  } catch (e) {
-    log.error('DB', 'saveSettingsIfLoggedIn 실패:', e);
-    return false;
-  }
+  await dbSaveSettings();
+  return true;
 };
 
 
@@ -2767,39 +2761,21 @@ function App() {
       return;
     }
 
-    let cancelled = false;
     setDbReady(false);
 
     (async () => {
       try {
-        const uid = authUser?.id;
-        if (!uid) {
-          if (!cancelled) setDbReady(true);
-          return;
-        }
-
-        setActiveScopeUserId(uid);
+        setActiveScopeUserId(authUser.id);
         await dbLoadAll();
-
-        const shouldImportGuest =
-          hasGuestData() &&
-          localStorage.getItem(META.GUEST_IMPORT_DISMISSED(uid)) !== '1';
-
-        if (shouldImportGuest) {
+        if (hasGuestData()) {
           await migrateGuestToCurrentUser();
-          localStorage.setItem(META.GUEST_IMPORT_DISMISSED(uid), '1');
-          await dbLoadAll();
         }
       } catch (e) {
         log.error('AUTH', '로그인 후 초기화 실패:', e);
       } finally {
-        if (!cancelled) setDbReady(true);   // 완료 후 탭 렌더링 허용
+        setDbReady(true);   // 완료 후 탭 렌더링 허용
       }
     })();
-
-    return () => {
-      cancelled = true;
-    };
   }, [authUser]);
 
   const handleSignOut = async () => {
