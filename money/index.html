@@ -294,8 +294,16 @@ const hasAppData = snapshot =>
 const hasMigrationDoneForUser = uid => localStorage.getItem(META.MIGRATION_DONE(uid)) === '1';
 
 const makeOpId = prefix => `${prefix}#${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+const DEBUG_MODE =
+  location.hostname === 'localhost' ||
+  location.hostname === '127.0.0.1' ||
+  location.hostname === '0.0.0.0' ||
+  location.hostname.startsWith('192.168.') ||
+  location.search.includes('debug=true');
+
+const debugLog = (...args) => { if (DEBUG_MODE) console.log(...args); };
 const log = {
-  info: (tag, ...args) => console.log(`[${tag}]`, ...args),
+  info: (tag, ...args) => debugLog(`[${tag}]`, ...args),
   warn: (tag, ...args) => console.warn(`[${tag}]`, ...args),
   error: (tag, ...args) => console.error(`[${tag}]`, ...args),
   group: (tag, title) => console.groupCollapsed(`[${tag}] ${title}`),
@@ -1175,11 +1183,31 @@ const fmtComma = (val, currency = 'EUR') => {
   let raw = String(val ?? '').trim();
   if (!raw) return '';
   if (currency === 'EUR') {
-    raw = raw.replace(/\./g, '').replace(',', '.').replace(/[^\d.]/g, '').replace(/\.(?=.*\.)/g, '');
-    const [intPartRaw = '', decPartRaw = ''] = raw.split('.');
-    const intPart = intPartRaw.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    raw = raw.replace(/\s+/g, '').replace(/€/g, '').replace(/eur/ig, '');
+    const commaCount = (raw.match(/,/g) || []).length;
+    const dotCount = (raw.match(/\./g) || []).length;
+
+    let normalized = raw;
+    if (commaCount > 0 && dotCount > 0) {
+      normalized = raw.replace(/\./g, '').replace(',', '.');
+    } else if (commaCount > 0) {
+      normalized = raw.replace(/\./g, '').replace(',', '.');
+    } else if (dotCount > 0) {
+      if (dotCount === 1 && /^-?\d+\.\d{1,2}$/.test(raw)) {
+        normalized = raw;
+      } else {
+        normalized = raw.replace(/\./g, '');
+      }
+    }
+
+    normalized = normalized.replace(/[^\d.-]/g, '');
+    const sign = normalized.startsWith('-') ? '-' : '';
+    normalized = normalized.replace(/-/g, '');
+    const [intPartRaw = '', decPartRaw = ''] = normalized.split('.');
+    const intDigits = intPartRaw.replace(/\D/g, '');
+    const intPart = (intDigits || '0').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     const decPart = decPartRaw.replace(/\D/g, '').slice(0, 2);
-    return decPartRaw !== '' || raw.endsWith('.') ? `${intPart},${decPart}` : intPart;
+    return decPartRaw !== '' || normalized.endsWith('.') ? `${sign}${intPart},${decPart}` : `${sign}${intPart}`;
   }
   raw = raw.replace(/[^\d]/g, '');
   return raw.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -1189,6 +1217,10 @@ const parseComma = val => {
   if (!raw) return 0;
   if (raw.includes(',')) {
     return parseFloat(raw.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '')) || 0;
+  }
+  if (raw.includes('.')) {
+    if (/^-?\d+\.\d{1,2}$/.test(raw)) return parseFloat(raw) || 0;
+    return parseFloat(raw.replace(/\./g, '').replace(/[^\d.-]/g, '')) || 0;
   }
   return parseFloat(raw.replace(/,/g, '')) || 0;
 };
@@ -1365,64 +1397,89 @@ const parseMinorUnit = (raw, lang = 'generic') => {
   return null;
 };
 
-const extractAmountFromText = (text = '', fallbackCurrency = 'EUR') => {
+const extractAmountFromText = (text = '', fallbackCurrency = 'EUR', options = {}) => {
   const src = String(text);
-  const buildEurAmount = (major, minor = 0) => {
-    if (major == null || minor == null) return null;
+  const debug = !!options?.debug;
+  const steps = [];
+  const record = (rule, matched, detail = '') => {
+    if (debug) steps.push({ rule, matched, detail });
+  };
+  const resultOf = (amount, currency, hasMinorUnit, rule, detail = '') => {
+    const result = { amount, currency, hasMinorUnit };
+    if (debug) result.debug = { matchedRule: rule, detail, steps };
+    return result;
+  };
+  const buildEurAmount = (major, minor = 0, rule = 'eur-composite') => {
+    if (major == null || minor == null) {
+      record(rule, false, `major=${major}, minor=${minor}`);
+      return null;
+    }
     const minorInt = Number(minor);
-    if (!Number.isFinite(minorInt) || minorInt < 0 || minorInt >= 100) return null;
-    return {
-      amount: major + minorInt / 100,
-      currency: 'EUR',
-      hasMinorUnit: true,
-    };
+    if (!Number.isFinite(minorInt) || minorInt < 0 || minorInt >= 100) {
+      record(rule, false, `invalid minor=${minor}`);
+      return null;
+    }
+    record(rule, true, `major=${major}, minor=${minorInt}, amount=${major + minorInt / 100}`);
+    return resultOf(major + minorInt / 100, 'EUR', true, rule, `major=${major}, minor=${minorInt}`);
+  };
+
+  const tryBuild = (match, rule, majorRaw, minorRaw, majorLang = 'generic', minorLang = majorLang) => {
+    if (!match) {
+      record(rule, false);
+      return null;
+    }
+    const major = typeof majorRaw === 'function' ? majorRaw(match) : parseMinorUnit(match[majorRaw], majorLang);
+    const minor = typeof minorRaw === 'function' ? minorRaw(match) : parseMinorUnit(match[minorRaw], minorLang);
+    const built = buildEurAmount(major, minor, rule);
+    if (!built) record(rule, false, `majorRaw=${JSON.stringify(match[majorRaw])}, minorRaw=${JSON.stringify(match[minorRaw])}`);
+    return built;
   };
 
   const eurCompositeDigit = src.match(/(\d[\d.,]*)\s*(?:유로|€|eur|euro|euros)\s*(\d{1,2})\s*(?:센트|cent|cents)(?=\s|$|[.,!?])/i);
-  if (eurCompositeDigit) {
-    const built = buildEurAmount(parseComma(eurCompositeDigit[1]), Number(eurCompositeDigit[2]));
+  {
+    const built = tryBuild(eurCompositeDigit, 'eurCompositeDigit', 1, 2, 'generic', 'generic');
     if (built) return built;
   }
 
   const eurCompositeKo = src.match(/([영공일이삼사오육칠팔구십백천만\d]+)\s*유로\s*([영공일이삼사오육칠팔구십백천만\d]+)\s*센트(?=\s|$|[.,!?])/);
-  if (eurCompositeKo) {
-    const built = buildEurAmount(parseMinorUnit(eurCompositeKo[1], 'ko'), parseMinorUnit(eurCompositeKo[2], 'ko'));
+  {
+    const built = tryBuild(eurCompositeKo, 'eurCompositeKo', 1, 2, 'ko', 'ko');
     if (built) return built;
   }
 
   const eurCompositeEn = src.match(/([a-z0-9\s-]+?)\s*(?:euro|euros|eur|€)\s+([a-z0-9\s-]+?)\s*(?:cent|cents)\b/i);
-  if (eurCompositeEn) {
-    const built = buildEurAmount(parseMinorUnit(eurCompositeEn[1], 'en'), parseMinorUnit(eurCompositeEn[2], 'en'));
+  {
+    const built = tryBuild(eurCompositeEn, 'eurCompositeEn', 1, 2, 'en', 'en');
     if (built) return built;
   }
 
   const eurCompositeDe = src.match(/([a-zA-ZäöüÄÖÜß0-9\s-]+?)\s*(?:euro|eur|€)\s+([a-zA-ZäöüÄÖÜß0-9\s-]+?)\s*(?:cent)\b/i);
-  if (eurCompositeDe) {
-    const built = buildEurAmount(parseMinorUnit(eurCompositeDe[1], 'de'), parseMinorUnit(eurCompositeDe[2], 'de'));
+  {
+    const built = tryBuild(eurCompositeDe, 'eurCompositeDe', 1, 2, 'de', 'de');
     if (built) return built;
   }
 
-  const eurImplicitDigit = src.match(/(\d[\d.,]*)\s*(?:유로|€|eur|euro|euros)\s+(\d{1,2})(?!\s*(?:원|krw|₩|won|유로|€|eur|euro|euros|센트|cent|cents|개|명|병|잔|시|분))\b/i);
-  if (eurImplicitDigit) {
-    const built = buildEurAmount(parseComma(eurImplicitDigit[1]), Number(eurImplicitDigit[2]));
+  const eurImplicitDigit = src.match(/(\d[\d.,]*)\s*(?:유로|€|eur|euro|euros)\s*(\d{1,2})(?!\s*(?:원|krw|₩|won|유로|€|eur|euro|euros|센트|cent|cents|개|명|병|잔|시|분))(?=\s|$|[.,!?])/i);
+  {
+    const built = tryBuild(eurImplicitDigit, 'eurImplicitDigit', 1, 2, 'generic', 'generic');
     if (built) return built;
   }
 
-  const eurImplicitKo = src.match(/([영공일이삼사오육칠팔구십백천만\d]+)\s*유로\s+([영공일이삼사오육칠팔구십백천만\d]+)(?!\s*(?:원|유로|센트|개|명|병|잔|시|분))(?=\s|$|[.,!?])/);
-  if (eurImplicitKo) {
-    const built = buildEurAmount(parseMinorUnit(eurImplicitKo[1], 'ko'), parseMinorUnit(eurImplicitKo[2], 'ko'));
+  const eurImplicitKo = src.match(/([영공일이삼사오육칠팔구십백천만\d]+)\s*유로\s*([영공일이삼사오육칠팔구십백천만\d]+)(?!\s*(?:원|유로|센트|개|명|병|잔|시|분))(?=\s|$|[.,!?])/);
+  {
+    const built = tryBuild(eurImplicitKo, 'eurImplicitKo', 1, 2, 'ko', 'ko');
     if (built) return built;
   }
 
   const eurImplicitEn = src.match(/([a-z0-9\s-]+?)\s*(?:euro|euros|eur|€)\s+([a-z0-9-]{1,20})(?!\s*(?:won|krw|eur|euro|euros|cent|cents))\b/i);
-  if (eurImplicitEn) {
-    const built = buildEurAmount(parseMinorUnit(eurImplicitEn[1], 'en'), parseMinorUnit(eurImplicitEn[2], 'en'));
+  {
+    const built = tryBuild(eurImplicitEn, 'eurImplicitEn', 1, 2, 'en', 'en');
     if (built) return built;
   }
 
   const eurImplicitDe = src.match(/([a-zA-ZäöüÄÖÜß0-9\s-]+?)\s*(?:euro|eur|€)\s+([a-zA-ZäöüÄÖÜß0-9-]{1,20})(?!\s*(?:won|krw|eur|euro|euros|cent))\b/i);
-  if (eurImplicitDe) {
-    const built = buildEurAmount(parseMinorUnit(eurImplicitDe[1], 'de'), parseMinorUnit(eurImplicitDe[2], 'de'));
+  {
+    const built = tryBuild(eurImplicitDe, 'eurImplicitDe', 1, 2, 'de', 'de');
     if (built) return built;
   }
 
@@ -1434,36 +1491,77 @@ const extractAmountFromText = (text = '', fallbackCurrency = 'EUR') => {
     const raw = digitWithCurrency[1] && /\d/.test(digitWithCurrency[1]) ? digitWithCurrency[1] : digitWithCurrency[2];
     const unit = digitWithCurrency[0];
     const currency = /(유로|€|eur|euro|euros)/i.test(unit) ? 'EUR' : 'KRW';
-    return { amount: parseComma(raw), currency, hasMinorUnit: false };
+    const amount = parseComma(raw);
+    record('digitWithCurrency', true, `raw=${raw}, currency=${currency}, amount=${amount}`);
+    return resultOf(amount, currency, false, 'digitWithCurrency', `raw=${raw}, unit=${unit}`);
   }
+  record('digitWithCurrency', false);
 
   const manWon = src.match(/(\d[\d,]*)\s*만\s*원/);
-  if (manWon) return { amount: Number(String(manWon[1]).replace(/,/g, '')) * 10000, currency: 'KRW', hasMinorUnit: false };
+  if (manWon) {
+    const amount = Number(String(manWon[1]).replace(/,/g, '')) * 10000;
+    record('manWon', true, `raw=${manWon[1]}, amount=${amount}`);
+    return resultOf(amount, 'KRW', false, 'manWon', `raw=${manWon[1]}`);
+  }
+  record('manWon', false);
 
   const koreanAmount = src.match(/([영공일이삼사오육칠팔구십백천만]+)\s*(유로|원)/);
   if (koreanAmount) {
     const amount = parseKoreanNumberText(koreanAmount[1]);
     const currency = koreanAmount[2] === '유로' ? 'EUR' : 'KRW';
-    if (amount != null) return { amount, currency, hasMinorUnit: false };
+    if (amount != null) {
+      record('koreanAmount', true, `raw=${koreanAmount[1]}, currency=${currency}, amount=${amount}`);
+      return resultOf(amount, currency, false, 'koreanAmount', `raw=${koreanAmount[1]}`);
+    }
   }
+  record('koreanAmount', false);
 
   const englishAmount = src.match(/([a-z\s-]+)\s*(euro|euros|won)\b/i);
   if (englishAmount) {
     const amount = parseEnglishNumberText(englishAmount[1]);
     const currency = /euro/i.test(englishAmount[2]) ? 'EUR' : 'KRW';
-    if (amount != null) return { amount, currency, hasMinorUnit: false };
+    if (amount != null) {
+      record('englishAmount', true, `raw=${englishAmount[1]}, currency=${currency}, amount=${amount}`);
+      return resultOf(amount, currency, false, 'englishAmount', `raw=${englishAmount[1]}`);
+    }
   }
+  record('englishAmount', false);
 
   const germanAmount = src.match(/([a-zA-ZäöüÄÖÜß\s-]+)\s*(euro)\b/i);
   if (germanAmount) {
     const amount = parseGermanNumberText(germanAmount[1]);
-    if (amount != null) return { amount, currency: 'EUR', hasMinorUnit: false };
+    if (amount != null) {
+      record('germanAmount', true, `raw=${germanAmount[1]}, amount=${amount}`);
+      return resultOf(amount, 'EUR', false, 'germanAmount', `raw=${germanAmount[1]}`);
+    }
   }
+  record('germanAmount', false);
 
   const digitOnly = src.match(/(\d[\d.,]*)/);
-  if (digitOnly) return { amount: parseComma(digitOnly[1]), currency: fallbackCurrency, hasMinorUnit: false };
+  if (digitOnly) {
+    const amount = parseComma(digitOnly[1]);
+    record('digitOnly', true, `raw=${digitOnly[1]}, amount=${amount}, fallbackCurrency=${fallbackCurrency}`);
+    return resultOf(amount, fallbackCurrency, false, 'digitOnly', `raw=${digitOnly[1]}`);
+  }
+  record('digitOnly', false);
 
-  return { amount: null, currency: fallbackCurrency, hasMinorUnit: false };
+  record('fallbackNull', true, `fallbackCurrency=${fallbackCurrency}`);
+  return resultOf(null, fallbackCurrency, false, 'fallbackNull', 'no numeric amount found');
+};
+
+const explainAmountParse = (text = '', fallbackCurrency = 'EUR') => {
+  const parsed = extractAmountFromText(text, fallbackCurrency, { debug: true });
+  const debug = parsed?.debug || {};
+  return {
+    input: String(text ?? ''),
+    amount: parsed?.amount ?? null,
+    currency: parsed?.currency || fallbackCurrency,
+    hasMinorUnit: !!parsed?.hasMinorUnit,
+    matchedRule: debug.matchedRule || 'unknown',
+    detail: debug.detail || '',
+    formatted: parsed?.amount != null ? formatMoney(parsed.amount, parsed.currency || fallbackCurrency, { withSymbol: false }) : 'FAIL',
+    steps: debug.steps || [],
+  };
 };
 
 const formatDateKR = (isoDate) => {
@@ -2349,6 +2447,9 @@ function AddTransaction({ onDone, editing = null }) {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResult, setAiResult] = useState(null);
   const [aiErr, setAiErr] = useState('');
+  const [testInput, setTestInput] = useState('');
+  const [testResult, setTestResult] = useState('');
+  const [testDebug, setTestDebug] = useState(null);
   const f = editing || {};
   const [type, setType] = useState(f.type || 'expense');
   const [cur, setCur] = useState(f.currency || 'EUR');
@@ -2419,6 +2520,33 @@ function AddTransaction({ onDone, editing = null }) {
     setAiLoading(false);
   };
 
+
+  const testCases = [
+    { input: '50유로 5센트', expected: '50,05' },
+    { input: '50유로 5', expected: '50,05' },
+    { input: '50유로 05', expected: '50,05' },
+    { input: '오십유로 오센트', expected: '50,05' },
+    { input: '오십유로 오', expected: '50,05' },
+    { input: '오십유로삼십', expected: '50,30' },
+    { input: '오십유로 삼십', expected: '50,30' },
+    { input: '50.30', expected: '50,30' },
+    { input: '50,30', expected: '50,30' },
+    { input: '50유로', expected: '50,00' },
+    { input: '오십유로', expected: '50,00' },
+    { input: '50유로 567', expected: '50,00' },
+  ];
+
+  const runTest = (text) => {
+    const info = explainAmountParse(text, 'EUR');
+    return info.formatted;
+  };
+
+  const runSingleTest = (text) => {
+    const info = explainAmountParse(text, 'EUR');
+    setTestDebug(info);
+    setTestResult(info.formatted);
+  };
+
   const addNewCat = async () => {
     const nm = newCatRef.current?.value?.trim();
     if (!nm || cats.includes(nm)) return;
@@ -2476,6 +2604,38 @@ function AddTransaction({ onDone, editing = null }) {
       aiResult && jsxs('div', { className: 'parse-result', children: [jsx('span', { className: 'parse-tag primary', children: type === 'expense' ? '지출' : '수입' }), jsx('span', { className: 'parse-tag', children: formatMoney(parseComma(amtStr), cur) }), jsx('span', { className: 'parse-tag', children: cat })] }),
       aiErr && jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginTop: 8 }, children: aiErr }),
       aiResult && jsx('div', { className: 'divider' }),
+      DEBUG_MODE && jsxs('div', { className: 'card', style: { marginTop: 16, marginBottom: 0 }, children: [
+        jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 10 }, children: '파싱 테스트 / 디버그' }),
+        jsxs('div', { style: { display: 'flex', gap: 10, alignItems: 'flex-end', marginBottom: 10 }, children: [
+          jsx('input', { className: 'field', placeholder: '예: 오십유로삼십 / 50.30 / 50,30', value: testInput, onChange: e => setTestInput(e.target.value), onKeyDown: e => e.key === 'Enter' && !e.nativeEvent?.isComposing && runSingleTest(testInput), style: { flex: 1 } }),
+          jsx('button', { className: 'btn-sm', onClick: () => runSingleTest(testInput), children: '실행' }),
+        ] }),
+        testDebug && jsxs(Fragment, { children: [
+          jsxs('div', { className: 'parse-result', children: [
+            jsx('span', { className: 'parse-tag primary', children: testResult || 'FAIL' }),
+            jsx('span', { className: 'parse-tag', children: `rule: ${testDebug.matchedRule}` }),
+            jsx('span', { className: 'parse-tag', children: `minor: ${testDebug.hasMinorUnit ? 'yes' : 'no'}` }),
+          ] }),
+          testDebug.detail && jsx('p', { style: { fontSize: 12, color: 'var(--gray-600)', marginTop: 10, lineHeight: 1.6 }, children: testDebug.detail }),
+          jsx('div', { className: 'panel-outlined', style: { marginTop: 10, maxHeight: 180, overflowY: 'auto', background: 'var(--white)' }, children:
+            testDebug.steps?.length
+              ? testDebug.steps.map((step, idx) => jsx('div', { className: 'border-bottom', style: { padding: '8px 0', fontSize: 11, color: step.matched ? 'var(--black)' : 'var(--gray-400)' }, children: `${idx + 1}. ${step.rule} · ${step.matched ? 'match' : 'skip'}${step.detail ? ` · ${step.detail}` : ''}` }, `${step.rule}-${idx}`))
+              : jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '디버그 단계가 없어요' })
+          }),
+        ] }),
+        jsx('div', { className: 'divider' }),
+        jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 8 }, children: '자동 테스트' }),
+        jsx('div', { style: { display: 'grid', gap: 8, maxHeight: 260, overflowY: 'auto' }, children:
+          testCases.map((t, i) => {
+            const result = runTest(t.input);
+            const ok = result === t.expected;
+            return jsxs('div', { className: 'panel-outlined', style: { padding: 10, background: ok ? 'var(--white)' : '#fff7f4' }, children: [
+              jsx('div', { style: { fontSize: 12, fontWeight: 500, marginBottom: 4 }, children: t.input }),
+              jsxs('div', { style: { fontSize: 11, color: ok ? 'var(--gray-600)' : '#C04B1E', lineHeight: 1.6 }, children: [`결과 ${result} · 기대 ${t.expected} · `, ok ? 'PASS' : 'FAIL'] }),
+            ] }, `test-${i}`);
+          })
+        }),
+      ] }),
     ] }),
     (mode === 'manual' || aiResult || editing) && jsxs('div', { children: [
       jsxs('div', { style: { marginBottom: 16 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '항목명' }), jsx('input', { className: 'field', placeholder: '예: REWE 장보기', value: titleVal, onChange: e => setTitleVal(e.target.value) })] }),
@@ -3349,7 +3509,7 @@ if ('serviceWorker' in navigator) {
         scope: '/money/',
       });
 
-      console.log('[SW] 등록 완료:', reg.scope);
+      debugLog('[SW] 등록 완료:', reg.scope);
 
       reg.update();
 
@@ -3357,13 +3517,13 @@ if ('serviceWorker' in navigator) {
         const newWorker = reg.installing;
         if (!newWorker) return;
 
-        console.log('[SW] 새 버전 설치 시작');
+        debugLog('[SW] 새 버전 설치 시작');
 
         newWorker.addEventListener('statechange', () => {
-          console.log('[SW] 상태:', newWorker.state);
+          debugLog('[SW] 상태:', newWorker.state);
 
           if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            console.log('[SW] 새 버전 설치 완료 → 자동 새로고침');
+            debugLog('[SW] 새 버전 설치 완료 → 자동 새로고침');
             window.location.reload();
           }
         });
@@ -3373,13 +3533,13 @@ if ('serviceWorker' in navigator) {
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (refreshing) return;
         refreshing = true;
-        console.log('[SW] controller 변경 감지 → 자동 새로고침');
+        debugLog('[SW] controller 변경 감지 → 자동 새로고침');
         window.location.reload();
       });
 
       navigator.serviceWorker.addEventListener('message', event => {
         if (event.data?.type === 'SW_UPDATED') {
-          console.log('[SW] 새 버전 활성화 메시지 수신 → 자동 새로고침');
+          debugLog('[SW] 새 버전 활성화 메시지 수신 → 자동 새로고침');
           window.location.reload();
         }
       });
