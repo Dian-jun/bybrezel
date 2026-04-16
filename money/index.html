@@ -338,6 +338,29 @@ const formatRate = (rate) => {
   });
 };
 
+
+const formatMoney = (value, currency, { withSymbol = true, abs = false, sign = '' } = {}) => {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return withSymbol ? (currency === 'EUR' ? '€ 0,00' : '₩ 0') : '0';
+
+  const base = abs ? Math.abs(num) : num;
+  const formatted = currency === 'EUR'
+    ? base.toLocaleString('de-DE', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+    : Math.round(base).toLocaleString('en-US', {
+        maximumFractionDigits: 0,
+      });
+
+  const prefix = sign || '';
+  if (!withSymbol) return `${prefix}${formatted}`;
+
+  return currency === 'EUR'
+    ? `${prefix}€ ${formatted}`
+    : `${prefix}₩ ${formatted}`;
+};
+
 const roundRate2 = v => {
   const n = Number(v);
   return Number.isFinite(n) ? Math.round(n * 100) / 100 : 0;
@@ -1148,127 +1171,299 @@ const parseRelativeDate = (text) => {
 
 // ─── utils ────────────────────────────────────────────────────────────────────
 // 천단위 콤마 포맷팅 유틸
-const fmtComma = val => {
-  const parts = String(val).split('.');
-  parts[0] = parts[0].replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  return parts.length > 1 ? parts[0] + '.' + parts[1].replace(/\D/g, '') : parts[0];
+const fmtComma = (val, currency = 'EUR') => {
+  let raw = String(val ?? '').trim();
+  if (!raw) return '';
+  if (currency === 'EUR') {
+    raw = raw.replace(/\./g, '').replace(',', '.').replace(/[^\d.]/g, '').replace(/\.(?=.*\.)/g, '');
+    const [intPartRaw = '', decPartRaw = ''] = raw.split('.');
+    const intPart = intPartRaw.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    const decPart = decPartRaw.replace(/\D/g, '').slice(0, 2);
+    return decPartRaw !== '' || raw.endsWith('.') ? `${intPart},${decPart}` : intPart;
+  }
+  raw = raw.replace(/[^\d]/g, '');
+  return raw.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
-const parseComma = val => parseFloat(String(val).replace(/,/g, '')) || 0;
+const parseComma = val => {
+  const raw = String(val ?? '').trim();
+  if (!raw) return 0;
+  if (raw.includes(',')) {
+    return parseFloat(raw.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '')) || 0;
+  }
+  return parseFloat(raw.replace(/,/g, '')) || 0;
+};
 
-const KOR_NUM_DIGIT = { '영':0, '공':0, '일':1, '이':2, '삼':3, '사':4, '오':5, '육':6, '칠':7, '팔':8, '구':9 };
+const KOR_NUM_MAP = {
+  '영':0,'공':0,'일':1,'이':2,'삼':3,'사':4,'오':5,'육':6,'칠':7,'팔':8,'구':9
+};
+
+const EN_NUM_MAP = {
+  zero:0, one:1, two:2, three:3, four:4, five:5, six:6, seven:7, eight:8, nine:9,
+  ten:10, eleven:11, twelve:12, thirteen:13, fourteen:14, fifteen:15, sixteen:16, seventeen:17, eighteen:18, nineteen:19,
+  twenty:20, thirty:30, forty:40, fifty:50, sixty:60, seventy:70, eighty:80, ninety:90
+};
+
+const DE_NUM_MAP = {
+  null:0, eins:1, ein:1, eine:1, zwei:2, drei:3, vier:4, funf:5, fuenf:5, fünf:5, sechs:6, sieben:7, acht:8, neun:9,
+  zehn:10, elf:11, zwoelf:12, zwölf:12, dreizehn:13, vierzehn:14, funfzehn:15, fuenfzehn:15, fünfzehn:15,
+  sechzehn:16, siebzehn:17, achtzehn:18, neunzehn:19,
+  zwanzig:20, dreissig:30, dreißig:30, vierzig:40, funfzig:50, fuenfzig:50, fünfzig:50,
+  sechzig:60, siebzig:70, achtzig:80, neunzig:90
+};
+
+const normalizeLatinText = (text = '') =>
+  String(text)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/ß/g, 'ss')
+    .replace(/[^a-z0-9\s-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 
 const parseKoreanNumberText = (text = '') => {
-  const src = String(text).trim().replace(/\s+/g, '');
+  const src = String(text).trim();
   if (!src) return null;
   if (/^\d+$/.test(src)) return Number(src);
 
   let total = 0;
-  let section = 0;
+  let current = 0;
   let digit = null;
 
   for (const ch of src) {
-    if (KOR_NUM_DIGIT[ch] !== undefined) {
-      digit = KOR_NUM_DIGIT[ch];
+    if (KOR_NUM_MAP[ch] !== undefined) {
+      digit = KOR_NUM_MAP[ch];
       continue;
     }
     if (ch === '십') {
-      section += (digit ?? 1) * 10;
+      current += (digit ?? 1) * 10;
       digit = null;
       continue;
     }
     if (ch === '백') {
-      section += (digit ?? 1) * 100;
+      current += (digit ?? 1) * 100;
       digit = null;
       continue;
     }
     if (ch === '천') {
-      section += (digit ?? 1) * 1000;
+      current += (digit ?? 1) * 1000;
       digit = null;
       continue;
     }
     if (ch === '만') {
-      section += digit ?? 0;
-      total += (section || 1) * 10000;
-      section = 0;
+      current = (current + (digit ?? 0) || 1) * 10000;
+      total += current;
+      current = 0;
       digit = null;
       continue;
     }
     return null;
   }
 
-  section += digit ?? 0;
-  const out = total + section;
-  return Number.isFinite(out) ? out : null;
+  current += digit ?? 0;
+  const out = total + current;
+  return Number.isFinite(out) && out >= 0 ? out : null;
 };
 
-const parseLooseKoreanAmount = (text = '', fallbackCurrency = 'EUR') => {
-  const raw = String(text || '').trim();
-  if (!raw) return null;
+const parseEnglishNumberText = (text = '') => {
+  const src = normalizeLatinText(text);
+  if (!src) return null;
+  if (/^\d+$/.test(src)) return Number(src);
 
-  const compact = raw.replace(/\s+/g, '');
+  const tokens = src.replace(/-/g, ' ').split(/\s+/).filter(Boolean);
+  let total = 0;
+  let current = 0;
 
-  const manPattern = compact.match(/(\d+)만(\d+)?천?원?/);
-  if (manPattern) {
-    const man = Number(manPattern[1] || 0);
-    const thousand = Number(manPattern[2] || 0);
-    return { amount: man * 10000 + thousand * 1000, currency: 'KRW' };
-  }
-
-  const digitWon = compact.match(/(\d[\d,]*)원/);
-  if (digitWon) {
-    return { amount: Number(digitWon[1].replace(/,/g, '')), currency: 'KRW' };
-  }
-
-  const koreanWon = compact.match(/([영공일이삼사오육칠팔구십백천만]+)원/);
-  if (koreanWon) {
-    const amount = parseKoreanNumberText(koreanWon[1]);
-    if (amount != null) return { amount, currency: 'KRW' };
-  }
-
-  const euroWithTailDigits = compact.match(/(\d[\d,]*)(?:유로|€|eur)(\d{1,2})(?!\d)/i);
-  if (euroWithTailDigits) {
-    const major = Number(euroWithTailDigits[1].replace(/,/g, ''));
-    const minorDigits = euroWithTailDigits[2];
-    const minor = Number(minorDigits) / (minorDigits.length === 1 ? 10 : 100);
-    return { amount: major + minor, currency: 'EUR' };
-  }
-
-  const euroWithCentDigits = compact.match(/(\d[\d,]*)(?:유로|€|eur)(\d{1,2})센트/i);
-  if (euroWithCentDigits) {
-    const major = Number(euroWithCentDigits[1].replace(/,/g, ''));
-    const minorDigits = euroWithCentDigits[2];
-    const minor = Number(minorDigits) / (minorDigits.length === 1 ? 10 : 100);
-    return { amount: major + minor, currency: 'EUR' };
-  }
-
-  const euroWithTailKorean = compact.match(/([영공일이삼사오육칠팔구십백천만]+)유로([영공일이삼사오육칠팔구십백천만]+)(?:센트)?/);
-  if (euroWithTailKorean) {
-    const major = parseKoreanNumberText(euroWithTailKorean[1]);
-    const minorNum = parseKoreanNumberText(euroWithTailKorean[2]);
-    if (major != null && minorNum != null) {
-      const minorStr = String(minorNum);
-      const minor = minorNum / (minorStr.length === 1 ? 10 : 100);
-      return { amount: major + minor, currency: 'EUR' };
+  for (const token of tokens) {
+    if (token === 'and') continue;
+    if (EN_NUM_MAP[token] != null) {
+      current += EN_NUM_MAP[token];
+      continue;
     }
+    if (token === 'hundred') {
+      current = (current || 1) * 100;
+      continue;
+    }
+    if (token === 'thousand') {
+      total += (current || 1) * 1000;
+      current = 0;
+      continue;
+    }
+    return null;
   }
 
-  const digitEuro = compact.match(/(\d[\d,]*)(?:유로|€|eur)/i);
-  if (digitEuro) {
-    return { amount: Number(digitEuro[1].replace(/,/g, '')), currency: 'EUR' };
+  const out = total + current;
+  return Number.isFinite(out) && out >= 0 ? out : null;
+};
+
+const parseGermanNumberToken = token => {
+  const t = normalizeLatinText(token).replace(/\s+/g, '');
+  if (!t) return null;
+  if (/^\d+$/.test(t)) return Number(t);
+  if (DE_NUM_MAP[t] != null) return DE_NUM_MAP[t];
+
+  const undMatch = t.match(/^(ein|eins|zwei|drei|vier|funf|fuenf|sechs|sieben|acht|neun)und(zwanzig|dreissig|vierzig|funfzig|fuenfzig|sechzig|siebzig|achtzig|neunzig)$/);
+  if (undMatch) {
+    const units = DE_NUM_MAP[undMatch[1]];
+    const tens = DE_NUM_MAP[undMatch[2]];
+    if (units != null && tens != null) return units + tens;
   }
 
-  const koreanEuro = compact.match(/([영공일이삼사오육칠팔구십백천만]+)유로/);
-  if (koreanEuro) {
-    const amount = parseKoreanNumberText(koreanEuro[1]);
-    if (amount != null) return { amount, currency: 'EUR' };
+  const hundredMatch = t.match(/^(.*?)(hundert)(.*)$/);
+  if (hundredMatch) {
+    const left = hundredMatch[1] ? parseGermanNumberToken(hundredMatch[1]) : 1;
+    const right = hundredMatch[3] ? parseGermanNumberToken(hundredMatch[3]) : 0;
+    if (left != null && right != null) return left * 100 + right;
   }
 
-  const digitOnly = compact.match(/\d[\d,]*/);
-  if (digitOnly) {
-    return { amount: Number(digitOnly[0].replace(/,/g, '')), currency: fallbackCurrency };
+  const thousandMatch = t.match(/^(.*?)(tausend)(.*)$/);
+  if (thousandMatch) {
+    const left = thousandMatch[1] ? parseGermanNumberToken(thousandMatch[1]) : 1;
+    const right = thousandMatch[3] ? parseGermanNumberToken(thousandMatch[3]) : 0;
+    if (left != null && right != null) return left * 1000 + right;
   }
 
   return null;
+};
+
+const parseGermanNumberText = (text = '') => {
+  const src = normalizeLatinText(text);
+  if (!src) return null;
+  if (/^\d+$/.test(src)) return Number(src);
+
+  const tokens = src.split(/\s+/).filter(Boolean);
+  if (tokens.length === 1) return parseGermanNumberToken(tokens[0]);
+
+  let total = 0;
+  for (const token of tokens) {
+    const value = parseGermanNumberToken(token);
+    if (value == null) return null;
+    total += value;
+  }
+  return Number.isFinite(total) && total >= 0 ? total : null;
+};
+
+const parseMinorUnit = (raw, lang = 'generic') => {
+  if (raw == null) return null;
+  if (typeof raw === 'number') return raw;
+  const text = String(raw).trim();
+  if (!text) return null;
+  if (/^\d+$/.test(text)) return Number(text);
+
+  const parsers = lang === 'ko'
+    ? [parseKoreanNumberText]
+    : lang === 'en'
+    ? [parseEnglishNumberText]
+    : lang === 'de'
+    ? [parseGermanNumberText]
+    : [parseKoreanNumberText, parseEnglishNumberText, parseGermanNumberText];
+
+  for (const fn of parsers) {
+    const v = fn(text);
+    if (v != null) return v;
+  }
+  return null;
+};
+
+const extractAmountFromText = (text = '', fallbackCurrency = 'EUR') => {
+  const src = String(text);
+  const buildEurAmount = (major, minor = 0) => {
+    if (major == null || minor == null) return null;
+    const minorInt = Number(minor);
+    if (!Number.isFinite(minorInt) || minorInt < 0 || minorInt >= 100) return null;
+    return {
+      amount: major + minorInt / 100,
+      currency: 'EUR',
+      hasMinorUnit: true,
+    };
+  };
+
+  const eurCompositeDigit = src.match(/(\d[\d.,]*)\s*(?:유로|€|eur|euro|euros)\s*(\d{1,2})\s*(?:센트|cent|cents)(?=\s|$|[.,!?])/i);
+  if (eurCompositeDigit) {
+    const built = buildEurAmount(parseComma(eurCompositeDigit[1]), Number(eurCompositeDigit[2]));
+    if (built) return built;
+  }
+
+  const eurCompositeKo = src.match(/([영공일이삼사오육칠팔구십백천만\d]+)\s*유로\s*([영공일이삼사오육칠팔구십백천만\d]+)\s*센트(?=\s|$|[.,!?])/);
+  if (eurCompositeKo) {
+    const built = buildEurAmount(parseMinorUnit(eurCompositeKo[1], 'ko'), parseMinorUnit(eurCompositeKo[2], 'ko'));
+    if (built) return built;
+  }
+
+  const eurCompositeEn = src.match(/([a-z0-9\s-]+?)\s*(?:euro|euros|eur|€)\s+([a-z0-9\s-]+?)\s*(?:cent|cents)\b/i);
+  if (eurCompositeEn) {
+    const built = buildEurAmount(parseMinorUnit(eurCompositeEn[1], 'en'), parseMinorUnit(eurCompositeEn[2], 'en'));
+    if (built) return built;
+  }
+
+  const eurCompositeDe = src.match(/([a-zA-ZäöüÄÖÜß0-9\s-]+?)\s*(?:euro|eur|€)\s+([a-zA-ZäöüÄÖÜß0-9\s-]+?)\s*(?:cent)\b/i);
+  if (eurCompositeDe) {
+    const built = buildEurAmount(parseMinorUnit(eurCompositeDe[1], 'de'), parseMinorUnit(eurCompositeDe[2], 'de'));
+    if (built) return built;
+  }
+
+  const eurImplicitDigit = src.match(/(\d[\d.,]*)\s*(?:유로|€|eur|euro|euros)\s+(\d{1,2})(?!\s*(?:원|krw|₩|won|유로|€|eur|euro|euros|센트|cent|cents|개|명|병|잔|시|분))\b/i);
+  if (eurImplicitDigit) {
+    const built = buildEurAmount(parseComma(eurImplicitDigit[1]), Number(eurImplicitDigit[2]));
+    if (built) return built;
+  }
+
+  const eurImplicitKo = src.match(/([영공일이삼사오육칠팔구십백천만\d]+)\s*유로\s+([영공일이삼사오육칠팔구십백천만\d]+)(?!\s*(?:원|유로|센트|개|명|병|잔|시|분))(?=\s|$|[.,!?])/);
+  if (eurImplicitKo) {
+    const built = buildEurAmount(parseMinorUnit(eurImplicitKo[1], 'ko'), parseMinorUnit(eurImplicitKo[2], 'ko'));
+    if (built) return built;
+  }
+
+  const eurImplicitEn = src.match(/([a-z0-9\s-]+?)\s*(?:euro|euros|eur|€)\s+([a-z0-9-]{1,20})(?!\s*(?:won|krw|eur|euro|euros|cent|cents))\b/i);
+  if (eurImplicitEn) {
+    const built = buildEurAmount(parseMinorUnit(eurImplicitEn[1], 'en'), parseMinorUnit(eurImplicitEn[2], 'en'));
+    if (built) return built;
+  }
+
+  const eurImplicitDe = src.match(/([a-zA-ZäöüÄÖÜß0-9\s-]+?)\s*(?:euro|eur|€)\s+([a-zA-ZäöüÄÖÜß0-9-]{1,20})(?!\s*(?:won|krw|eur|euro|euros|cent))\b/i);
+  if (eurImplicitDe) {
+    const built = buildEurAmount(parseMinorUnit(eurImplicitDe[1], 'de'), parseMinorUnit(eurImplicitDe[2], 'de'));
+    if (built) return built;
+  }
+
+  const digitWithCurrency =
+    src.match(/(\d[\d.,]*)\s*(유로|€|eur|euro|euros|원|krw|₩|won)/i) ||
+    src.match(/(유로|€|eur|euro|euros|원|krw|₩|won)\s*(\d[\d.,]*)/i);
+
+  if (digitWithCurrency) {
+    const raw = digitWithCurrency[1] && /\d/.test(digitWithCurrency[1]) ? digitWithCurrency[1] : digitWithCurrency[2];
+    const unit = digitWithCurrency[0];
+    const currency = /(유로|€|eur|euro|euros)/i.test(unit) ? 'EUR' : 'KRW';
+    return { amount: parseComma(raw), currency, hasMinorUnit: false };
+  }
+
+  const manWon = src.match(/(\d[\d,]*)\s*만\s*원/);
+  if (manWon) return { amount: Number(String(manWon[1]).replace(/,/g, '')) * 10000, currency: 'KRW', hasMinorUnit: false };
+
+  const koreanAmount = src.match(/([영공일이삼사오육칠팔구십백천만]+)\s*(유로|원)/);
+  if (koreanAmount) {
+    const amount = parseKoreanNumberText(koreanAmount[1]);
+    const currency = koreanAmount[2] === '유로' ? 'EUR' : 'KRW';
+    if (amount != null) return { amount, currency, hasMinorUnit: false };
+  }
+
+  const englishAmount = src.match(/([a-z\s-]+)\s*(euro|euros|won)\b/i);
+  if (englishAmount) {
+    const amount = parseEnglishNumberText(englishAmount[1]);
+    const currency = /euro/i.test(englishAmount[2]) ? 'EUR' : 'KRW';
+    if (amount != null) return { amount, currency, hasMinorUnit: false };
+  }
+
+  const germanAmount = src.match(/([a-zA-ZäöüÄÖÜß\s-]+)\s*(euro)\b/i);
+  if (germanAmount) {
+    const amount = parseGermanNumberText(germanAmount[1]);
+    if (amount != null) return { amount, currency: 'EUR', hasMinorUnit: false };
+  }
+
+  const digitOnly = src.match(/(\d[\d.,]*)/);
+  if (digitOnly) return { amount: parseComma(digitOnly[1]), currency: fallbackCurrency, hasMinorUnit: false };
+
+  return { amount: null, currency: fallbackCurrency, hasMinorUnit: false };
 };
 
 const formatDateKR = (isoDate) => {
@@ -1356,22 +1551,33 @@ const sortAccountsForDisplay = accounts => [...accounts].sort((a, b) => {
 const Pill = ({ on, onClick, children, style }) =>
   jsx('button', { className: on ? 'pill-on' : 'pill-off', onClick, style, children });
 
-const fmtAmount = (raw, currency) => {
-  // 소수점 분리
-  const parts = raw.split('.');
-  const intPart = parts[0].replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  if (currency === 'KRW') return intPart; // 원화는 소수점 없음
-  return parts.length > 1 ? intPart + '.' + parts[1].replace(/\D/g, '').slice(0, 2) : intPart;
-};
+const fmtAmount = (raw, currency) => fmtComma(raw, currency);
 
-// 독일식 콤마 소수점 처리 포함 금액 입력 onChange 핸들러 팩토리
+// 입력 중 포맷은 유지하되, 저장값은 기존처럼 parseComma(...)가 숫자로 해석하도록 문자열만 관리
 const makeAmountHandler = (currency, onChange) => e => {
-  let raw = e.target.value.replace(/,/g, '');
-  // 독일 키보드: 마지막에 입력된 콤마를 소수점으로 처리
-  if (e.target.value.slice(-1) === ',') raw = e.target.value.slice(0, -1).replace(/,/g, '') + '.';
-  raw = raw.replace(/[^\d.]/g, '').replace(/\.(?=.*\.)/g, '');
-  if (currency === 'KRW') raw = raw.replace(/\./g, ''); // 원화는 소수점 제거
-  if (raw === '' || /^\d*\.?\d{0,2}$/.test(raw)) onChange(fmtAmount(raw, currency));
+  const input = String(e.target.value ?? '');
+
+  if (currency === 'EUR') {
+    const cleaned = input.replace(/[€\s]/g, '');
+    const hasComma = cleaned.includes(',');
+    const noDots = cleaned.replace(/\./g, '');
+    const parts = noDots.split(',');
+
+    const intDigits = (parts[0] || '').replace(/\D/g, '');
+    const decDigits = parts.slice(1).join('').replace(/\D/g, '').slice(0, 2);
+
+    const intFormatted = intDigits.replace(/^0+(?=\d)/, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+    if (hasComma) {
+      onChange(`${intFormatted || '0'},${decDigits}`);
+    } else {
+      onChange(intFormatted);
+    }
+    return;
+  }
+
+  const digits = input.replace(/\D/g, '');
+  onChange(digits.replace(/\B(?=(\d{3})+(?!\d))/g, ','));
 };
 
 // variant='sm'  → field-amt (작은 인라인 입력)
@@ -1553,7 +1759,7 @@ function Onboarding({ onDone, onLogin, initialStep = 0, hideAuthEntry = false })
     jsx('div', { className: 'divider' }),
     jsx('p', { className: 'section-title', children: '추가 계좌 · 카드' }),
     ...extraAccs.map(a => jsxs('div', { className: 'row', children: [
-      jsxs('div', { children: [jsx('p', { style: { fontSize: 13 }, children: a.name }), jsxs('p', { className: 'text-11 color-muted', children: [a.country === 'KR' ? '한국' : '독일', ' · ', a.country === 'KR' ? '₩' : '€', ' ', a.balance || 0] })] }),
+      jsxs('div', { children: [jsx('p', { style: { fontSize: 13 }, children: a.name }), jsxs('p', { className: 'text-11 color-muted', children: [a.country === 'KR' ? '한국' : '독일', ' · ', formatMoney(a.balance || 0, a.country === 'KR' ? 'KRW' : 'EUR')] })] }),
       jsx('span', { className: 'text-13 color-muted', style: { cursor: 'pointer' }, onClick: () => setExtraAccs(prev => prev.filter(x => x.id !== a.id)), children: '삭제' }),
     ] }, a.id)),
     jsxs('div', { style: { display: 'flex', gap: 8, marginTop: 8 }, children: [jsx('input', { ref: extraNameRef, className: 'field', placeholder: '통장/카드명', style: { flex: 2 } }), jsx('input', { ref: extraBalRef, className: 'field', placeholder: '잔액', type: 'text', inputMode: 'decimal', style: { flex: 1 } })] }),
@@ -1604,7 +1810,7 @@ function Onboarding({ onDone, onLogin, initialStep = 0, hideAuthEntry = false })
     })(),
     jsx('p', { className: 'section-title', style: { marginTop: 20 }, children: '직접 추가' }),
     ...fixedExpExtra.map(item => jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
-      jsxs('div', { children: [jsx('p', { style: { fontSize: 13 }, children: item.name }), jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: ['납입일 ', item.day, '일 · ', item.currency === 'EUR' ? '€' : '₩', item.amount] })] }),
+      jsxs('div', { children: [jsx('p', { style: { fontSize: 13 }, children: item.name }), jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: ['납입일 ', item.day, '일 · ', formatMoney(item.amount, item.currency)] })] }),
       jsx('span', { style: { fontSize: 13, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: () => setFixedExpExtra(prev => prev.filter(p => p.id !== item.id)), children: '삭제' }),
     ] }, item.id)),
     jsxs('div', { style: { marginTop: 12 }, children: [
@@ -1633,7 +1839,7 @@ function Onboarding({ onDone, onLogin, initialStep = 0, hideAuthEntry = false })
     ...fixedIncList.map(item => jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
       jsxs('div', { children: [
         jsx('p', { style: { fontSize: 13 }, children: item.name }),
-        jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [FREQ_INC.find(p => p.value === item.frequency)?.label, ' ', item.day, '일 · ', item.currency === 'EUR' ? '€' : '₩', item.amount, item.incomeType === 'voucher' ? ' · 상품권/쿠폰' : item.incomeType === 'cash' ? ' · 💵 현금' : ''] }),
+        jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [FREQ_INC.find(p => p.value === item.frequency)?.label, ' ', item.day, '일 · ', formatMoney(item.amount, item.currency), item.incomeType === 'voucher' ? ' · 상품권/쿠폰' : item.incomeType === 'cash' ? ' · 💵 현금' : ''] }),
       ] }),
       jsx('span', { style: { fontSize: 13, color: 'var(--gray-400)', cursor: 'pointer' }, onClick: () => setFixedIncList(prev => prev.filter(p => p.id !== item.id)), children: '삭제' }),
     ] }, item.id)),
@@ -1669,9 +1875,11 @@ function FixedExpOnboardItem({ item, accounts, onToggle, onUpdate }) {
   const amtRef = useRef(), dayRef = useRef();
   const [cur, setCur] = useState(item.currency || 'EUR');
   const [freq, setFreq] = useState(item.frequency || 'monthly');
+  useEffect(() => { setAmtStr(item.amount ? fmtComma(String(cur === 'EUR' ? item.amount : Math.round(item.amount)), cur) : ''); }, [item.amount, cur]);
   const [accId, setAccId] = useState(item.accountId || '');
   const accList = accounts.filter(a => cur === 'EUR' ? a.currency === 'EUR' : a.currency === 'KRW');
-  const save = () => onUpdate(item.id, { amount: amtRef.current?.value, day: dayRef.current?.value, currency: cur, frequency: freq, accountId: accId });
+  const [amtStr, setAmtStr] = useState(item.amount ? fmtComma(String(item.currency === 'EUR' ? item.amount : Math.round(item.amount)), item.currency) : '');
+  const save = () => onUpdate(item.id, { amount: amtStr, day: dayRef.current?.value, currency: cur, frequency: freq, accountId: accId });
   return jsxs('div', { style: { display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
     jsx('div', { style: { marginTop: 2, flexShrink: 0 }, onClick: onToggle, children: item.checked ? jsx('div', { className: 'check-on', children: jsx(CheckIcon,{}) }) : jsx('div', { className: 'check-off' }) }),
     jsxs('div', { style: { flex: 1 }, children: [
@@ -1679,7 +1887,7 @@ function FixedExpOnboardItem({ item, accounts, onToggle, onUpdate }) {
         jsxs('div', { children: [
           jsxs('span', { style: { fontSize: 13, color: item.checked ? 'var(--black)' : 'var(--gray-400)' }, children: [item.name, ' ', item.label && jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: item.label })] }),
         ] }),
-        jsx('input', { ref: amtRef, className: 'field-amt', placeholder: '0', defaultValue: item.amount || '', onBlur: save }),
+        jsx(AmountInput, { value: amtStr, onChange: setAmtStr, currency: cur }),
       ] }),
       jsxs('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 4 }, children: [
         jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 4 }, children: [jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '납입일' }), jsx('input', { ref: dayRef, className: 'field-sm', placeholder: '1', maxLength: 2, defaultValue: item.day || '', onBlur: save, style: { width: 32 } }), jsx('span', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '일' })] }),
@@ -1729,7 +1937,7 @@ function HomeTab({ onOpenSettings, onDetailOpen, authUser, globalRate }) {
   const monthTxns = txns.filter(t => { const d = new Date(t.date); return d.getFullYear() === yr && d.getMonth() === mo; });
   const toEur = t => t.currency === 'EUR' ? roundEur2(t.amount) : convertByRate(t.amount, 'KRW', 'EUR', t.rateAtTime || rate);
   const toDisplay = t => { const r2 = normalizeRate(t.rateAtTime || rate); return cur === 'EUR' ? convertByRate(t.amount, t.currency, 'EUR', r2) : convertByRate(t.amount, t.currency, 'KRW', r2); };
-  const fmt = v => cur === 'EUR' ? `€ ${Math.abs(v).toFixed(2)}` : `₩ ${Math.round(Math.abs(v)).toLocaleString()}`;
+  const fmt = v => formatMoney(Math.abs(v), cur);
   const totalInc = monthTxns.filter(t => t.type === 'income').reduce((s, t) => s + toDisplay(t), 0);
   const totalExp = monthTxns.filter(t => t.type === 'expense').reduce((s, t) => s + toDisplay(t), 0);
   const excl = budget.excludeCategories || ['식비지원금'];
@@ -1743,17 +1951,17 @@ function HomeTab({ onOpenSettings, onDetailOpen, authUser, globalRate }) {
   const dayTxns = txns.filter(t => { const d = new Date(t.date); return d.getFullYear() === yr && d.getMonth() === mo && d.getDate() === selDay; });
   const fmtEntry = t => {
     if (t.type === 'transfer') {
-      const fromFmt = t.fromCurrency === 'EUR' ? `-€${(t.fromAmount||0).toFixed(2)}` : `-₩${Math.round(t.fromAmount||0).toLocaleString()}`;
-      const toFmt = t.toCurrency === 'EUR' ? `+€${(t.toAmount||0).toFixed(2)}` : `+₩${Math.round(t.toAmount||0).toLocaleString()}`;
+      const fromFmt = formatMoney(t.fromAmount || 0, t.fromCurrency, { sign: '-' });
+      const toFmt = formatMoney(t.toAmount || 0, t.toCurrency, { sign: '+' });
       return `${t.fromAccountName} ${fromFmt} → ${t.toAccountName} ${toFmt}`;
     }
     const s = t.type === 'expense' ? '-' : '+';
-    return cur === 'EUR' ? (t.currency === 'EUR' ? `${s}€ ${(t.amount||0).toFixed(2)}` : `${s}₩ ${Math.round(t.amount||0).toLocaleString()}`) : (t.currency === 'KRW' ? `${s}₩ ${Math.round(t.amount||0).toLocaleString()}` : `${s}€ ${(t.amount||0).toFixed(2)}`);
+    return formatMoney(t.amount || 0, t.currency, { sign: s });
   };
   const fmtAlt = t => {
     if (t.type === 'transfer') return '';
     const r2 = t.rateAtTime || rate;
-    return cur === 'EUR' ? (t.currency === 'EUR' ? `≈ ₩ ${Math.round((t.amount||0) * r2).toLocaleString()}` : `≈ € ${((t.amount||0) / r2).toFixed(2)}`) : (t.currency === 'KRW' ? `≈ € ${((t.amount||0) / r2).toFixed(2)}` : `≈ ₩ ${Math.round((t.amount||0) * r2).toLocaleString()}`);
+    return cur === 'EUR' ? (t.currency === 'EUR' ? `≈ ${formatMoney((t.amount||0) * r2, 'KRW')}` : `≈ ${formatMoney((t.amount||0) / r2, 'EUR')}`) : (t.currency === 'KRW' ? `≈ ${formatMoney((t.amount||0) / r2, 'EUR')}` : `≈ ${formatMoney((t.amount||0) * r2, 'KRW')}`);
   };
   const prevM = mo === 0 ? 11 : mo - 1; const prevY = mo === 0 ? yr - 1 : yr;
   const prevNav = () => { if (mo === 0) { setYr(y => y-1); setMo(11); } else setMo(m => m-1); setSelDay(1); };
@@ -1850,7 +2058,7 @@ function HomeTab({ onOpenSettings, onDetailOpen, authUser, globalRate }) {
         jsxs('div', { style: { textAlign: 'right', maxWidth: '55%' }, children: [
           jsx('p', { style: { fontSize: t.type === 'transfer' ? 10 : 13, fontWeight: 500, color: t.type === 'expense' ? 'var(--accent)' : undefined, wordBreak: 'break-all' }, children: fmtEntry(t) }),
           jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: fmtAlt(t) }),
-          t.type !== 'transfer' && t.rateAtTime && jsx('p', { style: { fontSize: 10, color: 'var(--gray-400)' }, children: `1€=₩${Math.round(t.rateAtTime).toLocaleString()}` }),
+          t.type !== 'transfer' && t.rateAtTime && jsx('p', { style: { fontSize: 10, color: 'var(--gray-400)' }, children: `1€=₩${formatMoney(t.rateAtTime, 'KRW', { withSymbol: false })}` }),
         ] }),
       ] }, t.id)),
     ] }),
@@ -1863,7 +2071,7 @@ function TxnDetail({ txn, onBack, onEdit, globalRate }) {
   const rate = normalizeRate(globalRate || getRate().rate);
   const r = txn.rateAtTime || rate;
   const isTransfer = txn.type === 'transfer';
-  const fmtAmt = (amount, currency) => currency === 'EUR' ? `€ ${amount.toFixed(2)}` : `₩ ${Math.round(amount).toLocaleString()}`;
+  const fmtAmt = (amount, currency) => formatMoney(amount, currency);
   return jsxs('div', { className: 'page', style: { paddingTop: 16 }, children: [
     jsx(PageHeader, { mb: 28,
       title: jsxs('button', { className: 'btn-back', onClick: onBack, children: [jsx(IconBack, { size: 16, sw: 1.5 }), ' 뒤로'] }),
@@ -1883,8 +2091,8 @@ function TxnDetail({ txn, onBack, onEdit, globalRate }) {
       txn.fee > 0 && jsxs('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginTop: 4 }, children: ['수수료: ', fmtAmt(txn.fee, txn.feeCurrency || txn.fromCurrency)] }),
     ] }) : jsxs('div', { style: { marginBottom: 28 }, children: [
       jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }, children: [jsx('span', { style: { display: 'flex', alignItems: 'center' }, children: jsx(CategoryIcon, { cat: txn.category }) }), jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)' }, children: txn.category })] }),
-      jsx('p', { style: { fontSize: 26, fontWeight: 500, marginBottom: 4 }, children: (() => { const s = txn.type === 'expense' ? '-' : '+'; return txn.currency === 'EUR' ? `${s}€ ${txn.amount.toFixed(2)}` : `${s}₩ ${Math.round(txn.amount).toLocaleString()}`; })() }),
-      jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)' }, children: txn.currency === 'EUR' ? `≈ ₩ ${Math.round(txn.amount * r).toLocaleString()}` : `≈ € ${(txn.amount / r).toFixed(2)}` }),
+      jsx('p', { style: { fontSize: 26, fontWeight: 500, marginBottom: 4 }, children: formatMoney(txn.amount, txn.currency, { sign: txn.type === 'expense' ? '-' : '+' }) }),
+      jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)' }, children: txn.currency === 'EUR' ? `≈ ${formatMoney(txn.amount * r, 'KRW')}` : `≈ ${formatMoney(txn.amount / r, 'EUR')}` }),
     ] }),
     jsx('div', { style: { borderTop: '0.5px solid var(--gray-100)' }, children:
       (isTransfer ? [
@@ -1941,18 +2149,18 @@ function HistoryTab({ onEdit, globalRate }) {
   };
   const fmtEntry = t => {
     if (t.type === 'transfer') {
-      const fromFmt = t.fromCurrency === 'EUR' ? `-€${t.fromAmount.toFixed(2)}` : `-₩${Math.round(t.fromAmount).toLocaleString()}`;
-      const toFmt = t.toCurrency === 'EUR' ? `+€${t.toAmount.toFixed(2)}` : `+₩${Math.round(t.toAmount).toLocaleString()}`;
+      const fromFmt = formatMoney(t.fromAmount, t.fromCurrency, { sign: '-' });
+      const toFmt = formatMoney(t.toAmount, t.toCurrency, { sign: '+' });
       return `${t.fromAccountName} ${fromFmt} → ${t.toAccountName} ${toFmt}`;
     }
     const s = t.type === 'expense' ? '-' : '+';
-    return cur === 'EUR' ? (t.currency === 'EUR' ? `${s}€ ${t.amount.toFixed(2)}` : `${s}₩ ${Math.round(t.amount).toLocaleString()}`) : (t.currency === 'KRW' ? `${s}₩ ${Math.round(t.amount).toLocaleString()}` : `${s}€ ${t.amount.toFixed(2)}`);
+    return formatMoney(t.amount, t.currency, { sign: s });
   };
   const fmtAlt = t => {
     if (t.type === 'transfer') return '';
-    const r2 = t.rateAtTime || rate; return cur === 'EUR' ? (t.currency === 'EUR' ? `≈ ₩ ${Math.round(t.amount * r2).toLocaleString()}` : `≈ € ${(t.amount / r2).toFixed(2)}`) : (t.currency === 'KRW' ? `≈ € ${(t.amount / r2).toFixed(2)}` : `≈ ₩ ${Math.round(t.amount * r2).toLocaleString()}`);
+    const r2 = t.rateAtTime || rate; return cur === 'EUR' ? (t.currency === 'EUR' ? `≈ ${formatMoney(t.amount * r2, 'KRW')}` : `≈ ${formatMoney(t.amount / r2, 'EUR')}`) : (t.currency === 'KRW' ? `≈ ${formatMoney(t.amount / r2, 'EUR')}` : `≈ ${formatMoney(t.amount * r2, 'KRW')}`);
   };
-  const fmt = v => cur === 'EUR' ? `€ ${Math.abs(v).toFixed(2)}` : `₩ ${Math.round(Math.abs(v)).toLocaleString()}`;
+  const fmt = v => formatMoney(Math.abs(v), cur);
   const today = new Date();
   const todayStr = today.toISOString().split('T')[0];
   const getPeriodRange = () => {
@@ -2176,55 +2384,38 @@ function AddTransaction({ onDone, editing = null }) {
     if (!aiText.trim()) return;
     setAiLoading(true); setAiErr('');
     try {
-      let parsed = null;
+      const res = await fetch('/money/api/parse', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: aiText }) });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error);
+      const parsed = data.result || {};
+      const fallback = extractAmountFromText(aiText, parsed.currency || 'EUR');
+      const hasParsedAmount = Number.isFinite(Number(parsed.amount));
+      const parsedAmount = fallback.hasMinorUnit
+        ? fallback.amount
+        : (hasParsedAmount ? Number(parsed.amount) : fallback.amount);
+      const parsedCurrency = parsed.currency || fallback.currency || 'EUR';
 
-      try {
-        const res = await fetch('/money/api/parse', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: aiText })
-        });
-        const data = await res.json();
-        if (data.ok) parsed = data.result;
-      } catch {}
-
-      const localAmount = parseLooseKoreanAmount(aiText, parsed?.currency || 'EUR');
-
-      if (!parsed && !localAmount) throw new Error('parse failed');
-
-      const nextCurrency = localAmount?.currency || parsed?.currency || 'EUR';
-      const nextAmount = localAmount?.amount ?? parsed?.amount ?? null;
-      if (nextAmount == null) throw new Error('amount missing');
-
-      const normalized = {
-        ...parsed,
-        type: parsed?.type || 'expense',
-        currency: nextCurrency,
-        amount: nextAmount,
-        payMethod: parsed?.payMethod || (/현금/.test(aiText) ? 'cash' : /쿠폰|상품권/.test(aiText) ? 'voucher' : 'card'),
-        title: parsed?.title || '',
-        category: parsed?.category || '기타',
-        country: parsed?.country || (nextCurrency === 'KRW' ? 'KR' : 'DE'),
-      };
-
-      setAiResult(normalized);
-      setType(normalized.type);
-      setAmtStr(fmtComma(String(normalized.currency === 'EUR' ? normalized.amount : Math.round(normalized.amount))));
-      setCur(normalized.currency);
-      setPayMethod(normalized.payMethod);
-      setTitleVal(normalized.title || '');
-
+      setAiResult(parsed);
+      setType(parsed.type || 'expense');
+      setCur(parsedCurrency);
+      setAmtStr(
+        parsedAmount != null
+          ? fmtComma(String(parsedCurrency === 'EUR' ? parsedAmount : Math.round(parsedAmount)), parsedCurrency)
+          : ''
+      );
+      setPayMethod(parsed.payMethod || 'card');
+      // title — state로 안정적으로 반영
+      setTitleVal(parsed.title || '');
+      // category — 앱 카테고리 목록에 없으면 기타로 fallback
       const validCats = getCategories();
-      setCat(validCats.includes(normalized.category) ? normalized.category : '기타');
-
+      setCat(validCats.includes(parsed.category) ? parsed.category : '기타');
+      // date — 자연어에서 날짜 표현 추출
       const parsedDate = parseRelativeDate(aiText);
-      if (parsedDate) setDate(parsedDate);
-
-      const acc = accounts.find(a => normalized.country === 'KR' ? a.country === 'KR' : a.country === 'DE');
+      if (parsedDate) { setDate(parsedDate); }
+      // account — 국가 기준으로 자동 선택
+      const acc = accounts.find(a => parsed.country === 'KR' ? a.country === 'KR' : a.country === 'DE');
       if (acc) setAccId(acc.id);
-    } catch {
-      setAiErr('파싱 실패. 직접 입력해주세요.');
-    }
+    } catch { setAiErr('파싱 실패. 직접 입력해주세요.'); }
     setAiLoading(false);
   };
 
@@ -2282,7 +2473,7 @@ function AddTransaction({ onDone, editing = null }) {
         jsx('input', { className: 'field', placeholder: '예: rewe에서 오십유로 카드로', value: aiText, onChange: e => setAiText(e.target.value), onKeyDown: e => e.key === 'Enter' && !e.nativeEvent?.isComposing && runAI(), style: { flex: 1 } }),
         jsx('button', { onClick: runAI, disabled: aiLoading, style: { background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, paddingBottom: 6, color: aiLoading ? 'var(--gray-400)' : 'var(--black)' }, children: aiLoading ? '···' : '→' }),
       ] }),
-      aiResult && jsxs('div', { className: 'parse-result', children: [jsx('span', { className: 'parse-tag primary', children: type === 'expense' ? '지출' : '수입' }), jsxs('span', { className: 'parse-tag', children: [cur === 'EUR' ? '€' : '₩', ' ', parseComma(amtStr).toLocaleString()] }), jsx('span', { className: 'parse-tag', children: cat })] }),
+      aiResult && jsxs('div', { className: 'parse-result', children: [jsx('span', { className: 'parse-tag primary', children: type === 'expense' ? '지출' : '수입' }), jsx('span', { className: 'parse-tag', children: formatMoney(parseComma(amtStr), cur) }), jsx('span', { className: 'parse-tag', children: cat })] }),
       aiErr && jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginTop: 8 }, children: aiErr }),
       aiResult && jsx('div', { className: 'divider' }),
     ] }),
@@ -2397,14 +2588,22 @@ function AddTransaction({ onDone, editing = null }) {
 
 // ─── ACCOUNTS TAB ─────────────────────────────────────────────────────────────
 function AccountForm({ initial, onSubmit, onCancel, submitLabel }) {
-  const nameRef = useRef(), balRef = useRef();
+  const nameRef = useRef();
   const [country, setCountry] = useState(initial?.country || 'KR');
+  const [balStr, setBalStr] = useState(initial?.initialBalance != null ? fmtComma(String((initial?.country || 'KR') === 'KR' ? Math.round(initial.initialBalance) : initial.initialBalance), (initial?.country || 'KR') === 'KR' ? 'KRW' : 'EUR') : '');
   const sym = country === 'KR' ? '₩' : '€';
+
+  useEffect(() => {
+    setBalStr(initial?.initialBalance != null
+      ? fmtComma(String(country === 'KR' ? Math.round(initial.initialBalance) : initial.initialBalance), country === 'KR' ? 'KRW' : 'EUR')
+      : '');
+  }, [country, initial?.initialBalance]);
+
   return jsxs('div', { style: { background: 'var(--gray-50)', borderRadius: 12, padding: 16, marginBottom: 12 }, children: [
     jsxs('div', { style: { marginBottom: 12 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '통장명' }), jsx('input', { ref: nameRef, className: 'field', placeholder: country === 'KR' ? '예: 카카오뱅크' : '예: Deutsche Bank', defaultValue: initial?.name || '' })] }),
-    jsxs('div', { style: { marginBottom: 12 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '현재 잔액' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: sym }), jsx('input', { ref: balRef, className: 'field', placeholder: '0', type: 'number', defaultValue: initial?.initialBalance ?? initial?.balance ?? '', style: { flex: 1 } })] })] }),
+    jsxs('div', { style: { marginBottom: 12 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '현재 잔액' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 6 }, children: [jsx('span', { style: { fontSize: 14, color: 'var(--gray-400)' }, children: sym }), jsx(AmountField, { value: balStr, onChange: setBalStr, currency: country === 'KR' ? 'KRW' : 'EUR', style: { flex: 1 } })] })] }),
     jsxs('div', { style: { display: 'flex', gap: 6, marginBottom: 14 }, children: [jsx(Pill, { on: country === 'KR', onClick: () => setCountry('KR'), children: '🇰🇷 한국' }), jsx(Pill, { on: country === 'DE', onClick: () => setCountry('DE'), children: '🇩🇪 독일' })] }),
-    jsxs('div', { style: { display: 'flex', gap: 8 }, children: [jsx('button', { className: 'btn', style: { flex: 1, padding: 11, fontSize: 13 }, onClick: () => onSubmit({ name: nameRef.current.value, balance: balRef.current.value, country }), children: submitLabel }), jsx('button', { className: 'btn-ghost', style: { flex: 1, margin: 0, padding: 11, fontSize: 13 }, onClick: onCancel, children: '취소' })] }),
+    jsxs('div', { style: { display: 'flex', gap: 8 }, children: [jsx('button', { className: 'btn', style: { flex: 1, padding: 11, fontSize: 13 }, onClick: () => onSubmit({ name: nameRef.current.value, balance: balStr, country }), children: submitLabel }), jsx('button', { className: 'btn-ghost', style: { flex: 1, margin: 0, padding: 11, fontSize: 13 }, onClick: onCancel, children: '취소' })] }),
   ] });
 }
 
@@ -2455,8 +2654,8 @@ function AccountsTab({ globalRate }) {
   };
 
   const accsWithBal = accs.map(a => ({ ...a, computedBalance: getBalance(a.id, todayStr) }));
-  const fmtBal = a => cur === 'EUR' ? `€ ${toEur(a.computedBalance, a.currency).toFixed(2)}` : `₩ ${Math.round(toKrw(a.computedBalance, a.currency)).toLocaleString()}`;
-  const fmtAlt = a => cur === 'EUR' ? `≈ ₩ ${Math.round(toKrw(a.computedBalance, a.currency)).toLocaleString()}` : `≈ € ${toEur(a.computedBalance, a.currency).toFixed(2)}`;
+  const fmtBal = a => cur === 'EUR' ? formatMoney(toEur(a.computedBalance, a.currency), 'EUR') : formatMoney(toKrw(a.computedBalance, a.currency), 'KRW');
+  const fmtAlt = a => cur === 'EUR' ? `≈ ${formatMoney(toKrw(a.computedBalance, a.currency), 'KRW')}` : `≈ ${formatMoney(toEur(a.computedBalance, a.currency), 'EUR')}`;
 
   const COLORS = ['#111111','#888780','#B4B2A9','#444441','#D3D1C7','#5F5E5A','#2C2C2A','#F1EFE8'];
   const getColor = i => accs[i]?.color || COLORS[i % COLORS.length];
@@ -2549,13 +2748,13 @@ function AccountsTab({ globalRate }) {
     ] }),
     jsxs('div', { style: { marginBottom: 16 }, children: [
       jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: calDay ? `${calMonth+1}월 ${calDay}일 기준 총 자산` : '총 자산' }),
-      jsx('p', { style: { fontSize: 28, fontWeight: 500 }, children: cur === 'EUR' ? `€ ${snapEur.toFixed(2)}` : `₩ ${Math.round(snapKrw).toLocaleString()}` }),
-      jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginTop: 4 }, children: cur === 'EUR' ? `≈ ₩ ${Math.round(snapKrw).toLocaleString()}` : `≈ € ${snapEur.toFixed(2)}` }),
+      jsx('p', { style: { fontSize: 28, fontWeight: 500 }, children: cur === 'EUR' ? formatMoney(snapEur, 'EUR') : formatMoney(snapKrw, 'KRW') }),
+      jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginTop: 4 }, children: cur === 'EUR' ? `≈ ${formatMoney(snapKrw, 'KRW')}` : `≈ ${formatMoney(snapEur, 'EUR')}` }),
     ] }),
     !isHistoryMode && upcomingChanges.length > 0 && jsxs('div', { style: { marginBottom: 20, border: '0.5px solid var(--gray-100)', borderRadius: 12, padding: 12 }, children: [
       jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }, children: [
         jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: '예정된 변화' }),
-        jsx('p', { style: { fontSize: 12, fontWeight: 500 }, children: cur === 'EUR' ? `${upcomingNetEur >= 0 ? '+' : '-'}€ ${Math.abs(upcomingNetEur).toFixed(2)}` : `${upcomingNetKrw >= 0 ? '+' : '-'}₩ ${Math.round(Math.abs(upcomingNetKrw)).toLocaleString()}` }),
+        jsx('p', { style: { fontSize: 12, fontWeight: 500 }, children: cur === 'EUR' ? formatMoney(Math.abs(upcomingNetEur), 'EUR', { sign: upcomingNetEur >= 0 ? '+' : '-' }) : formatMoney(Math.abs(upcomingNetKrw), 'KRW', { sign: upcomingNetKrw >= 0 ? '+' : '-' }) }),
       ] }),
       jsx('div', { children: upcomingChanges.slice(0, 3).map(t => jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
         jsxs('div', { children: [
@@ -2563,8 +2762,8 @@ function AccountsTab({ globalRate }) {
           jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: t.date }),
         ] }),
         jsx('p', { style: { fontSize: 12, fontWeight: 500 }, children: cur === 'EUR'
-          ? `${t.type === 'income' ? '+' : '-'}€ ${toEur(t.amount || 0, t.currency).toFixed(2)}`
-          : `${t.type === 'income' ? '+' : '-'}₩ ${Math.round(toKrw(t.amount || 0, t.currency)).toLocaleString()}` }),
+          ? formatMoney(toEur(t.amount || 0, t.currency), 'EUR', { sign: t.type === 'income' ? '+' : '-' })
+          : formatMoney(toKrw(t.amount || 0, t.currency), 'KRW', { sign: t.type === 'income' ? '+' : '-' }) }),
       ] }, t.id)) }),
       upcomingChanges.length > 3 && jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginTop: 8 }, children: `그 외 ${upcomingChanges.length - 3}건이 더 있어요` }),
     ] }),
@@ -2574,10 +2773,10 @@ function AccountsTab({ globalRate }) {
     ] }),
     jsx('div', { className: 'divider' }),
     jsx('p', { className: 'section-title', children: '계좌별 잔액' }),
-    !isHistoryMode && addMode && jsx(AccountForm, { onSubmit: ({ name, balance, country }) => { if (!name.trim()) return; const idx = accs.length; const newAcc = { id: Date.now().toString(), name: name.trim(), country, currency: country === 'KR' ? 'KRW' : 'EUR', initialBalance: parseFloat(balance) || 0, color: COLORS[idx % COLORS.length] }; reload([...accs, newAcc]); setAddMode(false); }, onCancel: () => setAddMode(false), submitLabel: '추가' }),
+    !isHistoryMode && addMode && jsx(AccountForm, { onSubmit: ({ name, balance, country }) => { if (!name.trim()) return; const idx = accs.length; const newAcc = { id: Date.now().toString(), name: name.trim(), country, currency: country === 'KR' ? 'KRW' : 'EUR', initialBalance: parseComma(balance) || 0, color: COLORS[idx % COLORS.length] }; reload([...accs, newAcc]); setAddMode(false); }, onCancel: () => setAddMode(false), submitLabel: '추가' }),
     jsx('div', { style: { borderTop: '0.5px solid var(--gray-100)' }, children: displayAccs.length === 0 ? jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', padding: '16px 0' }, children: '등록된 계좌가 없어요' }) :
       displayAccs.map((a, i) => jsx('div', { key: a.id, children:
-        !isHistoryMode && editId === a.id ? jsx('div', { style: { padding: '12px 0' }, children: jsx(AccountForm, { initial: a, onSubmit: ({ name, balance, country }) => { if (!name.trim()) return; reload(accs.map(x => x.id === a.id ? { ...x, name: name.trim(), country, currency: country === 'KR' ? 'KRW' : 'EUR', initialBalance: parseFloat(balance) || 0 } : x)); setEditId(null); }, onCancel: () => setEditId(null), submitLabel: '수정 완료' }) }) :
+        !isHistoryMode && editId === a.id ? jsx('div', { style: { padding: '12px 0' }, children: jsx(AccountForm, { initial: a, onSubmit: ({ name, balance, country }) => { if (!name.trim()) return; reload(accs.map(x => x.id === a.id ? { ...x, name: name.trim(), country, currency: country === 'KR' ? 'KRW' : 'EUR', initialBalance: parseComma(balance) || 0 } : x)); setEditId(null); }, onCancel: () => setEditId(null), submitLabel: '수정 완료' }) }) :
         jsxs('div', { style: { padding: '14px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
           jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 3 }, children: [jsx('p', { style: { fontSize: 13, fontWeight: 500 }, children: a.name }), jsx('p', { style: { fontSize: 16, fontWeight: 500 }, children: fmtBal(a) })] }),
           jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', marginBottom: 8 }, children: [jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [a.country === 'KR' ? '🇰🇷 한국' : '🇩🇪 독일', ' · ', a.currency] }), jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: fmtAlt(a) })] }),
@@ -2619,7 +2818,8 @@ function FixedItem({ item, isIncome, expandedId, setExpandedId, onEdit, onDelete
 }
 
 function FixedItemForm({ initial, onSubmit, onCancel, submitLabel, isIncome = false }) {
-  const nameRef = useRef(), amtRef = useRef(), labelRef = useRef(), dayRef = useRef();
+  const nameRef = useRef(), labelRef = useRef(), dayRef = useRef();
+  const [amtStr, setAmtStr] = useState(initial?.amount ? fmtComma(String(initial.currency === 'EUR' ? initial.amount : Math.round(initial.amount))) : '');
   const [cur, setCur] = useState(initial?.currency || 'EUR');
   const [freq, setFreq] = useState(initial?.frequency || 'monthly');
   const [accId, setAccId] = useState(initial?.accountId || '');
@@ -2632,10 +2832,13 @@ function FixedItemForm({ initial, onSubmit, onCancel, submitLabel, isIncome = fa
   const expCats = ['주거','통신','보험','교통','구독','금융','교육','육아','공과금','의료','쇼핑','기타'];
   const incCats = ['급여','송금','식비지원금','기타'];
   const catList = isIncome ? incCats : expCats;
+  useEffect(() => {
+    setAmtStr(initial?.amount ? fmtComma(String(cur === 'EUR' ? initial.amount : Math.round(initial.amount))) : '');
+  }, [initial?.amount, cur]);
   return jsxs('div', { style: { background: 'var(--gray-50)', borderRadius: 12, padding: 14, marginBottom: 12 }, children: [
     jsxs('div', { style: { display: 'flex', gap: 8, marginBottom: 10 }, children: [
       jsxs('div', { style: { flex: 2 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '항목명' }), jsx('input', { ref: nameRef, className: 'field', placeholder: isIncome ? '예: 월급, 장학금' : '예: Netflix', defaultValue: initial?.name || '' })] }),
-      jsxs('div', { style: { flex: 1 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '금액' }), jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 2 }, children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: cur === 'EUR' ? '€' : '₩' }), jsx('input', { ref: amtRef, className: 'field-amt', placeholder: '0', type: 'number', defaultValue: initial?.amount || '', style: { width: '100%' } })] })] }),
+      jsxs('div', { style: { flex: 1 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '금액' }), jsx(AmountInput, { value: amtStr, onChange: setAmtStr, style: { width: '100%' }, currency: cur })] }),
     ] }),
     jsxs('div', { style: { display: 'flex', gap: 6, marginBottom: 10 }, children: [jsx(Pill, { on: cur === 'EUR', onClick: () => { setCur('EUR'); setAccId(''); }, style: { fontSize: 11 }, children: '€ EUR' }), jsx(Pill, { on: cur === 'KRW', onClick: () => { setCur('KRW'); setAccId(''); }, style: { fontSize: 11 }, children: '₩ KRW' })] }),
     jsxs('div', { style: { display: 'flex', gap: 8, marginBottom: 10 }, children: [
@@ -2660,7 +2863,7 @@ function FixedItemForm({ initial, onSubmit, onCancel, submitLabel, isIncome = fa
       jsx('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' }, children: accounts.map(a => jsx(Pill, { key: a.id, on: accId === a.id, onClick: () => setAccId(a.id), style: { fontSize: 11 }, children: a.name })) }),
     ] }),
     jsxs('div', { style: { display: 'flex', gap: 8 }, children: [
-      jsx('button', { className: 'btn', style: { flex: 1, padding: 11, fontSize: 13 }, onClick: () => onSubmit({ name: nameRef.current.value, label: labelRef?.current?.value || '', amount: amtRef.current.value, day: dayRef.current.value, currency: cur, frequency: freq, category: cat, accountId: needsAccount ? accId : '', incomeType: isIncome ? incomeType : 'expense' }), children: submitLabel }),
+      jsx('button', { className: 'btn', style: { flex: 1, padding: 11, fontSize: 13 }, onClick: () => onSubmit({ name: nameRef.current.value, label: labelRef?.current?.value || '', amount: amtStr, day: dayRef.current.value, currency: cur, frequency: freq, category: cat, accountId: needsAccount ? accId : '', incomeType: isIncome ? incomeType : 'expense' }), children: submitLabel }),
       jsx('button', { className: 'btn-ghost', style: { flex: 1, margin: 0, padding: 11, fontSize: 13 }, onClick: onCancel, children: '취소' }),
     ] }),
   ] });
@@ -2686,8 +2889,8 @@ function FixedTab({ globalRate }) {
 
   const today = new Date().getDate();
   const toDisplay = item => convertByRate(item.amount, item.currency, cur, rate);
-  const fmt = v => cur === 'EUR' ? `€ ${v.toFixed(2)}` : `₩ ${Math.round(v).toLocaleString()}`;
-  const fmtItem = item => fmt(toDisplay(item)) + (item.currency === 'EUR' ? (cur === 'KRW' ? ` (€ ${item.amount})` : '') : (cur === 'EUR' ? ` (₩ ${Math.round(item.amount).toLocaleString()})` : ''));
+  const fmt = v => formatMoney(v, cur);
+  const fmtItem = item => fmt(toDisplay(item)) + (item.currency === 'EUR' ? (cur === 'KRW' ? ` (${formatMoney(item.amount, 'EUR')})` : '') : (cur === 'EUR' ? ` (${formatMoney(item.amount, 'KRW')})` : ''));
   const dday = d => { const diff = d - today; return diff === 0 ? 'D-day' : diff > 0 ? `D-${diff}` : `D-${new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate() - today + d}`; };
   const freqLabel = (f, isInc) => (isInc ? FREQ_INC : FREQ_EXP).find(x => x.value === f)?.label || '매월';
   const accName = id => getAccounts().find(a => a.id === id)?.name || '';
@@ -2713,20 +2916,20 @@ function FixedTab({ globalRate }) {
     ] }),
     renderUnifiedRateBlock(rate, getRate().date, { marginBottom: 20 }),
     jsx('p', { className: 'section-title', children: '고정 수입' }),
-    addIncOpen && jsx(FixedItemForm, { isIncome: true, onSubmit: v => { if (!v.name.trim()) return; saveInc([...incomes, { id: makeId(), name: v.name.trim(), label: '', amount: parseFloat(v.amount) || 0, day: parseInt(v.day) || 1, currency: v.currency, frequency: v.frequency, accountId: v.accountId, incomeType: v.incomeType }]); setAddIncOpen(false); }, onCancel: () => setAddIncOpen(false), submitLabel: '추가' }),
+    addIncOpen && jsx(FixedItemForm, { isIncome: true, onSubmit: v => { if (!v.name.trim()) return; saveInc([...incomes, { id: makeId(), name: v.name.trim(), label: '', amount: parseComma(v.amount) || 0, day: parseInt(v.day) || 1, currency: v.currency, frequency: v.frequency, accountId: v.accountId, incomeType: v.incomeType }]); setAddIncOpen(false); }, onCancel: () => setAddIncOpen(false), submitLabel: '추가' }),
     jsx('div', { className: 'border-top', style: { marginBottom: 8 }, children: incomes.length === 0 ? jsx('p', { className: 'text-13 color-muted', style: { padding: '12px 0' }, children: '등록된 고정 수입이 없어요' }) :
       sortByDay(incomes).map(item => editIncId === item.id ?
-        jsx('div', { key: item.id, style: { padding: '12px 0' }, children: jsx(FixedItemForm, { isIncome: true, initial: item, onSubmit: v => { saveInc(incomes.map(x => x.id === item.id ? { ...x, name: v.name.trim(), amount: parseFloat(v.amount)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, accountId: v.accountId, incomeType: v.incomeType } : x)); setEditIncId(null); }, onCancel: () => setEditIncId(null), submitLabel: '수정 완료' }) }) :
+        jsx('div', { key: item.id, style: { padding: '12px 0' }, children: jsx(FixedItemForm, { isIncome: true, initial: item, onSubmit: v => { saveInc(incomes.map(x => x.id === item.id ? { ...x, name: v.name.trim(), amount: parseComma(v.amount)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, accountId: v.accountId, incomeType: v.incomeType } : x)); setEditIncId(null); }, onCancel: () => setEditIncId(null), submitLabel: '수정 완료' }) }) :
         jsx(FixedItem, { key: item.id, item, isIncome: true, expandedId: expandedIncId, setExpandedId: setExpandedIncId, onEdit: () => { setEditIncId(item.id); setAddIncOpen(false); }, onDelete: () => saveInc(incomes.filter(x => x.id !== item.id)), ...fixedItemHelpers })
       )
     }),
     jsx(AddRow, { label: '고정 수입 추가', onClick: () => { setAddIncOpen(o => !o); setEditIncId(null); } }),
     jsx('div', { className: 'divider' }),
     jsx('p', { className: 'section-title', children: '고정 지출' }),
-    addExpOpen && jsx(FixedItemForm, { onSubmit: v => { if (!v.name.trim()) return; saveExp([...expenses, { id: makeId(), name: v.name.trim(), label: v.label || '', amount: parseFloat(v.amount)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, category: v.category || '공과금', accountId: v.accountId }]); setAddExpOpen(false); }, onCancel: () => setAddExpOpen(false), submitLabel: '추가' }),
+    addExpOpen && jsx(FixedItemForm, { onSubmit: v => { if (!v.name.trim()) return; saveExp([...expenses, { id: makeId(), name: v.name.trim(), label: v.label || '', amount: parseComma(v.amount)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, category: v.category || '공과금', accountId: v.accountId }]); setAddExpOpen(false); }, onCancel: () => setAddExpOpen(false), submitLabel: '추가' }),
     jsx('div', { className: 'border-top', style: { marginBottom: 8 }, children: expenses.length === 0 ? jsx('p', { className: 'text-13 color-muted', style: { padding: '12px 0' }, children: '등록된 고정 지출이 없어요' }) :
       sortByDay(expenses).map(item => editExpId === item.id ?
-        jsx('div', { key: item.id, style: { padding: '12px 0' }, children: jsx(FixedItemForm, { initial: item, onSubmit: v => { saveExp(expenses.map(x => x.id === item.id ? { ...x, name: v.name.trim(), label: v.label||'', amount: parseFloat(v.amount)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, category: v.category || x.category || '공과금', accountId: v.accountId } : x)); setEditExpId(null); }, onCancel: () => setEditExpId(null), submitLabel: '수정 완료' }) }) :
+        jsx('div', { key: item.id, style: { padding: '12px 0' }, children: jsx(FixedItemForm, { initial: item, onSubmit: v => { saveExp(expenses.map(x => x.id === item.id ? { ...x, name: v.name.trim(), label: v.label||'', amount: parseComma(v.amount)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, category: v.category || x.category || '공과금', accountId: v.accountId } : x)); setEditExpId(null); }, onCancel: () => setEditExpId(null), submitLabel: '수정 완료' }) }) :
         jsx(FixedItem, { key: item.id, item, isIncome: false, expandedId: expandedExpId, setExpandedId: setExpandedExpId, onEdit: () => { setEditExpId(item.id); setAddExpOpen(false); }, onDelete: () => saveExp(expenses.filter(x => x.id !== item.id)), ...fixedItemHelpers })
       )
     }),
