@@ -1212,9 +1212,14 @@ const fmtComma = (val, currency = 'EUR') => {
   raw = raw.replace(/[^\d]/g, '');
   return raw.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
-const parseComma = val => {
+const parseComma = (val, currency = 'EUR') => {
   const raw = String(val ?? '').trim();
   if (!raw) return 0;
+  // KRW: 콤마는 천단위 구분자 → 그냥 제거
+  if (currency === 'KRW') {
+    return parseFloat(raw.replace(/,/g, '').replace(/[^\d.-]/g, '')) || 0;
+  }
+  // EUR: 독일식 포맷 (점=천단위, 콤마=소수점)
   if (raw.includes(',')) {
     return parseFloat(raw.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '')) || 0;
   }
@@ -1491,7 +1496,7 @@ const extractAmountFromText = (text = '', fallbackCurrency = 'EUR', options = {}
     const raw = digitWithCurrency[1] && /\d/.test(digitWithCurrency[1]) ? digitWithCurrency[1] : digitWithCurrency[2];
     const unit = digitWithCurrency[0];
     const currency = /(유로|€|eur|euro|euros)/i.test(unit) ? 'EUR' : 'KRW';
-    const amount = parseComma(raw);
+    const amount = parseComma(raw, currency);
     record('digitWithCurrency', true, `raw=${raw}, currency=${currency}, amount=${amount}`);
     return resultOf(amount, currency, false, 'digitWithCurrency', `raw=${raw}, unit=${unit}`);
   }
@@ -1539,7 +1544,7 @@ const extractAmountFromText = (text = '', fallbackCurrency = 'EUR', options = {}
 
   const digitOnly = src.match(/(\d[\d.,]*)/);
   if (digitOnly) {
-    const amount = parseComma(digitOnly[1]);
+    const amount = parseComma(digitOnly[1], fallbackCurrency);
     record('digitOnly', true, `raw=${digitOnly[1]}, amount=${amount}, fallbackCurrency=${fallbackCurrency}`);
     return resultOf(amount, fallbackCurrency, false, 'digitOnly', `raw=${digitOnly[1]}`);
   }
@@ -1747,11 +1752,11 @@ function Onboarding({ onDone, onLogin, initialStep = 0, hideAuthEntry = false })
   const buildAccounts = () => {
     const { krName, krBal, deName, deBal, eurCash, krwCash } = accounts;
     const result = [];
-    if (krName.trim()) result.push({ id: 'kr-main', name: krName.trim(), country: 'KR', currency: 'KRW', initialBalance: parseComma(krBal) });
-    if (deName.trim()) result.push({ id: 'de-main', name: deName.trim(), country: 'DE', currency: 'EUR', initialBalance: parseComma(deBal) });
-    extraAccs.forEach(a => result.push({ id: a.id, name: a.name, country: a.country, currency: a.country === 'KR' ? 'KRW' : 'EUR', initialBalance: parseComma(a.balance) }));
-    if (parseComma(eurCash) > 0) result.push({ id: 'cash-eur', name: '현금 (EUR)', country: 'DE', currency: 'EUR', initialBalance: parseComma(eurCash), isCash: true });
-    if (parseComma(krwCash) > 0) result.push({ id: 'cash-krw', name: '현금 (KRW)', country: 'KR', currency: 'KRW', initialBalance: parseComma(krwCash), isCash: true });
+    if (krName.trim()) result.push({ id: 'kr-main', name: krName.trim(), country: 'KR', currency: 'KRW', initialBalance: parseComma(krBal, 'KRW') });
+    if (deName.trim()) result.push({ id: 'de-main', name: deName.trim(), country: 'DE', currency: 'EUR', initialBalance: parseComma(deBal, 'EUR') });
+    extraAccs.forEach(a => result.push({ id: a.id, name: a.name, country: a.country, currency: a.country === 'KR' ? 'KRW' : 'EUR', initialBalance: parseComma(a.balance, a.country === 'KR' ? 'KRW' : 'EUR') }));
+    if (parseComma(eurCash, 'EUR') > 0) result.push({ id: 'cash-eur', name: '현금 (EUR)', country: 'DE', currency: 'EUR', initialBalance: parseComma(eurCash, 'EUR'), isCash: true });
+    if (parseComma(krwCash, 'KRW') > 0) result.push({ id: 'cash-krw', name: '현금 (KRW)', country: 'KR', currency: 'KRW', initialBalance: parseComma(krwCash, 'KRW'), isCash: true });
     return result;
   };
 
@@ -1806,11 +1811,12 @@ function Onboarding({ onDone, onLogin, initialStep = 0, hideAuthEntry = false })
     const finalFixedExp = [
       ...fixedExpChecks.filter(i => i.checked).map(i => {
         const cfg = fixedExpCfg[i.id] || {};
-        return { id: i.id, name: i.name, label: i.label, amount: parseComma(cfg.amount || i.amount) || 0, day: parseInt(cfg.day || i.day) || 1, currency: cfg.currency || i.currency, frequency: cfg.frequency || i.frequency, category: i.category || '공과금', accountId: cfg.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) };
+        const cur = cfg.currency || i.currency;
+        return { id: i.id, name: i.name, label: i.label, amount: parseComma(cfg.amount || i.amount, cur) || 0, day: parseInt(cfg.day || i.day) || 1, currency: cur, frequency: cfg.frequency || i.frequency, category: i.category || '공과금', accountId: cfg.accountId || (cur === 'KRW' ? krMain?.id : deMain?.id) };
       }),
-      ...[...fixedExpExtra, ...pendingFixedExp].map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, category: i.category || '공과금', accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })),
+      ...[...fixedExpExtra, ...pendingFixedExp].map(i => ({ ...i, amount: parseComma(i.amount, i.currency) || 0, day: parseInt(i.day) || 1, category: i.category || '공과금', accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) })),
     ];
-    const finalFixedInc = [...fixedIncList, ...pendingFixedInc].map(i => ({ ...i, amount: parseComma(i.amount) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) }));
+    const finalFixedInc = [...fixedIncList, ...pendingFixedInc].map(i => ({ ...i, amount: parseComma(i.amount, i.currency) || 0, day: parseInt(i.day) || 1, accountId: i.accountId || (i.currency === 'KRW' ? krMain?.id : deMain?.id) }));
     setAccounts(accs);
     setFixedExp(finalFixedExp);
     setFixedInc(finalFixedInc);
@@ -2567,10 +2573,10 @@ function AddTransaction({ onDone, editing = null }) {
       const entry = {
         type: 'transfer', title,
         fromAccountId: fromAccId, fromAccountName: fromAcc?.name || '',
-        fromAmount: parseComma(fromAmtStr), fromCurrency: fromCur,
+        fromAmount: parseComma(fromAmtStr, fromCur), fromCurrency: fromCur,
         toAccountId: toAccId, toAccountName: toAcc?.name || '',
-        toAmount: parseComma(toAmtStr), toCurrency: toCur,
-        fee: parseComma(feeStr) || 0, feeCurrency: feeCur,
+        toAmount: parseComma(toAmtStr, toCur), toCurrency: toCur,
+        fee: parseComma(feeStr, feeCur) || 0, feeCurrency: feeCur,
         date, memo, rateAtTime: normalizeRate(effectiveRate), rateDate: rateInfo?.date || date,
       };
       if (editing) updateTxn(editing.id, entry);
@@ -2583,7 +2589,7 @@ function AddTransaction({ onDone, editing = null }) {
     if (!amtStr) return;
     if (!isVoucher && !accId && accounts.length > 0) return;
     const acc = accounts.find(a => a.id === accId);
-    const entry = { title, type, amount: parseComma(amtStr), currency: cur, accountId: isVoucher ? '' : accId, accountName: isVoucher ? '상품권/쿠폰' : acc?.name || '', category: cat, payMethod, memo, date, rateAtTime: effectiveRate, rateDate: rateInfo?.date || date };
+    const entry = { title, type, amount: parseComma(amtStr, cur), currency: cur, accountId: isVoucher ? '' : accId, accountName: isVoucher ? '상품권/쿠폰' : acc?.name || '', category: cat, payMethod, memo, date, rateAtTime: effectiveRate, rateDate: rateInfo?.date || date };
     if (editing) updateTxn(editing.id, entry);
     else addTxn(entry);
     await dbSaveTxns(getTxns());
@@ -2601,7 +2607,7 @@ function AddTransaction({ onDone, editing = null }) {
         jsx('input', { className: 'field', placeholder: '예: rewe에서 오십유로 카드로', value: aiText, onChange: e => setAiText(e.target.value), onKeyDown: e => e.key === 'Enter' && !e.nativeEvent?.isComposing && runAI(), style: { flex: 1 } }),
         jsx('button', { onClick: runAI, disabled: aiLoading, style: { background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, paddingBottom: 6, color: aiLoading ? 'var(--gray-400)' : 'var(--black)' }, children: aiLoading ? '···' : '→' }),
       ] }),
-      aiResult && jsxs('div', { className: 'parse-result', children: [jsx('span', { className: 'parse-tag primary', children: type === 'expense' ? '지출' : '수입' }), jsx('span', { className: 'parse-tag', children: formatMoney(parseComma(amtStr), cur) }), jsx('span', { className: 'parse-tag', children: cat })] }),
+      aiResult && jsxs('div', { className: 'parse-result', children: [jsx('span', { className: 'parse-tag primary', children: type === 'expense' ? '지출' : '수입' }), jsx('span', { className: 'parse-tag', children: formatMoney(parseComma(amtStr, cur), cur) }), jsx('span', { className: 'parse-tag', children: cat })] }),
       aiErr && jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginTop: 8 }, children: aiErr }),
       aiResult && jsx('div', { className: 'divider' }),
       DEBUG_MODE && jsxs('div', { className: 'card', style: { marginTop: 16, marginBottom: 0 }, children: [
@@ -2706,8 +2712,8 @@ function AddTransaction({ onDone, editing = null }) {
       jsxs('div', { className: 'row', children: [
         jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '금액' }),
         jsxs('div', { style: { display: 'flex', gap: 8, alignItems: 'center' }, children: [
-          jsx(Pill, { on: cur === 'EUR', onClick: () => setCur('EUR'), children: '€' }),
-          jsx(Pill, { on: cur === 'KRW', onClick: () => setCur('KRW'), children: '₩' }),
+          jsx(Pill, { on: cur === 'EUR', onClick: () => { const num = parseComma(amtStr, cur); setCur('EUR'); setAmtStr(num ? fmtComma(String(num), 'EUR') : ''); }, children: '€' }),
+          jsx(Pill, { on: cur === 'KRW', onClick: () => { const num = parseComma(amtStr, cur); setCur('KRW'); setAmtStr(num ? fmtComma(String(Math.round(num)), 'KRW') : ''); }, children: '₩' }),
           jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 2 }, children: [
             jsx('span', { style: { fontSize: 13, color: 'var(--gray-400)' }, children: cur === 'EUR' ? '€' : '₩' }),
             jsx(AmountInput, { value: amtStr, onChange: setAmtStr, style: { width: 90 }, currency: cur }),
@@ -2933,10 +2939,10 @@ function AccountsTab({ globalRate }) {
     ] }),
     jsx('div', { className: 'divider' }),
     jsx('p', { className: 'section-title', children: '계좌별 잔액' }),
-    !isHistoryMode && addMode && jsx(AccountForm, { onSubmit: ({ name, balance, country }) => { if (!name.trim()) return; const idx = accs.length; const newAcc = { id: Date.now().toString(), name: name.trim(), country, currency: country === 'KR' ? 'KRW' : 'EUR', initialBalance: parseComma(balance) || 0, color: COLORS[idx % COLORS.length] }; reload([...accs, newAcc]); setAddMode(false); }, onCancel: () => setAddMode(false), submitLabel: '추가' }),
+    !isHistoryMode && addMode && jsx(AccountForm, { onSubmit: ({ name, balance, country }) => { if (!name.trim()) return; const idx = accs.length; const cur = country === 'KR' ? 'KRW' : 'EUR'; const newAcc = { id: Date.now().toString(), name: name.trim(), country, currency: cur, initialBalance: parseComma(balance, cur) || 0, color: COLORS[idx % COLORS.length] }; reload([...accs, newAcc]); setAddMode(false); }, onCancel: () => setAddMode(false), submitLabel: '추가' }),
     jsx('div', { style: { borderTop: '0.5px solid var(--gray-100)' }, children: displayAccs.length === 0 ? jsx('p', { style: { fontSize: 13, color: 'var(--gray-400)', padding: '16px 0' }, children: '등록된 계좌가 없어요' }) :
       displayAccs.map((a, i) => jsx('div', { key: a.id, children:
-        !isHistoryMode && editId === a.id ? jsx('div', { style: { padding: '12px 0' }, children: jsx(AccountForm, { initial: a, onSubmit: ({ name, balance, country }) => { if (!name.trim()) return; reload(accs.map(x => x.id === a.id ? { ...x, name: name.trim(), country, currency: country === 'KR' ? 'KRW' : 'EUR', initialBalance: parseComma(balance) || 0 } : x)); setEditId(null); }, onCancel: () => setEditId(null), submitLabel: '수정 완료' }) }) :
+        !isHistoryMode && editId === a.id ? jsx('div', { style: { padding: '12px 0' }, children: jsx(AccountForm, { initial: a, onSubmit: ({ name, balance, country }) => { if (!name.trim()) return; const cur = country === 'KR' ? 'KRW' : 'EUR'; reload(accs.map(x => x.id === a.id ? { ...x, name: name.trim(), country, currency: cur, initialBalance: parseComma(balance, cur) || 0 } : x)); setEditId(null); }, onCancel: () => setEditId(null), submitLabel: '수정 완료' }) }) :
         jsxs('div', { style: { padding: '14px 0', borderBottom: '0.5px solid var(--gray-100)' }, children: [
           jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 3 }, children: [jsx('p', { style: { fontSize: 13, fontWeight: 500 }, children: a.name }), jsx('p', { style: { fontSize: 16, fontWeight: 500 }, children: fmtBal(a) })] }),
           jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', marginBottom: 8 }, children: [jsxs('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: [a.country === 'KR' ? '🇰🇷 한국' : '🇩🇪 독일', ' · ', a.currency] }), jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)' }, children: fmtAlt(a) })] }),
@@ -3076,20 +3082,20 @@ function FixedTab({ globalRate }) {
     ] }),
     renderUnifiedRateBlock(rate, getRate().date, { marginBottom: 20 }),
     jsx('p', { className: 'section-title', children: '고정 수입' }),
-    addIncOpen && jsx(FixedItemForm, { isIncome: true, onSubmit: v => { if (!v.name.trim()) return; saveInc([...incomes, { id: makeId(), name: v.name.trim(), label: '', amount: parseComma(v.amount) || 0, day: parseInt(v.day) || 1, currency: v.currency, frequency: v.frequency, accountId: v.accountId, incomeType: v.incomeType }]); setAddIncOpen(false); }, onCancel: () => setAddIncOpen(false), submitLabel: '추가' }),
+    addIncOpen && jsx(FixedItemForm, { isIncome: true, onSubmit: v => { if (!v.name.trim()) return; saveInc([...incomes, { id: makeId(), name: v.name.trim(), label: '', amount: parseComma(v.amount, v.currency) || 0, day: parseInt(v.day) || 1, currency: v.currency, frequency: v.frequency, accountId: v.accountId, incomeType: v.incomeType }]); setAddIncOpen(false); }, onCancel: () => setAddIncOpen(false), submitLabel: '추가' }),
     jsx('div', { className: 'border-top', style: { marginBottom: 8 }, children: incomes.length === 0 ? jsx('p', { className: 'text-13 color-muted', style: { padding: '12px 0' }, children: '등록된 고정 수입이 없어요' }) :
       sortByDay(incomes).map(item => editIncId === item.id ?
-        jsx('div', { key: item.id, style: { padding: '12px 0' }, children: jsx(FixedItemForm, { isIncome: true, initial: item, onSubmit: v => { saveInc(incomes.map(x => x.id === item.id ? { ...x, name: v.name.trim(), amount: parseComma(v.amount)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, accountId: v.accountId, incomeType: v.incomeType } : x)); setEditIncId(null); }, onCancel: () => setEditIncId(null), submitLabel: '수정 완료' }) }) :
+        jsx('div', { key: item.id, style: { padding: '12px 0' }, children: jsx(FixedItemForm, { isIncome: true, initial: item, onSubmit: v => { saveInc(incomes.map(x => x.id === item.id ? { ...x, name: v.name.trim(), amount: parseComma(v.amount, v.currency)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, accountId: v.accountId, incomeType: v.incomeType } : x)); setEditIncId(null); }, onCancel: () => setEditIncId(null), submitLabel: '수정 완료' }) }) :
         jsx(FixedItem, { key: item.id, item, isIncome: true, expandedId: expandedIncId, setExpandedId: setExpandedIncId, onEdit: () => { setEditIncId(item.id); setAddIncOpen(false); }, onDelete: () => saveInc(incomes.filter(x => x.id !== item.id)), ...fixedItemHelpers })
       )
     }),
     jsx(AddRow, { label: '고정 수입 추가', onClick: () => { setAddIncOpen(o => !o); setEditIncId(null); } }),
     jsx('div', { className: 'divider' }),
     jsx('p', { className: 'section-title', children: '고정 지출' }),
-    addExpOpen && jsx(FixedItemForm, { onSubmit: v => { if (!v.name.trim()) return; saveExp([...expenses, { id: makeId(), name: v.name.trim(), label: v.label || '', amount: parseComma(v.amount)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, category: v.category || '공과금', accountId: v.accountId }]); setAddExpOpen(false); }, onCancel: () => setAddExpOpen(false), submitLabel: '추가' }),
+    addExpOpen && jsx(FixedItemForm, { onSubmit: v => { if (!v.name.trim()) return; saveExp([...expenses, { id: makeId(), name: v.name.trim(), label: v.label || '', amount: parseComma(v.amount, v.currency)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, category: v.category || '공과금', accountId: v.accountId }]); setAddExpOpen(false); }, onCancel: () => setAddExpOpen(false), submitLabel: '추가' }),
     jsx('div', { className: 'border-top', style: { marginBottom: 8 }, children: expenses.length === 0 ? jsx('p', { className: 'text-13 color-muted', style: { padding: '12px 0' }, children: '등록된 고정 지출이 없어요' }) :
       sortByDay(expenses).map(item => editExpId === item.id ?
-        jsx('div', { key: item.id, style: { padding: '12px 0' }, children: jsx(FixedItemForm, { initial: item, onSubmit: v => { saveExp(expenses.map(x => x.id === item.id ? { ...x, name: v.name.trim(), label: v.label||'', amount: parseComma(v.amount)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, category: v.category || x.category || '공과금', accountId: v.accountId } : x)); setEditExpId(null); }, onCancel: () => setEditExpId(null), submitLabel: '수정 완료' }) }) :
+        jsx('div', { key: item.id, style: { padding: '12px 0' }, children: jsx(FixedItemForm, { initial: item, onSubmit: v => { saveExp(expenses.map(x => x.id === item.id ? { ...x, name: v.name.trim(), label: v.label||'', amount: parseComma(v.amount, v.currency)||0, day: parseInt(v.day)||1, currency: v.currency, frequency: v.frequency, category: v.category || x.category || '공과금', accountId: v.accountId } : x)); setEditExpId(null); }, onCancel: () => setEditExpId(null), submitLabel: '수정 완료' }) }) :
         jsx(FixedItem, { key: item.id, item, isIncome: false, expandedId: expandedExpId, setExpandedId: setExpandedExpId, onEdit: () => { setEditExpId(item.id); setAddExpOpen(false); }, onDelete: () => saveExp(expenses.filter(x => x.id !== item.id)), ...fixedItemHelpers })
       )
     }),
