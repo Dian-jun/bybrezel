@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>나는 어떤 독일 교민 소비 유형? — Brezel Money</title>
+<meta name="description" content="독일 교민이라면 한 번쯤 해봐야 할 소비 유형 테스트."/>
+<meta property="og:title" content="나는 어떤 독일 교민 소비 유형?"/>
+<meta property="og:description" content="10개 질문으로 알아보는 나의 소비 성향 — Brezel Money"/>
+<meta property="og:image" content="icon-192.png"/>
+<link rel="icon" href="icon-192.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,::before,::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#111;--white:#fff;
+  --gray-50:#f8f8f8;--gray-100:#f0f0f0;--gray-200:#e0e0e0;--gray-400:#999;--gray-600:#555;
+  --font:"DM Sans",sans-serif;--radius:14px;
+}
+html,body{background:var(--gray-50);font-family:var(--font);color:var(--black);-webkit-font-smoothing:antialiased;min-height:100%}
+.shell{max-width:430px;margin:0 auto;min-height:100vh;background:var(--white);display:flex;flex-direction:column}
+.header{padding:16px 20px;display:flex;align-items:center;gap:10px;border-bottom:.5px solid var(--gray-100)}
+.logo{width:32px;height:32px;border-radius:8px;overflow:hidden}
+.logo img{width:100%;height:100%;object-fit:cover}
+.logo-name{font-size:14px;font-weight:500}
+
+/* intro */
+.intro{padding:40px 24px 36px;flex:1;display:flex;flex-direction:column;justify-content:center}
+.intro-eyebrow{font-size:11px;letter-spacing:1px;color:var(--gray-400);text-transform:uppercase;margin-bottom:14px}
+.intro-title{font-size:30px;font-weight:500;line-height:1.3;margin-bottom:14px}
+.intro-title span{color:var(--gray-400)}
+.intro-desc{font-size:14px;color:var(--gray-600);line-height:1.8;margin-bottom:32px}
+.intro-meta{display:flex;gap:6px;align-items:center;margin-bottom:36px}
+.meta-item{font-size:12px;color:var(--gray-400)}
+.meta-sep{width:3px;height:3px;border-radius:50%;background:var(--gray-200)}
+.btn-start{background:var(--black);color:var(--white);border:none;border-radius:var(--radius);padding:16px;font-size:15px;font-weight:500;font-family:var(--font);cursor:pointer;width:100%;transition:opacity .15s}
+.btn-start:active{opacity:.8}
+.intro-note{font-size:11px;color:var(--gray-400);text-align:center;margin-top:12px}
+
+/* quiz */
+.quiz{padding:24px 20px 40px;flex:1;display:none;flex-direction:column}
+.progress-wrap{margin-bottom:28px}
+.progress-top{display:flex;justify-content:space-between;margin-bottom:8px}
+.progress-label{font-size:11px;color:var(--gray-400)}
+.prog-bar{display:flex;gap:3px}
+.prog-seg{height:2px;flex:1;border-radius:2px;background:var(--gray-100);transition:background .3s}
+.prog-seg.done{background:var(--black)}
+.q-axis{font-size:11px;color:var(--gray-400);margin-bottom:6px;letter-spacing:.5px}
+.q-text{font-size:18px;font-weight:500;line-height:1.5;margin-bottom:24px}
+.options{display:flex;flex-direction:column;gap:8px;flex:1}
+.opt-btn{background:var(--white);border:.5px solid var(--gray-200);border-radius:var(--radius);padding:15px 16px;cursor:pointer;font-size:14px;font-family:var(--font);color:var(--black);text-align:left;line-height:1.5;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.opt-btn.selected{border:1.5px solid var(--black);background:var(--gray-50)}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:24px}
+.btn-back{background:none;border:none;font-size:13px;color:var(--gray-400);cursor:pointer;font-family:var(--font);padding:0}
+.btn-next{background:var(--black);color:var(--white);border:none;border-radius:var(--radius);padding:13px 28px;font-size:14px;font-weight:500;font-family:var(--font);cursor:pointer;opacity:.25;pointer-events:none;transition:opacity .2s}
+.btn-next.on{opacity:1;pointer-events:auto}
+
+/* loading */
+.loading{display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.dots{display:flex;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--gray-200);animation:pulse 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes pulse{0%,80%,100%{background:var(--gray-200)}40%{background:var(--black)}}
+.loading-txt{font-size:13px;color:var(--gray-400)}
+
+/* result */
+.result{display:none;flex-direction:column;padding-bottom:48px}
+.result-hd{padding:16px 20px;display:flex;align-items:center;gap:8px;border-bottom:.5px solid var(--gray-100)}
+.result-hd-txt{font-size:12px;color:var(--gray-400)}
+.rcard{margin:20px;border:.5px solid var(--gray-200);border-radius:20px;overflow:hidden}
+.rcard-bar{height:4px;width:100%}
+.rcard-body{padding:24px 20px 0;text-align:center}
+.rcard-eyebrow{font-size:10px;letter-spacing:1.2px;color:var(--gray-400);text-transform:uppercase;margin-bottom:14px}
+.rcard-pre{font-size:12px;color:var(--gray-600);margin-bottom:5px;line-height:1.5}
+.rcard-name{font-size:24px;font-weight:500;margin-bottom:10px;line-height:1.3}
+.rcard-stars{font-size:13px;color:var(--gray-600);margin-bottom:8px}
+.rcard-tags{font-size:10px;color:var(--gray-400);line-height:2.2;margin-bottom:12px}
+.rcard-badge{display:inline-block;font-size:10px;font-weight:500;border-radius:20px;padding:4px 12px}
+.rcard-img{margin:18px 0 0;height:180px;background:var(--gray-50);border-top:.5px solid var(--gray-100);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.rcard-img-lbl{font-size:11px;color:var(--gray-400)}
+.rcard-divider{height:.5px;background:var(--gray-100);margin:0 20px}
+.rcard-traits{padding:14px 20px}
+.trait{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:.5px solid var(--gray-100);font-size:13px;color:var(--gray-600);line-height:1.6}
+.trait:last-child{border-bottom:none;padding-top:12px;margin-top:4px;border-top:.5px dashed var(--gray-200)}
+.trait:last-child .tdot{background:var(--black) !important}
+.trait:last-child .trait-text{font-weight:500;color:var(--black)}
+.tdot{width:4px;height:4px;border-radius:50%;margin-top:8px;flex-shrink:0}
+.rcard-ft{padding:12px 20px;display:flex;justify-content:space-between;border-top:.5px solid var(--gray-100)}
+.rcard-ft span{font-size:10px;color:var(--gray-400);letter-spacing:.6px}
+
+/* share */
+.share{padding:0 20px;margin-top:4px}
+.share-lbl{font-size:11px;color:var(--gray-400);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.share-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sbtn{padding:14px;font-size:13px;border-radius:var(--radius);cursor:pointer;font-family:var(--font);border:.5px solid var(--gray-200);background:var(--white);color:var(--black);-webkit-tap-highlight-color:transparent}
+.sbtn.pri{background:var(--black);color:var(--white);border-color:var(--black)}
+
+/* funnel */
+.funnel{margin:20px;border-radius:20px;background:var(--black);padding:24px 20px;color:var(--white)}
+.funnel-top{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.funnel-logo{width:48px;height:48px;border-radius:12px;overflow:hidden;flex-shrink:0}
+.funnel-logo img{width:100%;height:100%;object-fit:cover}
+.funnel-title{font-size:16px;font-weight:500;line-height:1.5;color:var(--white)}
+.funnel-title em{color:#888;font-style:normal}
+.funnel-feats{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.ffeat{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#bbb;line-height:1.6}
+.fdot{width:4px;height:4px;border-radius:50%;background:#444;margin-top:8px;flex-shrink:0}
+.btn-install{background:var(--white);color:var(--black);border:none;border-radius:var(--radius);padding:15px;font-size:14px;font-weight:500;font-family:var(--font);cursor:pointer;width:100%;transition:opacity .15s}
+.btn-install:active{opacity:.8}
+.funnel-note{font-size:11px;color:#555;text-align:center;margin-top:10px}
+
+.retry{padding:8px 20px 0;text-align:center}
+.btn-retry{background:none;border:none;font-size:12px;color:var(--gray-400);cursor:pointer;font-family:var(--font);text-decoration:underline;text-underline-offset:3px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:.4s ease forwards fadeUp}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="header">
+    <div class="logo"><img src="icon-192.png" alt="Brezel Money"/></div>
+    <span class="logo-name">Brezel Money</span>
+  </div>
+
+  <div class="intro" id="sec-intro">
+    <div class="intro-eyebrow">독일생활 소비 유형 테스트</div>
+    <h1 class="intro-title">나는 어떤<br/><span>소비 유형</span>일까?</h1>
+    <p class="intro-desc">Angebot 탐정? 예산 재수생? Abo 해지 예정자?<br/>10개 질문으로 알아보는 나의 독일 교민 소비 성향.</p>
+    <div class="intro-meta">
+      <span class="meta-item">질문 10개</span>
+      <span class="meta-sep"></span>
+      <span class="meta-item">약 2분 소요</span>
+      <span class="meta-sep"></span>
+      <span class="meta-item">7가지 유형</span>
+    </div>
+    <button class="btn-start" id="btn-start">테스트 시작하기</button>
+    <p class="intro-note">로그인 불필요 · 무료</p>
+  </div>
+
+  <div class="quiz" id="sec-quiz">
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <span class="progress-label" id="q-label"></span>
+        <span class="progress-label" id="q-count"></span>
+      </div>
+      <div class="prog-bar" id="prog-bar"></div>
+    </div>
+    <div class="q-axis" id="q-axis"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="quiz-nav">
+      <button class="btn-back" id="btn-back">← 이전</button>
+      <button class="btn-next" id="btn-next">다음 →</button>
+    </div>
+  </div>
+
+  <div class="loading" id="sec-loading">
+    <div class="dots">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <p class="loading-txt">유형 분석 중...</p>
+  </div>
+
+  <div class="result" id="sec-result">
+    <div class="rcard fade-up">
+      <div class="rcard-bar" id="r-bar"></div>
+      <div class="rcard-body">
+        <div class="rcard-eyebrow">나의 소비 유형</div>
+        <div class="rcard-pre" id="r-pre"></div>
+        <div class="rcard-name" id="r-name"></div>
+        <div class="rcard-stars" id="r-stars"></div>
+        <div class="rcard-tags" id="r-tags"></div>
+        <div id="r-badge"></div>
+        <div class="rcard-img">
+          <img id="r-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:0"/>
+        </div>
+      </div>
+      <div class="rcard-divider"></div>
+      <div class="rcard-traits" id="r-traits"></div>
+      <div class="rcard-ft">
+        <span>BREZEL MONEY</span><span>bybrezel.com/money</span>
+      </div>
+    </div>
+
+    <div class="share">
+      <div class="share-lbl">공유하기</div>
+      <div class="share-btns">
+        <button class="sbtn" id="btn-copy">링크 복사</button>
+        <button class="sbtn pri" id="btn-thread">쓰레드에 공유</button>
+      </div>
+    </div>
+
+    <div class="funnel">
+      <div class="funnel-top">
+        <div class="funnel-logo"><img src="icon-192.png" alt="Brezel Money"/></div>
+        <div class="funnel-title">더 알뜰한 생활을 위한<br/>독일생활 전용 가계부<em>Brezel Money</em></div>
+      </div>
+      <div class="funnel-feats">
+        <div class="ffeat"><div class="fdot"></div>EUR·KRW 동시 관리 — 환율 자동 계산</div>
+        <div class="ffeat"><div class="fdot"></div>쉬운 대화형 기록 - "rewe에서 오십유로 카드로"면 기록 끝</div>
+        <div class="ffeat"><div class="fdot"></div>Kaltmiete, GEZ 등 독일살이 맞춤 카테고리 </div>
+      </div>
+      <button class="btn-install" onclick="window.open('https://bybrezel.com/money','_blank')">Brezel Money 시작하기 →</button>
+      <p class="funnel-note">무료 · 로그인 없이도 사용 가능</p>
+    </div>
+
+    <div class="retry">
+      <button class="btn-retry" id="btn-retry">다시 테스트하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── 축 기반 스코어링 시스템 ──────────────────────────────────────
+// 축 1: 지출 성향  — 절약(+) / 소비(-)
+// 축 2: 계획성    — 계획적(+) / 즉흥적(-)
+// 축 3: 소비 인식 — 의식적(+) / 무의식적(-)
+// 축 4: 돈의 목적 — 아낀다(A) / 불린다(B) / 현재(C)
+// 축 5: 관리 동기 — 자발적(+) / 트라우마(T)
+//
+// 유형 판정:
+// Angebot     = 축1(절약) + 축4(A) + 축5(자발)
+// Sparplan    = 축1(절약) + 축4(B)
+// 고정비      = 축2(계획) + 축3(의식) + 축5(자발)
+// Nachzahlung = 축2(계획) + 축5(T)
+// 예산재수생  = 축1(소비) + 축2(즉흥) + 축3(의식) + 축4(A)
+// 외식쇼핑    = 축1(소비) + 축3(의식) + 축4(C)
+// Abo         = 축1(소비) + 축3(무의식)
+
+const Qs = [
+  // ── 축1: 지출 성향 ────────────────────────────────────────
+  {
+    axis: '축 1 — 지출 성향',
+    t: '마트 갈 때 어떻게 가나요?',
+    o: [
+      { t: 'REWE 전단지 먼저 확인하고 Angebot 있는 곳으로 감',
+        s: { ax1: 2, ax4A: 1 } },
+      { t: 'Angebot 있는 마트가 세 정거장이어도 감',
+        s: { ax1: 3, ax4A: 2 } },
+      { t: '집 근처 아무 데나 그냥 감',
+        s: { ax1: -1 } },
+      { t: '마트보다 배달이나 온라인이 편함',
+        s: { ax1: -2, ax3: -1 } },
+    ]
+  },
+  {
+    axis: '축 1 — 지출 성향',
+    t: '독일에서 한국으로 송금할 때는?',
+    o: [
+      { t: 'Wise, 하나, 카카오 수수료 전부 비교하고 제일 싼 걸로 보냄',
+        s: { ax1: 3, ax4A: 1 } },
+      { t: '환율 좋을 때를 기다렸다가 보냄',
+        s: { ax1: 1, ax2: 1 } },
+      { t: '필요할 때 그냥 바로 보냄',
+        s: { ax1: -1 } },
+      { t: '"환율 오르면 보낼게" 3개월째 하는 중',
+        s: { ax1: -1, ax2: -2 } },
+    ]
+  },
+
+  // ── 축2: 계획성 ───────────────────────────────────────────
+  {
+    axis: '축 2 — 계획성',
+    t: '이달 예산을 세웠나요?',
+    o: [
+      { t: '세웠고 가계부로 꼼꼼히 관리 중',
+        s: { ax2: 3, ax3: 2 } },
+      { t: '세웠는데 또 초과했음',
+        s: { ax2: -1, ax3: 1, ax4A: 1 } },
+      { t: '세우긴 했는데 잘 안 봄',
+        s: { ax2: -2, ax3: -1 } },
+      { t: '예산 같은 거 안 세움',
+        s: { ax2: -3, ax3: -2 } },
+    ]
+  },
+  {
+    axis: '축 2 — 계획성',
+    t: '월말 결산을 볼 때 기분은?',
+    o: [
+      { t: '예상대로라 뿌듯함. 이미 다 알고 있었음',
+        s: { ax2: 3, ax3: 2 } },
+      { t: '심호흡하고 봄. 그래도 봄',
+        s: { ax2: 1, ax3: 2, ax4A: 1 } },
+      { t: '"다음 달엔 진짜" (12달째)',
+        s: { ax2: -2, ax3: 1, ax4A: 1 } },
+      { t: '잘 안 봄. 보면 우울해짐',
+        s: { ax2: -2, ax3: -2 } },
+    ]
+  },
+
+  // ── 축3: 소비 인식 ────────────────────────────────────────
+  {
+    axis: '축 3 — 소비 인식',
+    t: '지금 내 구독 서비스 총 금액을 알고 있나요?',
+    o: [
+      { t: '€단위까지 정확히 말할 수 있음',
+        s: { ax3: 3, ax2: 1 } },
+      { t: '대략은 앎 (±€10 정도)',
+        s: { ax3: 1 } },
+      { t: '잘 모름, 생각해본 적 없음',
+        s: { ax3: -2 } },
+      { t: '세어보기 무서움 (아마 7개 이상)',
+        s: { ax3: -3, ax1: -1 } },
+    ]
+  },
+  {
+    axis: '축 3 — 소비 인식',
+    t: '외식이나 쇼핑 지출에 대해 어떻게 생각해요?',
+    o: [
+      { t: '얼마 쓰는지 알고, 알면서도 씀. 후회 없음',
+        s: { ax3: 2, ax1: -1, ax4C: 2 } },
+      { t: '줄여야 하는데 못 줄이고 있음',
+        s: { ax3: 1, ax2: -1, ax4A: 1 } },
+      { t: '별로 안 씀, 관심 없음',
+        s: { ax1: 2, ax3: 1 } },
+      { t: '얼마나 쓰는지 잘 모름',
+        s: { ax3: -3, ax1: -1 } },
+    ]
+  },
+
+  // ── 축4: 돈의 목적 ────────────────────────────────────────
+  {
+    axis: '축 4 — 돈의 목적',
+    t: '돈을 모으는 목적이 뭐예요?',
+    o: [
+      { t: '쓸 데 없이 나가는 돈을 줄이는 게 목표',
+        s: { ax4A: 3, ax1: 1 } },
+      { t: 'ETF나 투자로 불려서 나중에 쓰는 게 목표',
+        s: { ax4B: 3, ax2: 1 } },
+      { t: '지금 잘 먹고 잘 사는 게 목표',
+        s: { ax4C: 3, ax1: -1 } },
+      { t: '딱히 목표 없음, 그냥 살다 보면',
+        s: { ax2: -2, ax3: -1 } },
+    ]
+  },
+  {
+    axis: '축 4 — 돈의 목적',
+    t: 'ETF나 Sparplan 하고 있나요?',
+    o: [
+      { t: '자동이체 설정해두고 분기에 한 번 확인함',
+        s: { ax4B: 3, ax2: 2 } },
+      { t: '관심은 있는데 아직 시작 못 함',
+        s: { ax4A: 1, ax2: -1 } },
+      { t: '저축이 먼저, 투자는 나중에',
+        s: { ax4A: 2, ax1: 1 } },
+      { t: '투자보다 지금 소비가 더 중요함',
+        s: { ax4C: 2, ax1: -1 } },
+    ]
+  },
+
+  // ── 축5: 관리 동기 ────────────────────────────────────────
+  {
+    axis: '축 5 — 관리 동기',
+    t: '독일 Nebenkosten(관리비)을 어떻게 대하나요?',
+    o: [
+      { t: '처음부터 매달 적립해둠. 원래 이렇게 함',
+        s: { ax5V: 3, ax2: 2 } },
+      { t: '첫 해에 Nachzahlung 크게 당하고 나서 적립 시작',
+        s: { ax5T: 3, ax2: 1 } },
+      { t: '알고는 있는데 아직 따로 준비 안 함',
+        s: { ax3: 1, ax2: -1 } },
+      { t: 'Nebenkosten이 뭔지 잘 모름',
+        s: { ax3: -2, ax2: -1 } },
+    ]
+  },
+  {
+    axis: '축 5 — 관리 동기',
+    t: '이사할 때 가장 먼저 하는 것은?',
+    o: [
+      { t: 'Kaltmiete·Nebenkosten 금액 확인 후 가계부에 바로 등록',
+        s: { ax5V: 3, ax2: 2, ax3: 2 } },
+      { t: 'Nachzahlung 대비 비상금 계산부터',
+        s: { ax5T: 2, ax2: 1 } },
+      { t: 'Anmeldung 예약 먼저',
+        s: { ax2: 1 } },
+      { t: '짐 정리부터. 나머지는 나중에',
+        s: { ax2: -1 } },
+    ]
+  },
+];
+
+// ─── 유형 데이터 ──────────────────────────────────────────────────
+const T = {
+  Angebot: {
+    bar:'#1D9E75', dot:'#1D9E75',
+    pre:'목요일 저녁은 전단지 확인 시간인',
+    name:'Angebot 탐정',
+    stars:'지갑 통제력 ★★★★★',
+    tags:'#REWE전단 챙겨 #Pfand는 기본',
+    bb:'#E1F5EE', bc:'#085041', badge:'이번 주 Angebot 파악 완료',
+    img:'images/angebot.png',
+    traits:[
+      'REWE와 ALDI 가격 비교는 기본 중의 기본.',
+      'Pfand 병은 한 개도 그냥 버리는 법이 없음.',
+      '50% 할인 Käse를 위해 세 정거장 더 가는 건 합리적 선택.',
+      'Deutschlandticket 없는 사람이 있다는 게 아직도 신기함.',
+      '절약한 만큼 Brezel Money에서 정확히 확인해봐요.',
+    ],
+  },
+  Sparplan: {
+    bar:'#639922', dot:'#639922',
+    pre:'내가 바로 독일의 워렌버핏',
+    name:'Trade republic 대주주',
+    stars:'지갑 통제력 ★★★★☆',
+    tags:'#ETF_사고_잊는다 #Zinsen이_일한다 #Consorsbank_단골',
+    bb:'#EAF3DE', bc:'#27500A', badge:'이달 Sparplan 자동이체 완료',
+    img:'images/angebot.png',
+    traits:[
+      '매달 자동이체. 설정 후 건드린 적 없음.',
+      'ETF 수익률은 분기에 한 번쯤 확인하는 것으로 OK.',
+      '"언제 팔아요?" 질문에 "은퇴 때요"로 답함.',
+      '돈이 돈을 번다고 믿음.',
+      '지출도 Brezel Money로 자동 정리하면 완성이에요.',
+    ],
+  },
+  고정비: {
+    bar:'#378ADD', dot:'#378ADD',
+    pre:'Kaltmiete, Nebenkosten 따로 알고 있는',
+    name:'고정비 완전정복자',
+    stars:'지갑 통제력 ★★★★☆',
+    tags:'#고정비 관리는 필수 #돈관리에 야무진 편',
+    bb:'#E6F1FB', bc:'#0C447C', badge:'이달 고정비 기록 완료',
+    img:'images/angebot.png',
+    traits:[
+      'Kaltmiete, Nebenkosten, Krankenversicherung 금액 다 외움.',
+      '이사 첫날 가계부에 고정비 등록부터 함.',
+      '고정비 내에서 월 지출 예측은 거의 정확.',
+      '독일 살이 지출에 빠삭함.',
+      '변동비까지 잡으면 진짜 완전정복. Brezel Money로 해봐요.',
+    ],
+  },
+  Nachzahlung: {
+    bar:'#D85A30', dot:'#D85A30',
+    pre:'1월 우편함이 두려운',
+    name:'Nachzahlung 생존자',
+    stars:'지갑 통제력 ★★★☆☆',
+    tags:'#Nebenkosten 트라우마 #폭탄은 지긋지긋 #이제는 미리 모아둔다',
+    bb:'#FAECE7', bc:'#712B13', badge:'Nachzahlung 대비 적립 중',
+    img:'images/angebot.png',
+    traits:[
+      '첫 해 겨울 Nebenkosten Nachzahlung 폭탄. 그 이후 사람이 바뀜.',
+      '이제는 매달 조금씩 따로 모아두는 습관이 생김.',
+      '1월과 2월 우편함이 아직도 조금 무서움.',
+      '조금 춥게 살아도 되지 않을까..?',
+      '다음 Nachzahlung 폭탄은 Brezel Money로 미리 막아요.',
+    ],
+  },
+  예산: {
+    bar:'#D4537E', dot:'#D4537E',
+    pre:'이번 달만큼은 지킬 것 같았던',
+    name:'예산 재수생',
+    stars:'지갑 통제력 ★★☆☆☆',
+    tags:'#예산 세울때는 진심 #다음달엔 진짜',
+    bb:'#FBEAF0', bc:'#72243E', badge:'예산 초과 (이번이 마지막)',
+    img:'images/angebot.png',
+    traits:[
+      '예산 세울 때는 진심이었어. 진짜로.',
+      '결산 보는 날은 심호흡이 먼저.',
+      '"다음 달엔 진짜"가 12달째 반복됨.',
+      '그래도 가계부 쓰는 사람이 안 쓰는 사람보단 나음. (자기위로)',
+      '자연어 입력으로 기록 부담 없애면 이번엔 진짜 가능해요.',
+    ],
+  },
+  외식쇼핑: {
+    bar:'#F0997B', dot:'#D85A30',
+    pre:'지출 순위 1위가 외식과 쇼핑인',
+    name:'나 돈 잘 써 인간',
+    stars:'지갑 통제력 ★★☆☆☆',
+    tags:'#외식은 문화다 #쇼핑은 투자다',
+    bb:'#FAECE7', bc:'#712B13', badge:'이달도 외식·쇼핑 예산 초과 (납득)',
+    img:'images/angebot.png',
+    traits:[
+      '외식·쇼핑 지출이 매달 상위권. 이유 있음.',
+      '"이건 경험에 투자하는 거야"로 합리화 완료.',
+      '줄이려고 시도한 횟수: 기억 안 남.',
+      '맛집 정보나 세일 소식은 누구보다 빠름.',
+      '잘 쓰는 건 좋은데 얼마나 썼는지는 Brezel Money에서 확인해요.',
+    ],
+  },
+  Abo: {
+    bar:'#EF9F27', dot:'#EF9F27',
+    pre:'Kündigung 하려다 또 깜빡한',
+    name:'Abo 컬렉터',
+    stars:'지갑 통제력 ★☆☆☆☆',
+    tags:'#해지 결심 횟수무제한 #Kündigung 나중에 #깜빡 깜빡',
+    bb:'#FAEEDA', bc:'#633806', badge:'이번 달도 자동 갱신 완료',
+    img:'images/angebot.png',
+    traits:[
+      'Netflix, Spotify, iCloud, ChatGPT, Amazon Prime… 끊을 게 없음.',
+      'Kündigung 하려고 했는데 또 깜빡했다. 다음 달에.',
+      'GEZ는 어쩔 수 없잖아. 법이잖아.',
+      '언젠가는 쓰겠지...',
+      '구독료 포함 전체 지출, Brezel Money에서 한번 세어봐요.',
+    ],
+  },
+};
+
+// ─── 축 점수 → 유형 판정 ─────────────────────────────────────────
+function calcResult(axes) {
+  const { ax1, ax2, ax3, ax4A, ax4B, ax4C, ax5V, ax5T } = axes;
+
+  // 각 유형별 적합도 점수 계산
+  const fit = {
+    // Angebot: 절약 + 아낀다 + 자발적
+    Angebot: ax1 * 2 + ax4A * 2 + ax5V,
+    // Sparplan: 절약 + 불린다
+    Sparplan: ax1 + ax4B * 3,
+    // 고정비: 계획적 + 의식적 + 자발적
+    고정비: ax2 * 2 + ax3 + ax5V * 2,
+    // Nachzahlung: 계획적 + 트라우마
+    Nachzahlung: ax2 + ax5T * 3,
+    // 예산재수생: 소비 + 즉흥 + 의식 + 아낀다(의지)
+    예산: (-ax1) + (-ax2) * 2 + ax3 + ax4A,
+    // 외식쇼핑: 소비 + 의식 + 현재
+    외식쇼핑: (-ax1) + ax3 + ax4C * 2,
+    // Abo: 소비 + 무의식
+    Abo: (-ax1) + (-ax3) * 2,
+  };
+
+  return Object.entries(fit).sort((a, b) => b[1] - a[1])[0][0];
+}
+
+let cur = 0;
+const ans = Array(Qs.length).fill(null);
+
+function sec(id) {
+  ['sec-intro','sec-quiz','sec-loading','sec-result'].forEach(s => {
+    document.getElementById(s).style.display = 'none';
+  });
+  const el = document.getElementById(id);
+  el.style.display = 'flex';
+  el.style.flexDirection = 'column';
+}
+
+function renderQ(i) {
+  const q = Qs[i];
+  document.getElementById('prog-bar').innerHTML = Qs.map((_,j) => `<div class="prog-seg${j<=i?' done':''}"></div>`).join('');
+  document.getElementById('q-label').textContent = `Q${i+1}.`;
+  document.getElementById('q-count').textContent = `${i+1} / ${Qs.length}`;
+  document.getElementById('q-axis').textContent = q.axis;
+  document.getElementById('q-text').textContent = q.t;
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  q.o.forEach((o, oi) => {
+    const b = document.createElement('button');
+    b.className = 'opt-btn' + (ans[i]===oi ? ' selected' : '');
+    b.textContent = o.t;
+    b.onclick = () => {
+      ans[i] = oi;
+      document.querySelectorAll('.opt-btn').forEach((el,j) => el.classList.toggle('selected', j===oi));
+      document.getElementById('btn-next').classList.add('on');
+    };
+    opts.appendChild(b);
+  });
+  const nb = document.getElementById('btn-next');
+  nb.textContent = i === Qs.length-1 ? '결과 보기 →' : '다음 →';
+  nb.classList.toggle('on', ans[i] !== null);
+  document.getElementById('btn-back').style.visibility = i===0 ? 'hidden' : 'visible';
+}
+
+function getAxes() {
+  const axes = { ax1:0, ax2:0, ax3:0, ax4A:0, ax4B:0, ax4C:0, ax5V:0, ax5T:0 };
+  ans.forEach((a, i) => {
+    if (a === null) return;
+    const s = Qs[i].o[a].s;
+    Object.entries(s).forEach(([k, v]) => { if (axes[k] !== undefined) axes[k] += v; });
+  });
+  return axes;
+}
+
+function showResult() {
+  sec('sec-loading');
+  setTimeout(() => {
+    const key = calcResult(getAxes());
+    const t = T[key];
+    document.getElementById('r-bar').style.background = t.bar;
+    document.getElementById('r-pre').textContent = t.pre;
+    const nm = document.getElementById('r-name');
+    nm.textContent = t.name; nm.style.color = t.bar;
+    document.getElementById('r-stars').textContent = t.stars;
+    document.getElementById('r-tags').textContent = t.tags;
+    document.getElementById('r-badge').innerHTML = `<span class="rcard-badge" style="background:${t.bb};color:${t.bc}">${t.badge}</span>`;
+    const imgEl = document.getElementById('r-img');
+    if (imgEl) { imgEl.src = t.img; imgEl.alt = t.name; }
+    document.getElementById('r-traits').innerHTML = t.traits.map((tr, i) =>
+      `<div class="trait"><div class="tdot" style="background:${t.dot}"></div><div class="trait-text">${tr}</div></div>`
+    ).join('');
+    sec('sec-result');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }, 1400);
+}
+
+document.getElementById('btn-start').onclick = () => {
+  cur=0; ans.fill(null); sec('sec-quiz'); renderQ(0); window.scrollTo({top:0,behavior:'smooth'});
+};
+document.getElementById('btn-next').onclick = () => {
+  if(ans[cur]===null) return;
+  if(cur < Qs.length-1) { cur++; renderQ(cur); window.scrollTo({top:0,behavior:'smooth'}); }
+  else showResult();
+};
+document.getElementById('btn-back').onclick = () => {
+  if(cur>0) { cur--; renderQ(cur); window.scrollTo({top:0,behavior:'smooth'}); }
+};
+document.getElementById('btn-retry').onclick = () => {
+  cur=0; ans.fill(null); sec('sec-quiz'); renderQ(0); window.scrollTo({top:0,behavior:'smooth'});
+};
+document.getElementById('btn-copy').onclick = () => {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const b = document.getElementById('btn-copy');
+    b.textContent = '복사 완료!';
+    setTimeout(() => b.textContent = '링크 복사', 2000);
+  });
+};
+document.getElementById('btn-thread').onclick = () => {
+  const name = document.getElementById('r-name').textContent;
+  const txt = encodeURIComponent(`나의 독일 교민 소비 유형은 "${name}" 🥐\n나는 어떤 유형인지 테스트해봐 →\nhttps://bybrezel.com/money/quiz/quiz.html`);
+  window.open(`https://www.threads.net/intent/post?text=${txt}`, '_blank');
+};
+
+sec('sec-intro');
+</script>
+</body>
+</html>
