@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>나는 어떤 독일 교민 소비 유형? — Brezel Money</title>
 <meta name="description" content="독일 교민이라면 한 번쯤 해봐야 할 소비 유형 테스트."/>
-<meta property="og:title" content="나는 어떤 독일 교민 소비 유형?"/>
+<meta property="og:title" content="독일 사는 나는 어떤 소비 유형?"/>
 <meta property="og:description" content="10개 질문으로 알아보는 나의 소비 성향 — Brezel Money"/>
 <meta property="og:image" content="icon-192.png"/>
 <link rel="icon" href="icon-192.png"/>
@@ -196,7 +196,7 @@ html,body{background:var(--gray-50);font-family:var(--font);color:var(--black);-
     <div class="funnel">
       <div class="funnel-top">
         <div class="funnel-logo"><img src="icon-192.png" alt="Brezel Money"/></div>
-        <div class="funnel-title">더 알뜰한 생활을 위한<br/>독일생활 전용 가계부<em>Brezel Money</em></div>
+        <div class="funnel-title">독일생활 전용 가계부<br/><em>Brezel Money</em></div>
       </div>
       <div class="funnel-feats">
         <div class="ffeat"><div class="fdot"></div>EUR·KRW 동시 관리 — 환율 자동 계산</div>
@@ -403,16 +403,16 @@ const T = {
   Sparplan: {
     bar:'#639922', dot:'#639922',
     pre:'내가 바로 독일의 워렌버핏',
-    name:'Trade republic 대주주',
+    name:'적립식 투자의 귀재',
     stars:'지갑 통제력 ★★★★☆',
-    tags:'#ETF_사고_잊는다 #Zinsen이_일한다 #Consorsbank_단골',
+    tags:'#ETF 사고 잊는다 #투자로 부자되고 싶어',
     bb:'#EAF3DE', bc:'#27500A', badge:'이달 Sparplan 자동이체 완료',
-    img:'images/angebot.png',
+    img:'images/sparplan.png',
     traits:[
       '매달 자동이체. 설정 후 건드린 적 없음.',
       'ETF 수익률은 분기에 한 번쯤 확인하는 것으로 OK.',
       '"언제 팔아요?" 질문에 "은퇴 때요"로 답함.',
-      '돈이 돈을 번다고 믿음.',
+      '요즘 미장보면 약간 속상하지만 믿음으로 가져간다',
       '지출도 Brezel Money로 자동 정리하면 완성이에요.',
     ],
   },
@@ -423,7 +423,7 @@ const T = {
     stars:'지갑 통제력 ★★★★☆',
     tags:'#고정비 관리는 필수 #돈관리에 야무진 편',
     bb:'#E6F1FB', bc:'#0C447C', badge:'이달 고정비 기록 완료',
-    img:'images/angebot.png',
+    img:'images/gojeongbi.png',
     traits:[
       'Kaltmiete, Nebenkosten, Krankenversicherung 금액 다 외움.',
       '이사 첫날 가계부에 고정비 등록부터 함.',
@@ -439,7 +439,7 @@ const T = {
     stars:'지갑 통제력 ★★★☆☆',
     tags:'#Nebenkosten 트라우마 #폭탄은 지긋지긋 #이제는 미리 모아둔다',
     bb:'#FAECE7', bc:'#712B13', badge:'Nachzahlung 대비 적립 중',
-    img:'images/angebot.png',
+    img:'images/nachzahlung.png',
     traits:[
       '첫 해 겨울 Nebenkosten Nachzahlung 폭탄. 그 이후 사람이 바뀜.',
       '이제는 매달 조금씩 따로 모아두는 습관이 생김.',
@@ -455,7 +455,7 @@ const T = {
     stars:'지갑 통제력 ★★☆☆☆',
     tags:'#예산 세울때는 진심 #다음달엔 진짜',
     bb:'#FBEAF0', bc:'#72243E', badge:'예산 초과 (이번이 마지막)',
-    img:'images/angebot.png',
+    img:'images/yesan.png',
     traits:[
       '예산 세울 때는 진심이었어. 진짜로.',
       '결산 보는 날은 심호흡이 먼저.',
@@ -471,7 +471,7 @@ const T = {
     stars:'지갑 통제력 ★★☆☆☆',
     tags:'#외식은 문화다 #쇼핑은 투자다',
     bb:'#FAECE7', bc:'#712B13', badge:'이달도 외식·쇼핑 예산 초과 (납득)',
-    img:'images/angebot.png',
+    img:'images/oesikshopping.png',
     traits:[
       '외식·쇼핑 지출이 매달 상위권. 이유 있음.',
       '"이건 경험에 투자하는 거야"로 합리화 완료.',
@@ -487,7 +487,7 @@ const T = {
     stars:'지갑 통제력 ★☆☆☆☆',
     tags:'#해지 결심 횟수무제한 #Kündigung 나중에 #깜빡 깜빡',
     bb:'#FAEEDA', bc:'#633806', badge:'이번 달도 자동 갱신 완료',
-    img:'images/angebot.png',
+    img:'images/abo.png',
     traits:[
       'Netflix, Spotify, iCloud, ChatGPT, Amazon Prime… 끊을 게 없음.',
       'Kündigung 하려고 했는데 또 깜빡했다. 다음 달에.',
@@ -616,7 +616,7 @@ document.getElementById('btn-copy').onclick = () => {
 };
 document.getElementById('btn-thread').onclick = () => {
   const name = document.getElementById('r-name').textContent;
-  const txt = encodeURIComponent(`나의 독일 교민 소비 유형은 "${name}" 🥐\n나는 어떤 유형인지 테스트해봐 →\nhttps://bybrezel.com/money/quiz/quiz.html`);
+  const txt = encodeURIComponent(`나의 독일생활 소비 유형은 "${name}" 🥐\n스친이는 어떤 유형인지 테스트해봐 →\nhttps://bybrezel.com/money/quiz/quiz.html`);
   window.open(`https://www.threads.net/intent/post?text=${txt}`, '_blank');
 };
 
