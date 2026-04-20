@@ -1129,7 +1129,9 @@ const syncFixedCosts = async () => {
   await updateFixedCostsRates();
 };
 
-// 미래 고정비가 당일이 되었을 때 환율 업데이트
+// 고정비 환율 업데이트:
+// - 과거/당일 내역 중 환율 날짜가 해당 결제일과 다른 경우 → 해당 날짜 환율로 업데이트
+// - 미래 내역 중 현재 환율(작성일 기준)이 오래된 경우 → 오늘 환율로 재설정
 const updateFixedCostsRates = async () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -1137,36 +1139,77 @@ const updateFixedCostsRates = async () => {
   
   let txns = getTxns();
   
-  // 업데이트가 필요한 고정비 찾기
-  const needsUpdate = txns.filter(txn => 
-    txn.fixedId && txn.date === todayStr && txn.rateDate !== todayStr
-  );
+  // 1) 과거/당일 내역: 환율 날짜가 결제일과 다른 것 (앱을 못 켠 날 포함)
+  const pastNeedsUpdate = txns.filter(txn => {
+    if (!txn.fixedId) return false;
+    const txnDate = new Date(txn.date);
+    txnDate.setHours(0, 0, 0, 0);
+    return txnDate <= today && txn.rateDate !== txn.date;
+  });
   
-  if (needsUpdate.length === 0) return;
+  // 2) 미래 내역: 작성일(rateDate) 기준 환율이 오래됐으면 오늘 환율로 갱신
+  const futureNeedsUpdate = txns.filter(txn => {
+    if (!txn.fixedId) return false;
+    const txnDate = new Date(txn.date);
+    txnDate.setHours(0, 0, 0, 0);
+    return txnDate > today && txn.rateDate !== todayStr;
+  });
   
-  // 오늘 환율 한 번만 조회
+  if (pastNeedsUpdate.length === 0 && futureNeedsUpdate.length === 0) return;
+  
   try {
-    const historicalRate = await fetchRateForDate(todayStr);
-    if (!historicalRate || !historicalRate.rate) return;
+    // 과거/당일: 날짜별로 그룹화해서 환율 조회
+    const datesToFetch = new Set(pastNeedsUpdate.map(t => t.date));
+    const rateCache = {};
     
-    // 일괄 업데이트
+    await Promise.all(Array.from(datesToFetch).map(async dateStr => {
+      try {
+        const r = await fetchRateForDate(dateStr);
+        if (r?.rate) rateCache[dateStr] = r;
+      } catch (err) {
+        log.warn('SYNC', `${dateStr} 환율 조회 실패:`, err);
+      }
+    }));
+    
+    // 미래 내역용 오늘 환율 (필요한 경우만 조회)
+    let todayRate = null;
+    if (futureNeedsUpdate.length > 0) {
+      try {
+        todayRate = await fetchRateForDate(todayStr);
+      } catch (err) {
+        log.warn('SYNC', `오늘(${todayStr}) 환율 조회 실패:`, err);
+      }
+    }
+    
+    let changed = false;
     txns = txns.map(txn => {
-      if (needsUpdate.find(t => t.id === txn.id)) {
-        log.info('SYNC', `고정비 환율 업데이트: ${txn.title} - ${txn.date}`);
-        return {
-          ...txn,
-          rateAtTime: historicalRate.rate,
-          rateDate: historicalRate.date || todayStr
-        };
+      // 과거/당일 업데이트
+      const isPast = pastNeedsUpdate.find(t => t.id === txn.id);
+      if (isPast) {
+        const cached = rateCache[txn.date];
+        if (cached) {
+          log.info('SYNC', `고정비 과거 환율 업데이트: ${txn.title} (${txn.date})`);
+          changed = true;
+          return { ...txn, rateAtTime: cached.rate, rateDate: cached.date || txn.date };
+        }
+      }
+      // 미래 내역 환율 갱신 (작성일 기준 → 오늘 기준)
+      const isFuture = futureNeedsUpdate.find(t => t.id === txn.id);
+      if (isFuture && todayRate?.rate) {
+        log.info('SYNC', `고정비 미래 환율 갱신: ${txn.title} (${txn.date})`);
+        changed = true;
+        return { ...txn, rateAtTime: todayRate.rate, rateDate: todayRate.date || todayStr };
       }
       return txn;
     });
     
-    setTxns(txns);
-    await dbSaveTxns(txns);
+    if (changed) {
+      setTxns(txns);
+      await dbSaveTxns(txns);
+    }
     
   } catch (err) {
-    log.warn('SYNC', `오늘(${todayStr}) 환율 업데이트 실패:`, err);
+    log.warn('SYNC', `고정비 환율 업데이트 실패:`, err);
   }
 };
 
