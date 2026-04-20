@@ -274,6 +274,7 @@ let activeScopeUserId = null;
 const META = {
   GUEST_IMPORT_DISMISSED: uid => `gyembu:meta:guest_import_dismissed:${uid}`,
   MIGRATION_DONE: uid => `gyembu:meta:migration_done:${uid}`,
+  RATE_FIX_DONE: uid => `gyembu:meta:rate_fix_done:${uid}`,
 };
 const getStorageScope = (uid = activeScopeUserId) => uid ? `gyembu:user:${uid}` : 'gyembu:guest';
 const scopedKey = (baseKey, uid = activeScopeUserId) => `${getStorageScope(uid)}:${baseKey}`;
@@ -427,7 +428,7 @@ const toSnake = obj => {
     feeCurrency:'fee_currency', transferId:'transfer_id',
     rateAtTime:'rate_at_time', rateDate:'rate_date',
     payMethod:'pay_method', fixedId:'fixed_id',
-    isCorrection:'is_correction', createdAt:'created_at',
+    isCorrection:'is_correction', isManualRate:'is_manual_rate', createdAt:'created_at',
     initialBalance:'initial_balance', isCash:'is_cash',
     incomeType:'income_type', startMonth:'start_month',
     syncedMonths:'synced_months', budgetEur:'budget_eur',
@@ -448,7 +449,7 @@ const toCamel = obj => {
     fee_currency:'feeCurrency', transfer_id:'transferId',
     rate_at_time:'rateAtTime', rate_date:'rateDate',
     pay_method:'payMethod', fixed_id:'fixedId',
-    is_correction:'isCorrection', created_at:'createdAt',
+    is_correction:'isCorrection', is_manual_rate:'isManualRate', created_at:'createdAt',
     initial_balance:'initialBalance', is_cash:'isCash',
     income_type:'incomeType', start_month:'startMonth',
     synced_months:'syncedMonths', budget_eur:'budgetEur',
@@ -1129,89 +1130,144 @@ const syncFixedCosts = async () => {
   
   // 미래 고정비의 환율 업데이트 체크
   await updateFixedCostsRates();
+
+  // 일회성 마이그레이션: 구버전으로 잘못 저장된 고정비 환율 교정
+  await migrateFixedCostRates();
+};
+
+// 구버전 코드로 rateDate === date인데 환율값이 잘못 저장된 내역 일회성 교정
+const migrateFixedCostRates = async () => {
+  const uid = await getCurrentUserId() || 'guest';
+  const flagKey = META.RATE_FIX_DONE(uid);
+  if (localStorage.getItem(flagKey) === '1') return;
+
+  log.info('SYNC', '고정비 환율 마이그레이션 시작');
+
+  let txns = getTxns();
+  const fixed = txns.filter(t => t.fixedId);
+  if (fixed.length === 0) {
+    localStorage.setItem(flagKey, '1');
+    return;
+  }
+
+  // 고정비 결제일 날짜별로 실제 환율 조회
+  const dates = [...new Set(fixed.map(t => t.date))];
+  const rateCache = {};
+  await Promise.all(dates.map(async dateStr => {
+    try {
+      const r = await fetchRateForDate(dateStr);
+      if (r?.rate) rateCache[dateStr] = r;
+    } catch (err) {
+      log.warn('SYNC', `마이그레이션 환율 조회 실패 (${dateStr}):`, err);
+    }
+  }));
+
+  let changed = false;
+  txns = txns.map(txn => {
+    if (!txn.fixedId || txn.isManualRate) return txn;
+    const r = rateCache[txn.date];
+    if (!r) return txn;
+    // 환율값이 실제와 다른 경우에만 교정
+    if (txn.rateAtTime === r.rate && txn.rateDate === r.date) return txn;
+    log.info('SYNC', `마이그레이션 교정: ${txn.title} (${txn.date}) ${txn.rateAtTime} -> ${r.rate}`);
+    changed = true;
+    return { ...txn, rateAtTime: r.rate, rateDate: r.date || txn.date };
+  });
+
+  if (changed) {
+    setTxns(txns);
+    await dbSaveTxns(txns);
+  }
+
+  localStorage.setItem(flagKey, '1');
+  log.info('SYNC', '고정비 환율 마이그레이션 완료');
 };
 
 // 고정비 환율 업데이트:
-// - 과거/당일 내역 중 환율 날짜가 해당 결제일과 다른 경우 → 해당 날짜 환율로 업데이트
-// - 미래 내역 중 현재 환율(작성일 기준)이 오래된 경우 → 오늘 환율로 재설정
+// - 과거/당일: rateDate != date → 해당 날짜 실제 환율로 업데이트
+// - 당일: rateDate == date이지만 환율값이 오늘 실제값과 다른 것 → 교정
+// - 미래: rateDate != today → 오늘 환율로 갱신
 const updateFixedCostsRates = async () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const todayStr = today.toISOString().split('T')[0];
-  
+
+  // 오늘 실제 환율 먼저 조회
+  let todayRate = null;
+  try {
+    todayRate = await fetchRateForDate(todayStr);
+  } catch (err) {
+    log.warn('SYNC', `오늘(${todayStr}) 환율 조회 실패:`, err);
+  }
+  if (!todayRate?.rate) return;
+
   let txns = getTxns();
-  
-  // 1) 과거/당일 내역: 환율 날짜가 결제일과 다른 것 (앱을 못 켠 날 포함)
+
+  // 1) 과거/당일: rateDate가 결제일과 다른 것 (수동 설정 제외)
   const pastNeedsUpdate = txns.filter(txn => {
-    if (!txn.fixedId) return false;
+    if (!txn.fixedId || txn.isManualRate) return false;
     const txnDate = new Date(txn.date);
     txnDate.setHours(0, 0, 0, 0);
     return txnDate <= today && txn.rateDate !== txn.date;
   });
-  
-  // 2) 미래 내역: 작성일(rateDate) 기준 환율이 오래됐으면 오늘 환율로 갱신
+
+  // 2) 당일: rateDate는 오늘이지만 환율값이 실제와 다른 것 (구버전으로 저장된 내역 교정, 수동 설정 제외)
+  const todayWrongRate = txns.filter(txn => {
+    if (!txn.fixedId || txn.isManualRate) return false;
+    return txn.date === todayStr &&
+           txn.rateDate === todayStr &&
+           txn.rateAtTime !== todayRate.rate;
+  });
+
+  // 3) 미래: rateDate가 오늘이 아닌 것 (수동 설정 제외)
   const futureNeedsUpdate = txns.filter(txn => {
-    if (!txn.fixedId) return false;
+    if (!txn.fixedId || txn.isManualRate) return false;
     const txnDate = new Date(txn.date);
     txnDate.setHours(0, 0, 0, 0);
     return txnDate > today && txn.rateDate !== todayStr;
   });
-  
-  if (pastNeedsUpdate.length === 0 && futureNeedsUpdate.length === 0) return;
-  
-  try {
-    // 과거/당일: 날짜별로 그룹화해서 환율 조회
-    const datesToFetch = new Set(pastNeedsUpdate.map(t => t.date));
-    const rateCache = {};
-    
-    await Promise.all(Array.from(datesToFetch).map(async dateStr => {
+
+  if (pastNeedsUpdate.length === 0 && todayWrongRate.length === 0 && futureNeedsUpdate.length === 0) return;
+
+  // 과거 내역 날짜별 환율 조회
+  const rateCache = { [todayStr]: todayRate };
+  await Promise.all(
+    [...new Set(pastNeedsUpdate.map(t => t.date))].map(async dateStr => {
       try {
         const r = await fetchRateForDate(dateStr);
         if (r?.rate) rateCache[dateStr] = r;
       } catch (err) {
         log.warn('SYNC', `${dateStr} 환율 조회 실패:`, err);
       }
-    }));
-    
-    // 미래 내역용 오늘 환율 (필요한 경우만 조회)
-    let todayRate = null;
-    if (futureNeedsUpdate.length > 0) {
-      try {
-        todayRate = await fetchRateForDate(todayStr);
-      } catch (err) {
-        log.warn('SYNC', `오늘(${todayStr}) 환율 조회 실패:`, err);
-      }
-    }
-    
-    let changed = false;
-    txns = txns.map(txn => {
-      // 과거/당일 업데이트
-      const isPast = pastNeedsUpdate.find(t => t.id === txn.id);
-      if (isPast) {
-        const cached = rateCache[txn.date];
-        if (cached) {
-          log.info('SYNC', `고정비 과거 환율 업데이트: ${txn.title} (${txn.date})`);
-          changed = true;
-          return { ...txn, rateAtTime: cached.rate, rateDate: cached.date || txn.date };
-        }
-      }
-      // 미래 내역 환율 갱신 (작성일 기준 → 오늘 기준)
-      const isFuture = futureNeedsUpdate.find(t => t.id === txn.id);
-      if (isFuture && todayRate?.rate) {
-        log.info('SYNC', `고정비 미래 환율 갱신: ${txn.title} (${txn.date})`);
+    })
+  );
+
+  let changed = false;
+  txns = txns.map(txn => {
+    if (pastNeedsUpdate.find(t => t.id === txn.id)) {
+      const cached = rateCache[txn.date];
+      if (cached) {
+        log.info('SYNC', `고정비 과거 환율 업데이트: ${txn.title} (${txn.date})`);
         changed = true;
-        return { ...txn, rateAtTime: todayRate.rate, rateDate: todayRate.date || todayStr };
+        return { ...txn, rateAtTime: cached.rate, rateDate: cached.date || txn.date };
       }
-      return txn;
-    });
-    
-    if (changed) {
-      setTxns(txns);
-      await dbSaveTxns(txns);
     }
-    
-  } catch (err) {
-    log.warn('SYNC', `고정비 환율 업데이트 실패:`, err);
+    if (todayWrongRate.find(t => t.id === txn.id)) {
+      log.info('SYNC', `고정비 당일 환율 교정: ${txn.title} ${txn.rateAtTime} -> ${todayRate.rate}`);
+      changed = true;
+      return { ...txn, rateAtTime: todayRate.rate, rateDate: todayRate.date || todayStr };
+    }
+    if (futureNeedsUpdate.find(t => t.id === txn.id)) {
+      log.info('SYNC', `고정비 미래 환율 갱신: ${txn.title} (${txn.date})`);
+      changed = true;
+      return { ...txn, rateAtTime: todayRate.rate, rateDate: todayRate.date || todayStr };
+    }
+    return txn;
+  });
+
+  if (changed) {
+    setTxns(txns);
+    await dbSaveTxns(txns);
   }
 };
 
@@ -2886,7 +2942,7 @@ function AddTransaction({ onDone, editing = null }) {
         toAccountId: toAccId, toAccountName: toAcc?.name || '',
         toAmount: parseComma(toAmtStr, toCur), toCurrency: toCur,
         fee: parseComma(feeStr, feeCur) || 0, feeCurrency: feeCur,
-        date, memo, rateAtTime: normalizeRate(effectiveRate), rateDate: rateInfo?.date || date,
+        date, memo, rateAtTime: normalizeRate(effectiveRate), rateDate: rateInfo?.date || date, isManualRate: !!(manualRate && manualRateVal),
       };
       if (editing) updateTxn(editing.id, entry);
       else addTxn(entry);
@@ -2898,7 +2954,7 @@ function AddTransaction({ onDone, editing = null }) {
     if (!amtStr) return;
     if (!isVoucher && !accId && accounts.length > 0) return;
     const acc = accounts.find(a => a.id === accId);
-    const entry = { title, type, amount: parseComma(amtStr, cur), currency: cur, accountId: isVoucher ? '' : accId, accountName: isVoucher ? '상품권/쿠폰' : acc?.name || '', category: cat, payMethod, memo, date, rateAtTime: effectiveRate, rateDate: rateInfo?.date || date };
+    const entry = { title, type, amount: parseComma(amtStr, cur), currency: cur, accountId: isVoucher ? '' : accId, accountName: isVoucher ? '상품권/쿠폰' : acc?.name || '', category: cat, payMethod, memo, date, rateAtTime: effectiveRate, rateDate: rateInfo?.date || date, isManualRate: !!(manualRate && manualRateVal) };
     if (editing) updateTxn(editing.id, entry);
     else addTxn(entry);
     await dbSaveTxns(getTxns());
