@@ -2609,6 +2609,7 @@ function AddTransaction({ onDone, editing = null }) {
   const [payMethod, setPayMethod] = useState(f.payMethod || 'card');
   const [titleVal, setTitleVal] = useState(f.title || '');
   const memoRef = useRef();
+  const [memoVal, setMemoVal] = useState(f.memo || '');
   const [date, setDate] = useState(f.date || new Date().toISOString().split('T')[0]);
   const [rateInfo, setRateInfo] = useState(f.rateAtTime ? { rate: f.rateAtTime, date: f.rateDate } : null);
   const [rateLoading, setRateLoading] = useState(false);
@@ -2776,9 +2777,13 @@ function AddTransaction({ onDone, editing = null }) {
     // 날짜 설정
     if (receiptDate) setDate(receiptDate);
     
-    // 메모에 품목 리스트 추가
-    if (items && items.length > 0 && memoRef.current) {
-      memoRef.current.value = items.map(item => item.name).join(', ');
+    // 메모에 품목 리스트 추가 (이름 + 금액)
+    if (items && items.length > 0) {
+      const currencySymbol = currency === 'EUR' ? '€' : '₩';
+      const itemList = items.map(item => 
+        `${item.name} ${currencySymbol}${item.amount}`
+      ).join(', ');
+      setMemoVal(itemList);
     }
     
     setReceiptResult(null);
@@ -2821,7 +2826,7 @@ function AddTransaction({ onDone, editing = null }) {
   };
 
   const save = async () => {
-    const memo = memoRef.current?.value || '';
+    const memo = memoVal;
     if (type === 'transfer') {
       if (!fromAmtStr || !toAmtStr) return;
       if (!fromAccId || !toAccId) return;
@@ -3064,7 +3069,7 @@ function AddTransaction({ onDone, editing = null }) {
         ] }),
         // 날짜/메모
         jsxs('div', { className: 'row', children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '날짜' }), jsx('input', { type: 'date', value: date, onChange: e => setDate(e.target.value), style: { border: 'none', background: 'transparent', fontSize: 13, color: 'var(--black)', outline: 'none', fontFamily: 'var(--font)' } })] }),
-        jsxs('div', { style: { paddingTop: 14 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '메모' }), jsx('textarea', { ref: memoRef, className: 'field', placeholder: '예: Wise 송금', rows: 2, defaultValue: f.memo || '' })] }),
+        jsxs('div', { style: { paddingTop: 14 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '메모' }), jsx('textarea', { className: 'field', placeholder: '예: Wise 송금', rows: 2, value: memoVal, onChange: e => setMemoVal(e.target.value) })] }),
         jsx('div', { style: { height: 20 } }),
         jsx('button', { className: 'btn', onClick: save, children: editing ? '수정 완료' : '저장' }),
       ] }),
@@ -3111,7 +3116,7 @@ function AddTransaction({ onDone, editing = null }) {
         jsxs('div', { style: { display: 'flex', gap: 6 }, children: [jsx(Pill, { on: payMethod === 'card', onClick: () => setPayMethod('card'), children: '카드' }), jsx(Pill, { on: payMethod === 'cash', onClick: () => setPayMethod('cash'), children: '현금' }), jsx(Pill, { on: payMethod === 'voucher', onClick: () => setPayMethod('voucher'), children: '상품권/쿠폰' })] }),
       ] }),
       jsxs('div', { className: 'row', children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '날짜' }), jsx('input', { type: 'date', value: date, onChange: e => setDate(e.target.value), style: { border: 'none', background: 'transparent', fontSize: 13, color: 'var(--black)', outline: 'none', fontFamily: 'var(--font)' } })] }),
-      jsxs('div', { style: { paddingTop: 14 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '메모' }), jsx('textarea', { ref: memoRef, className: 'field', placeholder: '내용 입력 (선택)', rows: 2, defaultValue: f.memo || '' })] }),
+      jsxs('div', { style: { paddingTop: 14 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '메모' }), jsx('textarea', { className: 'field', placeholder: '내용 입력 (선택)', rows: 2, value: memoVal, onChange: e => setMemoVal(e.target.value) })] }),
       jsx('div', { style: { height: 20 } }),
       jsx('button', { className: 'btn', onClick: save, children: editing ? '수정 완료' : '저장' }),
     ] }),   // 수입/지출 폼 닫기
