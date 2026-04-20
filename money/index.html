@@ -961,7 +961,9 @@ const fetchRateForDate = async date => {
     const res = await fetch(`https://api.frankfurter.dev/v2/rate/EUR/KRW?providers=ECB&date=${date}`);
     const data = await res.json();
     const rate = roundRate2(data?.rate);
-    return { rate: rate || roundRate2(getRate().rate), date };
+    // API가 반환한 실제 날짜 사용 (주말/공휴일이면 직전 영업일 날짜가 반환됨)
+    const actualDate = data?.date || date;
+    return { rate: rate || roundRate2(getRate().rate), date: actualDate };
   } catch (e) {
     log.error('RATE', 'historical fetch 실패:', e);
     return { rate: roundRate2(getRate().rate), date };
