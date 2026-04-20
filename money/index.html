@@ -3538,6 +3538,102 @@ function SettingsPage({ onClose, onSignOut, onShowAuth, authUser }) {
     ] }),
     jsx('button', { className: 'btn-ghost', style: { marginTop: 0 }, onClick: clearAppCacheAndReload, children: '앱 캐시 초기화' }),
     jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginTop: 8, lineHeight: 1.6 }, children: '예전 화면이 보이거나 홈 화면 앱이 최신 버전으로 갱신되지 않을 때 사용하세요. 가계부 데이터는 삭제되지 않아요.' }),
+    
+    DEBUG_MODE && jsxs(Fragment, { children: [
+      jsx('div', { className: 'divider', style: { margin: '24px 0 16px' } }),
+      jsx('p', { className: 'section-title', children: '개발자 테스트' }),
+      jsx('button', { 
+        className: 'btn-ghost', 
+        style: { marginTop: 0, borderColor: '#FFE4B5', background: '#FFF9E6' }, 
+        onClick: () => {
+          const today = new Date().toISOString().split('T')[0];
+          let txns = getTxns();
+          const updated = txns.map(t => {
+            if (t.fixedId) {
+              return { ...t, date: today };
+            }
+            return t;
+          });
+          setTxns(updated);
+          alert(`모든 고정비 날짜를 ${today}로 변경했어요. 이제 환율 업데이트 테스트를 실행하세요.`);
+        },
+        children: '고정비 날짜를 오늘로 변경'
+      }),
+      jsx('button', { 
+        className: 'btn-ghost', 
+        style: { marginTop: 8, borderColor: '#FFE4B5', background: '#FFF9E6' }, 
+        onClick: async () => {
+          console.log('[TEST] 고정비 환율 업데이트 테스트 시작');
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const todayStr = today.toISOString().split('T')[0];
+          
+          let txns = getTxns();
+          const needsUpdate = txns.filter(txn => 
+            txn.fixedId && txn.date === todayStr && txn.rateDate !== todayStr
+          );
+          
+          console.log('[TEST] 업데이트 필요한 내역:', needsUpdate.length);
+          
+          if (needsUpdate.length === 0) {
+            alert('업데이트할 고정비가 없어요. "고정비 날짜를 오늘로 변경" 버튼을 먼저 눌러주세요.');
+            return;
+          }
+          
+          console.table(needsUpdate.map(t => ({
+            제목: t.title,
+            날짜: t.date,
+            현재환율: t.rateAtTime,
+            환율날짜: t.rateDate
+          })));
+          
+          try {
+            const historicalRate = await fetchRateForDate(todayStr);
+            console.log('[TEST] 조회된 환율:', historicalRate);
+            
+            if (!historicalRate || !historicalRate.rate) {
+              alert('환율 조회 실패. 콘솔을 확인하세요.');
+              return;
+            }
+            
+            txns = txns.map(txn => {
+              if (needsUpdate.find(t => t.id === txn.id)) {
+                console.log(`[TEST] 업데이트: ${txn.title} - ${txn.rateAtTime} → ${historicalRate.rate}`);
+                return {
+                  ...txn,
+                  rateAtTime: historicalRate.rate,
+                  rateDate: historicalRate.date || todayStr
+                };
+              }
+              return txn;
+            });
+            
+            setTxns(txns);
+            await dbSaveTxns(txns);
+            
+            const updated = txns.filter(t => needsUpdate.find(n => n.id === t.id));
+            console.table(updated.map(t => ({
+              제목: t.title,
+              날짜: t.date,
+              새환율: t.rateAtTime,
+              환율날짜: t.rateDate
+            })));
+            
+            alert(`${needsUpdate.length}개 고정비 환율을 업데이트했어요!
+새 환율: ${historicalRate.rate}
+환율 날짜: ${historicalRate.date || todayStr}
+
+콘솔에서 상세 내역을 확인하세요.`);
+          } catch (err) {
+            console.error('[TEST] 환율 업데이트 실패:', err);
+            alert('환율 업데이트 실패: ' + err.message);
+          }
+        },
+        children: '고정비 환율 업데이트 테스트'
+      }),
+      jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginTop: 8, lineHeight: 1.6 }, children: '디버그 모드에서만 보입니다. F12 → Console에서 상세 로그를 확인하세요.' })
+    ] }),
+    
     jsx('button', { className: 'btn-ghost', style: { marginTop: 8 }, onClick: async () => { if (window.confirm('모든 데이터를 초기화할까요? 이 작업은 되돌릴 수 없어요.')) { const uid = await getCurrentUserId(); if (uid) { await Promise.all([ supabase.from('accounts').delete().eq('user_id', uid), supabase.from('transactions').delete().eq('user_id', uid), supabase.from('fixed_expenses').delete().eq('user_id', uid), supabase.from('fixed_incomes').delete().eq('user_id', uid), supabase.from('user_settings').delete().eq('user_id', uid), ]); } localStorage.clear(); window.location.reload(); } }, children: '앱 초기화 (전체 데이터 삭제)' }),
     jsx('div', { className: 'divider', style: { margin: '24px 0 16px' } }),
     jsx('p', { className: 'section-title', children: '계정' }),
