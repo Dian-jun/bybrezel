@@ -1129,7 +1129,9 @@ const syncFixedCosts = async () => {
   await updateFixedCostsRates();
 };
 
-// 미래 고정비가 당일이 되었을 때 환율 업데이트
+// 고정비 환율 업데이트:
+// - 과거/당일 내역 중 환율 날짜가 해당 결제일과 다른 경우 → 해당 날짜 환율로 업데이트
+// - 미래 내역 중 현재 환율(작성일 기준)이 오래된 경우 → 오늘 환율로 재설정
 const updateFixedCostsRates = async () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -1137,36 +1139,77 @@ const updateFixedCostsRates = async () => {
   
   let txns = getTxns();
   
-  // 업데이트가 필요한 고정비 찾기
-  const needsUpdate = txns.filter(txn => 
-    txn.fixedId && txn.date === todayStr && txn.rateDate !== todayStr
-  );
+  // 1) 과거/당일 내역: 환율 날짜가 결제일과 다른 것 (앱을 못 켠 날 포함)
+  const pastNeedsUpdate = txns.filter(txn => {
+    if (!txn.fixedId) return false;
+    const txnDate = new Date(txn.date);
+    txnDate.setHours(0, 0, 0, 0);
+    return txnDate <= today && txn.rateDate !== txn.date;
+  });
   
-  if (needsUpdate.length === 0) return;
+  // 2) 미래 내역: 작성일(rateDate) 기준 환율이 오래됐으면 오늘 환율로 갱신
+  const futureNeedsUpdate = txns.filter(txn => {
+    if (!txn.fixedId) return false;
+    const txnDate = new Date(txn.date);
+    txnDate.setHours(0, 0, 0, 0);
+    return txnDate > today && txn.rateDate !== todayStr;
+  });
   
-  // 오늘 환율 한 번만 조회
+  if (pastNeedsUpdate.length === 0 && futureNeedsUpdate.length === 0) return;
+  
   try {
-    const historicalRate = await fetchRateForDate(todayStr);
-    if (!historicalRate || !historicalRate.rate) return;
+    // 과거/당일: 날짜별로 그룹화해서 환율 조회
+    const datesToFetch = new Set(pastNeedsUpdate.map(t => t.date));
+    const rateCache = {};
     
-    // 일괄 업데이트
+    await Promise.all(Array.from(datesToFetch).map(async dateStr => {
+      try {
+        const r = await fetchRateForDate(dateStr);
+        if (r?.rate) rateCache[dateStr] = r;
+      } catch (err) {
+        log.warn('SYNC', `${dateStr} 환율 조회 실패:`, err);
+      }
+    }));
+    
+    // 미래 내역용 오늘 환율 (필요한 경우만 조회)
+    let todayRate = null;
+    if (futureNeedsUpdate.length > 0) {
+      try {
+        todayRate = await fetchRateForDate(todayStr);
+      } catch (err) {
+        log.warn('SYNC', `오늘(${todayStr}) 환율 조회 실패:`, err);
+      }
+    }
+    
+    let changed = false;
     txns = txns.map(txn => {
-      if (needsUpdate.find(t => t.id === txn.id)) {
-        log.info('SYNC', `고정비 환율 업데이트: ${txn.title} - ${txn.date}`);
-        return {
-          ...txn,
-          rateAtTime: historicalRate.rate,
-          rateDate: historicalRate.date || todayStr
-        };
+      // 과거/당일 업데이트
+      const isPast = pastNeedsUpdate.find(t => t.id === txn.id);
+      if (isPast) {
+        const cached = rateCache[txn.date];
+        if (cached) {
+          log.info('SYNC', `고정비 과거 환율 업데이트: ${txn.title} (${txn.date})`);
+          changed = true;
+          return { ...txn, rateAtTime: cached.rate, rateDate: cached.date || txn.date };
+        }
+      }
+      // 미래 내역 환율 갱신 (작성일 기준 → 오늘 기준)
+      const isFuture = futureNeedsUpdate.find(t => t.id === txn.id);
+      if (isFuture && todayRate?.rate) {
+        log.info('SYNC', `고정비 미래 환율 갱신: ${txn.title} (${txn.date})`);
+        changed = true;
+        return { ...txn, rateAtTime: todayRate.rate, rateDate: todayRate.date || todayStr };
       }
       return txn;
     });
     
-    setTxns(txns);
-    await dbSaveTxns(txns);
+    if (changed) {
+      setTxns(txns);
+      await dbSaveTxns(txns);
+    }
     
   } catch (err) {
-    log.warn('SYNC', `오늘(${todayStr}) 환율 업데이트 실패:`, err);
+    log.warn('SYNC', `고정비 환율 업데이트 실패:`, err);
   }
 };
 
@@ -2609,6 +2652,7 @@ function AddTransaction({ onDone, editing = null }) {
   const [payMethod, setPayMethod] = useState(f.payMethod || 'card');
   const [titleVal, setTitleVal] = useState(f.title || '');
   const memoRef = useRef();
+  const [memoVal, setMemoVal] = useState(f.memo || '');
   const [date, setDate] = useState(f.date || new Date().toISOString().split('T')[0]);
   const [rateInfo, setRateInfo] = useState(f.rateAtTime ? { rate: f.rateAtTime, date: f.rateDate } : null);
   const [rateLoading, setRateLoading] = useState(false);
@@ -2756,7 +2800,7 @@ function AddTransaction({ onDone, editing = null }) {
     setType('expense');
     setCur(currency || 'EUR');
     setAmtStr(fmtComma(String(currency === 'EUR' ? totalAmount : Math.round(totalAmount)), currency));
-    setTitleVal(`${storeName} 장보기`);
+    setTitleVal(storeName);  // 가게명만 사용
     
     // 카테고리 설정
     const validCats = getCategories();
@@ -2776,9 +2820,13 @@ function AddTransaction({ onDone, editing = null }) {
     // 날짜 설정
     if (receiptDate) setDate(receiptDate);
     
-    // 메모에 품목 리스트 추가
-    if (items && items.length > 0 && memoRef.current) {
-      memoRef.current.value = items.map(item => item.name).join(', ');
+    // 메모에 품목 리스트 추가 (이름 + 금액)
+    if (items && items.length > 0) {
+      const currencySymbol = currency === 'EUR' ? '€' : '₩';
+      const itemList = items.map(item => 
+        `${item.name} ${currencySymbol}${item.amount}`
+      ).join(', ');
+      setMemoVal(itemList);
     }
     
     setReceiptResult(null);
@@ -2821,7 +2869,7 @@ function AddTransaction({ onDone, editing = null }) {
   };
 
   const save = async () => {
-    const memo = memoRef.current?.value || '';
+    const memo = memoVal;
     if (type === 'transfer') {
       if (!fromAmtStr || !toAmtStr) return;
       if (!fromAccId || !toAccId) return;
@@ -2860,7 +2908,7 @@ function AddTransaction({ onDone, editing = null }) {
       title: jsx('h2', { children: editing ? '내역 수정' : '내역 추가' }),
       right: jsx('span', { className: 'text-13 color-muted', style: { cursor: 'pointer' }, onClick: onDone, children: '취소' }),
     }),
-    !editing && jsxs('div', { className: 'toggle-wrap', style: { marginBottom: 22 }, children: [jsx('button', { className: `toggle-btn ${mode === 'ai' ? 'active' : 'inactive'}`, style: { flex: 1 }, onClick: () => setMode('ai'), children: '자연어 입력' }), jsx('button', { className: `toggle-btn ${mode === 'manual' ? 'active' : 'inactive'}`, style: { flex: 1 }, onClick: () => setMode('manual'), children: '직접 입력' })] }),
+    !editing && jsxs('div', { className: 'toggle-wrap', style: { marginBottom: 22 }, children: [jsx('button', { className: `toggle-btn ${mode === 'ai' ? 'active' : 'inactive'}`, style: { flex: 1 }, onClick: () => setMode('ai'), children: 'AI 입력' }), jsx('button', { className: `toggle-btn ${mode === 'manual' ? 'active' : 'inactive'}`, style: { flex: 1 }, onClick: () => setMode('manual'), children: '직접 입력' })] }),
     mode === 'ai' && !editing && jsxs('div', { style: { marginBottom: 20 }, children: [
       jsxs('div', { style: { display: 'flex', gap: 10, alignItems: 'flex-end' }, children: [
         jsx('input', { className: 'field', placeholder: '예: rewe에서 오십유로 카드로', value: aiText, onChange: e => setAiText(e.target.value), onKeyDown: e => e.key === 'Enter' && !e.nativeEvent?.isComposing && runAI(), style: { flex: 1 } }),
@@ -2907,7 +2955,7 @@ function AddTransaction({ onDone, editing = null }) {
     !editing && !receiptScanning && !receiptResult && mode === 'ai' && jsxs('div', { style: { marginBottom: 24 }, children: [
       jsx('div', { style: { display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }, children: [
         jsx('div', { style: { flex: 1, height: '0.5px', background: 'var(--gray-200)' } }),
-        jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '또는' }),
+        jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '또는 영수증 스캔' }),
         jsx('div', { style: { flex: 1, height: '0.5px', background: 'var(--gray-200)' } })
       ] }),
       jsxs('div', { style: { display: 'flex', gap: 10 }, children: [
@@ -3064,7 +3112,7 @@ function AddTransaction({ onDone, editing = null }) {
         ] }),
         // 날짜/메모
         jsxs('div', { className: 'row', children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '날짜' }), jsx('input', { type: 'date', value: date, onChange: e => setDate(e.target.value), style: { border: 'none', background: 'transparent', fontSize: 13, color: 'var(--black)', outline: 'none', fontFamily: 'var(--font)' } })] }),
-        jsxs('div', { style: { paddingTop: 14 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '메모' }), jsx('textarea', { ref: memoRef, className: 'field', placeholder: '예: Wise 송금', rows: 2, defaultValue: f.memo || '' })] }),
+        jsxs('div', { style: { paddingTop: 14 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '메모' }), jsx('textarea', { className: 'field', placeholder: '예: Wise 송금', rows: 2, value: memoVal, onChange: e => setMemoVal(e.target.value) })] }),
         jsx('div', { style: { height: 20 } }),
         jsx('button', { className: 'btn', onClick: save, children: editing ? '수정 완료' : '저장' }),
       ] }),
@@ -3111,7 +3159,7 @@ function AddTransaction({ onDone, editing = null }) {
         jsxs('div', { style: { display: 'flex', gap: 6 }, children: [jsx(Pill, { on: payMethod === 'card', onClick: () => setPayMethod('card'), children: '카드' }), jsx(Pill, { on: payMethod === 'cash', onClick: () => setPayMethod('cash'), children: '현금' }), jsx(Pill, { on: payMethod === 'voucher', onClick: () => setPayMethod('voucher'), children: '상품권/쿠폰' })] }),
       ] }),
       jsxs('div', { className: 'row', children: [jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '날짜' }), jsx('input', { type: 'date', value: date, onChange: e => setDate(e.target.value), style: { border: 'none', background: 'transparent', fontSize: 13, color: 'var(--black)', outline: 'none', fontFamily: 'var(--font)' } })] }),
-      jsxs('div', { style: { paddingTop: 14 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '메모' }), jsx('textarea', { ref: memoRef, className: 'field', placeholder: '내용 입력 (선택)', rows: 2, defaultValue: f.memo || '' })] }),
+      jsxs('div', { style: { paddingTop: 14 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 6 }, children: '메모' }), jsx('textarea', { className: 'field', placeholder: '내용 입력 (선택)', rows: 2, value: memoVal, onChange: e => setMemoVal(e.target.value) })] }),
       jsx('div', { style: { height: 20 } }),
       jsx('button', { className: 'btn', onClick: save, children: editing ? '수정 완료' : '저장' }),
     ] }),   // 수입/지출 폼 닫기
@@ -3538,6 +3586,107 @@ function SettingsPage({ onClose, onSignOut, onShowAuth, authUser }) {
     ] }),
     jsx('button', { className: 'btn-ghost', style: { marginTop: 0 }, onClick: clearAppCacheAndReload, children: '앱 캐시 초기화' }),
     jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginTop: 8, lineHeight: 1.6 }, children: '예전 화면이 보이거나 홈 화면 앱이 최신 버전으로 갱신되지 않을 때 사용하세요. 가계부 데이터는 삭제되지 않아요.' }),
+    
+    DEBUG_MODE && jsxs(Fragment, { children: [
+      jsx('div', { className: 'divider', style: { margin: '24px 0 16px' } }),
+      jsx('p', { className: 'section-title', children: '개발자 테스트' }),
+      jsx('button', { 
+        className: 'btn-ghost', 
+        style: { marginTop: 0, borderColor: '#FFE4B5', background: '#FFF9E6' }, 
+        onClick: () => {
+          const today = new Date().toISOString().split('T')[0];
+          let txns = getTxns();
+          const updated = txns.map(t => {
+            if (t.fixedId) {
+              // 날짜는 오늘로, 환율날짜는 과거로 설정 (업데이트 필요 상태 만들기)
+              return { 
+                ...t, 
+                date: today,
+                rateDate: '2026-04-01'  // 과거 날짜로 설정
+              };
+            }
+            return t;
+          });
+          setTxns(updated);
+          alert(`모든 고정비 날짜를 ${today}로 변경했어요.\n환율 날짜는 2026-04-01로 설정했어요.\n이제 환율 업데이트 테스트를 실행하세요.`);
+        },
+        children: '고정비 날짜를 오늘로 변경'
+      }),
+      jsx('button', { 
+        className: 'btn-ghost', 
+        style: { marginTop: 8, borderColor: '#FFE4B5', background: '#FFF9E6' }, 
+        onClick: async () => {
+          console.log('[TEST] 고정비 환율 업데이트 테스트 시작');
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const todayStr = today.toISOString().split('T')[0];
+          
+          let txns = getTxns();
+          const needsUpdate = txns.filter(txn => 
+            txn.fixedId && txn.date === todayStr && txn.rateDate !== todayStr
+          );
+          
+          console.log('[TEST] 업데이트 필요한 내역:', needsUpdate.length);
+          
+          if (needsUpdate.length === 0) {
+            alert('업데이트할 고정비가 없어요. "고정비 날짜를 오늘로 변경" 버튼을 먼저 눌러주세요.');
+            return;
+          }
+          
+          console.table(needsUpdate.map(t => ({
+            제목: t.title,
+            날짜: t.date,
+            현재환율: t.rateAtTime,
+            환율날짜: t.rateDate
+          })));
+          
+          try {
+            const historicalRate = await fetchRateForDate(todayStr);
+            console.log('[TEST] 조회된 환율:', historicalRate);
+            
+            if (!historicalRate || !historicalRate.rate) {
+              alert('환율 조회 실패. 콘솔을 확인하세요.');
+              return;
+            }
+            
+            txns = txns.map(txn => {
+              if (needsUpdate.find(t => t.id === txn.id)) {
+                console.log(`[TEST] 업데이트: ${txn.title} - ${txn.rateAtTime} → ${historicalRate.rate}`);
+                return {
+                  ...txn,
+                  rateAtTime: historicalRate.rate,
+                  rateDate: historicalRate.date || todayStr
+                };
+              }
+              return txn;
+            });
+            
+            setTxns(txns);
+            await dbSaveTxns(txns);
+            
+            const updated = txns.filter(t => needsUpdate.find(n => n.id === t.id));
+            console.table(updated.map(t => ({
+              제목: t.title,
+              날짜: t.date,
+              새환율: t.rateAtTime,
+              환율날짜: t.rateDate
+            })));
+            
+            alert(`${needsUpdate.length}개 고정비 환율을 업데이트했어요!
+새 환율: ${historicalRate.rate}
+환율 날짜: ${historicalRate.date || todayStr}
+
+콘솔에서 상세 내역을 확인하세요.`);
+          } catch (err) {
+            console.error('[TEST] 환율 업데이트 실패:', err);
+            alert('환율 업데이트 실패: ' + err.message);
+          }
+        },
+        children: '고정비 환율 업데이트 테스트'
+      }),
+      jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginTop: 8, lineHeight: 1.6 }, children: '디버그 모드에서만 보입니다. F12 → Console에서 상세 로그를 확인하세요.' })
+    ] }),
+    
     jsx('button', { className: 'btn-ghost', style: { marginTop: 8 }, onClick: async () => { if (window.confirm('모든 데이터를 초기화할까요? 이 작업은 되돌릴 수 없어요.')) { const uid = await getCurrentUserId(); if (uid) { await Promise.all([ supabase.from('accounts').delete().eq('user_id', uid), supabase.from('transactions').delete().eq('user_id', uid), supabase.from('fixed_expenses').delete().eq('user_id', uid), supabase.from('fixed_incomes').delete().eq('user_id', uid), supabase.from('user_settings').delete().eq('user_id', uid), ]); } localStorage.clear(); window.location.reload(); } }, children: '앱 초기화 (전체 데이터 삭제)' }),
     jsx('div', { className: 'divider', style: { margin: '24px 0 16px' } }),
     jsx('p', { className: 'section-title', children: '계정' }),
