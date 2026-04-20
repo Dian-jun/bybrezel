@@ -1022,7 +1022,12 @@ const syncFixedCosts = async () => {
     const key = `${y}-${m}`;
     if (!synced[key]) months.push({ y, m, key });
   }
-  if (!months.length) return;
+  if (!months.length) {
+    // 새로 동기화할 달이 없어도 환율 업데이트/마이그레이션은 실행
+    await updateFixedCostsRates();
+    await migrateFixedCostRates();
+    return;
+  }
   
   // 환율 캐시 (같은 날짜는 한 번만 조회)
   const rateCache = {};
