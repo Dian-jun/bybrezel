@@ -2257,12 +2257,11 @@ function FixedExpOnboardItem({ item, accounts, onToggle, onUpdate }) {
 // ─── HOME TAB ─────────────────────────────────────────────────────────────────
 const LATEST_VERSION = 'v0.4';
 
-function HomeTab({ onOpenSettings, onDetailOpen, authUser, globalRate }) {
+function HomeTab({ onOpenSettings, onDetailOpen, authUser, globalRate, selDay, setSelDay, yr, setYr, mo, setMo }) {
   const today = new Date();
-  const [yr, setYr] = useState(today.getFullYear());
-  const [mo, setMo] = useState(today.getMonth());
-  const [selDay, setSelDay] = useState(today.getDate());
   const [cur, setCur] = useState('EUR');
+  const swipeRef = useRef(null);
+  const swipeStartX = useRef(null);
   const [txns, setTxns] = useState([]);
   const rate = normalizeRate(globalRate || getRate().rate);  // 최상위에서 받은 환율 사용
   const [budget, setBudgetState] = useState({ eur: null, excludeCategories: ['식비지원금'] });
@@ -2320,6 +2319,14 @@ function HomeTab({ onOpenSettings, onDetailOpen, authUser, globalRate }) {
   const prevM = mo === 0 ? 11 : mo - 1; const prevY = mo === 0 ? yr - 1 : yr;
   const prevNav = () => { if (mo === 0) { setYr(y => y-1); setMo(11); } else setMo(m => m-1); setSelDay(1); };
   const nextNav = () => { if (mo === 11) { setYr(y => y+1); setMo(0); } else setMo(m => m+1); setSelDay(1); };
+  const onSwipeStart = e => { swipeStartX.current = e.touches ? e.touches[0].clientX : e.clientX; };
+  const onSwipeEnd = e => {
+    if (swipeStartX.current === null) return;
+    const endX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+    const diff = swipeStartX.current - endX;
+    if (Math.abs(diff) > 50) { diff > 0 ? nextNav() : prevNav(); }
+    swipeStartX.current = null;
+  };
 
   return jsxs('div', { className: 'page', style: { paddingTop: 16 }, children: [
     jsx(PageHeader, { mb: 18,
@@ -2384,7 +2391,7 @@ function HomeTab({ onOpenSettings, onDetailOpen, authUser, globalRate }) {
       jsx('div', { className: 'bar-track', style: { height: 4 }, children: jsx('div', { className: 'bar-fill', style: { width: `${budgetPct}%`, background: overBudget ? 'var(--black)' : 'var(--gray-400)', height: '100%', borderRadius: 2 } }) }),
     ] }),
     // Calendar
-    jsxs('div', { children: [
+    jsxs('div', { onTouchStart: onSwipeStart, onTouchEnd: onSwipeEnd, onMouseDown: onSwipeStart, onMouseUp: onSwipeEnd, style: { userSelect: 'none' }, children: [
       jsx('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', textAlign: 'center', marginBottom: 4 }, children: DAYS.map(d => jsx('div', { style: { fontSize: 11, color: 'var(--gray-400)', padding: '0 0 6px' }, children: d }, d)) }),
       jsx('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', textAlign: 'center' }, children: grid.map((d, i) => {
         const isToday = d && d === today.getDate() && mo === today.getMonth() && yr === today.getFullYear();
@@ -3943,6 +3950,10 @@ function App() {
   const [editing, setEditing]     = useState(null);
   const [settings, setSettings]   = useState(false);
   const [homeTxnDetail, setHomeTxnDetail] = useState(null);
+  const _today = new Date();
+  const [homeYr, setHomeYr] = useState(_today.getFullYear());
+  const [homeMo, setHomeMo] = useState(_today.getMonth());
+  const [homeSelDay, setHomeSelDay] = useState(_today.getDate());
   const [showAuth, setShowAuth]   = useState(false);
   const [globalRate, setGlobalRate] = useState(normalizeRate(getRate().rate));
 
@@ -4076,7 +4087,7 @@ function App() {
   if (tab === 'add') return jsx('div', { className: 'app-shell', children: jsx(AddTransaction, { editing, onDone: () => { setEditing(null); setTab(prevTab); } }) });
 
   return jsxs('div', { className: 'app-shell', children: [
-    tab === 'home'     && jsx(HomeTab,     { onOpenSettings: () => setSettings(true), onDetailOpen: t => setHomeTxnDetail(t), authUser, globalRate }),
+    tab === 'home'     && jsx(HomeTab,     { onOpenSettings: () => setSettings(true), onDetailOpen: t => setHomeTxnDetail(t), authUser, globalRate, selDay: homeSelDay, setSelDay: setHomeSelDay, yr: homeYr, setYr: setHomeYr, mo: homeMo, setMo: setHomeMo }),
     tab === 'history'  && jsx(HistoryTab,  { onEdit: t => { setEditing(t); setPrevTab(tab); setTab('add'); }, globalRate }),
     tab === 'accounts' && jsx(AccountsTab, { globalRate }),
     tab === 'fixed'    && jsx(FixedTab,    { globalRate }),
