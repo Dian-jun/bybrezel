@@ -221,6 +221,12 @@ const IconFilter = p => jsx('svg',{width:p.size||24,height:p.size||24,viewBox:'0
   children:[jsx('path',{d:'M10 5H3'},0),jsx('path',{d:'M12 19H3'},1),jsx('path',{d:'M14 3v4'},2),jsx('path',{d:'M16 17v4'},3),jsx('path',{d:'M21 12h-9'},4),jsx('path',{d:'M21 19h-5'},5),jsx('path',{d:'M21 5h-7'},6),jsx('path',{d:'M8 10v4'},7),jsx('path',{d:'M8 12H3'},8)]});
 const IconTrash  = p => jsx('svg',{width:p.size||24,height:p.size||24,viewBox:'0 0 24 24',fill:'none',stroke:p.color||'currentColor',strokeWidth:p.sw||1.5,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':true,
   children:[jsx('path',{d:'M10 11v6'},0),jsx('path',{d:'M14 11v6'},1),jsx('path',{d:'M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6'},2),jsx('path',{d:'M3 6h18'},3),jsx('path',{d:'M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'},4)]});
+const IconCamera = p => jsx('svg',{width:p.size||24,height:p.size||24,viewBox:'0 0 24 24',fill:'none',stroke:p.color||'currentColor',strokeWidth:p.sw||1.5,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':true,
+  children:[jsx('path',{d:'M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z'},0),jsx('circle',{cx:'12',cy:'13',r:'3'},1)]});
+const IconImage = p => jsx('svg',{width:p.size||24,height:p.size||24,viewBox:'0 0 24 24',fill:'none',stroke:p.color||'currentColor',strokeWidth:p.sw||1.5,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':true,
+  children:[jsx('rect',{width:'18',height:'18',x:'3',y:'3',rx:'2',ry:'2'},0),jsx('circle',{cx:'9',cy:'9',r:'2'},1),jsx('path',{d:'m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21'},2)]});
+const IconCheckCircle = p => jsx('svg',{width:p.size||24,height:p.size||24,viewBox:'0 0 24 24',fill:'none',stroke:p.color||'currentColor',strokeWidth:p.sw||2,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':true,
+  children:[jsx('circle',{cx:'12',cy:'12',r:'10'},0),jsx('path',{d:'m9 12 2 2 4-4'},1)]});
 const IconBack   = p => jsx(Icon,{...p,d:'M15 18l-6-6 6-6'});
 const CheckIcon  = () => jsx('svg',{width:10,height:8,viewBox:'0 0 10 8',fill:'none',children:jsx('path',{d:'M1 4l3 3 5-6',stroke:'white',strokeWidth:'1.5',strokeLinecap:'round',strokeLinejoin:'round'})});
 
@@ -2617,6 +2623,11 @@ function AddTransaction({ onDone, editing = null }) {
   const [toCur, setToCur] = useState(f.toCurrency || 'KRW');
   const [feeStr, setFeeStr] = useState(f.fee ? String(f.fee) : '');
   const [feeCur, setFeeCur] = useState(f.feeCurrency || 'EUR');
+  
+  // 영수증 스캔 관련
+  const [receiptScanning, setReceiptScanning] = useState(false);
+  const [receiptResult, setReceiptResult] = useState(null);
+  const fileInputRef = useRef();
 
   useEffect(() => {
     if (!editing) { setRateLoading(true); fetchRateForDate(date).then(r => { setRateInfo(r); setRateLoading(false); }); }
@@ -2662,6 +2673,116 @@ function AddTransaction({ onDone, editing = null }) {
       if (acc) setAccId(acc.id);
     } catch { setAiErr('파싱 실패. 직접 입력해주세요.'); }
     setAiLoading(false);
+  };
+
+  // 영수증 스캔 처리
+  const handleReceiptScan = async (file) => {
+    if (!file) return;
+    
+    setReceiptScanning(true);
+    setReceiptResult(null);
+    
+    try {
+      // 이미지를 base64로 변환
+      const base64Data = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = () => reject(new Error('파일 읽기 실패'));
+        reader.readAsDataURL(file);
+      });
+      
+      // 서버 API로 영수증 분석 요청
+      const response = await fetch('/money/api/receipt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          image: base64Data,
+          mimeType: file.type
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (!data.ok) {
+        throw new Error(data.error || '영수증 분석 실패');
+      }
+      
+      const result = data.result;
+      
+      // 결제수단 매핑
+      const paymentMethodMap = {
+        'debit': 'card',
+        'credit': 'creditcard',
+        'cash': 'cash'
+      };
+      
+      setReceiptResult({
+        ...result,
+        paymentMethod: result.paymentMethod ? paymentMethodMap[result.paymentMethod] || 'card' : null
+      });
+      
+    } catch (err) {
+      console.error('영수증 스캔 오류:', err);
+      alert('영수증을 인식하지 못했어요. 다시 시도해주세요.');
+    } finally {
+      setReceiptScanning(false);
+    }
+  };
+  
+  // 카메라/갤러리
+  const handleCameraClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.accept = 'image/*';
+      fileInputRef.current.capture = 'environment';
+      fileInputRef.current.click();
+    }
+  };
+  
+  const handleGalleryClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.accept = 'image/*';
+      fileInputRef.current.removeAttribute('capture');
+      fileInputRef.current.click();
+    }
+  };
+  
+  // 영수증 결과 적용
+  const applyReceiptResult = (saveType) => {
+    if (!receiptResult) return;
+    
+    const { storeName, date: receiptDate, totalAmount, currency, items, category, paymentMethod } = receiptResult;
+    
+    // 합계만 저장
+    setType('expense');
+    setCur(currency || 'EUR');
+    setAmtStr(fmtComma(String(currency === 'EUR' ? totalAmount : Math.round(totalAmount)), currency));
+    setTitleVal(`${storeName} 장보기`);
+    
+    // 카테고리 설정
+    const validCats = getCategories();
+    setCat(validCats.includes(category) ? category : '식비');
+    
+    // 계좌 자동 선택 (통화 기반)
+    const defaultAcc = accounts.find(a => currency === 'KRW' ? a.currency === 'KRW' : a.currency === 'EUR');
+    if (defaultAcc) setAccId(defaultAcc.id);
+    
+    // 결제수단 설정
+    if (paymentMethod) {
+      setPayMethod(paymentMethod);
+    } else {
+      setPayMethod('card');
+    }
+    
+    // 날짜 설정
+    if (receiptDate) setDate(receiptDate);
+    
+    // 메모에 품목 리스트 추가
+    if (items && items.length > 0 && memoRef.current) {
+      memoRef.current.value = items.map(item => item.name).join(', ');
+    }
+    
+    setReceiptResult(null);
+    setMode('manual');
   };
 
 
@@ -2781,6 +2902,114 @@ function AddTransaction({ onDone, editing = null }) {
         }),
       ] }),
     ] }),
+    
+    // 영수증 스캔 섹션
+    !editing && !receiptScanning && !receiptResult && mode === 'ai' && jsxs('div', { style: { marginBottom: 24 }, children: [
+      jsx('div', { style: { display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }, children: [
+        jsx('div', { style: { flex: 1, height: '0.5px', background: 'var(--gray-200)' } }),
+        jsx('span', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '또는' }),
+        jsx('div', { style: { flex: 1, height: '0.5px', background: 'var(--gray-200)' } })
+      ] }),
+      jsxs('div', { style: { display: 'flex', gap: 10 }, children: [
+        jsxs('button', { 
+          className: 'btn-ghost', 
+          onClick: handleCameraClick,
+          style: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, padding: 16, marginTop: 0 },
+          children: [
+            jsx(IconCamera, { size: 24, color: 'var(--gray-600)', sw: 1.5 }),
+            jsx('span', { style: { fontSize: 13 }, children: '촬영' })
+          ]
+        }),
+        jsxs('button', { 
+          className: 'btn-ghost', 
+          onClick: handleGalleryClick,
+          style: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, padding: 16, marginTop: 0 },
+          children: [
+            jsx(IconImage, { size: 24, color: 'var(--gray-600)', sw: 1.5 }),
+            jsx('span', { style: { fontSize: 13 }, children: '사진' })
+          ]
+        })
+      ] }),
+      jsx('input', { 
+        ref: fileInputRef, 
+        type: 'file', 
+        accept: 'image/*',
+        style: { display: 'none' },
+        onChange: (e) => {
+          const file = e.target.files?.[0];
+          if (file) handleReceiptScan(file);
+          e.target.value = '';
+        }
+      })
+    ] }),
+    
+    // 영수증 분석 중
+    receiptScanning && jsxs('div', { style: { textAlign: 'center', padding: '40px 20px', marginBottom: 24 }, children: [
+      jsx('div', { className: 'loader-spinner', style: { margin: '0 auto 16px' } }),
+      jsx('p', { style: { fontSize: 15, fontWeight: 500, marginBottom: 8 }, children: '영수증 분석 중...' }),
+      jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)' }, children: '잠시만 기다려주세요' })
+    ] }),
+    
+    // 영수증 분석 결과
+    receiptResult && jsxs('div', { style: { marginBottom: 24 }, children: [
+      jsx('div', { style: { background: 'var(--gray-50)', borderRadius: 14, padding: 20 }, children: jsxs(Fragment, { children: [
+        jsxs('div', { style: { display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }, children: [
+          jsx(IconCheckCircle, { size: 20, color: '#10B981', sw: 2 }),
+          jsx('p', { style: { fontSize: 15, fontWeight: 500 }, children: '영수증 인식 완료!' })
+        ] }),
+        
+        // 영수증 정보
+        jsxs('div', { style: { display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16, paddingLeft: 28 }, children: [
+          jsxs('div', { style: { fontSize: 14 }, children: [
+            jsx('span', { style: { color: 'var(--gray-400)', marginRight: 8 }, children: '가게' }),
+            jsx('span', { style: { fontWeight: 500 }, children: receiptResult.storeName })
+          ] }),
+          jsxs('div', { style: { fontSize: 14 }, children: [
+            jsx('span', { style: { color: 'var(--gray-400)', marginRight: 8 }, children: '날짜' }),
+            jsx('span', { children: receiptResult.date })
+          ] }),
+          jsxs('div', { style: { fontSize: 14 }, children: [
+            jsx('span', { style: { color: 'var(--gray-400)', marginRight: 8 }, children: '금액' }),
+            jsx('span', { style: { fontWeight: 500 }, children: `${receiptResult.totalAmount} ${receiptResult.currency}` })
+          ] }),
+          jsxs('div', { style: { fontSize: 14 }, children: [
+            jsx('span', { style: { color: 'var(--gray-400)', marginRight: 8 }, children: '카테고리' }),
+            jsx('span', { children: receiptResult.category })
+          ] })
+        ] }),
+        
+        // 품목 정보
+        receiptResult.items && receiptResult.items.length > 0 && jsxs(Fragment, { children: [
+          jsx('div', { className: 'divider', style: { margin: '12px 0' } }),
+          jsx('p', { style: { fontSize: 12, color: 'var(--gray-400)', marginBottom: 8 }, children: `${receiptResult.items.length}개 품목` }),
+          jsx('p', { style: { fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.5 }, children: receiptResult.items.map(item => item.name).join(', ') })
+        ] }),
+        
+        // 확인 버튼
+        jsx('button', { 
+          className: 'btn',
+          onClick: () => applyReceiptResult('total'),
+          style: { marginTop: 16 },
+          children: '확인'
+        }),
+        
+        // 취소 버튼
+        jsx('button', { 
+          onClick: () => setReceiptResult(null),
+          style: { 
+            background: 'none', 
+            border: 'none', 
+            color: 'var(--gray-400)', 
+            fontSize: 12, 
+            cursor: 'pointer', 
+            marginTop: 12,
+            width: '100%'
+          },
+          children: '취소'
+        })
+      ] }) })
+    ] }),
+    
     (mode === 'manual' || aiResult || editing) && jsxs('div', { children: [
       jsxs('div', { style: { marginBottom: 16 }, children: [jsx('p', { style: { fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }, children: '항목명' }), jsx('input', { className: 'field', placeholder: '예: REWE 장보기', value: titleVal, onChange: e => setTitleVal(e.target.value) })] }),
       jsxs('div', { className: 'row', children: [
