@@ -169,9 +169,19 @@ p{line-height:1.6}
 .btn-google:hover{background:var(--gray-50)}
 .field-wrap{margin-bottom:14px}
 .field-wrap label{display:block;font-size:11px;color:var(--gray-400);margin-bottom:4px}
+/* 로딩 스피너 */
+#app-loader{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--white);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .3s ease}
+#app-loader.hidden{opacity:0;pointer-events:none}
+.loader-spinner{width:40px;height:40px;border:3px solid var(--gray-200);border-top-color:var(--black);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-text{font-size:13px;color:var(--gray-400);font-family:var(--font)}
 </style>
 </head>
 <body>
+<div id="app-loader">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">로딩 중...</div>
+</div>
 <div id="root"></div>
 <script type="module">
 import { createElement as h, useState, useEffect, useRef, Fragment, StrictMode } from 'https://esm.sh/react@19';
@@ -979,10 +989,10 @@ const shouldApplyFixed = (item, yr, mo) => {
   if (item.frequency === 'yearly') return mo === (item.startMonth ?? 0);
   return true;
 };
-const syncFixedCosts = () => {
+const syncFixedCosts = async () => {
   const now = new Date(), yr = now.getFullYear(), mo = now.getMonth();
   const synced = ls.get(BASE_KEYS.SYNCED) || {};
-  const rate = normalizeRate(getRate().rate);
+  const currentRate = normalizeRate(getRate().rate);
   const accs = getAccounts();
   let txns = getTxns(), changed = false;
 
@@ -1004,28 +1014,154 @@ const syncFixedCosts = () => {
     if (!synced[key]) months.push({ y, m, key });
   }
   if (!months.length) return;
-  for (const { y, m, key } of months) {
-    const applyItems = (items, type) => items.forEach(item => {
-      if (!shouldApplyFixed(item, y, m)) return;
-      const cid = `fixed_${type}_${item.id}_${y}_${m}`;
-      if (txns.find(t => t.id === cid)) return;
-      const acc = accs.find(a => a.id === item.accountId) || accs.find(a => item.currency === 'KRW' ? a.currency === 'KRW' : a.currency === 'EUR');
+  
+  // 환율 캐시 (같은 날짜는 한 번만 조회)
+  const rateCache = {};
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  // 필요한 모든 날짜의 환율을 미리 수집
+  const datesToFetch = new Set();
+  for (const { y, m } of months) {
+    const items = [...getFixedExp(), ...getFixedInc()];
+    for (const item of items) {
+      if (!shouldApplyFixed(item, y, m)) continue;
+      const cid = `fixed_expense_${item.id}_${y}_${m}`;
+      const cid2 = `fixed_income_${item.id}_${y}_${m}`;
+      if (txns.find(t => t.id === cid || t.id === cid2)) continue;
+      
       const dd = Math.min(item.day || 1, new Date(y, m + 1, 0).getDate());
       const dateStr = `${y}-${String(m + 1).padStart(2, '0')}-${String(dd).padStart(2, '0')}`;
-      txns = [{ id: cid, fixedId: item.id, title: item.name + (item.label ? ` (${item.label})` : ''),
-        type, amount: item.amount, currency: item.currency || 'EUR', rateAtTime: rate, rateDate: dateStr,
-        accountId: acc?.id || '', accountName: acc?.name || '',
-        category: type === 'income' ? '급여' : (item.category || '공과금'), payMethod: 'card',
-        memo: `고정 ${type === 'income' ? '수입' : '지출'}`, date: dateStr,
-        createdAt: new Date().toISOString() }, ...txns];
-      changed = true;
+      const txnDate = new Date(dateStr);
+      
+      // 과거/당일 날짜만 수집
+      if (txnDate <= today) {
+        datesToFetch.add(dateStr);
+      }
+    }
+  }
+  
+  // 환율 병렬 조회 (최대 5개씩)
+  const dateArray = Array.from(datesToFetch);
+  const batchSize = 5;
+  for (let i = 0; i < dateArray.length; i += batchSize) {
+    const batch = dateArray.slice(i, i + batchSize);
+    const results = await Promise.all(
+      batch.map(async (dateStr) => {
+        try {
+          const result = await fetchRateForDate(dateStr);
+          return { dateStr, result };
+        } catch (err) {
+          log.warn('SYNC', `${dateStr} 환율 조회 실패:`, err);
+          return { dateStr, result: null };
+        }
+      })
+    );
+    
+    // 캐시에 저장
+    results.forEach(({ dateStr, result }) => {
+      if (result && result.rate) {
+        rateCache[dateStr] = result;
+      }
     });
+  }
+  
+  for (const { y, m, key } of months) {
+    const applyItems = (items, type) => {
+      items.forEach(item => {
+        if (!shouldApplyFixed(item, y, m)) return;
+        const cid = `fixed_${type}_${item.id}_${y}_${m}`;
+        if (txns.find(t => t.id === cid)) return;
+        
+        const acc = accs.find(a => a.id === item.accountId) || accs.find(a => item.currency === 'KRW' ? a.currency === 'KRW' : a.currency === 'EUR');
+        const dd = Math.min(item.day || 1, new Date(y, m + 1, 0).getDate());
+        const dateStr = `${y}-${String(m + 1).padStart(2, '0')}-${String(dd).padStart(2, '0')}`;
+        
+        // 캐시에서 환율 가져오기
+        let rate = currentRate;
+        let rateDate = dateStr;
+        
+        const txnDate = new Date(dateStr);
+        
+        // 과거 또는 당일 내역: 캐시된 환율 사용
+        if (txnDate <= today && rateCache[dateStr]) {
+          rate = rateCache[dateStr].rate;
+          rateDate = rateCache[dateStr].date || dateStr;
+        }
+        // 미래 내역: 현재 환율 사용 (예측치)
+        
+        txns = [{ 
+          id: cid, 
+          fixedId: item.id, 
+          title: item.name + (item.label ? ` (${item.label})` : ''),
+          type, 
+          amount: item.amount, 
+          currency: item.currency || 'EUR', 
+          rateAtTime: rate, 
+          rateDate: rateDate,
+          accountId: acc?.id || '', 
+          accountName: acc?.name || '',
+          category: type === 'income' ? '급여' : (item.category || '공과금'), 
+          payMethod: 'card',
+          memo: `고정 ${type === 'income' ? '수입' : '지출'}`, 
+          date: dateStr,
+          createdAt: new Date().toISOString() 
+        }, ...txns];
+        changed = true;
+      });
+    };
+    
     applyItems(getFixedExp(), 'expense');
     applyItems(getFixedInc(), 'income');
     synced[key] = true;
   }
+  
   if (changed) setTxns(txns);
   ls.set(BASE_KEYS.SYNCED, synced);
+  
+  // 미래 고정비의 환율 업데이트 체크
+  await updateFixedCostsRates();
+};
+
+// 미래 고정비가 당일이 되었을 때 환율 업데이트
+const updateFixedCostsRates = async () => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayStr = today.toISOString().split('T')[0];
+  
+  let txns = getTxns();
+  
+  // 업데이트가 필요한 고정비 찾기
+  const needsUpdate = txns.filter(txn => 
+    txn.fixedId && txn.date === todayStr && txn.rateDate !== todayStr
+  );
+  
+  if (needsUpdate.length === 0) return;
+  
+  // 오늘 환율 한 번만 조회
+  try {
+    const historicalRate = await fetchRateForDate(todayStr);
+    if (!historicalRate || !historicalRate.rate) return;
+    
+    // 일괄 업데이트
+    txns = txns.map(txn => {
+      if (needsUpdate.find(t => t.id === txn.id)) {
+        log.info('SYNC', `고정비 환율 업데이트: ${txn.title} - ${txn.date}`);
+        return {
+          ...txn,
+          rateAtTime: historicalRate.rate,
+          rateDate: historicalRate.date || todayStr
+        };
+      }
+      return txn;
+    });
+    
+    setTxns(txns);
+    await dbSaveTxns(txns);
+    
+  } catch (err) {
+    log.warn('SYNC', `오늘(${todayStr}) 환율 업데이트 실패:`, err);
+  }
 };
 
 // 데이터 내보내기
@@ -1820,7 +1956,7 @@ function Onboarding({ onDone, onLogin, initialStep = 0, hideAuthEntry = false })
     setAccounts(accs);
     setFixedExp(finalFixedExp);
     setFixedInc(finalFixedInc);
-    syncFixedCosts();
+    syncFixedCosts(); // 비동기 실행 (기다리지 않음)
     setOnboarded();
     await onDone({ accounts: accs, fixedExp: finalFixedExp, fixedInc: finalFixedInc, txns: getTxns() });
   };
@@ -2032,7 +2168,9 @@ function HomeTab({ onOpenSettings, onDetailOpen, authUser, globalRate }) {
   };
 
   useEffect(() => {
-    syncFixedCosts(); setTxns(getTxns()); setBudgetState(getBudget());
+    syncFixedCosts(); // 비동기 실행 (백그라운드)
+    setTxns(getTxns()); 
+    setBudgetState(getBudget());
   }, []);
 
   const firstDay = new Date(yr, mo, 1).getDay();
@@ -3507,8 +3645,17 @@ function App() {
 
 createRoot(document.getElementById('root')).render(jsx(StrictMode, { children: jsx(App, {}) }));
 
+// 로딩 스피너 숨기기
+setTimeout(() => {
+  const loader = document.getElementById('app-loader');
+  if (loader) {
+    loader.classList.add('hidden');
+    setTimeout(() => loader.remove(), 300);
+  }
+}, 100);
+
 // ─── Service Worker 등록 ──────────────────────────────────────────────────────
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   window.addEventListener('load', async () => {
     try {
       const reg = await navigator.serviceWorker.register('/money/service-worker.js', {
