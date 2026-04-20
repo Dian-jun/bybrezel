@@ -2756,7 +2756,7 @@ function AddTransaction({ onDone, editing = null }) {
     setType('expense');
     setCur(currency || 'EUR');
     setAmtStr(fmtComma(String(currency === 'EUR' ? totalAmount : Math.round(totalAmount)), currency));
-    setTitleVal(`${storeName} 장보기`);
+    setTitleVal(storeName);  // 가게명만 사용
     
     // 카테고리 설정
     const validCats = getCategories();
@@ -3550,12 +3550,17 @@ function SettingsPage({ onClose, onSignOut, onShowAuth, authUser }) {
           let txns = getTxns();
           const updated = txns.map(t => {
             if (t.fixedId) {
-              return { ...t, date: today };
+              // 날짜는 오늘로, 환율날짜는 과거로 설정 (업데이트 필요 상태 만들기)
+              return { 
+                ...t, 
+                date: today,
+                rateDate: '2026-04-01'  // 과거 날짜로 설정
+              };
             }
             return t;
           });
           setTxns(updated);
-          alert(`모든 고정비 날짜를 ${today}로 변경했어요. 이제 환율 업데이트 테스트를 실행하세요.`);
+          alert(`모든 고정비 날짜를 ${today}로 변경했어요.\n환율 날짜는 2026-04-01로 설정했어요.\n이제 환율 업데이트 테스트를 실행하세요.`);
         },
         children: '고정비 날짜를 오늘로 변경'
       }),
