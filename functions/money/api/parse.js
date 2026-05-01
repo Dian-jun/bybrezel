@@ -7,13 +7,24 @@
 //
 // API 키 발급: console.anthropic.com → API Keys → Create Key
 
+const corsHeaders = {
+  'Content-Type': 'application/json',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+export async function onRequestOptions() {
+  return new Response(null, { status: 204, headers: corsHeaders });
+}
+
 export async function onRequestPost(context) {
   const apiKey = context.env.ANTHROPIC_API_KEY;
 
   if (!apiKey) {
     return new Response(
       JSON.stringify({ ok: false, error: 'API key not configured' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      { status: 500, headers: corsHeaders }
     );
   }
 
@@ -42,17 +53,17 @@ export async function onRequestPost(context) {
 
     return new Response(JSON.stringify({ ok: true, result: parsed }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: corsHeaders,
     });
 
   } catch (err) {
     return new Response(
       JSON.stringify({ ok: false, error: err.message }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
+      { status: 200, headers: corsHeaders }
     );
   }
 }
 
 export async function onRequestGet() {
-  return new Response('Method not allowed', { status: 405 });
+  return new Response(JSON.stringify({ ok: false, error: 'Method not allowed' }), { status: 405, headers: corsHeaders });
 }
