@@ -62,11 +62,17 @@ export async function onRequestPost(context) {
   "totalAmount": 숫자 (합계 금액),
   "currency": "EUR 또는 KRW",
   "items": [
-    {"name": "품목명", "amount": 금액},
-    {"name": "품목명", "amount": 금액}
+    {
+      "name": "품목명",
+      "quantity": 숫자 또는 null,
+      "unitPrice": 숫자 또는 null,
+      "amount": 금액,
+      "note": "옵션/중량/행 메모가 있으면 문자열, 없으면 null"
+    }
   ],
   "category": "식비, 교통, 쇼핑, 의료, 공과금, 주거, 문화, 기타 중 하나",
-  "paymentMethod": "영수증에서 결제 수단 추출 - EC-Karte/Girocard면 debit, Visa/Mastercard면 credit, Bar/Cash면 cash, 없으면 null"
+  "paymentMethod": "영수증에서 결제 수단 추출 - EC-Karte/Girocard면 debit, Visa/Mastercard면 credit, Bar/Cash면 cash, 없으면 null",
+  "paymentDetails": "분할결제/바우처/현금+카드 혼합 등 결제 관련 상세 문자열, 없으면 null"
 }
 
 참고사항:
@@ -78,7 +84,11 @@ export async function onRequestPost(context) {
   * DM, Rossmann → 쇼핑
   * Deutsche Bahn, 지하철 → 교통
   * Apotheke → 의료
-- items는 최대 10개까지만 (많으면 주요 항목만)
+- 품목 수가 많아도 가능한 한 전체 품목을 추출
+- 수량이 보이면 quantity에 넣기 (예: 2, 3, 0.75)
+- 개당 가격이 보이면 unitPrice에 넣기
+- 줄에 붙은 옵션/중량/행 메모가 있으면 note에 넣기
+- 기프트카드, Gutschein, EC, Cash, split payment 같은 정보가 있으면 paymentDetails에 짧게 정리
 - JSON만 반환 (백틱이나 마크다운 없이 순수 JSON)`
             }
           ]
