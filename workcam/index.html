@@ -36,11 +36,15 @@
   
   /* Viewfinder overlay */
   .vf-overlay { position:absolute; inset:0; pointer-events:none; }
-  .vf-corner { position:absolute; width:20px; height:20px; border-color:rgba(255,255,255,0.7); border-style:solid; }
-  .vf-corner.tl { top:20px; left:20px; border-width:2px 0 0 2px; }
-  .vf-corner.tr { top:20px; right:20px; border-width:2px 2px 0 0; }
-  .vf-corner.bl { bottom:20px; left:20px; border-width:0 0 2px 2px; }
-  .vf-corner.br { bottom:20px; right:20px; border-width:0 2px 2px 0; }
+  
+  /* Ratio crop mask — darkened areas outside the chosen ratio */
+  .ratio-mask-top, .ratio-mask-bottom, .ratio-mask-left, .ratio-mask-right {
+    position:absolute; background:rgba(0,0,0,0.55); pointer-events:none; z-index:4; transition:all .25s ease;
+  }
+  /* Crop frame border */
+  .ratio-frame {
+    position:absolute; border:1px solid rgba(255,255,255,0.5); pointer-events:none; z-index:5; transition:all .25s ease; box-sizing:border-box;
+  }
   
   /* Horizon level */
   .horizon-line { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:120px; height:1px; background:rgba(255,255,0,0.6); display:none; }
@@ -180,6 +184,16 @@
   .focus-ring { position:absolute; border:2px solid var(--accent); border-radius:4px; width:60px; height:60px; pointer-events:none; z-index:5; transition:all .15s; opacity:0; }
   .focus-ring.show { opacity:1; }
   
+  /* Manual mode panel */
+  .manual-panel { position:absolute; bottom:0; left:0; right:0; z-index:10; padding:14px 20px calc(8px); background:linear-gradient(to top,rgba(0,0,0,0.75) 80%,transparent); display:none; }
+  .manual-panel.show { display:block; }
+  .manual-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .manual-label { font-size:11px; font-weight:600; color:rgba(255,255,255,0.55); letter-spacing:0.06em; min-width:32px; text-align:right; text-transform:uppercase; }
+  .manual-val { font-size:12px; font-weight:600; color:var(--accent); min-width:48px; text-align:left; }
+  .manual-slider { flex:1; -webkit-appearance:none; appearance:none; height:3px; border-radius:2px; background:rgba(255,255,255,0.2); outline:none; cursor:pointer; }
+  .manual-slider::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:#fff; cursor:pointer; box-shadow:0 1px 4px rgba(0,0,0,0.5); }
+  .manual-unsupported { font-size:12px; color:rgba(255,255,255,0.35); font-style:italic; min-width:60px; text-align:right; }
+
   /* Camera permission */
   .cam-placeholder { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; background:#1a1a1a; }
   .cam-placeholder p { color:var(--text2); text-align:center; padding:0 40px; font-size:15px; }
@@ -216,11 +230,12 @@
     <video id="video" autoplay playsinline muted></video>
     <canvas id="canvas"></canvas>
     
-    <!-- Viewfinder corners -->
-    <div class="vf-overlay">
-      <div class="vf-corner tl"></div><div class="vf-corner tr"></div>
-      <div class="vf-corner bl"></div><div class="vf-corner br"></div>
-    </div>
+    <!-- Ratio crop mask -->
+    <div class="ratio-mask-top" id="maskTop"></div>
+    <div class="ratio-mask-bottom" id="maskBottom"></div>
+    <div class="ratio-mask-left" id="maskLeft"></div>
+    <div class="ratio-mask-right" id="maskRight"></div>
+    <div class="ratio-frame" id="ratioFrame"></div>
     
     <!-- Horizon level -->
     <div class="horizon-line" id="horizonLine"></div>
@@ -272,6 +287,34 @@
     <div class="mode-tabs" style="position:absolute;bottom:170px;left:0;right:0;z-index:10;">
       <button class="mode-tab active" data-mode="photo">사진</button>
       <button class="mode-tab" data-mode="manual">수동</button>
+    </div>
+    
+    <!-- Manual mode panel -->
+    <div class="manual-panel" id="manualPanel">
+      <div class="manual-row">
+        <span class="manual-label">ISO</span>
+        <input class="manual-slider" type="range" id="isoSlider" min="50" max="3200" step="50" value="100">
+        <span class="manual-val" id="isoVal">100</span>
+        <span class="manual-unsupported" id="isoUnsupported" style="display:none;">미지원</span>
+      </div>
+      <div class="manual-row">
+        <span class="manual-label">SS</span>
+        <input class="manual-slider" type="range" id="ssSlider" min="0" max="9" step="1" value="5">
+        <span class="manual-val" id="ssVal">1/60</span>
+        <span class="manual-unsupported" id="ssUnsupported" style="display:none;">미지원</span>
+      </div>
+      <div class="manual-row">
+        <span class="manual-label">EV</span>
+        <input class="manual-slider" type="range" id="evSlider" min="-3" max="3" step="0.5" value="0">
+        <span class="manual-val" id="evVal">±0</span>
+        <span class="manual-unsupported" id="evUnsupported" style="display:none;">미지원</span>
+      </div>
+      <div class="manual-row">
+        <span class="manual-label">WB</span>
+        <input class="manual-slider" type="range" id="wbSlider" min="2500" max="7500" step="100" value="5500">
+        <span class="manual-val" id="wbVal">5500K</span>
+        <span class="manual-unsupported" id="wbUnsupported" style="display:none;">미지원</span>
+      </div>
     </div>
     
     <!-- Zoom bar -->
@@ -509,8 +552,59 @@
 // ════════════════════════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════════════════════════
-let photos = JSON.parse(localStorage.getItem('workcam_photos') || '[]');
-let folders = JSON.parse(localStorage.getItem('workcam_folders') || '["전체","미분류"]');
+let photos = [];
+let folders = ['전체','미분류'];
+
+// ── IndexedDB setup ──
+let db;
+const DB_NAME = 'workcam_db', DB_VER = 1;
+
+function openDB() {
+  return new Promise((res, rej) => {
+    const req = indexedDB.open(DB_NAME, DB_VER);
+    req.onupgradeneeded = e => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('photos')) d.createObjectStore('photos', { keyPath: 'id' });
+      if (!d.objectStoreNames.contains('meta')) d.createObjectStore('meta', { keyPath: 'key' });
+    };
+    req.onsuccess = e => { db = e.target.result; res(db); };
+    req.onerror = () => rej(req.error);
+  });
+}
+
+function dbPut(store, value) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    tx.objectStore(store).put(value).onsuccess = () => res();
+    tx.onerror = () => rej(tx.error);
+  });
+}
+
+function dbGetAll(store) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).getAll();
+    req.onsuccess = () => res(req.result);
+    req.onerror = () => rej(req.error);
+  });
+}
+
+function dbDelete(store, key) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    tx.objectStore(store).delete(key).onsuccess = () => res();
+    tx.onerror = () => rej(tx.error);
+  });
+}
+
+async function loadDB() {
+  await openDB();
+  const stored = await dbGetAll('photos');
+  photos = stored.sort((a, b) => b.id.localeCompare(a.id));
+  const metaFolders = await dbGetAll('meta');
+  const f = metaFolders.find(m => m.key === 'folders');
+  if (f) folders = f.value;
+}
 let stream = null;
 let facingMode = 'environment';
 let currentZoom = 1;
@@ -529,14 +623,24 @@ let lastX, lastY, startX, startY;
 // INIT
 // ════════════════════════════════════════════════════════════
 async function init() {
+  await loadDB();
   await startCamera();
   renderFolderTabs();
   renderGallery();
+  updateThumbCount();
+  if (photos.length > 0) {
+    const thumbImg = document.getElementById('thumbImg');
+    thumbImg.src = photos[0].markup || photos[0].data;
+    thumbImg.style.display = 'block';
+  }
   setupTouchFocus();
   setupDeviceOrientation();
   setupSwipeNav();
   
-  // Close popups on outside click
+  // Init ratio mask after layout settles
+  setTimeout(updateRatioMask, 100);
+  window.addEventListener('resize', updateRatioMask);
+  
   document.addEventListener('click', (e) => {
     if (!e.target.closest('#flashPopup') && !e.target.closest('#flashBtn')) {
       document.getElementById('flashPopup').classList.remove('show');
@@ -625,14 +729,67 @@ document.querySelectorAll('.ratio-opt').forEach(opt => {
 });
 
 function applyRatio() {
+  // Show the full video at natural size, overlay dark masks for cropped areas
   const vc = document.getElementById('videoContainer');
-  const [w, h] = currentRatio.split(':').map(Number);
-  const ratio = h / w;
-  vc.style.paddingBottom = '';
-  vc.style.aspectRatio = `${w}/${h}`;
-  vc.style.maxHeight = '100%';
   const video = document.getElementById('video');
-  video.style.aspectRatio = `${w}/${h}`;
+  
+  // Reset — full fill
+  vc.style.aspectRatio = '';
+  vc.style.maxHeight = '';
+  video.style.aspectRatio = '';
+  video.style.width = '100%';
+  video.style.height = '100%';
+  video.style.objectFit = 'cover';
+  
+  updateRatioMask();
+}
+
+function updateRatioMask() {
+  const vc = document.getElementById('videoContainer');
+  const vcW = vc.clientWidth;
+  const vcH = vc.clientHeight;
+  if (!vcW || !vcH) { requestAnimationFrame(updateRatioMask); return; }
+
+  const [rw, rh] = currentRatio.split(':').map(Number);
+  const targetRatio = rw / rh;
+  const containerRatio = vcW / vcH;
+
+  let frameLeft = 0, frameTop = 0, frameWidth = vcW, frameHeight = vcH;
+
+  if (containerRatio > targetRatio) {
+    // Container wider than target — mask left & right
+    frameWidth = Math.round(vcH * targetRatio);
+    frameLeft = Math.round((vcW - frameWidth) / 2);
+    frameTop = 0;
+    frameHeight = vcH;
+  } else if (containerRatio < targetRatio) {
+    // Container taller than target — mask top & bottom
+    frameHeight = Math.round(vcW / targetRatio);
+    frameTop = Math.round((vcH - frameHeight) / 2);
+    frameLeft = 0;
+    frameWidth = vcW;
+  }
+
+  const maskTop = document.getElementById('maskTop');
+  const maskBottom = document.getElementById('maskBottom');
+  const maskLeft = document.getElementById('maskLeft');
+  const maskRight = document.getElementById('maskRight');
+  const frame = document.getElementById('ratioFrame');
+
+  // Top mask
+  maskTop.style.cssText = `top:0;left:0;right:0;height:${frameTop}px;`;
+  // Bottom mask
+  maskBottom.style.cssText = `bottom:0;left:0;right:0;height:${frameTop}px;`;
+  // Left mask
+  maskLeft.style.cssText = `top:${frameTop}px;left:0;width:${frameLeft}px;height:${frameHeight}px;`;
+  // Right mask
+  maskRight.style.cssText = `top:${frameTop}px;right:0;width:${frameLeft}px;height:${frameHeight}px;`;
+  // Frame border
+  frame.style.cssText = `left:${frameLeft}px;top:${frameTop}px;width:${frameWidth}px;height:${frameHeight}px;`;
+
+  // Hide masks if no cropping needed (1:1 on square container etc.)
+  const noMask = frameLeft === 0 && frameTop === 0;
+  [maskTop,maskBottom,maskLeft,maskRight,frame].forEach(el => el.style.display = noMask ? 'none' : 'block');
 }
 
 // Flash
@@ -699,7 +856,7 @@ function setupDeviceOrientation() {
 function setupTouchFocus() {
   const vc = document.getElementById('videoContainer');
   vc.addEventListener('click', (e) => {
-    if (e.target.closest('.cam-topbar,.cam-bottom,.zoom-bar,.mode-tabs,.flash-popup,.ratio-popup,.vf-corner')) return;
+    if (e.target.closest('.cam-topbar,.cam-bottom,.zoom-bar,.mode-tabs,.flash-popup,.ratio-popup,.manual-panel')) return;
     const ring = document.getElementById('focusRing');
     const rect = vc.getBoundingClientRect();
     const x = e.clientX - rect.left - 30;
@@ -720,20 +877,141 @@ function setupTouchFocus() {
   });
 }
 
-// Mode tabs
+// Mode tabs + manual panel
+const SS_VALUES = ['1/1000','1/500','1/250','1/125','1/60','1/30','1/15','1/8','1/4','1/2'];
+let currentMode = 'photo';
+
 document.querySelectorAll('.mode-tab').forEach(tab => {
   tab.onclick = function() {
     document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
     this.classList.add('active');
+    currentMode = this.dataset.mode;
+    const panel = document.getElementById('manualPanel');
+    if (currentMode === 'manual') {
+      panel.classList.add('show');
+      checkManualCapabilities();
+    } else {
+      panel.classList.remove('show');
+      resetToAuto();
+    }
   };
 });
+
+function checkManualCapabilities() {
+  if (!stream) return;
+  const track = stream.getVideoTracks()[0];
+  const caps = track.getCapabilities?.() || {};
+  
+  // ISO
+  if (caps.iso) {
+    document.getElementById('isoSlider').min = caps.iso.min;
+    document.getElementById('isoSlider').max = caps.iso.max;
+    document.getElementById('isoSlider').value = caps.iso.min * 2 || 100;
+    document.getElementById('isoUnsupported').style.display = 'none';
+    document.getElementById('isoSlider').style.display = '';
+    document.getElementById('isoVal').style.display = '';
+  } else {
+    document.getElementById('isoUnsupported').style.display = '';
+    document.getElementById('isoSlider').style.display = 'none';
+    document.getElementById('isoVal').style.display = 'none';
+  }
+  
+  // Exposure (EV)
+  if (caps.exposureCompensation) {
+    document.getElementById('evSlider').min = caps.exposureCompensation.min;
+    document.getElementById('evSlider').max = caps.exposureCompensation.max;
+    document.getElementById('evSlider').step = caps.exposureCompensation.step || 0.5;
+    document.getElementById('evUnsupported').style.display = 'none';
+    document.getElementById('evSlider').style.display = '';
+    document.getElementById('evVal').style.display = '';
+  } else {
+    document.getElementById('evUnsupported').style.display = '';
+    document.getElementById('evSlider').style.display = 'none';
+    document.getElementById('evVal').style.display = 'none';
+  }
+  
+  // Shutter speed (exposureTime)
+  if (caps.exposureTime) {
+    document.getElementById('ssUnsupported').style.display = 'none';
+    document.getElementById('ssSlider').style.display = '';
+    document.getElementById('ssVal').style.display = '';
+  } else {
+    document.getElementById('ssUnsupported').style.display = '';
+    document.getElementById('ssSlider').style.display = 'none';
+    document.getElementById('ssVal').style.display = 'none';
+  }
+  
+  // White balance
+  if (caps.colorTemperature) {
+    document.getElementById('wbSlider').min = caps.colorTemperature.min || 2500;
+    document.getElementById('wbSlider').max = caps.colorTemperature.max || 7500;
+    document.getElementById('wbUnsupported').style.display = 'none';
+    document.getElementById('wbSlider').style.display = '';
+    document.getElementById('wbVal').style.display = '';
+  } else {
+    document.getElementById('wbUnsupported').style.display = '';
+    document.getElementById('wbSlider').style.display = 'none';
+    document.getElementById('wbVal').style.display = 'none';
+  }
+}
+
+function resetToAuto() {
+  if (!stream) return;
+  const track = stream.getVideoTracks()[0];
+  try {
+    track.applyConstraints({ advanced: [{
+      exposureMode: 'continuous',
+      whiteBalanceMode: 'continuous',
+      focusMode: 'continuous'
+    }]});
+  } catch(e) {}
+}
+
+// ISO slider
+document.getElementById('isoSlider').addEventListener('input', function() {
+  const val = parseInt(this.value);
+  document.getElementById('isoVal').textContent = val;
+  applyManualConstraint({ iso: val });
+});
+
+// Shutter speed slider
+document.getElementById('ssSlider').addEventListener('input', function() {
+  const idx = parseInt(this.value);
+  const label = SS_VALUES[idx];
+  document.getElementById('ssVal').textContent = label;
+  // Convert to seconds for API: e.g. "1/60" → 1/60
+  const parts = label.split('/');
+  const seconds = parts.length === 2 ? parseFloat(parts[0]) / parseFloat(parts[1]) : parseFloat(parts[0]);
+  // exposureTime in microseconds for some APIs
+  applyManualConstraint({ exposureTime: seconds * 1000000, exposureMode: 'manual' });
+});
+
+// EV slider
+document.getElementById('evSlider').addEventListener('input', function() {
+  const val = parseFloat(this.value);
+  document.getElementById('evVal').textContent = val >= 0 ? `+${val}` : `${val}`;
+  applyManualConstraint({ exposureCompensation: val });
+});
+
+// White balance slider
+document.getElementById('wbSlider').addEventListener('input', function() {
+  const val = parseInt(this.value);
+  document.getElementById('wbVal').textContent = `${val}K`;
+  applyManualConstraint({ whiteBalanceMode: 'manual', colorTemperature: val });
+});
+
+function applyManualConstraint(constraint) {
+  if (!stream) return;
+  const track = stream.getVideoTracks()[0];
+  try { track.applyConstraints({ advanced: [constraint] }); } catch(e) {}
+}
 
 // ════════════════════════════════════════════════════════════
 // CAPTURE
 // ════════════════════════════════════════════════════════════
 document.getElementById('shutterBtn').onclick = capturePhoto;
 
-function capturePhoto() {
+async function capturePhoto() {
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
   
@@ -769,7 +1047,6 @@ function capturePhoto() {
   
   const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
   
-  // Get location
   const photo = {
     id: Date.now().toString(),
     data: dataUrl,
@@ -788,14 +1065,14 @@ function capturePhoto() {
   
   // Try geolocation
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition((pos) => {
+    navigator.geolocation.getCurrentPosition(async (pos) => {
       photo.location = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
-      savePhotos();
+      await savePhoto(photo);
     }, () => {}, { timeout: 3000 });
   }
   
   photos.unshift(photo);
-  savePhotos();
+  await savePhoto(photo);
   
   // Update thumb
   const thumbImg = document.getElementById('thumbImg');
@@ -812,12 +1089,18 @@ function capturePhoto() {
   renderGallery();
 }
 
-function savePhotos() {
+async function savePhoto(photo) {
   try {
-    localStorage.setItem('workcam_photos', JSON.stringify(photos));
+    await dbPut('photos', photo);
   } catch(e) {
-    showToast('저장 공간 부족');
+    showToast('저장 실패: ' + (e.message || '알 수 없는 오류'));
   }
+}
+
+function savePhotos() { /* legacy stub – use savePhoto(photo) */ }
+
+async function saveFolders() {
+  await dbPut('meta', { key: 'folders', value: folders });
 }
 
 function updateThumbCount() {
@@ -879,12 +1162,12 @@ function renderFolderTabs() {
   document.getElementById('allCount') && (document.getElementById('allCount').textContent = photos.length);
 }
 
-function createFolder() {
+async function createFolder() {
   const name = prompt('새 폴더 이름:');
   if (!name || !name.trim()) return;
   if (!folders.includes(name.trim())) {
     folders.push(name.trim());
-    localStorage.setItem('workcam_folders', JSON.stringify(folders));
+    await saveFolders();
     renderFolderTabs();
   }
 }
@@ -938,7 +1221,7 @@ function renderGallery() {
       const folder = tab.dataset.folder;
       if (folder === 'all') return;
       const p = photos.find(p => p.id === id);
-      if (p) { p.folder = folder; savePhotos(); renderGallery(); renderFolderTabs(); showToast(`'${folder}'로 이동됨`); }
+      if (p) { p.folder = folder; savePhoto(p).then(() => { renderGallery(); renderFolderTabs(); showToast(`'${folder}'로 이동됨`); }); }
     });
   });
   
@@ -1021,9 +1304,9 @@ function closeMemo() {
   document.getElementById('memoPanel').classList.remove('show');
 }
 
-function saveMemo() {
+async function saveMemo() {
   const photo = photos[currentPhotoIdx];
-  if (photo) { photo.memo = document.getElementById('memoText').value; savePhotos(); }
+  if (photo) { photo.memo = document.getElementById('memoText').value; await savePhoto(photo); }
   closeMemo();
   showToast('메모 저장됨');
 }
@@ -1172,7 +1455,7 @@ function setColor(el) {
   el.classList.add('active');
 }
 
-function saveMarkup() {
+async function saveMarkup() {
   const canvas = document.getElementById('markupCanvas');
   const markupImg = document.getElementById('markupImg');
   
@@ -1185,7 +1468,7 @@ function saveMarkup() {
   ctx.drawImage(canvas, 0, 0, out.width, out.height);
   
   photos[currentPhotoIdx].markup = out.toDataURL('image/jpeg', 0.92);
-  savePhotos();
+  await savePhoto(photos[currentPhotoIdx]);
   document.getElementById('markupPanel').style.display = 'none';
   renderPhoto();
   showToast('마크업 저장됨');
@@ -1198,10 +1481,11 @@ function cancelMarkup() {
 // ════════════════════════════════════════════════════════════
 // DELETE
 // ════════════════════════════════════════════════════════════
-function deleteCurrentPhoto() {
+async function deleteCurrentPhoto() {
   if (!confirm('이 사진을 삭제하시겠습니까?')) return;
+  const photo = photos[currentPhotoIdx];
   photos.splice(currentPhotoIdx, 1);
-  savePhotos();
+  await dbDelete('photos', photo.id);
   renderGallery();
   renderFolderTabs();
   
@@ -1225,9 +1509,9 @@ function openShareSheet() {
     const btn = document.createElement('button');
     btn.className = 'folder-tab' + (photos[currentPhotoIdx]?.folder === f ? ' active' : '');
     btn.textContent = f;
-    btn.onclick = () => {
+    btn.onclick = async () => {
       photos[currentPhotoIdx].folder = f;
-      savePhotos();
+      await savePhoto(photos[currentPhotoIdx]);
       closeShareSheet();
       renderGallery();
       renderFolderTabs();
