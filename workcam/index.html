@@ -184,15 +184,40 @@
   .focus-ring { position:absolute; border:2px solid var(--accent); border-radius:4px; width:60px; height:60px; pointer-events:none; z-index:5; transition:all .15s; opacity:0; }
   .focus-ring.show { opacity:1; }
   
-  /* Manual mode panel */
-  .manual-panel { position:absolute; bottom:0; left:0; right:0; z-index:10; padding:14px 20px calc(8px); background:linear-gradient(to top,rgba(0,0,0,0.75) 80%,transparent); display:none; }
-  .manual-panel.show { display:block; }
-  .manual-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
-  .manual-label { font-size:11px; font-weight:600; color:rgba(255,255,255,0.55); letter-spacing:0.06em; min-width:32px; text-align:right; text-transform:uppercase; }
-  .manual-val { font-size:12px; font-weight:600; color:var(--accent); min-width:48px; text-align:left; }
-  .manual-slider { flex:1; -webkit-appearance:none; appearance:none; height:3px; border-radius:2px; background:rgba(255,255,255,0.2); outline:none; cursor:pointer; }
-  .manual-slider::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:#fff; cursor:pointer; box-shadow:0 1px 4px rgba(0,0,0,0.5); }
-  .manual-unsupported { font-size:12px; color:rgba(255,255,255,0.35); font-style:italic; min-width:60px; text-align:right; }
+  /* Manual mode — iOS style right vertical slider */
+  .manual-sidebar { position:absolute; right:0; top:0; bottom:0; z-index:11; display:flex; align-items:center; pointer-events:none; }
+  .manual-sidebar.show { pointer-events:all; }
+  
+  /* Parameter selector pills — top center, above zoom bar */
+  .manual-params { position:absolute; left:50%; transform:translateX(-50%); z-index:12; display:none; flex-direction:row; gap:6px; white-space:nowrap; }
+  .manual-params.show { display:flex; }
+  .mparam-btn { background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.2); border-radius:20px; color:rgba(255,255,255,0.6); font-size:12px; font-weight:600; padding:5px 12px; cursor:pointer; transition:all .15s; letter-spacing:0.04em; }
+  .mparam-btn.active { background:rgba(255,214,10,0.15); border-color:var(--accent); color:var(--accent); }
+  
+  /* Vertical slider track on right side */
+  .manual-vslider-wrap { position:absolute; right:16px; top:50%; transform:translateY(-50%); display:none; flex-direction:column; align-items:center; gap:8px; }
+  .manual-vslider-wrap.show { display:flex; }
+  .manual-vslider-top { font-size:11px; color:rgba(255,255,255,0.5); text-align:center; }
+  .manual-vslider-val { font-size:15px; font-weight:700; color:var(--accent); text-align:center; min-width:52px; }
+  .manual-vslider { -webkit-appearance:slider-vertical; writing-mode:vertical-lr; direction:rtl; appearance:slider-vertical; width:28px; height:180px; background:transparent; outline:none; cursor:pointer; }
+  /* Fallback for browsers without vertical slider: rotate */
+  @supports not (appearance: slider-vertical) {
+    .manual-vslider { writing-mode:horizontal-tb; direction:ltr; transform:rotate(-90deg); width:180px; height:28px; }
+    .manual-vslider-wrap { gap:16px; }
+  }
+  .manual-vslider::-webkit-slider-runnable-track { width:4px; background:rgba(255,255,255,0.2); border-radius:2px; }
+  .manual-vslider::-webkit-slider-thumb { -webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:#fff; cursor:pointer; box-shadow:0 1px 6px rgba(0,0,0,0.6); margin-left:-9px; }
+  .manual-vslider-bottom { font-size:11px; color:rgba(255,255,255,0.5); text-align:center; }
+  .manual-unsupported-msg { font-size:12px; color:rgba(255,255,255,0.35); font-style:italic; text-align:center; padding:20px 8px; max-width:60px; line-height:1.4; }
+
+  /* Grid overlay */
+  .grid-overlay { position:absolute; inset:0; pointer-events:none; z-index:6; display:none; }
+  .grid-overlay.show { display:block; }
+  .grid-line { position:absolute; background:rgba(255,255,255,0.3); }
+  .grid-line.v1 { left:33.33%; top:0; bottom:0; width:0.5px; }
+  .grid-line.v2 { left:66.66%; top:0; bottom:0; width:0.5px; }
+  .grid-line.h1 { top:33.33%; left:0; right:0; height:0.5px; }
+  .grid-line.h2 { top:66.66%; left:0; right:0; height:0.5px; }
 
   /* Camera permission */
   .cam-placeholder { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; background:#1a1a1a; }
@@ -252,6 +277,9 @@
       <button class="icon-btn" id="horizonBtn" title="수평">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="8" x2="8" y2="8"/><line x1="3" y1="16" x2="8" y2="16"/><line x1="16" y1="8" x2="21" y2="8"/><line x1="16" y1="16" x2="21" y2="16"/></svg>
       </button>
+      <button class="icon-btn" id="gridBtn" title="격자">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/></svg>
+      </button>
       <div class="cam-topbar-right">
         <div class="ratio-badge" id="ratioBadge">4:3</div>
         <button class="icon-btn" id="settingsBtn">
@@ -283,38 +311,33 @@
       <div class="ratio-opt" data-ratio="1:1">1:1</div>
     </div>
     
+    <!-- Grid overlay -->
+    <div class="grid-overlay" id="gridOverlay">
+      <div class="grid-line v1"></div><div class="grid-line v2"></div>
+      <div class="grid-line h1"></div><div class="grid-line h2"></div>
+    </div>
+    
     <!-- Mode tabs -->
-    <div class="mode-tabs" style="position:absolute;bottom:170px;left:0;right:0;z-index:10;">
+    <div class="mode-tabs" style="position:absolute;bottom:170px;left:0;right:0;z-index:12;">
       <button class="mode-tab active" data-mode="photo">사진</button>
       <button class="mode-tab" data-mode="manual">수동</button>
     </div>
     
-    <!-- Manual mode panel -->
-    <div class="manual-panel" id="manualPanel">
-      <div class="manual-row">
-        <span class="manual-label">ISO</span>
-        <input class="manual-slider" type="range" id="isoSlider" min="50" max="3200" step="50" value="100">
-        <span class="manual-val" id="isoVal">100</span>
-        <span class="manual-unsupported" id="isoUnsupported" style="display:none;">미지원</span>
-      </div>
-      <div class="manual-row">
-        <span class="manual-label">SS</span>
-        <input class="manual-slider" type="range" id="ssSlider" min="0" max="9" step="1" value="5">
-        <span class="manual-val" id="ssVal">1/60</span>
-        <span class="manual-unsupported" id="ssUnsupported" style="display:none;">미지원</span>
-      </div>
-      <div class="manual-row">
-        <span class="manual-label">EV</span>
-        <input class="manual-slider" type="range" id="evSlider" min="-3" max="3" step="0.5" value="0">
-        <span class="manual-val" id="evVal">±0</span>
-        <span class="manual-unsupported" id="evUnsupported" style="display:none;">미지원</span>
-      </div>
-      <div class="manual-row">
-        <span class="manual-label">WB</span>
-        <input class="manual-slider" type="range" id="wbSlider" min="2500" max="7500" step="100" value="5500">
-        <span class="manual-val" id="wbVal">5500K</span>
-        <span class="manual-unsupported" id="wbUnsupported" style="display:none;">미지원</span>
-      </div>
+    <!-- Manual: parameter selector pills (sits above zoom bar) -->
+    <div class="manual-params" id="manualParams" style="bottom:215px;">
+      <button class="mparam-btn active" data-param="iso">ISO</button>
+      <button class="mparam-btn" data-param="ss">SS</button>
+      <button class="mparam-btn" data-param="ev">EV</button>
+      <button class="mparam-btn" data-param="wb">WB</button>
+    </div>
+    
+    <!-- Manual: vertical slider on right side -->
+    <div class="manual-vslider-wrap" id="manualVslider">
+      <div class="manual-vslider-top" id="vsliderTop">3200</div>
+      <input class="manual-vslider" type="range" id="vslider" min="50" max="3200" step="50" value="100">
+      <div class="manual-vslider-val" id="vsliderVal">100</div>
+      <div class="manual-vslider-bottom" id="vsliderBottom">50</div>
+      <div class="manual-unsupported-msg" id="vsliderUnsupported" style="display:none;">이 기기에서<br>미지원</div>
     </div>
     
     <!-- Zoom bar -->
@@ -750,8 +773,10 @@ function updateRatioMask() {
   const vcH = vc.clientHeight;
   if (!vcW || !vcH) { requestAnimationFrame(updateRatioMask); return; }
 
-  const [rw, rh] = currentRatio.split(':').map(Number);
-  const targetRatio = rw / rh;
+  // Portrait: first number = vertical (height), second = horizontal (width)
+  // e.g. 4:3 → height:width = 4:3, so aspect ratio (W/H) = 3/4
+  const [ph, pw] = currentRatio.split(':').map(Number);
+  const targetRatio = pw / ph; // actual W/H ratio (portrait)
   const containerRatio = vcW / vcH;
 
   let frameLeft = 0, frameTop = 0, frameWidth = vcW, frameHeight = vcH;
@@ -856,7 +881,7 @@ function setupDeviceOrientation() {
 function setupTouchFocus() {
   const vc = document.getElementById('videoContainer');
   vc.addEventListener('click', (e) => {
-    if (e.target.closest('.cam-topbar,.cam-bottom,.zoom-bar,.mode-tabs,.flash-popup,.ratio-popup,.manual-panel')) return;
+    if (e.target.closest('.cam-topbar,.cam-bottom,.zoom-bar,.mode-tabs,.flash-popup,.ratio-popup,.manual-params,.manual-vslider-wrap')) return;
     const ring = document.getElementById('focusRing');
     const rect = vc.getBoundingClientRect();
     const x = e.clientX - rect.left - 30;
@@ -877,83 +902,158 @@ function setupTouchFocus() {
   });
 }
 
-// Mode tabs + manual panel
+// ════════════════════════════════════════════════════════════
+// GRID
+// ════════════════════════════════════════════════════════════
+let gridActive = false;
+document.getElementById('gridBtn').onclick = function() {
+  gridActive = !gridActive;
+  this.classList.toggle('active', gridActive);
+  document.getElementById('gridOverlay').classList.toggle('show', gridActive);
+};
+
+// ════════════════════════════════════════════════════════════
+// MANUAL MODE — iOS vertical slider
+// ════════════════════════════════════════════════════════════
 const SS_VALUES = ['1/1000','1/500','1/250','1/125','1/60','1/30','1/15','1/8','1/4','1/2'];
 let currentMode = 'photo';
+let currentParam = 'iso';
+
+// Per-param config: { min, max, step, defaultVal, format(v), getConstraint(v), caps(caps) }
+const PARAM_CONFIG = {
+  iso: {
+    min:50, max:3200, step:50, def:100,
+    format: v => String(v),
+    topLabel: v => String(v.max),
+    bottomLabel: v => String(v.min),
+    getConstraint: v => ({ iso: v }),
+    hasCap: caps => !!caps.iso,
+    capRange: caps => caps.iso,
+  },
+  ss: {
+    min:0, max:9, step:1, def:4,
+    format: v => SS_VALUES[Math.round(v)],
+    topLabel: () => SS_VALUES[9],
+    bottomLabel: () => SS_VALUES[0],
+    getConstraint: v => {
+      const label = SS_VALUES[Math.round(v)];
+      const parts = label.split('/');
+      const secs = parts.length === 2 ? parseFloat(parts[0])/parseFloat(parts[1]) : parseFloat(parts[0]);
+      return { exposureTime: secs * 1000000, exposureMode: 'manual' };
+    },
+    hasCap: caps => !!caps.exposureTime,
+    capRange: () => null,
+  },
+  ev: {
+    min:-3, max:3, step:0.5, def:0,
+    format: v => v >= 0 ? `+${v}` : `${v}`,
+    topLabel: () => '+3',
+    bottomLabel: () => '-3',
+    getConstraint: v => ({ exposureCompensation: v }),
+    hasCap: caps => !!caps.exposureCompensation,
+    capRange: caps => caps.exposureCompensation,
+  },
+  wb: {
+    min:2500, max:7500, step:100, def:5500,
+    format: v => `${v}K`,
+    topLabel: v => `${v.max}K`,
+    bottomLabel: v => `${v.min}K`,
+    getConstraint: v => ({ whiteBalanceMode: 'manual', colorTemperature: v }),
+    hasCap: caps => !!caps.colorTemperature,
+    capRange: caps => caps.colorTemperature,
+  }
+};
+
+// Stored values per param
+const manualValues = { iso:100, ss:4, ev:0, wb:5500 };
 
 document.querySelectorAll('.mode-tab').forEach(tab => {
   tab.onclick = function() {
     document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
     this.classList.add('active');
     currentMode = this.dataset.mode;
-    const panel = document.getElementById('manualPanel');
     if (currentMode === 'manual') {
-      panel.classList.add('show');
-      checkManualCapabilities();
+      document.getElementById('manualParams').classList.add('show');
+      switchParam('iso');
     } else {
-      panel.classList.remove('show');
+      document.getElementById('manualParams').classList.remove('show');
+      document.getElementById('manualVslider').classList.remove('show');
       resetToAuto();
     }
   };
 });
 
-function checkManualCapabilities() {
+document.querySelectorAll('.mparam-btn').forEach(btn => {
+  btn.onclick = function() {
+    document.querySelectorAll('.mparam-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    switchParam(this.dataset.param);
+  };
+});
+
+function switchParam(param) {
+  currentParam = param;
+  const cfg = PARAM_CONFIG[param];
+  const slider = document.getElementById('vslider');
+  const valEl = document.getElementById('vsliderVal');
+  const topEl = document.getElementById('vsliderTop');
+  const bottomEl = document.getElementById('vsliderBottom');
+  const unsupEl = document.getElementById('vsliderUnsupported');
+  const wrap = document.getElementById('manualVslider');
+  
+  // Check capability
+  let supported = true;
+  if (stream) {
+    const track = stream.getVideoTracks()[0];
+    const caps = track.getCapabilities?.() || {};
+    supported = cfg.hasCap(caps);
+    const range = cfg.capRange(caps);
+    if (range && range.min !== undefined) {
+      slider.min = range.min;
+      slider.max = range.max;
+      slider.step = range.step || cfg.step;
+    } else {
+      slider.min = cfg.min;
+      slider.max = cfg.max;
+      slider.step = cfg.step;
+    }
+    topEl.textContent = cfg.topLabel({ min: parseFloat(slider.min), max: parseFloat(slider.max) });
+    bottomEl.textContent = cfg.bottomLabel({ min: parseFloat(slider.min), max: parseFloat(slider.max) });
+  } else {
+    slider.min = cfg.min; slider.max = cfg.max; slider.step = cfg.step;
+    topEl.textContent = cfg.topLabel({ min: cfg.min, max: cfg.max });
+    bottomEl.textContent = cfg.bottomLabel({ min: cfg.min, max: cfg.max });
+  }
+
+  slider.value = manualValues[param];
+  valEl.textContent = cfg.format(manualValues[param]);
+  
+  if (supported) {
+    slider.style.display = '';
+    topEl.style.display = '';
+    bottomEl.style.display = '';
+    valEl.style.display = '';
+    unsupEl.style.display = 'none';
+  } else {
+    slider.style.display = 'none';
+    topEl.style.display = 'none';
+    bottomEl.style.display = 'none';
+    valEl.style.display = 'none';
+    unsupEl.style.display = '';
+  }
+  
+  wrap.classList.add('show');
+}
+
+document.getElementById('vslider').addEventListener('input', function() {
+  const cfg = PARAM_CONFIG[currentParam];
+  const raw = parseFloat(this.value);
+  manualValues[currentParam] = raw;
+  document.getElementById('vsliderVal').textContent = cfg.format(raw);
   if (!stream) return;
   const track = stream.getVideoTracks()[0];
-  const caps = track.getCapabilities?.() || {};
-  
-  // ISO
-  if (caps.iso) {
-    document.getElementById('isoSlider').min = caps.iso.min;
-    document.getElementById('isoSlider').max = caps.iso.max;
-    document.getElementById('isoSlider').value = caps.iso.min * 2 || 100;
-    document.getElementById('isoUnsupported').style.display = 'none';
-    document.getElementById('isoSlider').style.display = '';
-    document.getElementById('isoVal').style.display = '';
-  } else {
-    document.getElementById('isoUnsupported').style.display = '';
-    document.getElementById('isoSlider').style.display = 'none';
-    document.getElementById('isoVal').style.display = 'none';
-  }
-  
-  // Exposure (EV)
-  if (caps.exposureCompensation) {
-    document.getElementById('evSlider').min = caps.exposureCompensation.min;
-    document.getElementById('evSlider').max = caps.exposureCompensation.max;
-    document.getElementById('evSlider').step = caps.exposureCompensation.step || 0.5;
-    document.getElementById('evUnsupported').style.display = 'none';
-    document.getElementById('evSlider').style.display = '';
-    document.getElementById('evVal').style.display = '';
-  } else {
-    document.getElementById('evUnsupported').style.display = '';
-    document.getElementById('evSlider').style.display = 'none';
-    document.getElementById('evVal').style.display = 'none';
-  }
-  
-  // Shutter speed (exposureTime)
-  if (caps.exposureTime) {
-    document.getElementById('ssUnsupported').style.display = 'none';
-    document.getElementById('ssSlider').style.display = '';
-    document.getElementById('ssVal').style.display = '';
-  } else {
-    document.getElementById('ssUnsupported').style.display = '';
-    document.getElementById('ssSlider').style.display = 'none';
-    document.getElementById('ssVal').style.display = 'none';
-  }
-  
-  // White balance
-  if (caps.colorTemperature) {
-    document.getElementById('wbSlider').min = caps.colorTemperature.min || 2500;
-    document.getElementById('wbSlider').max = caps.colorTemperature.max || 7500;
-    document.getElementById('wbUnsupported').style.display = 'none';
-    document.getElementById('wbSlider').style.display = '';
-    document.getElementById('wbVal').style.display = '';
-  } else {
-    document.getElementById('wbUnsupported').style.display = '';
-    document.getElementById('wbSlider').style.display = 'none';
-    document.getElementById('wbVal').style.display = 'none';
-  }
-}
+  try { track.applyConstraints({ advanced: [cfg.getConstraint(raw)] }); } catch(e) {}
+});
 
 function resetToAuto() {
   if (!stream) return;
@@ -967,44 +1067,12 @@ function resetToAuto() {
   } catch(e) {}
 }
 
-// ISO slider
-document.getElementById('isoSlider').addEventListener('input', function() {
-  const val = parseInt(this.value);
-  document.getElementById('isoVal').textContent = val;
-  applyManualConstraint({ iso: val });
-});
-
-// Shutter speed slider
-document.getElementById('ssSlider').addEventListener('input', function() {
-  const idx = parseInt(this.value);
-  const label = SS_VALUES[idx];
-  document.getElementById('ssVal').textContent = label;
-  // Convert to seconds for API: e.g. "1/60" → 1/60
-  const parts = label.split('/');
-  const seconds = parts.length === 2 ? parseFloat(parts[0]) / parseFloat(parts[1]) : parseFloat(parts[0]);
-  // exposureTime in microseconds for some APIs
-  applyManualConstraint({ exposureTime: seconds * 1000000, exposureMode: 'manual' });
-});
-
-// EV slider
-document.getElementById('evSlider').addEventListener('input', function() {
-  const val = parseFloat(this.value);
-  document.getElementById('evVal').textContent = val >= 0 ? `+${val}` : `${val}`;
-  applyManualConstraint({ exposureCompensation: val });
-});
-
-// White balance slider
-document.getElementById('wbSlider').addEventListener('input', function() {
-  const val = parseInt(this.value);
-  document.getElementById('wbVal').textContent = `${val}K`;
-  applyManualConstraint({ whiteBalanceMode: 'manual', colorTemperature: val });
-});
-
 function applyManualConstraint(constraint) {
   if (!stream) return;
   const track = stream.getVideoTracks()[0];
   try { track.applyConstraints({ advanced: [constraint] }); } catch(e) {}
 }
+
 
 // ════════════════════════════════════════════════════════════
 // CAPTURE
@@ -1018,18 +1086,20 @@ async function capturePhoto() {
   let vw = video.videoWidth || 1280;
   let vh = video.videoHeight || 720;
   
-  // Apply ratio crop
+  // Portrait ratio: first number = height, second = width (e.g. 4:3 → W/H = 3/4)
   let sx = 0, sy = 0, sw = vw, sh = vh;
-  const [rw, rh] = currentRatio.split(':').map(Number);
-  const targetRatio = rw / rh;
+  const [ph, pw] = currentRatio.split(':').map(Number);
+  const targetRatio = pw / ph; // W/H
   const videoRatio = vw / vh;
   
   if (videoRatio > targetRatio) {
-    sw = vh * targetRatio;
-    sx = (vw - sw) / 2;
+    // Video wider than target portrait → crop sides
+    sw = Math.round(vh * targetRatio);
+    sx = Math.round((vw - sw) / 2);
   } else {
-    sh = vw / targetRatio;
-    sy = (vh - sh) / 2;
+    // Video taller → crop top/bottom
+    sh = Math.round(vw / targetRatio);
+    sy = Math.round((vh - sh) / 2);
   }
   
   canvas.width = sw;
