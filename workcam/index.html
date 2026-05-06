@@ -28,9 +28,8 @@
   .screen { position:absolute; inset:0; display:none; flex-direction:column; background:#000; }
   .screen.active { display:flex; }
   
-  /* ── CAMERA SCREEN ── */
   /* ── CAMERA SCREEN — iOS 3-zone layout ── */
-  #cameraScreen { background:#000; display:flex; flex-direction:column; }
+  #cameraScreen { background:#000; }
 
   /* Zone 1: Top toolbar — fixed, always visible on black */
   #camTopbar {
@@ -146,24 +145,39 @@
   #photoScreen { background:#000; z-index:50; }
   .photo-fullscreen { flex:1; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; }
   .photo-fullscreen img { max-width:100%; max-height:100%; object-fit:contain; display:block; }
-  
-  .photo-topbar { display:flex; align-items:center; padding:16px 20px; background:rgba(0,0,0,0.7); backdrop-filter:blur(10px); gap:12px; }
-  .photo-topbar-btn { background:none; border:none; color:var(--blue); font-size:15px; cursor:pointer; display:flex; align-items:center; gap:4px; }
-  .photo-title { flex:1; text-align:center; font-size:15px; font-weight:600; color:var(--text2); }
-  
-  .photo-menu { position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.85); z-index:20; display:flex; flex-direction:column; }
-  .photo-menu-top { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; }
-  .photo-menu-actions { margin-top:auto; padding:16px; display:flex; flex-direction:column; gap:1px; }
-  .menu-group { background:var(--surface); border-radius:var(--radius); overflow:hidden; margin-bottom:12px; }
-  .menu-row { display:flex; align-items:center; padding:14px 18px; border-bottom:0.5px solid var(--sep); cursor:pointer; gap:14px; transition:background .1s; }
-  .menu-row:last-child { border-bottom:none; }
-  .menu-row:active { background:var(--surface2); }
-  .menu-row-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .menu-row svg { width:18px; height:18px; }
-  .menu-row-label { font-size:16px; flex:1; }
-  .menu-row-value { font-size:13px; color:var(--text2); }
-  .menu-row.danger { color:var(--red); }
-  .menu-row.danger .menu-row-icon { background:rgba(255,69,58,0.15); color:var(--red); }
+
+  /* Top bar */
+  .photo-topbar {
+    display:flex; align-items:center; padding:14px 8px 10px;
+    background:#000; gap:4px;
+    transition: opacity .22s ease, transform .22s ease;
+  }
+  .photo-topbar.hidden { opacity:0; pointer-events:none; transform:translateY(-6px); }
+  .photo-topbar-btn {
+    background:none; border:none; color:var(--blue); font-size:15px;
+    cursor:pointer; display:flex; align-items:center; gap:4px;
+    padding:6px 10px; border-radius:10px; min-width:80px;
+  }
+  .photo-topbar-btn:active { background:rgba(255,255,255,0.08); }
+  .photo-topbar-btn.right { justify-content:flex-end; }
+  .photo-title { flex:1; text-align:center; font-size:15px; font-weight:600; color:rgba(255,255,255,0.55); }
+
+  /* Bottom action bar */
+  .photo-bottombar {
+    display:flex; justify-content:space-around; align-items:center;
+    padding:14px 8px calc(18px + var(--safe-bottom));
+    background:#000;
+    transition: opacity .22s ease, transform .22s ease;
+  }
+  .photo-bottombar.hidden { opacity:0; pointer-events:none; transform:translateY(6px); }
+  .photo-bottom-btn {
+    display:flex; flex-direction:column; align-items:center; gap:5px;
+    cursor:pointer; background:none; border:none; color:var(--blue); font-size:11px;
+    padding:4px 8px; border-radius:10px; min-width:54px;
+  }
+  .photo-bottom-btn:active { background:rgba(255,255,255,0.08); }
+  .photo-bottom-btn svg { width:24px; height:24px; }
+  .photo-bottom-btn.danger { color:var(--red); }
   
   /* Memo overlay */
   .memo-panel { position:absolute; bottom:0; left:0; right:0; background:var(--surface); border-radius:20px 20px 0 0; padding:20px; z-index:30; transform:translateY(100%); transition:transform .3s cubic-bezier(.32,.72,0,1); }
@@ -212,15 +226,30 @@
   .focus-ring { position:absolute; border:2px solid var(--accent); border-radius:4px; width:60px; height:60px; pointer-events:none; z-index:5; transition:all .15s; opacity:0; }
   .focus-ring.show { opacity:1; }
   
-  /* Grid overlay */
-  .grid-overlay { position:absolute; inset:0; pointer-events:none; z-index:6; display:none; }
-  .grid-overlay.show { display:block; }
-  .grid-line { position:absolute; background:rgba(255,255,255,0.25); }
-  .grid-line.v1 { left:33.33%; top:0; bottom:0; width:0.5px; }
-  .grid-line.v2 { left:66.66%; top:0; bottom:0; width:0.5px; }
-  .grid-line.h1 { top:33.33%; left:0; right:0; height:0.5px; }
-  .grid-line.h2 { top:66.66%; left:0; right:0; height:0.5px; }
-
+  /* Shutter blade effect */
+  #shutterOverlay {
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    pointer-events: none;
+    display: none;
+    overflow: hidden;
+  }
+  .shutter-blade {
+    position: absolute;
+    background: #000;
+    transition: transform 0.1s cubic-bezier(0.4, 0, 1, 1);
+  }
+  /* Top blade slides down from top */
+  .shutter-blade.top    { top:0; left:0; right:0; height:50%; transform: translateY(-100%); }
+  /* Bottom blade slides up from bottom */
+  .shutter-blade.bottom { bottom:0; left:0; right:0; height:50%; transform: translateY(100%); }
+  /* Closed state */
+  .shutter-blade.top.close    { transform: translateY(0); }
+  .shutter-blade.bottom.close { transform: translateY(0); }
+  /* Open state (back to hidden) */
+  .shutter-blade.top.open    { transition: transform 0.14s cubic-bezier(0, 0, 0.2, 1); transform: translateY(-100%); }
+  .shutter-blade.bottom.open { transition: transform 0.14s cubic-bezier(0, 0, 0.2, 1); transform: translateY(100%); }
   /* Camera permission */
   .cam-placeholder { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; background:#1a1a1a; }
   .cam-placeholder p { color:var(--text2); text-align:center; padding:0 40px; font-size:15px; }
@@ -283,6 +312,12 @@
     <div class="ratio-mask-left" id="maskLeft"></div>
     <div class="ratio-mask-right" id="maskRight"></div>
     <div class="ratio-frame" id="ratioFrame"></div>
+
+    <!-- Shutter blade effect -->
+    <div id="shutterOverlay">
+      <div class="shutter-blade top" id="shutterTop"></div>
+      <div class="shutter-blade bottom" id="shutterBottom"></div>
+    </div>
 
     <!-- Grid -->
     <div class="grid-overlay" id="gridOverlay">
@@ -378,26 +413,32 @@
 
 <!-- ═══════════════════════════════ PHOTO SCREEN ═══════════════════════════════ -->
 <div id="photoScreen" class="screen">
-  <div class="photo-topbar">
-    <button class="photo-topbar-btn" onclick="closePhoto()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-      뒤로
+
+  <!-- Top bar: 카메라 | N/M | 갤러리 -->
+  <div class="photo-topbar" id="photoTopbar">
+    <button class="photo-topbar-btn" onclick="goToCamera()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      카메라
     </button>
     <div class="photo-title" id="photoTitle">1 / 1</div>
-    <button class="photo-topbar-btn" id="photoMenuBtn">메뉴</button>
+    <button class="photo-topbar-btn right" onclick="goToGallery()">
+      갤러리
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+    </button>
   </div>
-  
+
+  <!-- Fullscreen image — tap toggles UI -->
   <div class="photo-fullscreen" id="photoFullscreen">
     <img id="photoImg" src="" alt="">
+    <!-- Swipe arrows -->
+    <div class="swipe-hint">
+      <div class="swipe-arrow" id="prevArrow"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="swipe-arrow" id="nextArrow"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg></div>
+    </div>
   </div>
-  
-  <!-- Swipe arrows -->
-  <div class="swipe-hint">
-    <div class="swipe-arrow" id="prevArrow"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
-    <div class="swipe-arrow" id="nextArrow"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg></div>
-  </div>
-  
-  <div class="photo-bottombar">
+
+  <!-- Bottom action bar -->
+  <div class="photo-bottombar" id="photoBottombar">
     <button class="photo-bottom-btn" onclick="openShareSheet()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
       공유
@@ -419,48 +460,7 @@
       삭제
     </button>
   </div>
-  
-  <!-- Photo menu overlay -->
-  <div class="photo-menu" id="photoMenu" style="display:none;">
-    <div class="photo-menu-top">
-      <div style="font-size:15px;font-weight:600;">옵션</div>
-      <button onclick="closePhotoMenu()" style="background:none;border:none;color:var(--blue);font-size:15px;cursor:pointer;">닫기</button>
-    </div>
-    <div style="flex:1;overflow-y:auto;">
-      <div style="padding:0 16px;">
-        <div class="menu-group">
-          <div class="menu-row" onclick="openMarkup()">
-            <div class="menu-row-icon" style="background:rgba(10,132,255,0.15);color:var(--blue);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></div>
-            <span class="menu-row-label">마크업</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-          <div class="menu-row" onclick="toggleMemo()">
-            <div class="menu-row-icon" style="background:rgba(255,214,10,0.15);color:var(--accent);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-            <span class="menu-row-label">메모</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-          <div class="menu-row" onclick="showInfo()">
-            <div class="menu-row-icon" style="background:rgba(48,209,88,0.15);color:var(--green);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-            <span class="menu-row-label">정보</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-        </div>
-        <div class="menu-group">
-          <div class="menu-row" onclick="openShareSheet()">
-            <div class="menu-row-icon" style="background:rgba(10,132,255,0.15);color:var(--blue);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg></div>
-            <span class="menu-row-label">공유</span>
-          </div>
-        </div>
-        <div class="menu-group">
-          <div class="menu-row danger" onclick="deleteCurrentPhoto()">
-            <div class="menu-row-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></div>
-            <span class="menu-row-label">삭제</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
+
   <!-- Memo panel -->
   <div class="memo-panel" id="memoPanel">
     <div style="width:36px;height:4px;background:var(--text3);border-radius:2px;margin:0 auto 16px;"></div>
@@ -469,7 +469,7 @@
     <button class="memo-save-btn" onclick="saveMemo()">저장</button>
     <button onclick="closeMemo()" style="width:100%;background:none;border:none;color:var(--text2);font-size:15px;padding:12px;cursor:pointer;">취소</button>
   </div>
-  
+
   <!-- Info panel -->
   <div class="info-panel" id="infoPanel">
     <div style="width:36px;height:4px;background:var(--text3);border-radius:2px;margin:0 auto 16px;"></div>
@@ -477,7 +477,7 @@
     <div id="infoPanelContent"></div>
     <button onclick="closeInfo()" style="width:100%;background:var(--surface2);border:none;color:var(--blue);font-size:16px;font-weight:600;padding:14px;border-radius:12px;cursor:pointer;margin-top:12px;">닫기</button>
   </div>
-  
+
   <!-- Markup panel -->
   <div class="markup-panel" id="markupPanel" style="display:none;">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(0,0,0,0.8);">
@@ -512,6 +512,7 @@
       <input type="range" min="2" max="20" value="4" id="brushSize" class="markup-size" style="max-width:80px;">
     </div>
   </div>
+
 </div>
 
 <!-- ═══════════════════════════════ SHARE SHEET ═══════════════════════════════ -->
@@ -627,6 +628,7 @@ let lastX, lastY, startX, startY;
 async function init() {
   await loadDB();
   await startCamera();
+  applyMirror();
   renderFolderTabs();
   renderGallery();
   updateThumbCount();
@@ -685,6 +687,7 @@ document.getElementById('flipBtn').onclick = async function() {
   this.style.transform = 'rotate(180deg)';
   setTimeout(() => { this.style.transform = ''; }, 300);
   await startCamera();
+  applyMirror();
 };
 
 // Zoom
@@ -697,6 +700,11 @@ document.querySelectorAll('.zoom-btn').forEach(btn => {
     applyZoom(z);
   };
 });
+
+function applyMirror() {
+  const video = document.getElementById('video');
+  video.style.transform = facingMode === 'user' ? 'scaleX(-1)' : 'scaleX(1)';
+}
 
 function applyZoom(z) {
   if (!stream) return;
@@ -884,6 +892,11 @@ async function capturePhoto() {
   canvas.width = sw;
   canvas.height = sh;
   const ctx = canvas.getContext('2d');
+  // Mirror front camera capture
+  if (facingMode === 'user') {
+    ctx.translate(sw, 0);
+    ctx.scale(-1, 1);
+  }
   ctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
   
   // Flash effect if flash=on
@@ -928,14 +941,44 @@ async function capturePhoto() {
   thumbImg.src = dataUrl;
   thumbImg.style.display = 'block';
   updateThumbCount();
-  
-  // Shutter animation
-  const vc = document.getElementById('viewfinderZone');
-  vc.style.opacity = '0.3';
-  setTimeout(() => { vc.style.opacity = '1'; }, 100);
-  
-  showToast('📸 저장됨');
+
+  // Shutter blade animation: close → open
+  shutterBlade();
   renderGallery();
+}
+
+function shutterBlade() {
+  const overlay = document.getElementById('shutterOverlay');
+  const top     = document.getElementById('shutterTop');
+  const bottom  = document.getElementById('shutterBottom');
+
+  // Reset to open position (hidden)
+  top.className    = 'shutter-blade top';
+  bottom.className = 'shutter-blade bottom';
+  overlay.style.display = 'block';
+
+  // Step 1: blades close (slam shut)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      top.classList.add('close');
+      bottom.classList.add('close');
+    });
+  });
+
+  // Step 2: hold briefly, then open
+  setTimeout(() => {
+    top.classList.remove('close');
+    top.classList.add('open');
+    bottom.classList.remove('close');
+    bottom.classList.add('open');
+  }, 130);
+
+  // Step 3: hide overlay after open completes
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    top.className    = 'shutter-blade top';
+    bottom.className = 'shutter-blade bottom';
+  }, 310);
 }
 
 async function savePhoto(photo) {
@@ -1080,8 +1123,12 @@ function renderGallery() {
 // ════════════════════════════════════════════════════════════
 // PHOTO VIEWER
 // ════════════════════════════════════════════════════════════
+let photoUIVisible = true;
+
 function openPhoto(idx) {
   currentPhotoIdx = idx;
+  photoUIVisible = true;
+  setPhotoUI(true, false); // show immediately, no animation on open
   renderPhoto();
   showScreen('photoScreen');
 }
@@ -1089,61 +1136,100 @@ function openPhoto(idx) {
 function renderPhoto() {
   const photo = photos[currentPhotoIdx];
   if (!photo) return;
-  
   document.getElementById('photoImg').src = photo.markup || photo.data;
   document.getElementById('photoTitle').textContent = `${currentPhotoIdx + 1} / ${photos.length}`;
   document.getElementById('memoText').value = photo.memo || '';
-  
-  // Arrow visibility
   document.getElementById('prevArrow').style.opacity = currentPhotoIdx > 0 ? '1' : '0';
   document.getElementById('nextArrow').style.opacity = currentPhotoIdx < photos.length - 1 ? '1' : '0';
 }
 
-function closePhoto() {
-  closePhotoMenu();
-  closeMemo();
-  closeInfo();
+function setPhotoUI(visible, animate = true) {
+  photoUIVisible = visible;
+  const topbar = document.getElementById('photoTopbar');
+  const bottombar = document.getElementById('photoBottombar');
+  if (!animate) {
+    topbar.style.transition = 'none';
+    bottombar.style.transition = 'none';
+    requestAnimationFrame(() => {
+      topbar.style.transition = '';
+      bottombar.style.transition = '';
+    });
+  }
+  topbar.classList.toggle('hidden', !visible);
+  bottombar.classList.toggle('hidden', !visible);
+}
+
+function goToCamera() {
+  closeMemo(); closeInfo();
+  showScreen('cameraScreen');
+}
+
+function goToGallery() {
+  closeMemo(); closeInfo();
+  renderGallery();
+  renderFolderTabs();
   showScreen('galleryScreen');
 }
 
-// Photo menu
-document.getElementById('photoMenuBtn').onclick = function() {
-  const menu = document.getElementById('photoMenu');
-  menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-};
-
-function closePhotoMenu() {
-  document.getElementById('photoMenu').style.display = 'none';
-}
-
-// Swipe navigation
+// Swipe navigation + tap to toggle UI
 function setupSwipeNav() {
   const fs = document.getElementById('photoFullscreen');
-  let startX, startTime;
-  
+  let startX, startY, startTime;
+
   fs.addEventListener('touchstart', (e) => {
     startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
     startTime = Date.now();
   }, { passive: true });
-  
+
   fs.addEventListener('touchend', (e) => {
     const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
     const dt = Date.now() - startTime;
-    if (dt < 300 && Math.abs(dx) > 50) {
+    const isSwipe = dt < 300 && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5;
+    const isTap = dt < 220 && Math.abs(dx) < 12 && Math.abs(dy) < 12;
+
+    if (isSwipe) {
+      // Close panels before navigating
+      closeMemo(); closeInfo();
       if (dx < 0 && currentPhotoIdx < photos.length - 1) { currentPhotoIdx++; renderPhoto(); }
       else if (dx > 0 && currentPhotoIdx > 0) { currentPhotoIdx--; renderPhoto(); }
+    } else if (isTap) {
+      // Close open panels first; if none open, toggle UI
+      const memoOpen = document.getElementById('memoPanel').classList.contains('show');
+      const infoOpen = document.getElementById('infoPanel').classList.contains('show');
+      if (memoOpen) { closeMemo(); return; }
+      if (infoOpen) { closeInfo(); return; }
+      setPhotoUI(!photoUIVisible);
     }
   }, { passive: true });
-  
-  document.getElementById('prevArrow').onclick = () => { if (currentPhotoIdx > 0) { currentPhotoIdx--; renderPhoto(); } };
-  document.getElementById('nextArrow').onclick = () => { if (currentPhotoIdx < photos.length - 1) { currentPhotoIdx++; renderPhoto(); } };
+
+  // Mouse click fallback (desktop)
+  fs.addEventListener('click', (e) => {
+    if (e.target.closest('.swipe-arrow,.memo-panel,.info-panel')) return;
+    const memoOpen = document.getElementById('memoPanel').classList.contains('show');
+    const infoOpen = document.getElementById('infoPanel').classList.contains('show');
+    if (memoOpen) { closeMemo(); return; }
+    if (infoOpen) { closeInfo(); return; }
+    setPhotoUI(!photoUIVisible);
+  });
+
+  document.getElementById('prevArrow').onclick = (e) => {
+    e.stopPropagation();
+    if (currentPhotoIdx > 0) { currentPhotoIdx--; renderPhoto(); }
+  };
+  document.getElementById('nextArrow').onclick = (e) => {
+    e.stopPropagation();
+    if (currentPhotoIdx < photos.length - 1) { currentPhotoIdx++; renderPhoto(); }
+  };
 }
+
 
 // ════════════════════════════════════════════════════════════
 // MEMO
 // ════════════════════════════════════════════════════════════
 function toggleMemo() {
-  closePhotoMenu();
+  
   const panel = document.getElementById('memoPanel');
   if (panel.classList.contains('show')) closeMemo();
   else { panel.classList.add('show'); document.getElementById('memoText').focus(); }
@@ -1164,7 +1250,7 @@ async function saveMemo() {
 // INFO
 // ════════════════════════════════════════════════════════════
 function showInfo() {
-  closePhotoMenu();
+  
   const photo = photos[currentPhotoIdx];
   if (!photo) return;
   
@@ -1200,7 +1286,7 @@ function closeInfo() {
 // MARKUP
 // ════════════════════════════════════════════════════════════
 function openMarkup() {
-  closePhotoMenu();
+  
   const photo = photos[currentPhotoIdx];
   if (!photo) return;
   
@@ -1341,7 +1427,7 @@ async function deleteCurrentPhoto() {
   if (photos.length === 0) { closePhoto(); return; }
   if (currentPhotoIdx >= photos.length) currentPhotoIdx = photos.length - 1;
   renderPhoto();
-  closePhotoMenu();
+  
   showToast('삭제됨');
 }
 
@@ -1349,7 +1435,7 @@ async function deleteCurrentPhoto() {
 // SHARE
 // ════════════════════════════════════════════════════════════
 function openShareSheet() {
-  closePhotoMenu();
+  
   
   // Folder move buttons
   const list = document.getElementById('folderMoveList');
