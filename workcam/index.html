@@ -48,15 +48,15 @@
   .ratio-badge { background:rgba(255,255,255,0.12); border-radius:8px; padding:5px 10px; font-size:12px; font-weight:700; color:#fff; cursor:pointer; letter-spacing:0.02em; transition:background .1s; }
   .ratio-badge:active { background:rgba(255,255,255,0.22); }
 
-  /* Zone 2: Viewfinder — flexible, clips to ratio */
+  /* Zone 2: Viewfinder — width 100%, height driven by ratio */
   #viewfinderZone {
-    flex:1;
     position:relative;
+    width:100%;
     overflow:hidden;
     background:#000;
-    display:flex; align-items:center; justify-content:center;
+    transition: height 0.32s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  #video { width:100%; height:100%; object-fit:cover; display:block; }
+  #video { width:100%; height:100%; object-fit:cover; display:block; transition: transform 0.22s cubic-bezier(0.4,0,0.2,1); }
   #canvas { display:none; }
 
   /* Ratio crop mask */
@@ -730,71 +730,29 @@ document.querySelectorAll('.ratio-opt').forEach(opt => {
   };
 });
 
-function applyRatio() {
-  // Show the full video at natural size, overlay dark masks for cropped areas
+function applyRatio(animate = true) {
   const vc = document.getElementById('viewfinderZone');
   const video = document.getElementById('video');
-  
-  // Reset — full fill
-  vc.style.aspectRatio = '';
-  vc.style.maxHeight = '';
-  video.style.aspectRatio = '';
-  video.style.width = '100%';
-  video.style.height = '100%';
-  video.style.objectFit = 'cover';
-  
-  updateRatioMask();
-}
-
-function updateRatioMask() {
-  const vc = document.getElementById('viewfinderZone');
-  const vcW = vc.clientWidth;
-  const vcH = vc.clientHeight;
-  if (!vcW || !vcH) { requestAnimationFrame(updateRatioMask); return; }
-
-  // Portrait: first number = vertical (height), second = horizontal (width)
-  // e.g. 4:3 → height:width = 4:3, so aspect ratio (W/H) = 3/4
   const [ph, pw] = currentRatio.split(':').map(Number);
-  const targetRatio = pw / ph; // actual W/H ratio (portrait)
-  const containerRatio = vcW / vcH;
+  const vcW = window.innerWidth;
+  const targetH = Math.round(vcW * ph / pw);
 
-  let frameLeft = 0, frameTop = 0, frameWidth = vcW, frameHeight = vcH;
+  // Animate or snap
+  vc.style.transition = animate ? 'height 0.32s cubic-bezier(0.4,0,0.2,1)' : 'none';
+  vc.style.width  = '100%';
+  vc.style.height = targetH + 'px';
+  vc.style.flex   = 'none';
 
-  if (containerRatio > targetRatio) {
-    // Container wider than target — mask left & right
-    frameWidth = Math.round(vcH * targetRatio);
-    frameLeft = Math.round((vcW - frameWidth) / 2);
-    frameTop = 0;
-    frameHeight = vcH;
-  } else if (containerRatio < targetRatio) {
-    // Container taller than target — mask top & bottom
-    frameHeight = Math.round(vcW / targetRatio);
-    frameTop = Math.round((vcH - frameHeight) / 2);
-    frameLeft = 0;
-    frameWidth = vcW;
-  }
+  video.style.width      = '100%';
+  video.style.height     = '100%';
+  video.style.objectFit  = 'cover';
 
-  const maskTop = document.getElementById('maskTop');
-  const maskBottom = document.getElementById('maskBottom');
-  const maskLeft = document.getElementById('maskLeft');
-  const maskRight = document.getElementById('maskRight');
-  const frame = document.getElementById('ratioFrame');
-
-  // Top mask
-  maskTop.style.cssText = `top:0;left:0;right:0;height:${frameTop}px;`;
-  // Bottom mask
-  maskBottom.style.cssText = `bottom:0;left:0;right:0;height:${frameTop}px;`;
-  // Left mask
-  maskLeft.style.cssText = `top:${frameTop}px;left:0;width:${frameLeft}px;height:${frameHeight}px;`;
-  // Right mask
-  maskRight.style.cssText = `top:${frameTop}px;right:0;width:${frameLeft}px;height:${frameHeight}px;`;
-  // Frame border
-  frame.style.cssText = `left:${frameLeft}px;top:${frameTop}px;width:${frameWidth}px;height:${frameHeight}px;`;
-
-  // Hide masks if no cropping needed (1:1 on square container etc.)
-  const noMask = frameLeft === 0 && frameTop === 0;
-  [maskTop,maskBottom,maskLeft,maskRight,frame].forEach(el => el.style.display = noMask ? 'none' : 'block');
+  // Hide all masks — viewfinder is exact ratio, no cropping UI needed
+  ['maskTop','maskBottom','maskLeft','maskRight','ratioFrame']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
 }
+
+function updateRatioMask() { applyRatio(false); }
 
 // Flash
 document.getElementById('flashBtn').onclick = function(e) {
