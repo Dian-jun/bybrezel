@@ -29,69 +29,97 @@
   .screen.active { display:flex; }
   
   /* ── CAMERA SCREEN ── */
-  #cameraScreen { background:#000; }
-  #videoContainer { position:relative; flex:1; overflow:hidden; }
+  /* ── CAMERA SCREEN — iOS 3-zone layout ── */
+  #cameraScreen { background:#000; display:flex; flex-direction:column; }
+
+  /* Zone 1: Top toolbar — fixed, always visible on black */
+  #camTopbar {
+    flex-shrink:0;
+    background:#000;
+    padding:14px 20px 10px;
+    display:flex; align-items:center; justify-content:space-between;
+    z-index:20;
+  }
+  #camTopbar .tb-group { display:flex; align-items:center; gap:4px; }
+  .icon-btn { background:none; border:none; color:rgba(255,255,255,0.85); cursor:pointer; display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:50%; transition:background .1s; }
+  .icon-btn:active { background:rgba(255,255,255,0.12); }
+  .icon-btn.active { color:var(--accent); }
+  .icon-btn svg { width:20px; height:20px; }
+  .ratio-badge { background:rgba(255,255,255,0.12); border-radius:8px; padding:5px 10px; font-size:12px; font-weight:700; color:#fff; cursor:pointer; letter-spacing:0.02em; transition:background .1s; }
+  .ratio-badge:active { background:rgba(255,255,255,0.22); }
+
+  /* Zone 2: Viewfinder — flexible, clips to ratio */
+  #viewfinderZone {
+    flex:1;
+    position:relative;
+    overflow:hidden;
+    background:#000;
+    display:flex; align-items:center; justify-content:center;
+  }
   #video { width:100%; height:100%; object-fit:cover; display:block; }
   #canvas { display:none; }
-  
-  /* Viewfinder overlay */
-  .vf-overlay { position:absolute; inset:0; pointer-events:none; }
-  
-  /* Ratio crop mask — darkened areas outside the chosen ratio */
+
+  /* Ratio crop mask */
   .ratio-mask-top, .ratio-mask-bottom, .ratio-mask-left, .ratio-mask-right {
-    position:absolute; background:rgba(0,0,0,0.55); pointer-events:none; z-index:4; transition:all .25s ease;
+    position:absolute; background:#000; pointer-events:none; z-index:4; transition:all .2s ease;
   }
-  /* Crop frame border */
-  .ratio-frame {
-    position:absolute; border:1px solid rgba(255,255,255,0.5); pointer-events:none; z-index:5; transition:all .25s ease; box-sizing:border-box;
-  }
-  
-  /* Horizon level */
-  .horizon-line { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:120px; height:1px; background:rgba(255,255,0,0.6); display:none; }
-  .horizon-dot { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:rgba(255,255,0,0.8); display:none; }
-  
-  /* Top bar */
-  .cam-topbar { position:absolute; top:0; left:0; right:0; z-index:10; padding:16px 20px 12px; display:flex; align-items:center; gap:16px; background:linear-gradient(to bottom,rgba(0,0,0,0.5),transparent); }
-  .cam-topbar-right { margin-left:auto; display:flex; gap:16px; align-items:center; }
-  .icon-btn { background:none; border:none; color:var(--text); cursor:pointer; display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; }
-  .icon-btn.active { color:var(--accent); }
-  .icon-btn svg { width:22px; height:22px; }
-  
-  /* Aspect ratio badge */
-  .ratio-badge { background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.3); border-radius:6px; padding:3px 8px; font-size:12px; font-weight:600; color:#fff; cursor:pointer; }
-  
-  /* Zoom selector */
-  .zoom-bar { position:absolute; bottom:130px; left:50%; transform:translateX(-50%); display:flex; gap:4px; background:rgba(0,0,0,0.45); backdrop-filter:blur(10px); border-radius:22px; padding:4px; z-index:10; }
-  .zoom-btn { background:none; border:none; color:rgba(255,255,255,0.7); font-size:13px; font-weight:600; cursor:pointer; padding:6px 14px; border-radius:18px; transition:all .15s; }
-  .zoom-btn.active { background:var(--surface3); color:#fff; }
-  
-  /* Bottom control bar */
-  .cam-bottom { position:absolute; bottom:0; left:0; right:0; z-index:10; padding:16px 24px calc(16px + var(--safe-bottom)); background:linear-gradient(to top,rgba(0,0,0,0.6),transparent); display:flex; align-items:center; justify-content:space-between; }
-  .shutter { width:72px; height:72px; border-radius:50%; border:4px solid #fff; background:none; cursor:pointer; position:relative; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform .1s; }
-  .shutter:active { transform:scale(0.92); }
-  .shutter-inner { width:56px; height:56px; border-radius:50%; background:#fff; transition:transform .1s, border-radius .1s; }
-  .shutter:active .shutter-inner { transform:scale(0.88); }
-  
-  .thumb-preview { width:52px; height:52px; border-radius:10px; overflow:hidden; background:var(--surface2); border:2px solid rgba(255,255,255,0.3); cursor:pointer; flex-shrink:0; }
-  .thumb-preview img { width:100%; height:100%; object-fit:cover; }
-  .thumb-count { position:absolute; bottom:-4px; right:-4px; background:var(--blue); color:#fff; font-size:10px; font-weight:700; border-radius:10px; min-width:18px; height:18px; display:flex; align-items:center; justify-content:center; padding:0 4px; }
-  
-  .flip-btn { width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,0.15); backdrop-filter:blur(10px); border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform .3s; }
-  .flip-btn:active { transform:rotate(180deg) scale(0.9); }
-  
-  /* Flash options popup */
-  .flash-popup { position:absolute; top:60px; left:16px; background:rgba(30,30,32,0.92); backdrop-filter:blur(20px); border-radius:12px; border:0.5px solid var(--sep); z-index:100; display:none; }
+  .ratio-frame { position:absolute; pointer-events:none; z-index:5; transition:all .2s ease; box-sizing:border-box; }
+
+  /* Horizon */
+  .horizon-line { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:100px; height:1px; background:rgba(255,255,0,0.7); display:none; border-radius:1px; }
+  .horizon-dot  { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:5px; height:5px; border-radius:50%; background:rgba(255,255,0,0.9); display:none; }
+  .focus-ring   { position:absolute; border:1.5px solid var(--accent); border-radius:3px; width:54px; height:54px; pointer-events:none; z-index:6; opacity:0; transition:opacity .15s; }
+  .focus-ring.show { opacity:1; }
+
+  /* Grid */
+  .grid-overlay { position:absolute; inset:0; pointer-events:none; z-index:6; display:none; }
+  .grid-overlay.show { display:block; }
+  .grid-line { position:absolute; background:rgba(255,255,255,0.25); }
+  .grid-line.v1 { left:33.33%; top:0; bottom:0; width:0.5px; }
+  .grid-line.v2 { left:66.66%; top:0; bottom:0; width:0.5px; }
+  .grid-line.h1 { top:33.33%; left:0; right:0; height:0.5px; }
+  .grid-line.h2 { top:66.66%; left:0; right:0; height:0.5px; }
+
+  /* Popups inside viewfinder */
+  .flash-popup  { position:absolute; top:8px; left:8px; background:rgba(28,28,30,0.95); backdrop-filter:blur(20px); border-radius:14px; border:0.5px solid var(--sep); z-index:100; display:none; min-width:140px; }
   .flash-popup.show { display:block; }
-  .flash-opt { display:flex; align-items:center; gap:10px; padding:13px 18px; font-size:14px; cursor:pointer; border-bottom:0.5px solid var(--sep); }
+  .flash-opt    { display:flex; align-items:center; gap:10px; padding:13px 16px; font-size:14px; cursor:pointer; border-bottom:0.5px solid var(--sep); color:#fff; }
   .flash-opt:last-child { border-bottom:none; }
-  .flash-opt:active, .flash-opt.active { color:var(--accent); }
-  
-  /* Ratio popup */
-  .ratio-popup { position:absolute; top:60px; left:50%; transform:translateX(-50%); background:rgba(30,30,32,0.92); backdrop-filter:blur(20px); border-radius:12px; border:0.5px solid var(--sep); z-index:100; display:none; min-width:160px; }
+  .flash-opt.active { color:var(--accent); }
+  .ratio-popup  { position:absolute; top:8px; right:8px; background:rgba(28,28,30,0.95); backdrop-filter:blur(20px); border-radius:14px; border:0.5px solid var(--sep); z-index:100; display:none; min-width:120px; }
   .ratio-popup.show { display:block; }
-  .ratio-opt { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:13px 18px; font-size:14px; cursor:pointer; border-bottom:0.5px solid var(--sep); }
+  .ratio-opt    { display:flex; align-items:center; justify-content:space-between; padding:13px 16px; font-size:14px; cursor:pointer; border-bottom:0.5px solid var(--sep); color:#fff; }
   .ratio-opt:last-child { border-bottom:none; }
   .ratio-opt.active { color:var(--accent); }
+
+  /* Camera permission placeholder */
+  .cam-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; background:#111; }
+  .cam-placeholder p { color:var(--text2); text-align:center; padding:0 40px; font-size:15px; }
+  .cam-permission-btn { background:var(--blue); color:#fff; border:none; border-radius:12px; padding:14px 28px; font-size:16px; font-weight:600; cursor:pointer; }
+
+  /* Zone 3: Bottom controls — fixed, always on black */
+  #camBottom {
+    flex-shrink:0;
+    background:#000;
+    padding:16px 28px calc(20px + var(--safe-bottom));
+    display:flex; flex-direction:column; gap:16px;
+    z-index:20;
+  }
+  /* Zoom row */
+  .zoom-row { display:flex; align-items:center; justify-content:center; gap:4px; }
+  .zoom-btn { background:none; border:none; color:rgba(255,255,255,0.55); font-size:13px; font-weight:600; cursor:pointer; padding:6px 14px; border-radius:18px; transition:all .15s; }
+  .zoom-btn.active { background:rgba(255,255,255,0.15); color:#fff; font-size:15px; }
+  /* Shutter row */
+  .shutter-row { display:flex; align-items:center; justify-content:space-between; }
+  .shutter { width:76px; height:76px; border-radius:50%; border:3px solid #fff; background:none; cursor:pointer; position:relative; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform .1s; }
+  .shutter:active { transform:scale(0.93); }
+  .shutter-inner { width:62px; height:62px; border-radius:50%; background:#fff; transition:transform .1s; }
+  .shutter:active .shutter-inner { transform:scale(0.86); }
+  .thumb-preview { width:54px; height:54px; border-radius:12px; overflow:hidden; background:var(--surface2); border:2px solid rgba(255,255,255,0.25); cursor:pointer; flex-shrink:0; position:relative; }
+  .thumb-preview img { width:100%; height:100%; object-fit:cover; display:block; }
+  .thumb-count { position:absolute; bottom:-4px; right:-4px; background:var(--blue); color:#fff; font-size:10px; font-weight:700; border-radius:10px; min-width:18px; height:18px; display:flex; align-items:center; justify-content:center; padding:0 4px; }
+  .flip-btn { width:54px; height:54px; border-radius:50%; background:rgba(255,255,255,0.1); border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform .3s; }
+  .flip-btn:active { transform:rotate(180deg) scale(0.9); }
   
   /* ── GALLERY SCREEN ── */
   #galleryScreen { background:var(--bg); }
@@ -184,36 +212,10 @@
   .focus-ring { position:absolute; border:2px solid var(--accent); border-radius:4px; width:60px; height:60px; pointer-events:none; z-index:5; transition:all .15s; opacity:0; }
   .focus-ring.show { opacity:1; }
   
-  /* Manual mode — iOS style right vertical slider */
-  .manual-sidebar { position:absolute; right:0; top:0; bottom:0; z-index:11; display:flex; align-items:center; pointer-events:none; }
-  .manual-sidebar.show { pointer-events:all; }
-  
-  /* Parameter selector pills — top center, above zoom bar */
-  .manual-params { position:absolute; left:50%; transform:translateX(-50%); z-index:12; display:none; flex-direction:row; gap:6px; white-space:nowrap; }
-  .manual-params.show { display:flex; }
-  .mparam-btn { background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.2); border-radius:20px; color:rgba(255,255,255,0.6); font-size:12px; font-weight:600; padding:5px 12px; cursor:pointer; transition:all .15s; letter-spacing:0.04em; }
-  .mparam-btn.active { background:rgba(255,214,10,0.15); border-color:var(--accent); color:var(--accent); }
-  
-  /* Vertical slider track on right side */
-  .manual-vslider-wrap { position:absolute; right:16px; top:50%; transform:translateY(-50%); display:none; flex-direction:column; align-items:center; gap:8px; }
-  .manual-vslider-wrap.show { display:flex; }
-  .manual-vslider-top { font-size:11px; color:rgba(255,255,255,0.5); text-align:center; }
-  .manual-vslider-val { font-size:15px; font-weight:700; color:var(--accent); text-align:center; min-width:52px; }
-  .manual-vslider { -webkit-appearance:slider-vertical; writing-mode:vertical-lr; direction:rtl; appearance:slider-vertical; width:28px; height:180px; background:transparent; outline:none; cursor:pointer; }
-  /* Fallback for browsers without vertical slider: rotate */
-  @supports not (appearance: slider-vertical) {
-    .manual-vslider { writing-mode:horizontal-tb; direction:ltr; transform:rotate(-90deg); width:180px; height:28px; }
-    .manual-vslider-wrap { gap:16px; }
-  }
-  .manual-vslider::-webkit-slider-runnable-track { width:4px; background:rgba(255,255,255,0.2); border-radius:2px; }
-  .manual-vslider::-webkit-slider-thumb { -webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:#fff; cursor:pointer; box-shadow:0 1px 6px rgba(0,0,0,0.6); margin-left:-9px; }
-  .manual-vslider-bottom { font-size:11px; color:rgba(255,255,255,0.5); text-align:center; }
-  .manual-unsupported-msg { font-size:12px; color:rgba(255,255,255,0.35); font-style:italic; text-align:center; padding:20px 8px; max-width:60px; line-height:1.4; }
-
   /* Grid overlay */
   .grid-overlay { position:absolute; inset:0; pointer-events:none; z-index:6; display:none; }
   .grid-overlay.show { display:block; }
-  .grid-line { position:absolute; background:rgba(255,255,255,0.3); }
+  .grid-line { position:absolute; background:rgba(255,255,255,0.25); }
   .grid-line.v1 { left:33.33%; top:0; bottom:0; width:0.5px; }
   .grid-line.v2 { left:66.66%; top:0; bottom:0; width:0.5px; }
   .grid-line.h1 { top:33.33%; left:0; right:0; height:0.5px; }
@@ -251,128 +253,105 @@
 
 <!-- ═══════════════════════════════ CAMERA SCREEN ═══════════════════════════════ -->
 <div id="cameraScreen" class="screen active">
-  <div id="videoContainer">
+
+  <!-- Zone 1: Top toolbar -->
+  <div id="camTopbar">
+    <div class="tb-group">
+      <button class="icon-btn" id="flashBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10"/></svg>
+      </button>
+      <button class="icon-btn" id="horizonBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="8" x2="8" y2="8"/><line x1="3" y1="16" x2="8" y2="16"/><line x1="16" y1="8" x2="21" y2="8"/><line x1="16" y1="16" x2="21" y2="16"/></svg>
+      </button>
+      <button class="icon-btn" id="gridBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/></svg>
+      </button>
+    </div>
+    <div class="tb-group">
+      <div class="ratio-badge" id="ratioBadge">4:3</div>
+    </div>
+  </div>
+
+  <!-- Zone 2: Viewfinder -->
+  <div id="viewfinderZone">
     <video id="video" autoplay playsinline muted></video>
     <canvas id="canvas"></canvas>
-    
-    <!-- Ratio crop mask -->
+
+    <!-- Ratio crop masks -->
     <div class="ratio-mask-top" id="maskTop"></div>
     <div class="ratio-mask-bottom" id="maskBottom"></div>
     <div class="ratio-mask-left" id="maskLeft"></div>
     <div class="ratio-mask-right" id="maskRight"></div>
     <div class="ratio-frame" id="ratioFrame"></div>
-    
-    <!-- Horizon level -->
-    <div class="horizon-line" id="horizonLine"></div>
-    <div class="horizon-dot" id="horizonDot"></div>
-    
-    <!-- Focus ring -->
-    <div class="focus-ring" id="focusRing"></div>
-    
-    <!-- Top bar -->
-    <div class="cam-topbar">
-      <button class="icon-btn" id="flashBtn" title="플래시">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10"/></svg>
-      </button>
-      <button class="icon-btn" id="horizonBtn" title="수평">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="8" x2="8" y2="8"/><line x1="3" y1="16" x2="8" y2="16"/><line x1="16" y1="8" x2="21" y2="8"/><line x1="16" y1="16" x2="21" y2="16"/></svg>
-      </button>
-      <button class="icon-btn" id="gridBtn" title="격자">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/></svg>
-      </button>
-      <div class="cam-topbar-right">
-        <div class="ratio-badge" id="ratioBadge">4:3</div>
-        <button class="icon-btn" id="settingsBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
-        </button>
-      </div>
-    </div>
-    
-    <!-- Flash popup -->
-    <div class="flash-popup" id="flashPopup">
-      <div class="flash-opt active" data-flash="off">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10"/><line x1="2" y1="2" x2="22" y2="22" stroke-width="1.5"/></svg>끄기
-      </div>
-      <div class="flash-opt" data-flash="on">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10"/></svg>켜기
-      </div>
-      <div class="flash-opt" data-flash="auto">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10"/><text x="14" y="10" font-size="5" fill="currentColor" stroke="none">A</text></svg>자동
-      </div>
-      <div class="flash-opt" data-flash="torch">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2l4 6H6l4-6zm0 6v14"/></svg>손전등
-      </div>
-    </div>
-    
-    <!-- Ratio popup -->
-    <div class="ratio-popup" id="ratioPopup">
-      <div class="ratio-opt active" data-ratio="4:3">4:3 <span>✓</span></div>
-      <div class="ratio-opt" data-ratio="16:9">16:9</div>
-      <div class="ratio-opt" data-ratio="1:1">1:1</div>
-    </div>
-    
-    <!-- Grid overlay -->
+
+    <!-- Grid -->
     <div class="grid-overlay" id="gridOverlay">
       <div class="grid-line v1"></div><div class="grid-line v2"></div>
       <div class="grid-line h1"></div><div class="grid-line h2"></div>
     </div>
-    
-    <!-- Mode tabs -->
-    <div class="mode-tabs" style="position:absolute;bottom:170px;left:0;right:0;z-index:12;">
-      <button class="mode-tab active" data-mode="photo">사진</button>
-      <button class="mode-tab" data-mode="manual">수동</button>
+
+    <!-- Horizon -->
+    <div class="horizon-line" id="horizonLine"></div>
+    <div class="horizon-dot"  id="horizonDot"></div>
+
+    <!-- Focus ring -->
+    <div class="focus-ring" id="focusRing"></div>
+
+    <!-- Flash popup (inside viewfinder, top-left) -->
+    <div class="flash-popup" id="flashPopup">
+      <div class="flash-opt active" data-flash="off">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10"/><line x1="2" y1="2" x2="22" y2="22"/></svg>끄기
+      </div>
+      <div class="flash-opt" data-flash="on">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10"/></svg>켜기
+      </div>
+      <div class="flash-opt" data-flash="auto">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10"/></svg>자동
+      </div>
+      <div class="flash-opt" data-flash="torch">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2l4 6H6l4-6zm0 6v14"/></svg>손전등
+      </div>
     </div>
-    
-    <!-- Manual: parameter selector pills (sits above zoom bar) -->
-    <div class="manual-params" id="manualParams" style="bottom:215px;">
-      <button class="mparam-btn active" data-param="iso">ISO</button>
-      <button class="mparam-btn" data-param="ss">SS</button>
-      <button class="mparam-btn" data-param="ev">EV</button>
-      <button class="mparam-btn" data-param="wb">WB</button>
+
+    <!-- Ratio popup (inside viewfinder, top-right) -->
+    <div class="ratio-popup" id="ratioPopup">
+      <div class="ratio-opt active" data-ratio="4:3">4:3 <span>✓</span></div>
+      <div class="ratio-opt" data-ratio="16:9">16:9 <span></span></div>
+      <div class="ratio-opt" data-ratio="1:1">1:1 <span></span></div>
     </div>
-    
-    <!-- Manual: vertical slider on right side -->
-    <div class="manual-vslider-wrap" id="manualVslider">
-      <div class="manual-vslider-top" id="vsliderTop">3200</div>
-      <input class="manual-vslider" type="range" id="vslider" min="50" max="3200" step="50" value="100">
-      <div class="manual-vslider-val" id="vsliderVal">100</div>
-      <div class="manual-vslider-bottom" id="vsliderBottom">50</div>
-      <div class="manual-unsupported-msg" id="vsliderUnsupported" style="display:none;">이 기기에서<br>미지원</div>
+
+    <!-- No camera permission -->
+    <div class="cam-placeholder" id="camPlaceholder" style="display:none;">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      <p>카메라 접근 권한이 필요합니다</p>
+      <button class="cam-permission-btn" id="requestPermBtn">카메라 허용</button>
     </div>
-    
-    <!-- Zoom bar -->
-    <div class="zoom-bar">
+  </div>
+
+  <!-- Zone 3: Bottom controls -->
+  <div id="camBottom">
+    <!-- Zoom row -->
+    <div class="zoom-row">
       <button class="zoom-btn" data-zoom="0.5">0.5x</button>
       <button class="zoom-btn active" data-zoom="1">1x</button>
       <button class="zoom-btn" data-zoom="2">2x</button>
       <button class="zoom-btn" data-zoom="3">3x</button>
     </div>
-    
-    <!-- Camera placeholder (when no permission) -->
-    <div class="cam-placeholder" id="camPlaceholder" style="display:none;">
-      <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
-      <p>카메라 접근 권한이 필요합니다</p>
-      <button class="cam-permission-btn" id="requestPermBtn">카메라 허용</button>
-    </div>
-  </div>
-  
-  <!-- Bottom controls -->
-  <div class="cam-bottom">
-    <div style="position:relative; width:52px; height:52px; flex-shrink:0;">
-      <div class="thumb-preview" id="thumbPreview" onclick="openLastPhoto()">
-        <img id="thumbImg" src="" alt="" style="display:none;">
+    <!-- Shutter row -->
+    <div class="shutter-row">
+      <div style="position:relative;width:54px;height:54px;flex-shrink:0;">
+        <div class="thumb-preview" id="thumbPreview" onclick="openLastPhoto()">
+          <img id="thumbImg" src="" alt="" style="display:none;">
+        </div>
+        <div class="thumb-count" id="thumbCount" style="display:none;">0</div>
       </div>
-      <div class="thumb-count" id="thumbCount" style="display:none;">0</div>
+      <button class="shutter" id="shutterBtn"><div class="shutter-inner"></div></button>
+      <button class="flip-btn" id="flipBtn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
+      </button>
     </div>
-    
-    <button class="shutter" id="shutterBtn">
-      <div class="shutter-inner"></div>
-    </button>
-    
-    <button class="flip-btn" id="flipBtn">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
-    </button>
   </div>
+
 </div>
 
 <!-- ═══════════════════════════════ GALLERY SCREEN ═══════════════════════════════ -->
@@ -753,7 +732,7 @@ document.querySelectorAll('.ratio-opt').forEach(opt => {
 
 function applyRatio() {
   // Show the full video at natural size, overlay dark masks for cropped areas
-  const vc = document.getElementById('videoContainer');
+  const vc = document.getElementById('viewfinderZone');
   const video = document.getElementById('video');
   
   // Reset — full fill
@@ -768,7 +747,7 @@ function applyRatio() {
 }
 
 function updateRatioMask() {
-  const vc = document.getElementById('videoContainer');
+  const vc = document.getElementById('viewfinderZone');
   const vcW = vc.clientWidth;
   const vcH = vc.clientHeight;
   if (!vcW || !vcH) { requestAnimationFrame(updateRatioMask); return; }
@@ -879,9 +858,9 @@ function setupDeviceOrientation() {
 
 // Touch focus
 function setupTouchFocus() {
-  const vc = document.getElementById('videoContainer');
+  const vc = document.getElementById('viewfinderZone');
   vc.addEventListener('click', (e) => {
-    if (e.target.closest('.cam-topbar,.cam-bottom,.zoom-bar,.mode-tabs,.flash-popup,.ratio-popup,.manual-params,.manual-vslider-wrap')) return;
+    if (e.target.closest('#camTopbar,#camBottom,.flash-popup,.ratio-popup')) return;
     const ring = document.getElementById('focusRing');
     const rect = vc.getBoundingClientRect();
     const x = e.clientX - rect.left - 30;
@@ -913,166 +892,8 @@ document.getElementById('gridBtn').onclick = function() {
 };
 
 // ════════════════════════════════════════════════════════════
-// MANUAL MODE — iOS vertical slider
+// CAPTURE
 // ════════════════════════════════════════════════════════════
-const SS_VALUES = ['1/1000','1/500','1/250','1/125','1/60','1/30','1/15','1/8','1/4','1/2'];
-let currentMode = 'photo';
-let currentParam = 'iso';
-
-// Per-param config: { min, max, step, defaultVal, format(v), getConstraint(v), caps(caps) }
-const PARAM_CONFIG = {
-  iso: {
-    min:50, max:3200, step:50, def:100,
-    format: v => String(v),
-    topLabel: v => String(v.max),
-    bottomLabel: v => String(v.min),
-    getConstraint: v => ({ iso: v }),
-    hasCap: caps => !!caps.iso,
-    capRange: caps => caps.iso,
-  },
-  ss: {
-    min:0, max:9, step:1, def:4,
-    format: v => SS_VALUES[Math.round(v)],
-    topLabel: () => SS_VALUES[9],
-    bottomLabel: () => SS_VALUES[0],
-    getConstraint: v => {
-      const label = SS_VALUES[Math.round(v)];
-      const parts = label.split('/');
-      const secs = parts.length === 2 ? parseFloat(parts[0])/parseFloat(parts[1]) : parseFloat(parts[0]);
-      return { exposureTime: secs * 1000000, exposureMode: 'manual' };
-    },
-    hasCap: caps => !!caps.exposureTime,
-    capRange: () => null,
-  },
-  ev: {
-    min:-3, max:3, step:0.5, def:0,
-    format: v => v >= 0 ? `+${v}` : `${v}`,
-    topLabel: () => '+3',
-    bottomLabel: () => '-3',
-    getConstraint: v => ({ exposureCompensation: v }),
-    hasCap: caps => !!caps.exposureCompensation,
-    capRange: caps => caps.exposureCompensation,
-  },
-  wb: {
-    min:2500, max:7500, step:100, def:5500,
-    format: v => `${v}K`,
-    topLabel: v => `${v.max}K`,
-    bottomLabel: v => `${v.min}K`,
-    getConstraint: v => ({ whiteBalanceMode: 'manual', colorTemperature: v }),
-    hasCap: caps => !!caps.colorTemperature,
-    capRange: caps => caps.colorTemperature,
-  }
-};
-
-// Stored values per param
-const manualValues = { iso:100, ss:4, ev:0, wb:5500 };
-
-document.querySelectorAll('.mode-tab').forEach(tab => {
-  tab.onclick = function() {
-    document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
-    this.classList.add('active');
-    currentMode = this.dataset.mode;
-    if (currentMode === 'manual') {
-      document.getElementById('manualParams').classList.add('show');
-      switchParam('iso');
-    } else {
-      document.getElementById('manualParams').classList.remove('show');
-      document.getElementById('manualVslider').classList.remove('show');
-      resetToAuto();
-    }
-  };
-});
-
-document.querySelectorAll('.mparam-btn').forEach(btn => {
-  btn.onclick = function() {
-    document.querySelectorAll('.mparam-btn').forEach(b => b.classList.remove('active'));
-    this.classList.add('active');
-    switchParam(this.dataset.param);
-  };
-});
-
-function switchParam(param) {
-  currentParam = param;
-  const cfg = PARAM_CONFIG[param];
-  const slider = document.getElementById('vslider');
-  const valEl = document.getElementById('vsliderVal');
-  const topEl = document.getElementById('vsliderTop');
-  const bottomEl = document.getElementById('vsliderBottom');
-  const unsupEl = document.getElementById('vsliderUnsupported');
-  const wrap = document.getElementById('manualVslider');
-  
-  // Check capability
-  let supported = true;
-  if (stream) {
-    const track = stream.getVideoTracks()[0];
-    const caps = track.getCapabilities?.() || {};
-    supported = cfg.hasCap(caps);
-    const range = cfg.capRange(caps);
-    if (range && range.min !== undefined) {
-      slider.min = range.min;
-      slider.max = range.max;
-      slider.step = range.step || cfg.step;
-    } else {
-      slider.min = cfg.min;
-      slider.max = cfg.max;
-      slider.step = cfg.step;
-    }
-    topEl.textContent = cfg.topLabel({ min: parseFloat(slider.min), max: parseFloat(slider.max) });
-    bottomEl.textContent = cfg.bottomLabel({ min: parseFloat(slider.min), max: parseFloat(slider.max) });
-  } else {
-    slider.min = cfg.min; slider.max = cfg.max; slider.step = cfg.step;
-    topEl.textContent = cfg.topLabel({ min: cfg.min, max: cfg.max });
-    bottomEl.textContent = cfg.bottomLabel({ min: cfg.min, max: cfg.max });
-  }
-
-  slider.value = manualValues[param];
-  valEl.textContent = cfg.format(manualValues[param]);
-  
-  if (supported) {
-    slider.style.display = '';
-    topEl.style.display = '';
-    bottomEl.style.display = '';
-    valEl.style.display = '';
-    unsupEl.style.display = 'none';
-  } else {
-    slider.style.display = 'none';
-    topEl.style.display = 'none';
-    bottomEl.style.display = 'none';
-    valEl.style.display = 'none';
-    unsupEl.style.display = '';
-  }
-  
-  wrap.classList.add('show');
-}
-
-document.getElementById('vslider').addEventListener('input', function() {
-  const cfg = PARAM_CONFIG[currentParam];
-  const raw = parseFloat(this.value);
-  manualValues[currentParam] = raw;
-  document.getElementById('vsliderVal').textContent = cfg.format(raw);
-  if (!stream) return;
-  const track = stream.getVideoTracks()[0];
-  try { track.applyConstraints({ advanced: [cfg.getConstraint(raw)] }); } catch(e) {}
-});
-
-function resetToAuto() {
-  if (!stream) return;
-  const track = stream.getVideoTracks()[0];
-  try {
-    track.applyConstraints({ advanced: [{
-      exposureMode: 'continuous',
-      whiteBalanceMode: 'continuous',
-      focusMode: 'continuous'
-    }]});
-  } catch(e) {}
-}
-
-function applyManualConstraint(constraint) {
-  if (!stream) return;
-  const track = stream.getVideoTracks()[0];
-  try { track.applyConstraints({ advanced: [constraint] }); } catch(e) {}
-}
-
 
 // ════════════════════════════════════════════════════════════
 // CAPTURE
@@ -1151,7 +972,7 @@ async function capturePhoto() {
   updateThumbCount();
   
   // Shutter animation
-  const vc = document.getElementById('videoContainer');
+  const vc = document.getElementById('viewfinderZone');
   vc.style.opacity = '0.3';
   setTimeout(() => { vc.style.opacity = '1'; }, 100);
   
@@ -1644,7 +1465,7 @@ async function copyImageToClipboard() {
 // ════════════════════════════════════════════════════════════
 // NAVIGATION
 // ════════════════════════════════════════════════════════════
-document.querySelectorAll('.cam-bottom .thumb-preview').forEach(el => {
+document.querySelectorAll('.thumb-preview').forEach(el => {
   el.onclick = () => {
     if (photos.length > 0) openLastPhoto();
     else showGallery();
