@@ -126,20 +126,61 @@
   .gallery-nav h1 { font-size:17px; font-weight:600; flex:1; text-align:center; }
   .gallery-nav-btn { background:none; border:none; color:var(--blue); font-size:15px; cursor:pointer; padding:4px 0; min-width:60px; }
   .gallery-nav-btn.right { text-align:right; }
-  
+
   .folder-tabs { display:flex; gap:8px; padding:12px 16px; overflow-x:auto; scrollbar-width:none; }
   .folder-tabs::-webkit-scrollbar { display:none; }
   .folder-tab { background:var(--surface2); border:none; color:var(--text2); font-size:13px; font-weight:500; padding:6px 14px; border-radius:20px; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:6px; flex-shrink:0; }
   .folder-tab.active { background:var(--blue); color:#fff; }
   .folder-tab-count { background:rgba(255,255,255,0.2); border-radius:10px; padding:1px 6px; font-size:11px; }
-  
-  .gallery-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; padding:0; overflow-y:auto; flex:1; }
-  .gallery-item { aspect-ratio:1; overflow:hidden; position:relative; cursor:pointer; background:var(--surface2); }
+
+  /* Gallery scroll container */
+  #galleryScrollArea { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+  #galleryScrollArea::-webkit-scrollbar { display:none; }
+
+  /* Floating date header (iOS style) */
+  #galleryDateFloat {
+    position:sticky; top:0; z-index:9;
+    padding:6px 16px 5px;
+    background:rgba(0,0,0,0.75); backdrop-filter:blur(12px);
+    font-size:13px; font-weight:600; color:rgba(255,255,255,0.85);
+    letter-spacing:0.01em;
+    pointer-events:none;
+  }
+
+  /* Date section header inside grid */
+  .gallery-date-section { padding:10px 16px 6px; font-size:13px; font-weight:600; color:rgba(255,255,255,0.5); letter-spacing:0.02em; }
+
+  /* Grid: square items, no overflow */
+  .gallery-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:2px;
+    padding:0;
+  }
+  .gallery-item { aspect-ratio:1/1; overflow:hidden; position:relative; cursor:pointer; background:var(--surface2); }
   .gallery-item img { width:100%; height:100%; object-fit:cover; display:block; }
   .gallery-item-overlay { position:absolute; bottom:0; left:0; right:0; padding:4px; background:linear-gradient(transparent,rgba(0,0,0,0.5)); display:none; }
   .gallery-item:hover .gallery-item-overlay { display:block; }
-  .gallery-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:40px; color:var(--text3); }
+  .gallery-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:80px 40px; color:var(--text3); }
   .gallery-empty svg { opacity:0.3; }
+
+  /* Photo topbar date/time */
+  .photo-topbar {
+    display:flex; align-items:center; padding:14px 8px 10px;
+    background:#000; gap:4px;
+    transition: opacity .22s ease, transform .22s ease;
+  }
+  .photo-topbar.hidden { opacity:0; pointer-events:none; transform:translateY(-6px); }
+  .photo-topbar-btn {
+    background:none; border:none; color:var(--blue); font-size:15px;
+    cursor:pointer; display:flex; align-items:center; gap:4px;
+    padding:6px 10px; border-radius:10px; min-width:80px;
+  }
+  .photo-topbar-btn:active { background:rgba(255,255,255,0.08); }
+  .photo-topbar-btn.right { justify-content:flex-end; }
+  .photo-title-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:1px; }
+  .photo-title { font-size:15px; font-weight:600; color:rgba(255,255,255,0.85); }
+  .photo-subtitle { font-size:11px; color:rgba(255,255,255,0.45); }
   
   /* ── FULLSCREEN PHOTO ── */
   #photoScreen { background:#000; z-index:50; }
@@ -198,7 +239,7 @@
   .markup-size { flex:1; }
   
   /* Info panel */
-  .info-panel { position:absolute; bottom:0; left:0; right:0; background:var(--surface); border-radius:20px 20px 0 0; padding:20px; z-index:30; transform:translateY(100%); transition:transform .3s cubic-bezier(.32,.72,0,1); }
+  .info-panel { position:absolute; bottom:0; left:0; right:0; background:var(--surface); border-radius:20px 20px 0 0; padding:20px; z-index:30; transform:translateY(100%); transition:transform .3s cubic-bezier(.32,.72,0,1); max-height:80vh; overflow-y:auto; touch-action:pan-y; }
   .info-panel.show { transform:translateY(0); }
   .info-panel h3 { font-size:17px; font-weight:600; text-align:center; margin-bottom:16px; }
   .info-row { display:flex; justify-content:space-between; padding:11px 0; border-bottom:0.5px solid var(--sep); }
@@ -294,18 +335,30 @@
   .menu-ratio-btn { background:var(--surface2); border:1.5px solid transparent; border-radius:10px; color:var(--text2); font-size:13px; font-weight:600; padding:8px 16px; cursor:pointer; }
   .menu-ratio-btn.active { border-color:var(--accent); color:var(--accent); }
 
-  /* ── SCAN / DOCUMENT MODE ── */
-  #scanOverlay { position:absolute; inset:0; z-index:20; pointer-events:none; }
-  .scan-corner { position:absolute; width:24px; height:24px; border-color:#30D158; border-style:solid; }
-  .scan-corner.tl { top:0; left:0; border-width:3px 0 0 3px; }
-  .scan-corner.tr { top:0; right:0; border-width:3px 3px 0 0; }
-  .scan-corner.bl { bottom:0; left:0; border-width:0 0 3px 3px; }
-  .scan-corner.br { bottom:0; right:0; border-width:0 3px 3px 0; }
-  .scan-line { position:absolute; left:4px; right:4px; height:2px; background:linear-gradient(90deg,transparent,#30D158,transparent); border-radius:1px; animation:scanline 2s ease-in-out infinite; }
-  @keyframes scanline { 0%{top:10%} 50%{top:85%} 100%{top:10%} }
-  .scan-hint { position:absolute; bottom:12px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.6); color:#fff; font-size:12px; padding:6px 14px; border-radius:20px; white-space:nowrap; }
-  .cam-mode-indicator { position:absolute; top:8px; left:50%; transform:translateX(-50%); background:rgba(48,209,88,0.2); border:1px solid #30D158; border-radius:20px; color:#30D158; font-size:11px; font-weight:700; padding:4px 12px; letter-spacing:0.06em; pointer-events:none; z-index:15; display:none; }
-  .cam-mode-indicator.show { display:block; }
+  /* ── DOCUMENT SCANNER ── */
+  /* Live detection overlay */
+  #docScanOverlay { position:absolute; inset:0; z-index:20; pointer-events:none; display:none; }
+  #docScanSvg { position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+  .doc-quad-fill { fill:rgba(10,132,255,0.18); }
+  .doc-quad-stroke { fill:none; stroke:#0A84FF; stroke-width:2; stroke-linejoin:round; }
+  .doc-scan-hint { position:absolute; top:12px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.65); color:#fff; font-size:12px; font-weight:600; padding:6px 16px; border-radius:20px; white-space:nowrap; pointer-events:none; }
+
+  /* Adjust screen (perspective correction) */
+  #docAdjustScreen { position:fixed; inset:0; z-index:300; background:#000; display:none; flex-direction:column; }
+  #docAdjustScreen.show { display:flex; }
+  .doc-adjust-topbar { display:flex; align-items:center; justify-content:space-between; padding:14px 16px 10px; background:#000; flex-shrink:0; }
+  .doc-adjust-topbar button { background:none; border:none; font-size:15px; cursor:pointer; padding:6px 12px; border-radius:10px; }
+  .doc-adjust-topbar .cancel { color:var(--red); }
+  .doc-adjust-topbar .confirm { color:#fff; background:var(--blue); font-weight:600; border-radius:20px; padding:8px 18px; }
+  .doc-adjust-title { font-size:15px; font-weight:600; color:#fff; }
+
+  #docAdjustCanvas { display:block; flex:1; width:100%; touch-action:none; }
+
+  .doc-adjust-toolbar { display:flex; justify-content:space-around; align-items:center; padding:14px 20px calc(20px + var(--safe-bottom)); background:#111; flex-shrink:0; }
+  .doc-toolbar-btn { display:flex; flex-direction:column; align-items:center; gap:5px; background:none; border:none; color:rgba(255,255,255,0.7); font-size:11px; cursor:pointer; padding:4px 10px; border-radius:10px; }
+  .doc-toolbar-btn:active { background:rgba(255,255,255,0.1); }
+  .doc-toolbar-btn svg { width:24px; height:24px; }
+  .doc-toolbar-btn.active { color:var(--blue); }
 
   /* ── GALLERY SELECTION MODE ── */
   .gallery-nav.select-mode h1 { display:none; }
@@ -364,9 +417,6 @@
     </div>
   </div>
 
-  <!-- 스캔 모드 표시 -->
-  <div class="cam-mode-indicator" id="scanModeIndicator">문서 스캔</div>
-
   <!-- Zone 2: Viewfinder -->
   <div id="viewfinderZone">
     <video id="video" autoplay playsinline muted></video>
@@ -379,12 +429,13 @@
     <div class="ratio-mask-right" id="maskRight"></div>
     <div class="ratio-frame" id="ratioFrame"></div>
 
-    <!-- Scan mode overlay -->
-    <div id="scanOverlay" style="display:none;">
-      <div class="scan-corner tl"></div><div class="scan-corner tr"></div>
-      <div class="scan-corner bl"></div><div class="scan-corner br"></div>
-      <div class="scan-line"></div>
-      <div class="scan-hint">문서를 프레임 안에 맞춰주세요</div>
+    <!-- Document scanner live overlay -->
+    <div id="docScanOverlay">
+      <svg id="docScanSvg">
+        <polygon class="doc-quad-fill" id="docQuadFill" points=""/>
+        <polygon class="doc-quad-stroke" id="docQuadStroke" points=""/>
+      </svg>
+      <div class="doc-scan-hint" id="docScanHint">문서를 프레임 안에 맞춰주세요</div>
     </div>
 
     <!-- Shutter blade effect -->
@@ -517,11 +568,15 @@
     <button class="folder-tab active" data-folder="all">전체 <span class="folder-tab-count" id="allCount">0</span></button>
   </div>
   
-  <div id="galleryGrid" class="gallery-grid"></div>
-  <div id="galleryEmpty" class="gallery-empty" style="display:none;">
-    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-    <p style="font-size:16px;color:var(--text2);">사진 없음</p>
-    <p style="font-size:14px;">카메라로 첫 번째 사진을 찍어보세요</p>
+  <div id="galleryDateFloat" style="display:none;"></div>
+
+  <div id="galleryScrollArea">
+    <div id="galleryGrid" class="gallery-grid"></div>
+    <div id="galleryEmpty" class="gallery-empty" style="display:none;">
+      <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <p style="font-size:16px;color:var(--text2);">사진 없음</p>
+      <p style="font-size:14px;">카메라로 첫 번째 사진을 찍어보세요</p>
+    </div>
   </div>
 
   <!-- 선택 모드 하단 액션바 -->
@@ -548,13 +603,16 @@
 <!-- ═══════════════════════════════ PHOTO SCREEN ═══════════════════════════════ -->
 <div id="photoScreen" class="screen">
 
-  <!-- Top bar: 카메라 | N/M | 갤러리 -->
+  <!-- Top bar: 카메라 | 날짜/시간 | 갤러리 -->
   <div class="photo-topbar" id="photoTopbar">
     <button class="photo-topbar-btn" onclick="goToCamera()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
       카메라
     </button>
-    <div class="photo-title" id="photoTitle">1 / 1</div>
+    <div class="photo-title-wrap">
+      <div class="photo-title" id="photoTitle">1 / 1</div>
+      <div class="photo-subtitle" id="photoSubtitle"></div>
+    </div>
     <button class="photo-topbar-btn right" onclick="goToGallery()">
       갤러리
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -606,10 +664,13 @@
 
   <!-- Info panel -->
   <div class="info-panel" id="infoPanel">
-    <div style="width:36px;height:4px;background:var(--text3);border-radius:2px;margin:0 auto 16px;"></div>
-    <h3>정보</h3>
+    <div id="infoPanelHandle" style="width:36px;height:4px;background:var(--text3);border-radius:2px;margin:0 auto 16px;cursor:grab;"></div>
+    <h3 style="font-size:17px;font-weight:600;text-align:center;margin-bottom:16px;">정보</h3>
     <div id="infoPanelContent"></div>
-    <button onclick="closeInfo()" style="width:100%;background:var(--surface2);border:none;color:var(--blue);font-size:16px;font-weight:600;padding:14px;border-radius:12px;cursor:pointer;margin-top:12px;">닫기</button>
+    <!-- 지도 -->
+    <div id="infoPanelMap" style="display:none;margin-top:12px;border-radius:12px;overflow:hidden;height:180px;">
+      <iframe id="infoPanelMapFrame" width="100%" height="180" frameborder="0" style="border:0;display:block;" allowfullscreen></iframe>
+    </div>
   </div>
 
   <!-- Markup panel -->
@@ -647,6 +708,34 @@
     </div>
   </div>
 
+</div>
+
+<!-- ═══════════════════════════════ DOC ADJUST SCREEN ═══════════════════════════════ -->
+<div id="docAdjustScreen">
+  <div class="doc-adjust-topbar">
+    <button class="cancel" onclick="cancelDocAdjust()">취소</button>
+    <span class="doc-adjust-title">모서리 조정</span>
+    <button class="confirm" onclick="confirmDocAdjust()">저장</button>
+  </div>
+  <canvas id="docAdjustCanvas"></canvas>
+  <div class="doc-adjust-toolbar">
+    <button class="doc-toolbar-btn" onclick="docSetFilter('color')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 010 20"/><path d="M12 2v20"/></svg>
+      컬러
+    </button>
+    <button class="doc-toolbar-btn active" id="docFilterBW" onclick="docSetFilter('bw')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 000 20z" fill="currentColor"/></svg>
+      흑백
+    </button>
+    <button class="doc-toolbar-btn" onclick="docSetFilter('enhanced')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg>
+      선명
+    </button>
+    <button class="doc-toolbar-btn" onclick="docRotate()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+      회전
+    </button>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════ SHARE SHEET ═══════════════════════════════ -->
@@ -946,42 +1035,399 @@ function applyFlash() {
 // ════════════════════════════════════════════════════════════
 // SCAN / DOCUMENT MODE
 // ════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════
+// DOCUMENT SCANNER — Auto-detect + Perspective Correction
+// ════════════════════════════════════════════════════════════
 let scanMode = false;
+let docDetectTimer = null;
+let docQuadPoints = null;    // [{x,y}×4] in video-pixel space
+let docRawDataUrl = null;    // raw captured frame
+let docAdjustPts = null;     // [{x,y}×4] in canvas display space
+let docDragIdx = -1;
+let docFilter = 'bw';
+let docRotation = 0;
+
+// ── Toggle scan mode ──
 document.getElementById('scanModeBtn').onclick = function() {
   scanMode = !scanMode;
   this.classList.toggle('active', scanMode);
-  document.getElementById('scanOverlay').style.display = scanMode ? 'block' : 'none';
-  document.getElementById('scanModeIndicator').classList.toggle('show', scanMode);
+  const overlay = document.getElementById('docScanOverlay');
+  overlay.style.display = scanMode ? 'block' : 'none';
   if (scanMode) {
-    // 스캔 모드: 4:3 비율 고정 권장
-    currentRatio = '4:3';
-    applyRatio(true);
+    startDocDetect();
+  } else {
+    stopDocDetect();
   }
 };
 
-// Scan capture — auto-process to grayscale/contrast enhanced
-async function processScanCapture(dataUrl) {
+function startDocDetect() {
+  stopDocDetect();
+  docDetectTimer = setInterval(runDocDetect, 400);
+}
+function stopDocDetect() {
+  if (docDetectTimer) { clearInterval(docDetectTimer); docDetectTimer = null; }
+  document.getElementById('docScanOverlay').style.display = 'none';
+  clearDocQuad();
+}
+
+// ── Edge detection via canvas ──
+function runDocDetect() {
+  const video = document.getElementById('video');
+  if (!video.videoWidth) return;
+
+  // Downscale for performance
+  const scale = 0.25;
+  const w = Math.round(video.videoWidth * scale);
+  const h = Math.round(video.videoHeight * scale);
+  const tmp = document.createElement('canvas');
+  tmp.width = w; tmp.height = h;
+  const ctx = tmp.getContext('2d');
+  if (facingMode === 'user') { ctx.translate(w,0); ctx.scale(-1,1); }
+  ctx.drawImage(video, 0, 0, w, h);
+
+  const imageData = ctx.getImageData(0, 0, w, h);
+  const pts = detectDocumentQuad(imageData, w, h);
+
+  const vc = document.getElementById('viewfinderZone');
+  const vcW = vc.clientWidth, vcH = vc.clientHeight;
+  const scaleX = vcW / w, scaleY = vcH / h;
+
+  if (pts) {
+    docQuadPoints = pts.map(p => ({ x: p.x / scale, y: p.y / scale }));
+    const display = pts.map(p => ({ x: p.x * scaleX, y: p.y * scaleY }));
+    drawDocQuad(display, vcW, vcH);
+    document.getElementById('docScanHint').textContent = '문서가 감지됨 — 셔터를 눌러 촬영';
+  } else {
+    docQuadPoints = null;
+    clearDocQuad();
+    document.getElementById('docScanHint').textContent = '문서를 프레임 안에 맞춰주세요';
+  }
+}
+
+// ── Simple document quad detection (edge + largest contour approximation) ──
+function detectDocumentQuad(imageData, w, h) {
+  const d = imageData.data;
+  // Convert to grayscale + Sobel edge
+  const gray = new Uint8Array(w * h);
+  for (let i = 0; i < w * h; i++) {
+    gray[i] = Math.round(0.299 * d[i*4] + 0.587 * d[i*4+1] + 0.114 * d[i*4+2]);
+  }
+  // Threshold
+  const thresh = new Uint8Array(w * h);
+  const mean = gray.reduce((a,b) => a+b,0) / gray.length;
+  const t = mean * 0.55;
+  for (let i = 0; i < w * h; i++) thresh[i] = gray[i] > t ? 255 : 0;
+
+  // Find bounding box of bright region
+  let minX=w, maxX=0, minY=h, maxY=0, count=0;
+  for (let y = 2; y < h-2; y++) for (let x = 2; x < w-2; x++) {
+    if (thresh[y*w+x] === 255) {
+      if(x<minX)minX=x; if(x>maxX)maxX=x;
+      if(y<minY)minY=y; if(y>maxY)maxY=y;
+      count++;
+    }
+  }
+  const coverage = count / (w * h);
+  if (coverage < 0.08 || coverage > 0.96) return null;
+  const bw = maxX - minX, bh = maxY - minY;
+  if (bw < w*0.15 || bh < h*0.15) return null;
+
+  // Add slight inset so handles are inside document
+  const ix = Math.round(bw * 0.04), iy = Math.round(bh * 0.04);
+  return [
+    { x: minX+ix, y: minY+iy },
+    { x: maxX-ix, y: minY+iy },
+    { x: maxX-ix, y: maxY-iy },
+    { x: minX+ix, y: maxY-iy }
+  ];
+}
+
+function drawDocQuad(pts, vcW, vcH) {
+  const svg = document.getElementById('docScanSvg');
+  svg.setAttribute('viewBox', `0 0 ${vcW} ${vcH}`);
+  const pointsStr = pts.map(p=>`${p.x},${p.y}`).join(' ');
+  document.getElementById('docQuadFill').setAttribute('points', pointsStr);
+  document.getElementById('docQuadStroke').setAttribute('points', pointsStr);
+  document.getElementById('docScanOverlay').style.display = 'block';
+}
+function clearDocQuad() {
+  document.getElementById('docQuadFill').setAttribute('points','');
+  document.getElementById('docQuadStroke').setAttribute('points','');
+}
+
+// ── Called from capturePhoto when scanMode is on ──
+async function handleDocCapture(rawDataUrl, videoW, videoH) {
+  stopDocDetect();
+  docRawDataUrl = rawDataUrl;
+  docRotation = 0;
+  docFilter = 'bw';
+
+  // Default quad: use detected pts or fallback to 10% inset
+  const vc = document.getElementById('viewfinderZone');
+  const cw = vc.clientWidth, ch = vc.clientHeight;
+
+  if (docQuadPoints) {
+    // Map from video px → display px
+    const sx = cw / videoW, sy = ch / videoH;
+    docAdjustPts = docQuadPoints.map(p => ({ x: p.x*sx, y: p.y*sy }));
+  } else {
+    const ix = cw*0.1, iy = ch*0.1;
+    docAdjustPts = [
+      {x:ix,    y:iy},
+      {x:cw-ix, y:iy},
+      {x:cw-ix, y:ch-iy},
+      {x:ix,    y:ch-iy}
+    ];
+  }
+
+  openDocAdjust();
+}
+
+// ── Adjust screen ──
+function openDocAdjust() {
+  const screen = document.getElementById('docAdjustScreen');
+  screen.classList.add('show');
+
+  requestAnimationFrame(() => {
+    const canvas = document.getElementById('docAdjustCanvas');
+    canvas.width  = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+    renderDocAdjust();
+    setupDocAdjustDrag(canvas);
+  });
+}
+
+function renderDocAdjust() {
+  const canvas = document.getElementById('docAdjustCanvas');
+  const ctx = canvas.getContext('2d');
+  const cw = canvas.width, ch = canvas.height;
+  ctx.clearRect(0,0,cw,ch);
+
+  const img = new Image();
+  img.onload = () => {
+    ctx.drawImage(img, 0, 0, cw, ch);
+    drawAdjustOverlay(ctx, cw, ch);
+  };
+  img.src = docRawDataUrl;
+}
+
+function drawAdjustOverlay(ctx, cw, ch) {
+  const pts = docAdjustPts;
+  // Darken outside quad
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(0,0,cw,ch);
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pts[0].y);
+  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+
+  // Quad border
+  ctx.strokeStyle = '#0A84FF';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pts[0].y);
+  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.closePath();
+  ctx.stroke();
+
+  // Corner handles
+  pts.forEach((p, i) => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 16, 0, Math.PI*2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.strokeStyle = '#0A84FF';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  });
+}
+
+function setupDocAdjustDrag(canvas) {
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const src = e.touches ? e.touches[0] : e;
+    return { x: src.clientX - r.left, y: src.clientY - r.top };
+  }
+  function nearest(pos) {
+    let best = -1, bestD = 40;
+    docAdjustPts.forEach((p,i) => {
+      const d = Math.hypot(p.x-pos.x, p.y-pos.y);
+      if (d < bestD) { bestD=d; best=i; }
+    });
+    return best;
+  }
+
+  canvas.onmousedown = canvas.ontouchstart = (e) => {
+    e.preventDefault();
+    const pos = getPos(e);
+    docDragIdx = nearest(pos);
+  };
+  canvas.onmousemove = canvas.ontouchmove = (e) => {
+    e.preventDefault();
+    if (docDragIdx < 0) return;
+    const pos = getPos(e);
+    docAdjustPts[docDragIdx] = { x: Math.max(0,Math.min(canvas.width,pos.x)), y: Math.max(0,Math.min(canvas.height,pos.y)) };
+    renderDocAdjust();
+  };
+  canvas.onmouseup = canvas.ontouchend = () => { docDragIdx = -1; };
+}
+
+// ── Filter buttons ──
+function docSetFilter(f) {
+  docFilter = f;
+  document.querySelectorAll('.doc-toolbar-btn').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+let docRotateAngle = 0;
+function docRotate() {
+  docRotateAngle = (docRotateAngle + 90) % 360;
+}
+
+// ── Confirm: apply perspective transform ──
+async function confirmDocAdjust() {
+  const resultDataUrl = await applyPerspectiveTransform();
+  document.getElementById('docAdjustScreen').classList.remove('show');
+  scanMode && startDocDetect(); // restart detection
+
+  // Save as photo
+  const photo = {
+    id: Date.now().toString(),
+    data: resultDataUrl,
+    date: new Date().toISOString(),
+    memo: '', folder: currentFolder === 'all' ? '미분류' : currentFolder,
+    ratio: currentRatio, zoom: currentZoom + 'x',
+    width: 0, height: 0,
+    facing: facingMode === 'environment' ? '후면' : '전면',
+    format: 'SCAN', markup: null, location: null
+  };
+  const img = new Image();
+  img.onload = async () => {
+    photo.width = img.width; photo.height = img.height;
+    photos.unshift(photo);
+    await savePhoto(photo);
+    const thumbImg = document.getElementById('thumbImg');
+    thumbImg.src = resultDataUrl; thumbImg.style.display = 'block';
+    updateThumbCount();
+    renderGallery();
+    shutterBlade();
+  };
+  img.src = resultDataUrl;
+}
+
+function cancelDocAdjust() {
+  document.getElementById('docAdjustScreen').classList.remove('show');
+  if (scanMode) startDocDetect();
+}
+
+// ── Core: perspective transform ──
+async function applyPerspectiveTransform() {
   return new Promise(resolve => {
     const img = new Image();
     img.onload = () => {
-      const c = document.createElement('canvas');
-      c.width = img.width; c.height = img.height;
-      const ctx = c.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      const imgData = ctx.getImageData(0, 0, c.width, c.height);
-      const d = imgData.data;
-      for (let i = 0; i < d.length; i += 4) {
-        // Grayscale
-        const avg = 0.299 * d[i] + 0.587 * d[i+1] + 0.114 * d[i+2];
-        // Contrast boost
-        const v = Math.min(255, Math.max(0, (avg - 128) * 1.5 + 128));
-        d[i] = d[i+1] = d[i+2] = v;
+      const canvas = document.getElementById('docAdjustCanvas');
+      const dispW = canvas.width, dispH = canvas.height;
+      const scaleX = img.width / dispW, scaleY = img.height / dispH;
+
+      // Source points in image coords
+      const src = docAdjustPts.map(p => ({ x: p.x*scaleX, y: p.y*scaleY }));
+
+      // Compute output dimensions (average of opposite sides)
+      const wTop  = Math.hypot(src[1].x-src[0].x, src[1].y-src[0].y);
+      const wBot  = Math.hypot(src[2].x-src[3].x, src[2].y-src[3].y);
+      const hLeft = Math.hypot(src[3].x-src[0].x, src[3].y-src[0].y);
+      const hRight= Math.hypot(src[2].x-src[1].x, src[2].y-src[1].y);
+      let outW = Math.round((wTop+wBot)/2);
+      let outH = Math.round((hLeft+hRight)/2);
+
+      // Rotate output dimensions if needed
+      if (docRotateAngle === 90 || docRotateAngle === 270) [outW, outH] = [outH, outW];
+
+      const out = document.createElement('canvas');
+      out.width = outW; out.height = outH;
+      const ctx = out.getContext('2d');
+
+      // Apply perspective transform via triangles (no WebGL needed)
+      perspectiveTransform(ctx, img, src, outW, outH);
+
+      // Apply rotation
+      if (docRotateAngle) {
+        const rot = document.createElement('canvas');
+        const r = docRotateAngle * Math.PI / 180;
+        rot.width  = docRotateAngle===180 ? outW : outH;
+        rot.height = docRotateAngle===180 ? outH : outW;
+        const rc = rot.getContext('2d');
+        rc.translate(rot.width/2, rot.height/2);
+        rc.rotate(r);
+        rc.drawImage(out, -outW/2, -outH/2);
+        out.width = rot.width; out.height = rot.height;
+        out.getContext('2d').drawImage(rot, 0, 0);
       }
-      ctx.putImageData(imgData, 0, 0);
-      resolve(c.toDataURL('image/jpeg', 0.92));
+
+      // Apply filter
+      const fctx = out.getContext('2d');
+      if (docFilter !== 'color') {
+        const id = fctx.getImageData(0,0,out.width,out.height);
+        const data = id.data;
+        for (let i = 0; i < data.length; i+=4) {
+          const g = 0.299*data[i] + 0.587*data[i+1] + 0.114*data[i+2];
+          if (docFilter === 'bw') {
+            const v = g > 140 ? 255 : 0;
+            data[i]=data[i+1]=data[i+2]=v;
+          } else { // enhanced
+            const v = Math.min(255, Math.max(0, (g-128)*1.8+128));
+            data[i]=data[i+1]=data[i+2]=v;
+          }
+        }
+        fctx.putImageData(id, 0, 0);
+      }
+
+      resolve(out.toDataURL('image/jpeg', 0.93));
     };
-    img.src = dataUrl;
+    img.src = docRawDataUrl;
   });
+}
+
+// ── Perspective transform via bilinear subdivision ──
+function perspectiveTransform(ctx, img, src, outW, outH) {
+  // Subdivide into grid for better accuracy
+  const STEPS = 32;
+  for (let gy = 0; gy < STEPS; gy++) {
+    for (let gx = 0; gx < STEPS; gx++) {
+      const u0=gx/STEPS, u1=(gx+1)/STEPS;
+      const v0=gy/STEPS, v1=(gy+1)/STEPS;
+
+      // Bilinear interpolation of source quad
+      function interp(u,v) {
+        const x = (1-u)*(1-v)*src[0].x + u*(1-v)*src[1].x + u*v*src[2].x + (1-u)*v*src[3].x;
+        const y = (1-u)*(1-v)*src[0].y + u*(1-v)*src[1].y + u*v*src[2].y + (1-u)*v*src[3].y;
+        return {x,y};
+      }
+
+      const p00=interp(u0,v0), p10=interp(u1,v0);
+      const p01=interp(u0,v1), p11=interp(u1,v1);
+
+      const dx0=outW*u0, dx1=outW*u1;
+      const dy0=outH*v0, dy1=outH*v1;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(dx0,dy0); ctx.lineTo(dx1,dy0);
+      ctx.lineTo(dx1,dy1); ctx.lineTo(dx0,dy1);
+      ctx.closePath(); ctx.clip();
+
+      // setTransform to map source → dest
+      const dw=dx1-dx0, dh=dy1-dy0;
+      const sw2=p10.x-p00.x, sh2=p01.y-p00.y;
+      ctx.transform(sw2/dw, (p10.y-p00.y)/dw, (p01.x-p00.x)/dh, sh2/dh, p00.x-dx0*(sw2/dw)-(dy0*((p01.x-p00.x)/dh)), p00.y-dx0*((p10.y-p00.y)/dw)-dy0*(sh2/dh));
+      ctx.drawImage(img, 0, 0);
+      ctx.restore();
+    }
+  }
 }
 
 // Horizon
@@ -1173,13 +1619,16 @@ async function capturePhoto() {
     setTimeout(() => { flash.style.opacity = '0'; setTimeout(() => flash.remove(), 300); }, 80);
   }
   
-  let dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+  const rawDataUrl = canvas.toDataURL('image/jpeg', 0.92);
 
-  // Scan mode: apply document enhancement
+  // Scan mode: open adjust screen instead of saving directly
   if (scanMode) {
-    dataUrl = await processScanCapture(dataUrl);
+    await handleDocCapture(rawDataUrl, canvas.width, canvas.height);
+    shutterBlade();
+    return;
   }
 
+  const dataUrl = rawDataUrl;
   const photo = {
     id: Date.now().toString(),
     data: dataUrl,
@@ -1191,7 +1640,7 @@ async function capturePhoto() {
     width: sw,
     height: sh,
     facing: facingMode === 'environment' ? '후면' : '전면',
-    format: scanMode ? 'SCAN' : 'JPEG',
+    format: 'JPEG',
     markup: null,
     location: null
   };
@@ -1341,53 +1790,67 @@ document.getElementById('newFolderBtn').onclick = createFolder;
 function renderGallery() {
   const grid = document.getElementById('galleryGrid');
   const empty = document.getElementById('galleryEmpty');
+  const scrollArea = document.getElementById('galleryScrollArea');
   let filtered = currentFolder === 'all' ? photos : photos.filter(p => p.folder === currentFolder);
 
   if (filtered.length === 0) {
     grid.style.display = 'none';
     empty.style.display = 'flex';
+    document.getElementById('galleryDateFloat').style.display = 'none';
     return;
   }
   grid.style.display = 'grid';
   empty.style.display = 'none';
   grid.innerHTML = '';
 
-  filtered.forEach((photo) => {
-    const globalIdx = photos.indexOf(photo);
-    const item = document.createElement('div');
-    item.className = 'gallery-item' + (selectMode ? ' selectable' : '') + (selectedIds.has(photo.id) ? ' selected' : '');
-    item.dataset.id = photo.id;
-    item.draggable = !selectMode;
+  // Group by date
+  const groups = {};
+  filtered.forEach(p => {
+    const key = new Date(p.date).toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'short' });
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(p);
+  });
 
-    const label = photo.name ? `<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.5);color:#fff;font-size:9px;padding:2px 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${photo.name}</div>` : '';
-    const memoIcon = photo.memo ? `<div class="gallery-item-overlay"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div>` : '';
-    const check = `<div class="select-check"></div>`;
-    item.innerHTML = `<img src="${photo.data}" loading="lazy" alt="">${label}${memoIcon}${check}`;
+  Object.entries(groups).forEach(([dateLabel, groupPhotos]) => {
+    const header = document.createElement('div');
+    header.className = 'gallery-date-section';
+    header.textContent = dateLabel;
+    header.dataset.dateLabel = dateLabel;
+    header.style.gridColumn = '1 / -1';
+    grid.appendChild(header);
 
-    if (selectMode) {
-      // Tap to select
-      item.addEventListener('pointerdown', (e) => {
-        dragSelecting = true;
-        dragStartId = photo.id;
-        toggleSelect(photo.id);
-        e.preventDefault();
-      });
-      item.addEventListener('pointerenter', (e) => {
-        if (dragSelecting && e.buttons > 0 && photo.id !== dragStartId) {
-          if (!selectedIds.has(photo.id)) toggleSelect(photo.id);
-        }
-      });
-    } else {
-      item.onclick = () => { photoOpenedFrom = 'gallery'; openPhoto(globalIdx); };
-      // Drag & drop folder move
-      item.addEventListener('dragstart', (e) => { e.dataTransfer.setData('text/plain', photo.id); });
-    }
-    grid.appendChild(item);
+    groupPhotos.forEach(photo => {
+      const globalIdx = photos.indexOf(photo);
+      const item = document.createElement('div');
+      item.className = 'gallery-item' + (selectMode ? ' selectable' : '') + (selectedIds.has(photo.id) ? ' selected' : '');
+      item.dataset.id = photo.id;
+      item.dataset.dateLabel = dateLabel;
+      item.draggable = !selectMode;
+
+      const label = photo.name ? `<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.5);color:#fff;font-size:9px;padding:2px 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${photo.name}</div>` : '';
+      const memoIcon = photo.memo ? `<div class="gallery-item-overlay"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div>` : '';
+      const scanBadge = photo.format === 'SCAN' ? `<div style="position:absolute;top:4px;left:4px;background:rgba(48,209,88,0.85);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;">SCAN</div>` : '';
+      const check = `<div class="select-check"></div>`;
+      item.innerHTML = `<img src="${photo.data}" loading="lazy" alt="">${label}${memoIcon}${scanBadge}${check}`;
+
+      if (selectMode) {
+        item.addEventListener('pointerdown', (e) => {
+          dragSelecting = true; dragStartId = photo.id;
+          toggleSelect(photo.id); e.preventDefault();
+        });
+        item.addEventListener('pointerenter', (e) => {
+          if (dragSelecting && e.buttons > 0 && photo.id !== dragStartId && !selectedIds.has(photo.id)) toggleSelect(photo.id);
+        });
+      } else {
+        item.onclick = () => { photoOpenedFrom = 'gallery'; openPhoto(globalIdx); };
+        item.addEventListener('dragstart', (e) => { e.dataTransfer.setData('text/plain', photo.id); });
+      }
+      grid.appendChild(item);
+    });
   });
 
   document.addEventListener('pointerup', () => { dragSelecting = false; dragStartId = null; }, { once: true });
 
-  // Folder drop targets
   document.querySelectorAll('.folder-tab').forEach(tab => {
     tab.addEventListener('dragover', (e) => { e.preventDefault(); tab.style.background = 'rgba(10,132,255,0.3)'; });
     tab.addEventListener('dragleave', () => { tab.style.background = ''; });
@@ -1397,13 +1860,30 @@ function renderGallery() {
       const folder = tab.dataset.folder;
       if (folder === 'all') return;
       const p = photos.find(p => p.id === id);
-      if (p) { p.folder = folder; savePhoto(p).then(() => { renderGallery(); renderFolderTabs(); showToast(`'${folder}'로 이동됨`); }); }
+      if (p) { p.folder = folder; savePhoto(p).then(() => { renderGallery(); renderFolderTabs(); showToast(`\'${folder}\'로 이동됨`); }); }
     });
   });
 
+  if (scrollArea) setupGalleryDateFloat(scrollArea);
   updateThumbCount();
 }
 
+function setupGalleryDateFloat(scrollArea) {
+  if (scrollArea._dateFloatBound) scrollArea.removeEventListener('scroll', scrollArea._dateFloatBound);
+  const floatEl = document.getElementById('galleryDateFloat');
+  scrollArea._dateFloatBound = () => {
+    const scrollTop = scrollArea.scrollTop;
+    const headers = Array.from(scrollArea.querySelectorAll('.gallery-date-section'));
+    let currentLabel = '';
+    for (const h of headers) {
+      if (h.offsetTop <= scrollTop + 60) currentLabel = h.dataset.dateLabel;
+    }
+    floatEl.textContent = currentLabel || '';
+    floatEl.style.display = currentLabel ? 'block' : 'none';
+  };
+  scrollArea.addEventListener('scroll', scrollArea._dateFloatBound, { passive: true });
+  setTimeout(scrollArea._dateFloatBound, 50);
+}
 // ════════════════════════════════════════════════════════════
 // PHOTO VIEWER
 // ════════════════════════════════════════════════════════════
@@ -1422,6 +1902,17 @@ function renderPhoto() {
   if (!photo) return;
   document.getElementById('photoImg').src = photo.markup || photo.data;
   document.getElementById('photoTitle').textContent = `${currentPhotoIdx + 1} / ${photos.length}`;
+
+  // Date + time subtitle
+  if (photo.date) {
+    const d = new Date(photo.date);
+    const dateStr = d.toLocaleDateString('ko-KR', { month:'long', day:'numeric', weekday:'short' });
+    const timeStr = d.toLocaleTimeString('ko-KR', { hour:'2-digit', minute:'2-digit' });
+    document.getElementById('photoSubtitle').textContent = `${dateStr} ${timeStr}`;
+  } else {
+    document.getElementById('photoSubtitle').textContent = '';
+  }
+
   document.getElementById('memoText').value = photo.memo || '';
   document.getElementById('prevArrow').style.opacity = currentPhotoIdx > 0 ? '1' : '0';
   document.getElementById('nextArrow').style.opacity = currentPhotoIdx < photos.length - 1 ? '1' : '0';
@@ -1561,36 +2052,91 @@ async function saveMemo() {
 // INFO
 // ════════════════════════════════════════════════════════════
 function showInfo() {
-  
   const photo = photos[currentPhotoIdx];
   if (!photo) return;
-  
+
   const d = new Date(photo.date);
-  const dateStr = d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
-  const timeStr = d.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  
+  const dateStr = d.toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
+  const timeStr = d.toLocaleTimeString('ko-KR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+
   const rows = [
-    { key: '날짜', val: dateStr },
-    { key: '시간', val: timeStr },
-    { key: '해상도', val: `${photo.width} × ${photo.height}` },
-    { key: '비율', val: photo.ratio },
-    { key: '줌', val: photo.zoom },
-    { key: '카메라', val: photo.facing },
-    { key: '포맷', val: photo.format },
-    { key: '폴더', val: photo.folder },
-    { key: '메모', val: photo.memo || '-' },
-    { key: '위치', val: photo.location || '-' },
+    { key:'날짜', val: dateStr },
+    { key:'시간', val: timeStr },
+    { key:'해상도', val: photo.width && photo.height ? `${photo.width} × ${photo.height}` : '-' },
+    { key:'비율', val: photo.ratio || '-' },
+    { key:'줌', val: photo.zoom || '-' },
+    { key:'카메라', val: photo.facing || '-' },
+    { key:'포맷', val: photo.format || '-' },
+    { key:'폴더', val: photo.folder || '-' },
+    { key:'메모', val: photo.memo || '-' },
   ];
-  
-  document.getElementById('infoPanelContent').innerHTML = rows.map(r => 
+
+  document.getElementById('infoPanelContent').innerHTML = rows.map(r =>
     `<div class="info-row"><span class="info-key">${r.key}</span><span class="info-val">${r.val}</span></div>`
   ).join('');
-  
+
+  // Map
+  const mapDiv  = document.getElementById('infoPanelMap');
+  const mapFrame = document.getElementById('infoPanelMapFrame');
+  if (photo.location && photo.location !== '-') {
+    const [lat, lng] = photo.location.split(',').map(s => s.trim());
+    mapFrame.src = `https://maps.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
+    // Add location row
+    document.getElementById('infoPanelContent').innerHTML +=
+      `<div class="info-row"><span class="info-key">위치</span><span class="info-val" style="font-size:11px;">${photo.location}</span></div>`;
+    mapDiv.style.display = 'block';
+  } else {
+    mapDiv.style.display = 'none';
+    document.getElementById('infoPanelContent').innerHTML +=
+      `<div class="info-row"><span class="info-key">위치</span><span class="info-val">-</span></div>`;
+  }
+
   document.getElementById('infoPanel').classList.add('show');
+  setupInfoPanelSwipe();
 }
 
 function closeInfo() {
   document.getElementById('infoPanel').classList.remove('show');
+}
+
+function setupInfoPanelSwipe() {
+  const panel = document.getElementById('infoPanel');
+  const handle = document.getElementById('infoPanelHandle');
+  let startY = 0, startTranslate = 0, dragging = false;
+
+  function onStart(e) {
+    if (!e.target.closest('#infoPanelHandle') && e.target.closest('#infoPanelContent,#infoPanelMap')) return;
+    dragging = true;
+    startY = e.touches ? e.touches[0].clientY : e.clientY;
+    panel.style.transition = 'none';
+  }
+  function onMove(e) {
+    if (!dragging) return;
+    const y = (e.touches ? e.touches[0].clientY : e.clientY) - startY;
+    if (y > 0) {
+      panel.style.transform = `translateY(${y}px)`;
+    }
+  }
+  function onEnd(e) {
+    if (!dragging) return;
+    dragging = false;
+    panel.style.transition = '';
+    const y = (e.changedTouches ? e.changedTouches[0].clientY : e.clientY) - startY;
+    if (y > 80) {
+      closeInfo();
+    } else {
+      panel.style.transform = 'translateY(0)';
+    }
+  }
+
+  // Remove previous listeners
+  panel.removeEventListener('touchstart', panel._swipeStart);
+  panel.removeEventListener('touchmove',  panel._swipeMove);
+  panel.removeEventListener('touchend',   panel._swipeEnd);
+  panel._swipeStart = onStart; panel._swipeMove = onMove; panel._swipeEnd = onEnd;
+  panel.addEventListener('touchstart', onStart, { passive: true });
+  panel.addEventListener('touchmove',  onMove, { passive: true });
+  panel.addEventListener('touchend',   onEnd,  { passive: true });
 }
 
 // ════════════════════════════════════════════════════════════
