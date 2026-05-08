@@ -29,7 +29,7 @@
   .screen.active { display:flex; }
   
   /* ── CAMERA SCREEN — iOS 3-zone layout ── */
-  #cameraScreen { background:#000; justify-content:space-between; }
+  #cameraScreen { position:relative; background:#000; justify-content:space-between; overflow:hidden; }
 
   /* Zone 1: Top toolbar */
   #camTopbar {
@@ -39,6 +39,7 @@
     display:flex; align-items:center; justify-content:space-between;
     z-index:20;
   }
+  #cameraScreen.immersive-preview #camTopbar { background:linear-gradient(to bottom, rgba(0,0,0,0.72), rgba(0,0,0,0)); }
   #camTopbar .tb-group { display:flex; align-items:center; gap:4px; }
   .icon-btn { background:none; border:none; color:rgba(255,255,255,0.85); cursor:pointer; display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:50%; transition:background .1s; }
   .icon-btn:active { background:rgba(255,255,255,0.12); }
@@ -55,9 +56,10 @@
     background:#000;
     transition: height 0.32s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink:0;
-    margin-top:auto;
-    margin-bottom:auto;
+    margin-top:0;
+    margin-bottom:0;
   }
+  #cameraScreen.immersive-preview #viewfinderZone { z-index:1; }
   #video { width:100%; height:100%; object-fit:cover; display:block; transition: transform 0.22s cubic-bezier(0.4,0,0.2,1); }
   #canvas { display:none; }
 
@@ -102,11 +104,13 @@
   /* Zone 3: Bottom controls — fixed, always on black */
   #camBottom {
     flex-shrink:0;
+    margin-top:auto;
     background:#000;
     padding:16px 28px calc(20px + var(--safe-bottom));
     display:flex; flex-direction:column; gap:16px;
     z-index:20;
   }
+  #cameraScreen.immersive-preview #camBottom { background:linear-gradient(to top, rgba(0,0,0,0.88), rgba(0,0,0,0)); }
   /* Zoom row */
   .zoom-row { display:flex; align-items:center; justify-content:center; gap:4px; }
   .zoom-btn { background:none; border:none; color:rgba(255,255,255,0.55); font-size:13px; font-weight:600; cursor:pointer; padding:6px 14px; border-radius:18px; transition:all .15s; }
@@ -722,15 +726,15 @@
   </div>
   <canvas id="docAdjustCanvas"></canvas>
   <div class="doc-adjust-toolbar">
-    <button class="doc-toolbar-btn" onclick="docSetFilter('color')">
+    <button class="doc-toolbar-btn" onclick="docSetFilter('color', this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 010 20"/><path d="M12 2v20"/></svg>
       컬러
     </button>
-    <button class="doc-toolbar-btn active" id="docFilterBW" onclick="docSetFilter('bw')">
+    <button class="doc-toolbar-btn active" id="docFilterBW" onclick="docSetFilter('bw', this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 000 20z" fill="currentColor"/></svg>
       흑백
     </button>
-    <button class="doc-toolbar-btn" onclick="docSetFilter('enhanced')">
+    <button class="doc-toolbar-btn" onclick="docSetFilter('enhanced', this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg>
       선명
     </button>
@@ -743,7 +747,7 @@
 
 <!-- ═══════════════════════════════ SHARE SHEET ═══════════════════════════════ -->
 <div class="share-sheet hidden" id="shareSheet" onclick="closeShareSheet(event)">
-  <div class="share-sheet-inner" id="shareSheetInner" onclick="e=>e.stopPropagation()">
+  <div class="share-sheet-inner" id="shareSheetInner" onclick="event.stopPropagation()">
     <div id="shareSheetHandle" style="width:36px;height:4px;background:var(--text3);border-radius:2px;margin:0 auto 12px;cursor:grab;"></div>
     <div class="share-sheet-title">공유</div>
     <div class="share-icons">
@@ -950,6 +954,7 @@ function applyZoom(z) {
 // Ratio (handled via menu sheet — setRatioFromMenu)
 
 function applyRatio(animate = true) {
+  const cameraScreen = document.getElementById('cameraScreen');
   const vc = document.getElementById('viewfinderZone');
   const video = document.getElementById('video');
   const [ph, pw] = currentRatio.split(':').map(Number);
@@ -958,13 +963,20 @@ function applyRatio(animate = true) {
   const topEl    = document.getElementById('camTopbar');
   const bottomH  = (bottomEl && bottomEl.offsetHeight > 0) ? bottomEl.offsetHeight : 170;
   const topH     = (topEl    && topEl.offsetHeight    > 0) ? topEl.offsetHeight    : 62;
-  const maxH     = window.innerHeight - bottomH - topH - 2;
+  const immersivePreview = currentRatio === '16:9';
+  const maxH     = immersivePreview
+    ? window.innerHeight
+    : window.innerHeight - bottomH - topH - 2;
   const idealH   = Math.round(vcW * ph / pw);
   const targetH  = Math.min(idealH, Math.max(100, maxH));
+  cameraScreen.classList.toggle('immersive-preview', immersivePreview);
   vc.style.transition = animate ? 'height 0.32s cubic-bezier(0.4,0,0.2,1)' : 'none';
   vc.style.width  = '100%';
   vc.style.height = targetH + 'px';
   vc.style.flex   = 'none';
+  vc.style.marginTop = immersivePreview ? (-topH) + 'px' : 'auto';
+  vc.style.marginBottom = immersivePreview ? (-bottomH) + 'px' : 'auto';
+  vc.style.transform = '';
   video.style.width     = '100%';
   video.style.height    = '100%';
   video.style.objectFit = 'cover';
@@ -1306,10 +1318,10 @@ function setupDocAdjustDrag(canvas) {
 }
 
 // ── Filter buttons ──
-function docSetFilter(f) {
+function docSetFilter(f, btn) {
   docFilter = f;
   document.querySelectorAll('.doc-toolbar-btn').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  if (btn) btn.classList.add('active');
 }
 
 let docRotateAngle = 0;
@@ -2467,7 +2479,7 @@ async function deleteCurrentPhoto() {
   renderGallery();
   renderFolderTabs();
   
-  if (photos.length === 0) { closePhoto(); return; }
+  if (photos.length === 0) { goToGallery(); return; }
   if (currentPhotoIdx >= photos.length) currentPhotoIdx = photos.length - 1;
   renderPhoto();
   
