@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sub Camera</title>
+  <meta name="description" content="Sub Camera는 사진을 로컬에 저장하고 폴더, 메모, 마크업으로 정리할 수 있는 카메라 앱입니다.">
+  <style>
+    :root {
+      --bg: #0b0b0c;
+      --surface: #161618;
+      --surface-2: #202024;
+      --text: #f5f5f7;
+      --muted: #a6a6ad;
+      --line: rgba(255,255,255,0.08);
+      --blue: #0a84ff;
+      --max: 960px;
+      --radius: 24px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      background: radial-gradient(circle at top, #1d1d22 0%, var(--bg) 42%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap {
+      width: min(calc(100% - 40px), var(--max));
+      margin: 0 auto;
+    }
+    .hero {
+      padding: 72px 0 56px;
+    }
+    .eyebrow {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.02em;
+    }
+    h1 {
+      margin: 20px 0 12px;
+      font-size: clamp(40px, 8vw, 72px);
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+    }
+    .lead {
+      max-width: 720px;
+      margin: 0;
+      font-size: clamp(17px, 2.2vw, 21px);
+      color: #dddddf;
+    }
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 600;
+    }
+    .btn.primary {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+    }
+    .grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      margin: 32px 0 0;
+    }
+    .card {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      backdrop-filter: blur(16px);
+    }
+    .card h2, .card h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .section {
+      padding: 28px 0 20px;
+    }
+    .section h2 {
+      margin: 0 0 10px;
+      font-size: 28px;
+      letter-spacing: -0.03em;
+    }
+    .section p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 760px;
+    }
+    .faq {
+      display: grid;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    details {
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--surface);
+    }
+    summary {
+      cursor: pointer;
+      font-weight: 600;
+      list-style: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    details p {
+      margin: 10px 0 0;
+      color: var(--muted);
+    }
+    footer {
+      padding: 32px 0 56px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <span class="eyebrow">By Brezel</span>
+      <h1>Sub Camera</h1>
+      <p class="lead">Sub Camera는 사진을 촬영하고, 앱 내부 보관함에 로컬 저장하고, 폴더와 메모, 마크업으로 정리할 수 있도록 설계된 카메라 앱입니다.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="/subcamera/privacy/">개인정보처리방침 보기</a>
+        <a class="btn" href="/subcamera/support/">지원 및 문의</a>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>로컬 저장 중심</h3>
+          <p>사진과 메모는 기본적으로 사용자의 기기 내부 앱 저장소에 보관됩니다.</p>
+        </div>
+        <div class="card">
+          <h3>정리와 기록</h3>
+          <p>폴더, 메모, 마크업 기능을 통해 사진을 목적에 맞게 정리할 수 있습니다.</p>
+        </div>
+        <div class="card">
+          <h3>선택적 권한 사용</h3>
+          <p>위치 정보, 사진 가져오기, 문의 메일 전송은 사용자가 직접 허용하거나 실행할 때만 작동합니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>운영 정보</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>운영 주체</h3>
+          <p>전다인 (By Brezel)</p>
+        </div>
+        <div class="card">
+          <h3>사업장 주소</h3>
+          <p>서울시 중랑구 사가정로 54길 55</p>
+        </div>
+        <div class="card">
+          <h3>문의 이메일</h3>
+          <p><a href="mailto:hello@bybrezel.com">hello@bybrezel.com</a></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>자주 묻는 내용</h2>
+      <div class="faq">
+        <details>
+          <summary>사진은 어디에 저장되나요?</summary>
+          <p>기본적으로 사용자의 기기 내부 앱 저장소에 보관됩니다. 사용자가 직접 공유하거나 내보내지 않는 한 자동 업로드되지 않습니다.</p>
+        </details>
+        <details>
+          <summary>데이터 삭제는 어떻게 요청하나요?</summary>
+          <p>앱 내부 데이터 삭제 문의는 <a href="mailto:hello@bybrezel.com">hello@bybrezel.com</a>으로 요청할 수 있습니다. 요청 시 가능한 범위에서 확인 및 안내를 제공합니다.</p>
+        </details>
+        <details>
+          <summary>위치 정보는 언제 저장되나요?</summary>
+          <p>사용자가 위치 권한을 허용한 경우에만 촬영 시점의 위치 정보가 사진 정보에 함께 기록될 수 있습니다.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <div class="footer-links">
+      <a href="/subcamera/privacy/">개인정보처리방침</a>
+      <a href="/subcamera/support/">지원</a>
+      <a href="mailto:hello@bybrezel.com">문의하기</a>
+    </div>
+    <div>© 2026 By Brezel. All rights reserved.</div>
+  </footer>
+</body>
+</html>
