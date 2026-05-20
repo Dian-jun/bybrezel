@@ -1,224 +1,164 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sub Camera</title>
-  <meta name="description" content="Sub Camera는 사진을 로컬에 저장하고 폴더, 메모, 마크업으로 정리할 수 있는 카메라 앱입니다.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sub Camera Terms</title>
   <style>
     :root {
-      --bg: #0b0b0c;
-      --surface: #161618;
-      --surface-2: #202024;
+      --bg: #0b0b0d;
+      --surface: #17171b;
       --text: #f5f5f7;
-      --muted: #a6a6ad;
-      --line: rgba(255,255,255,0.08);
+      --text-2: rgba(255,255,255,0.72);
       --blue: #0a84ff;
-      --max: 960px;
-      --radius: 24px;
+      --border: rgba(255,255,255,0.1);
+      --max: 860px;
     }
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-      background: radial-gradient(circle at top, #1d1d22 0%, var(--bg) 42%);
-      color: var(--text);
-      line-height: 1.6;
-    }
-    a { color: var(--blue); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .wrap {
-      width: min(calc(100% - 40px), var(--max));
-      margin: 0 auto;
-    }
-    .hero {
-      padding: 72px 0 56px;
-    }
-    .eyebrow {
-      display: inline-block;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-      color: var(--muted);
-      font-size: 13px;
-      letter-spacing: 0.02em;
-    }
-    h1 {
-      margin: 20px 0 12px;
-      font-size: clamp(40px, 8vw, 72px);
-      line-height: 0.98;
-      letter-spacing: -0.04em;
-    }
-    .lead {
-      max-width: 720px;
-      margin: 0;
-      font-size: clamp(17px, 2.2vw, 21px);
-      color: #dddddf;
-    }
-    .cta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 28px;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 48px;
-      padding: 0 18px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: var(--surface);
-      color: var(--text);
-      font-weight: 600;
-    }
-    .btn.primary {
-      background: var(--blue);
-      border-color: var(--blue);
-      color: #fff;
-    }
-    .grid {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      margin: 32px 0 0;
-    }
-    .card {
-      padding: 22px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-      backdrop-filter: blur(16px);
-    }
-    .card h2, .card h3 {
-      margin: 0 0 8px;
-      font-size: 18px;
-      letter-spacing: -0.02em;
-    }
-    .card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 15px;
-    }
-    .section {
-      padding: 28px 0 20px;
-    }
-    .section h2 {
-      margin: 0 0 10px;
-      font-size: 28px;
-      letter-spacing: -0.03em;
-    }
-    .section p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 16px;
-      max-width: 760px;
-    }
-    .faq {
-      display: grid;
-      gap: 12px;
-      margin-top: 20px;
-    }
-    details {
-      padding: 18px 20px;
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      background: var(--surface);
-    }
-    summary {
-      cursor: pointer;
-      font-weight: 600;
-      list-style: none;
-    }
-    summary::-webkit-details-marker { display: none; }
-    details p {
-      margin: 10px 0 0;
-      color: var(--muted);
-    }
-    footer {
-      padding: 32px 0 56px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 12px;
-    }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Apple SD Gothic Neo", sans-serif; }
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 32px 20px 80px; }
+    .hero, .section { border: 1px solid var(--border); border-radius: 24px; background: var(--surface); padding: 24px 26px; margin-bottom: 14px; }
+    h1 { margin: 0 0 8px; font-size: 36px; }
+    h2 { margin: 0 0 10px; font-size: 22px; }
+    p, li { color: var(--text-2); }
+    ul { margin: 8px 0 0 20px; padding: 0; }
+    .toolbar { display: flex; justify-content: space-between; gap: 12px; margin: 18px 0 22px; flex-wrap: wrap; }
+    .nav, .lang { display: inline-flex; gap: 8px; padding: 6px; border-radius: 999px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); }
+    .nav a, .lang button { border: 0; background: transparent; color: var(--text-2); text-decoration: none; padding: 10px 14px; border-radius: 999px; font: inherit; cursor: pointer; }
+    .nav a.active, .lang button.active { background: var(--blue); color: white; }
+    .lang-block { display: none; }
+    .lang-block.active { display: block; }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <section class="hero">
-      <span class="eyebrow">By Brezel</span>
-      <h1>Sub Camera</h1>
-      <p class="lead">Sub Camera는 사진을 촬영하고, 앱 내부 보관함에 로컬 저장하고, 폴더와 메모, 마크업으로 정리할 수 있도록 설계된 카메라 앱입니다.</p>
-      <div class="cta-row">
-        <a class="btn primary" href="/subcamera/privacy/">개인정보처리방침 보기</a>
-        <a class="btn" href="/subcamera/support/">지원 및 문의</a>
-      </div>
-      <div class="grid">
-        <div class="card">
-          <h3>로컬 저장 중심</h3>
-          <p>사진과 메모는 기본적으로 사용자의 기기 내부 앱 저장소에 보관됩니다.</p>
-        </div>
-        <div class="card">
-          <h3>정리와 기록</h3>
-          <p>폴더, 메모, 마크업 기능을 통해 사진을 목적에 맞게 정리할 수 있습니다.</p>
-        </div>
-        <div class="card">
-          <h3>선택적 권한 사용</h3>
-          <p>위치 정보, 사진 가져오기, 문의 메일 전송은 사용자가 직접 허용하거나 실행할 때만 작동합니다.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>운영 정보</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>운영 주체</h3>
-          <p>전다인 (By Brezel)</p>
-        </div>
-        <div class="card">
-          <h3>사업장 주소</h3>
-          <p>서울시 중랑구 사가정로 54길 55</p>
-        </div>
-        <div class="card">
-          <h3>문의 이메일</h3>
-          <p><a href="mailto:hello@bybrezel.com">hello@bybrezel.com</a></p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>자주 묻는 내용</h2>
-      <div class="faq">
-        <details>
-          <summary>사진은 어디에 저장되나요?</summary>
-          <p>기본적으로 사용자의 기기 내부 앱 저장소에 보관됩니다. 사용자가 직접 공유하거나 내보내지 않는 한 자동 업로드되지 않습니다.</p>
-        </details>
-        <details>
-          <summary>데이터 삭제는 어떻게 요청하나요?</summary>
-          <p>앱 내부 데이터 삭제 문의는 <a href="mailto:hello@bybrezel.com">hello@bybrezel.com</a>으로 요청할 수 있습니다. 요청 시 가능한 범위에서 확인 및 안내를 제공합니다.</p>
-        </details>
-        <details>
-          <summary>위치 정보는 언제 저장되나요?</summary>
-          <p>사용자가 위치 권한을 허용한 경우에만 촬영 시점의 위치 정보가 사진 정보에 함께 기록될 수 있습니다.</p>
-        </details>
-      </div>
-    </section>
-  </main>
-
-  <footer class="wrap">
-    <div class="footer-links">
-      <a href="/subcamera/privacy/">개인정보처리방침</a>
-      <a href="/subcamera/support/">지원</a>
-      <a href="mailto:hello@bybrezel.com">문의하기</a>
+  <div class="wrap">
+    <div class="hero">
+      <h1>Terms of Use</h1>
+      <p>Sub Camera terms page with Korean and English content on a single page.</p>
     </div>
-    <div>© 2026 By Brezel. All rights reserved</div>
-  </footer>
+    <div class="toolbar">
+      <div class="nav">
+        <a href="./privacy.html">Privacy</a>
+        <a href="./support.html">Support</a>
+        <a class="active" href="./terms.html">Terms</a>
+      </div>
+      <div class="lang">
+        <button class="active" data-lang="ko">한국어</button>
+        <button data-lang="en">English</button>
+      </div>
+    </div>
+
+    <div class="lang-block active" data-lang="ko">
+      <div class="section">
+        <h2>Sub Camera 이용 안내 및 서비스 약관</h2>
+        <p>최종 업데이트일: 2026-05-14</p>
+        <p>이 문서는 Sub Camera 앱의 기본 이용 안내 및 약관입니다.</p>
+      </div>
+      <div class="section">
+        <h2>1. 운영 주체</h2>
+        <ul>
+          <li>운영 주체: 전다인 (By Brezel)</li>
+          <li>사업장 주소: 서울시 중랑구 사가정로 54길 55</li>
+          <li>문의 이메일: hello@bybrezel.com</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h2>2. 서비스 개요</h2>
+        <p>Sub Camera는 사용자가 사진을 촬영, 정리, 메모, 마크업 및 관리할 수 있도록 돕는 모바일 애플리케이션입니다.</p>
+      </div>
+      <div class="section">
+        <h2>3. 이용자의 책임</h2>
+        <ul>
+          <li>관련 법령을 준수하여 앱을 사용해야 합니다.</li>
+          <li>타인의 권리를 침해하는 콘텐츠 저장 또는 전송을 해서는 안 됩니다.</li>
+          <li>불법 촬영, 무단 수집, 불법 공유를 해서는 안 됩니다.</li>
+          <li>앱의 정상적인 동작을 방해하는 행위를 해서는 안 됩니다.</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h2>4. 콘텐츠 및 데이터</h2>
+        <p>사용자가 저장하거나 관리하는 사진, 메모 및 기타 콘텐츠에 대한 책임은 원칙적으로 사용자에게 있습니다. 운영자는 사용자가 명시적으로 요청하지 않는 한 앱 내부 콘텐츠를 별도로 검토하거나 외부 전송하지 않습니다.</p>
+      </div>
+      <div class="section">
+        <h2>5. 기능 변경 및 중단</h2>
+        <p>운영자는 앱의 안정성, 보안 또는 정책상 필요에 따라 일부 기능을 수정, 제한 또는 중단할 수 있습니다.</p>
+      </div>
+      <div class="section">
+        <h2>6. 면책</h2>
+        <ul>
+          <li>기기 문제 또는 운영체제 환경으로 인한 오류</li>
+          <li>사용자의 실수, 삭제, 공유 또는 설정 변경으로 인한 손실</li>
+          <li>제3자 앱 또는 서비스와의 연동 과정에서 발생한 문제</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h2>7. 문의</h2>
+        <p>문의 이메일: hello@bybrezel.com</p>
+        <p>데이터 삭제 요청: hello@bybrezel.com</p>
+      </div>
+    </div>
+
+    <div class="lang-block" data-lang="en">
+      <div class="section">
+        <h2>Sub Camera Terms of Use</h2>
+        <p>Last updated: 2026-05-14</p>
+        <p>This document describes the basic terms and usage guidance for the Sub Camera app.</p>
+      </div>
+      <div class="section">
+        <h2>1. Operator</h2>
+        <ul>
+          <li>Operator: Da In Jeon (By Brezel)</li>
+          <li>Business address: 55, Sagajeong-ro 54-gil, Jungnang-gu, Seoul, Republic of Korea</li>
+          <li>Contact email: hello@bybrezel.com</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h2>2. Service Overview</h2>
+        <p>Sub Camera is a mobile application that helps users capture, organize, annotate, mark up, and manage photos.</p>
+      </div>
+      <div class="section">
+        <h2>3. User Responsibilities</h2>
+        <ul>
+          <li>Users must comply with applicable laws when using the app.</li>
+          <li>Users must not store or transmit content that infringes the rights of others.</li>
+          <li>Users must not engage in unlawful capture, collection, or sharing.</li>
+          <li>Users must not interfere with the normal operation of the app.</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h2>4. Content and Data</h2>
+        <p>Users are primarily responsible for photos, notes, and other content they store or manage in the app. Unless explicitly requested by the user, the operator does not separately review or externally transmit in-app content.</p>
+      </div>
+      <div class="section">
+        <h2>5. Feature Changes and Suspension</h2>
+        <p>The operator may modify, limit, or discontinue certain features where necessary for stability, security, or policy reasons.</p>
+      </div>
+      <div class="section">
+        <h2>6. Disclaimer</h2>
+        <ul>
+          <li>Errors caused by device issues or operating system environments</li>
+          <li>Loss caused by user mistakes, deletion, sharing, or settings changes</li>
+          <li>Issues arising from integration with third-party apps or services</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h2>7. Contact</h2>
+        <p>Support email: hello@bybrezel.com</p>
+        <p>Data deletion requests: hello@bybrezel.com</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    const buttons = Array.from(document.querySelectorAll('.lang button'));
+    const blocks = Array.from(document.querySelectorAll('.lang-block'));
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const lang = button.dataset.lang;
+        buttons.forEach((b) => b.classList.toggle('active', b === button));
+        blocks.forEach((block) => block.classList.toggle('active', block.dataset.lang === lang));
+        document.documentElement.lang = lang;
+      });
+    });
+  </script>
 </body>
 </html>
