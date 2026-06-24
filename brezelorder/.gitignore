@@ -1,0 +1,10 @@
+.DS_Store
+**/.DS_Store
+
+brezelorder/node_modules/
+brezelorder/.next/
+brezelorder/.env.local
+brezelorder/.vercel/
+brezelorder/dist/
+brezelorder/coverage/
+brezelorder/*.tsbuildinfo
