@@ -1,0 +1,83 @@
+GitHub 저장소(bybrezel) 루트에 복붙해야 하는 내용
+
+1) 저장소 루트에 새 파일 생성
+파일명:
+.gitignore
+
+2) 아래 내용을 그대로 복붙
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# environment files
+.env
+.env.*
+!.env.example
+
+# Next.js app inside brezelorder
+brezelorder/node_modules/
+brezelorder/.next/
+brezelorder/out/
+brezelorder/.vercel/
+brezelorder/dist/
+brezelorder/coverage/
+brezelorder/*.tsbuildinfo
+
+# logs
+brezelorder/npm-debug.log*
+brezelorder/yarn-debug.log*
+brezelorder/yarn-error.log*
+brezelorder/pnpm-debug.log*
+
+# editor / misc
+.vscode/
+.idea/
+*.log
+
+
+터미널에서 한 번 실행할 명령어
+
+주의:
+아래 명령은 bybrezel 저장소 루트에서 실행해야 함
+
+git rm -r --cached brezelorder/node_modules
+git rm -r --cached brezelorder/.next
+git rm -r --cached brezelorder/.vercel
+git rm -r --cached brezelorder/dist
+git rm -r --cached brezelorder/coverage
+git rm --cached brezelorder/.env.local
+git rm --cached brezelorder/tsconfig.tsbuildinfo
+git rm --cached .DS_Store
+git rm --cached brezelorder/.DS_Store
+git rm --cached brezelorder/app/.DS_Store
+
+그 다음 실행
+
+git add .gitignore
+git add brezelorder
+git commit -m "Clean git tracking and ignore local/build files"
+
+
+무엇을 커밋하면 안 되는지
+
+- brezelorder/node_modules/...
+- brezelorder/.next/...
+- .DS_Store
+- brezelorder/.env.local
+- brezelorder/tsconfig.tsbuildinfo
+
+
+무엇을 커밋해도 되는지
+
+- brezelorder/app/...
+- brezelorder/components/...
+- brezelorder/lib/...
+- brezelorder/public/...
+- brezelorder/supabase/...
+- brezelorder/package.json
+- brezelorder/package-lock.json
+- brezelorder/README.md
+- brezelorder/next.config.mjs
+- brezelorder/tailwind.config.ts
+- brezelorder/tsconfig.json
