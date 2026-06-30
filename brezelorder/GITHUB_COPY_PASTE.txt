@@ -68,7 +68,7 @@ git commit -m "Clean git tracking and ignore local/build files"
 - brezelorder/tsconfig.tsbuildinfo
 
 
-무엇을 커밋해도 되는지
+무엇을 커밋해도 되는지.
 
 - brezelorder/app/...
 - brezelorder/components/...
