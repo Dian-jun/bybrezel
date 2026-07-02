@@ -288,6 +288,12 @@ export function PosBoard({
 
     const interval = window.setInterval(refreshSnapshot, 10000);
 
+    if (!supabase) {
+      return () => {
+        window.clearInterval(interval);
+      };
+    }
+
     const channel = supabase
       .channel("pos-board")
       .on(
