@@ -394,6 +394,8 @@ export function StaffDashboard({
   }
 
   useEffect(() => {
+    if (!supabase) return;
+
     const ordersChannel = supabase
       .channel(`orders:${restaurantId}`)
       .on(

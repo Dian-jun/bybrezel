@@ -141,6 +141,8 @@ export function KitchenBoard({
   }
 
   useEffect(() => {
+    if (!supabase) return;
+
     const ordersChannel = supabase
       .channel(`kitchen-orders:${restaurantId}`)
       .on(
