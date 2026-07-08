@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Check, ChevronRight, Mail, MessageSquareText, ShieldCheck, Store, Users } from "lucide-react";
+import { ArrowRight, Banknote, Check, ChevronRight, Clock3, Headset, LayoutDashboard, Mail, MessageSquareText, QrCode, ShieldCheck, Sparkles, Store, TrendingUp, Users } from "lucide-react";
 
 import { startPricingCheckoutAction, submitPricingInquiryAction } from "@/app/actions";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -46,23 +46,52 @@ export default function PricingPage({
 
   const content = isKo
     ? {
-        title: "가격은 단순하게, 가치는 운영에서 느껴지게.",
+        title: "인건비 부담을 줄이는 QR 테이블 오더",
         eyebrow: "요금 안내",
         description:
-          "Brezel Order는 매장 규모가 바로 이해되도록 테이블 수 기준으로 요금을 설계했습니다. 작은 매장은 가볍게 시작하고, 좌석 운영이 커질수록 자연스럽게 확장할 수 있습니다.",
+          "손님은 QR 코드로 직접 주문하고, 직원은 서비스에 집중하세요. 브레젤 오더는 레스토랑 운영을 더 효율적으로 만드는 QR 테이블 오더입니다.",
         back: "홈으로 돌아가기",
-        cta: "7일 무료 시작",
-        badge: "7일 무료 체험 · 월 단위 결제 · 초기 메뉴 등록 지원",
-        salesTitle: "왜 테이블 수 기준 가격이 더 설득력 있을까요?",
-        salesPoints: [
-          "점주는 지금 운영 중인 테이블 수만으로 바로 자기 플랜을 이해할 수 있습니다.",
-          "테이블 수는 매장 규모와 회전량을 설명해 주기 때문에 현장 설명이 훨씬 쉽습니다.",
-          "직원 수가 자주 바뀌는 매장도 과금 구조를 안정적으로 예측할 수 있습니다."
+        cta: "무료 체험 시작하기",
+        badge: "첫 100개 레스토랑 한정 · 평생 €59 보장 · 2주 무료 체험",
+        foundingEyebrow: "🎉 Founding Restaurant",
+        foundingTitle: "독일 첫 100개 레스토랑만 제공되는 특별 혜택",
+        foundingBadge: "첫 100개 한정",
+        foundingPrice: "€59",
+        foundingSuffix: "/ 월",
+        foundingOriginalPrice: "€89 정상가",
+        foundingGuarantee: "평생 €59 보장",
+        foundingBenefits: [
+          { icon: Sparkles, label: "2주 무료 체험" },
+          { icon: ShieldCheck, label: "평생 €59 유지" },
+          { icon: LayoutDashboard, label: "메뉴 등록 무료" },
+          { icon: QrCode, label: "QR 테이블 사인 무료 제작" },
+          { icon: Headset, label: "우선 고객 지원" }
         ],
-        plansTitle: "매장 규모에 맞는 플랜",
-        plansBody: "소형 매장부터 다인 좌석 운영 매장까지, 실제 홀 규모에 맞춰 바로 선택할 수 있게 구성했습니다.",
-        compareTitle: "무엇이 포함되는지 한눈에 비교",
-        compareBody: "현장에서 자주 물어보는 기준만 남겨 비교표를 간결하게 정리했습니다.",
+        salesTitle: "왜 지금 가입해야 하나?",
+        salesPoints: [
+          {
+            icon: Banknote,
+            title: "€59 = 직원 약 3~4시간 인건비",
+            body: "한 달에 주문 응대 시간만 4시간 줄여도 이용료를 회수할 수 있습니다."
+          },
+          {
+            icon: Clock3,
+            title: "주문 응대 시간 감소",
+            body: "손님이 직접 주문하니 주문 받는 동선과 대기 시간이 동시에 줄어듭니다."
+          },
+          {
+            icon: Store,
+            title: "테이블 회전율 향상",
+            body: "피크 타임에도 주문 병목이 줄어 더 빠르게 다음 손님을 받을 수 있습니다."
+          },
+          {
+            icon: TrendingUp,
+            title: "객단가 향상",
+            body: "메뉴를 천천히 보고 추가 주문까지 이어져 자연스럽게 평균 주문 금액이 올라갑니다."
+          }
+        ],
+        compareTitle: "Founding Restaurant vs 일반 요금",
+        compareBody: "초기 혜택과 정가 플랜의 차이를 한눈에 보여줍니다.",
         inquiryTitle: "직접 이야기하고 시작하고 싶다면",
         inquiryBody: "초기 세팅, 메뉴 등록, 운영 방식까지 함께 맞추고 싶다면 문의 폼으로 남겨주세요.",
         setupTitle: "10분 설치 가이드",
@@ -83,8 +112,8 @@ export default function PricingPage({
         tableCount: "예상 테이블 수",
         message: "메시지",
         submitInquiry: "문의 보내기",
-        starterCheckout: "Starter 바로 시작",
-        teamCheckout: "Team 바로 시작",
+        starterCheckout: "무료 체험 시작하기",
+        teamCheckout: "무료 체험 시작하기",
         contactSales: "상담 문의",
         successInquiry: "문의가 접수되었습니다. 곧 연락드릴게요.",
         errorInquiry: "문의 저장 중 문제가 생겼습니다. 다시 시도해 주세요.",
@@ -95,46 +124,46 @@ export default function PricingPage({
         checkoutError: "체크아웃 세션 생성에 실패했습니다. 문의 폼으로 먼저 받아드릴 수 있습니다.",
         plans: [
           {
+            key: "founding",
+            name: "Founding Restaurant",
+            price: "€59",
+            suffix: "/ 월",
+            label: "첫 100개 레스토랑 한정",
+            description: "가장 먼저 시작하는 레스토랑을 위한 런치 혜택 플랜입니다.",
+            features: [
+              "평생 €59 유지",
+              "2주 무료 체험",
+              "메뉴 등록 무료",
+              "QR 테이블 사인 무료 제작",
+              "우선 고객 지원",
+              "QR 주문 / 다국어 / 분석 기능 포함"
+            ],
+            featured: true
+          },
+          {
             key: "starter",
             name: "Starter",
-            price: "€29",
+            price: "€89",
             suffix: "/ 월",
-            label: "최대 10개 테이블",
-            description: "카페, 소형 레스토랑, 점주 중심 운영 매장에 적합합니다.",
+            label: "일반 시작 요금",
+            description: "런치 혜택 종료 후 적용되는 기본 요금입니다.",
             features: [
               "QR 주문",
               "직원 호출",
-              "무제한 테이블",
-              "메뉴/가격/품절 관리",
-              "QR 코드 생성",
-              "이메일 영수증"
+              "무제한 주문",
+              "다국어",
+              "분석 기능",
+              "별도 온보딩"
             ]
           },
           {
             key: "team",
             name: "Growth",
-            price: "€49",
+            price: "맞춤",
             suffix: "/ 월",
-            label: "최대 25개 테이블",
-            description: "여러 직원이 함께 홀을 운영하는 중형 매장에 적합합니다.",
+            label: "확장/복수 매장",
+            description: "다수 매장, 큰 홀, 커스텀 운영 구조가 필요한 경우 상담 후 제안합니다.",
             features: [
-              "Starter의 모든 기능",
-              "실시간 직원 대시보드",
-              "직원별 테이블 담당 배정",
-              "완료 처리 담당 기록",
-              "통계 대시보드",
-              "우선 지원"
-            ],
-            featured: true
-          },
-          {
-            key: "custom",
-            name: "Scale",
-            price: "맞춤 제안",
-            label: "26개 테이블 이상",
-            description: "대형 홀, 복수 구역 운영, 멀티 매장에 맞는 제안입니다.",
-            features: [
-              "확장형 테이블 구조",
               "멀티 매장 대응",
               "도입 지원",
               "추가 운영 기능 협의"
@@ -142,38 +171,71 @@ export default function PricingPage({
           }
         ],
         comparisonRows: [
-          ["테이블 수", "최대 10개", "최대 25개", "26개 이상"],
-          ["QR 주문 / 직원 호출", "포함", "포함", "포함"],
-          ["실시간 직원 대시보드", "-", "포함", "포함"],
-          ["직원별 테이블 배정", "-", "포함", "포함"],
-          ["통계 대시보드", "-", "포함", "포함"],
-          ["온보딩 지원", "기본", "우선", "맞춤"],
-          ["7일 무료 체험", "포함", "포함", "상담 후 제공"]
+          ["월 요금", "€59", "€89"],
+          ["평생 가격 보장", "✅", "❌"],
+          ["2주 무료 체험", "✅", "❌"],
+          ["메뉴 등록", "무료", "별도"],
+          ["QR 사인 제작", "무료", "별도"],
+          ["QR 메뉴", "✅", "✅"],
+          ["QR 주문", "✅", "✅"],
+          ["무제한 주문", "✅", "✅"],
+          ["다국어", "✅", "✅"],
+          ["분석 기능", "✅", "✅"]
         ],
         faq: [
-          ["왜 테이블 수 기준인가요?", "매장 입장에서는 테이블 수가 가장 직관적인 운영 단위이기 때문입니다. 좌석 규모와 서비스 복잡도를 빠르게 설명할 수 있고, 매달 비용도 예측하기 쉽습니다."],
-          ["29유로 / 49유로가 설득력 있나요?", "네. 테이블 주문 한두 번의 응대 시간만 줄어도 한 달 기준으로 충분히 설명 가능한 수준이고, 소형 매장도 부담 없이 시작할 수 있는 가격대입니다."],
-          ["웹사이트나 예약 기능도 같이 넣어야 할까요?", "지금 단계에서는 코어 상품과 분리하는 편이 좋습니다. 웹사이트는 향후 업셀 옵션으로 적합하지만, 예약은 제품 범위를 크게 넓히므로 별도 모듈로 다루는 편이 더 안전합니다."]
+          ["Founding Restaurant는 왜 더 저렴한가요?", "초기 100개 레스토랑과 함께 제품을 빠르게 다듬기 위한 런치 프로그램이기 때문입니다."],
+          ["가격은 정말 평생 유지되나요?", "네. Founding Restaurant로 시작한 매장은 해지 전까지 월 €59가 그대로 유지됩니다."],
+          ["2주 무료 체험 후에는 어떻게 되나요?", "무료 체험 후 계속 사용을 원할 때만 Founding Restaurant 월 요금이 적용됩니다."],
+          ["언제든 해지할 수 있나요?", "네. 장기 약정 없이 언제든 중단할 수 있습니다."]
         ]
       }
     : {
-        title: "Einfach im Pricing. Spürbar im Betrieb.",
+        title: "QR-Tischbestellung, die Personalkosten spürbar entlastet",
         eyebrow: "Preise",
         description:
-          "Brezel Order wird nach Tischanzahl bepreist, damit Inhaber die Preislogik sofort verstehen. Kleine Betriebe starten leicht, größere Gasträume skalieren ohne komplizierte Rechenlogik.",
+          "Gäste bestellen per QR-Code, Ihr Team konzentriert sich auf Service. Brezel Order macht den Restaurantbetrieb einfacher, schneller und profitabler.",
         back: "Zurück zur Startseite",
-        cta: "7 Tage gratis testen",
-        badge: "7 Tage kostenlos · monatlich kündbar · Menüeinrichtung zum Start",
-        salesTitle: "Warum Tischanzahl als Preisanker überzeugender ist",
-        salesPoints: [
-          "Inhaber verstehen sofort, welcher Plan zu ihrem Gastraum passt.",
-          "Die Preislogik bleibt stabil, auch wenn sich Schichten oder Mitarbeiter wechseln.",
-          "Tischanzahl ist im Verkaufsgespräch deutlich leichter zu erklären als Logins oder Rollen."
+        cta: "Kostenlose Testphase starten",
+        badge: "Nur für die ersten 100 Restaurants · Dauerhaft €59 · 2 Wochen kostenlos testen",
+        foundingEyebrow: "🎉 Founding Restaurant",
+        foundingTitle: "Sonderkonditionen nur für die ersten 100 Restaurants in Deutschland",
+        foundingBadge: "Nur 100 Restaurants",
+        foundingPrice: "€59",
+        foundingSuffix: "/ Monat",
+        foundingOriginalPrice: "€89 regulär",
+        foundingGuarantee: "Dauerhaft €59 gesichert",
+        foundingBenefits: [
+          { icon: Sparkles, label: "2 Wochen kostenlos testen" },
+          { icon: ShieldCheck, label: "Dauerhaft €59 behalten" },
+          { icon: LayoutDashboard, label: "Menüeinrichtung kostenlos" },
+          { icon: QrCode, label: "QR-Tischschilder kostenlos" },
+          { icon: Headset, label: "Priorisierter Support" }
         ],
-        plansTitle: "Pläne nach Teamgröße",
-        plansBody: "Die Staffelung orientiert sich an der realen Fläche im Betrieb: klein starten, bei mehr Sitzplätzen sauber erweitern.",
-        compareTitle: "Leistungsvergleich auf einen Blick",
-        compareBody: "Nur die Punkte, die im Gespräch mit Inhabern wirklich entscheidend sind.",
+        salesTitle: "Warum sich ein früher Start lohnt",
+        salesPoints: [
+          {
+            icon: Banknote,
+            title: "€59 entsprechen nur etwa 3 bis 4 Stunden Lohnkosten",
+            body: "Wenn Sie im Monat nur wenige Stunden Bestellaufwand sparen, ist die Gebühr bereits wieder eingespielt."
+          },
+          {
+            icon: Clock3,
+            title: "Weniger Zeit für Bestellannahme",
+            body: "Weniger Laufwege und weniger Wartezeit, weil Gäste selbst bestellen können."
+          },
+          {
+            icon: Store,
+            title: "Bessere Tischrotation",
+            body: "Gerade zu Stoßzeiten werden Bestellungen schneller ausgelöst und Tische zügiger wieder frei."
+          },
+          {
+            icon: TrendingUp,
+            title: "Höherer Bon pro Tisch",
+            body: "Wer in Ruhe durchs Menü geht, bestellt häufiger noch ein Getränk oder eine weitere Runde dazu."
+          }
+        ],
+        compareTitle: "Founding Restaurant vs. regulärer Tarif",
+        compareBody: "Die wichtigsten Unterschiede für einen schnellen Kaufentscheid.",
         inquiryTitle: "Lieber erst persönlich besprechen?",
         inquiryBody: "Wenn Sie Start, Menüpflege oder Team-Setup gemeinsam abstimmen möchten, schicken Sie uns kurz Ihre Daten.",
         setupTitle: "10-Minuten-Setup",
@@ -194,8 +256,8 @@ export default function PricingPage({
         tableCount: "Geplante Anzahl Tische",
         message: "Nachricht",
         submitInquiry: "Anfrage senden",
-        starterCheckout: "Starter direkt starten",
-        teamCheckout: "Team direkt starten",
+        starterCheckout: "Kostenlose Testphase starten",
+        teamCheckout: "Kostenlose Testphase starten",
         contactSales: "Beratung anfragen",
         successInquiry: "Ihre Anfrage wurde gespeichert. Wir melden uns zeitnah.",
         errorInquiry: "Die Anfrage konnte nicht gespeichert werden. Bitte erneut versuchen.",
@@ -206,46 +268,46 @@ export default function PricingPage({
         checkoutError: "Die Checkout-Session konnte nicht erstellt werden. Nutzen Sie bitte das Anfrageformular.",
         plans: [
           {
+            key: "founding",
+            name: "Founding Restaurant",
+            price: "€59",
+            suffix: "/ Monat",
+            label: "Nur für die ersten 100 Restaurants",
+            description: "Launch-Vorteile für frühe Restaurantpartner.",
+            features: [
+              "Dauerhaft €59",
+              "2 Wochen kostenlos testen",
+              "Menüeinrichtung kostenlos",
+              "QR-Tischschilder kostenlos",
+              "Priorisierter Support",
+              "QR-Bestellung / Mehrsprachigkeit / Analytics"
+            ],
+            featured: true
+          },
+          {
             key: "starter",
             name: "Starter",
-            price: "€29",
+            price: "€89",
             suffix: "/ Monat",
-            label: "Bis zu 10 Tische",
-            description: "Für Cafés, kleine Restaurants und inhabergeführte Betriebe.",
+            label: "Regulärer Einstieg",
+            description: "Standardpreis nach Ende des Launch-Angebots.",
             features: [
               "QR-Bestellung",
               "Serviceanfragen",
-              "Unbegrenzte Tische",
-              "Menü-, Preis- und Verfügbarkeitsverwaltung",
-              "QR-Code-Erstellung",
-              "E-Mail-Belege"
+              "Unbegrenzte Bestellungen",
+              "Mehrsprachig",
+              "Analytics",
+              "Onboarding separat"
             ]
           },
           {
             key: "team",
             name: "Growth",
-            price: "€49",
-            suffix: "/ Monat",
-            label: "Bis zu 25 Tische",
-            description: "Für mittlere Restaurants mit mehreren aktiv betreuten Tischbereichen.",
-            features: [
-              "Alles aus Starter",
-              "Live-Service-Dashboard",
-              "Tischzuweisung pro Mitarbeiter",
-              "Dokumentierte Abschlüsse und Serviceantworten",
-              "Analytics-Dashboard",
-              "Priorisierter Support"
-            ],
-            featured: true
-          },
-          {
-            key: "custom",
-            name: "Scale",
             price: "Individuell",
-            label: "Ab 26 Tischen",
-            description: "Für große Gasträume, mehrere Bereiche oder mehrere Standorte.",
+            suffix: "/ Monat",
+            label: "Mehr Fläche / mehrere Standorte",
+            description: "Für größere Gasträume oder mehrere Standorte.",
             features: [
-              "Erweiterbare Tischstruktur",
               "Mehrere Standorte",
               "Begleitete Einführung",
               "Abstimmung zusätzlicher Betriebsfunktionen"
@@ -253,18 +315,22 @@ export default function PricingPage({
           }
         ],
         comparisonRows: [
-          ["Tischanzahl", "Bis 10", "Bis 25", "Ab 26"],
-          ["QR-Bestellung / Serviceanfragen", "Enthalten", "Enthalten", "Enthalten"],
-          ["Live-Service-Dashboard", "-", "Enthalten", "Enthalten"],
-          ["Tischzuweisung pro Mitarbeiter", "-", "Enthalten", "Enthalten"],
-          ["Analytics-Dashboard", "-", "Enthalten", "Enthalten"],
-          ["Onboarding-Unterstützung", "Basis", "Priorisiert", "Individuell"],
-          ["7 Tage gratis", "Ja", "Ja", "Nach Absprache"]
+          ["Monatspreis", "€59", "€89"],
+          ["Dauerhafte Preisgarantie", "✅", "❌"],
+          ["2 Wochen kostenlos testen", "✅", "❌"],
+          ["Menüeinrichtung", "Kostenlos", "Separat"],
+          ["QR-Schilder", "Kostenlos", "Separat"],
+          ["QR-Menü", "✅", "✅"],
+          ["QR-Bestellung", "✅", "✅"],
+          ["Unbegrenzte Bestellungen", "✅", "✅"],
+          ["Mehrsprachig", "✅", "✅"],
+          ["Analytics", "✅", "✅"]
         ],
         faq: [
-          ["Warum nach Tischen abrechnen?", "Weil Tischanzahl die verständlichste Betriebsgröße ist. Inhaber sehen sofort, welcher Plan zu ihrer Fläche passt, und die Kosten bleiben planbar."],
-          ["Sind 29 Euro bzw. 49 Euro realistisch?", "Ja. Schon wenige eingesparte Servicewege und kürzere Wartezeiten pro Woche machen den monatlichen Preis nachvollziehbar."],
-          ["Sollten Website und Reservierungen direkt enthalten sein?", "Eher nicht im Kernprodukt. Eine Website ist ein gutes späteres Zusatzmodul. Reservierungen erweitern den Produktumfang deutlich und sollten nur ergänzt werden, wenn sie aktiv nachgefragt werden."]
+          ["Warum ist das Founding Restaurant Angebot günstiger?", "Weil wir die ersten 100 Restaurantpartner bewusst mit einem stärkeren Einstiegsvorteil gewinnen und eng begleiten möchten."],
+          ["Bleibt der Preis wirklich dauerhaft bei €59?", "Ja. Solange Sie Kunde bleiben, bleibt der Founding Restaurant Preis aktiv."],
+          ["Was passiert nach den 2 kostenlosen Wochen?", "Nur wenn Sie weitermachen möchten, startet der Founding Restaurant Tarif mit €59 pro Monat."],
+          ["Kann ich jederzeit kündigen?", "Ja. Es gibt keine langfristige Bindung."]
         ]
       };
 
@@ -329,6 +395,78 @@ export default function PricingPage({
             </div>
           ) : null}
 
+          <div className="mt-10 rounded-[2.4rem] border border-[rgba(242,107,77,0.18)] bg-[linear-gradient(145deg,#fff7f3,rgba(255,252,242,0.98),#fff1ea)] p-6 shadow-[0_28px_80px_rgba(242,107,77,0.12)] md:p-8">
+            <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+              <div className="max-w-xl">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="inline-flex rounded-full bg-[var(--brand-accent)] px-3 py-1 text-xs font-semibold text-white">
+                    {content.foundingBadge}
+                  </span>
+                  <span className="text-sm font-semibold text-[var(--brand-accent)]">
+                    {content.foundingEyebrow}
+                  </span>
+                </div>
+                <h2 className="mt-5 text-3xl font-semibold tracking-[-0.04em] text-[var(--brand-ink)] md:text-5xl">
+                  {content.foundingTitle}
+                </h2>
+                <div className="mt-8 flex items-end gap-3">
+                  <p className="text-6xl font-semibold tracking-[-0.06em] text-[var(--brand-ink)] md:text-7xl">
+                    {content.foundingPrice}
+                  </p>
+                  <p className="pb-3 text-lg text-[var(--brand-muted)]">{content.foundingSuffix}</p>
+                </div>
+                <p className="mt-3 text-lg text-[var(--brand-muted)] line-through">{content.foundingOriginalPrice}</p>
+                <p className="mt-5 text-xl font-semibold text-[var(--brand-accent)] md:text-2xl">
+                  {content.foundingGuarantee}
+                </p>
+                <div className="mt-8 space-y-3">
+                  {content.foundingBenefits.map((benefit) => {
+                    const Icon = benefit.icon;
+                    return (
+                      <div key={benefit.label} className="flex items-center gap-3 rounded-[1.3rem] bg-white/72 px-4 py-3">
+                        <div className="rounded-2xl bg-[rgba(242,107,77,0.12)] p-2 text-[var(--brand-accent)]">
+                          <Icon className="h-4 w-4" />
+                        </div>
+                        <span className="text-sm font-medium text-[var(--brand-ink)] md:text-base">{benefit.label}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="mt-8">
+                  <a
+                    href="#contact"
+                    className="inline-flex items-center justify-center rounded-full bg-[var(--brand-accent)] px-7 py-3 text-sm font-medium text-white transition hover:bg-[#de5c3e]"
+                  >
+                    {content.cta}
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </a>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="rounded-[2rem] border border-[rgba(64,61,57,0.08)] bg-[#252422] p-6 text-[#FFFCF2]">
+                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#F26B4D]">Founding Restaurant</p>
+                  <p className="mt-4 text-sm leading-7 text-[#CCC5B9]">
+                    {isKo
+                      ? "기능 비교보다 중요한 건, 지금 합류하면 평생 가격과 런치 혜택을 함께 가져갈 수 있다는 점입니다."
+                      : "Wichtiger als ein Funktionsvergleich ist der frühe Einstiegsvorteil: dauerhafter Preis und Launch-Benefits in einem."}
+                  </p>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  {[
+                    isKo ? "평생 €59 유지" : "Dauerhaft €59",
+                    isKo ? "무료 메뉴 등록" : "Menüeinrichtung gratis",
+                    isKo ? "우선 고객 지원" : "Priorisierter Support"
+                  ].map((item) => (
+                    <div key={item} className="rounded-[1.6rem] border border-[rgba(64,61,57,0.12)] bg-[var(--brand-panel)] px-4 py-5">
+                      <p className="text-base font-semibold tracking-[-0.02em] text-[var(--brand-ink)]">{item}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="mt-12 grid gap-5 lg:grid-cols-3">
             {plans.map((plan) => (
               <article
@@ -350,7 +488,7 @@ export default function PricingPage({
                   </div>
                   {plan.featured ? (
                     <span className="rounded-full bg-[var(--brand-accent)] px-3 py-1 text-xs font-semibold text-white">
-                      Best Value
+                      {isKo ? "Launch Offer" : "Launch Offer"}
                     </span>
                   ) : null}
                 </div>
@@ -376,7 +514,7 @@ export default function PricingPage({
                   ))}
                 </div>
                 <div className="mt-8 space-y-3">
-                  {plan.key === "custom" ? (
+                  {plan.key === "team" ? (
                     <a
                       href="#contact"
                       className="inline-flex w-full items-center justify-center rounded-full bg-[var(--brand-ink)] px-6 py-3 text-sm font-medium text-white transition hover:bg-black"
@@ -386,7 +524,7 @@ export default function PricingPage({
                     </a>
                   ) : (
                     <form action={startPricingCheckoutAction}>
-                      <input type="hidden" name="plan" value={plan.key} />
+                      <input type="hidden" name="plan" value={plan.key === "founding" ? "starter" : plan.key} />
                       <Button className="w-full rounded-full bg-[var(--brand-accent)] px-6 text-white hover:bg-[#d75424]">
                         {plan.key === "starter" ? content.starterCheckout : content.teamCheckout}
                         <ArrowRight className="ml-2 h-4 w-4" />
@@ -413,15 +551,19 @@ export default function PricingPage({
               <h2 className="display-title text-3xl font-semibold md:text-5xl">
                 {content.salesTitle}
               </h2>
-              <div className="mt-6 space-y-4">
-                {content.salesPoints.map((point) => (
-                  <div key={point} className="flex items-start gap-3">
-                    <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-[var(--brand-lilac-soft)] text-[var(--brand-accent)]">
-                      <ShieldCheck className="h-4 w-4" />
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                {content.salesPoints.map((point) => {
+                  const Icon = point.icon;
+                  return (
+                    <div key={point.title} className="rounded-[1.8rem] border border-[rgba(64,61,57,0.12)] bg-[var(--brand-panel)] p-5">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[rgba(242,107,77,0.12)] text-[var(--brand-accent)]">
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <p className="mt-4 text-lg font-semibold tracking-[-0.02em] text-[var(--brand-ink)]">{point.title}</p>
+                      <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">{point.body}</p>
                     </div>
-                    <p className="text-sm leading-7 text-[var(--brand-muted)]">{point}</p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -433,16 +575,15 @@ export default function PricingPage({
                 {content.compareBody}
               </p>
               <div className="mt-6 overflow-hidden rounded-[1.6rem] border border-[rgba(64,61,57,0.08)]">
-                <div className="grid grid-cols-4 bg-[rgba(204,182,255,0.12)] text-sm font-semibold text-[var(--brand-ink)]">
-                  <div className="px-4 py-4" />
-                  <div className="px-4 py-4">{plans[0]?.name}</div>
-                  <div className="px-4 py-4">{plans[1]?.name}</div>
-                  <div className="px-4 py-4">{plans[2]?.name}</div>
+                <div className="grid grid-cols-[1.2fr_0.9fr_0.9fr] bg-[#252422] text-sm font-semibold text-[#FFFCF2]">
+                  <div className="px-4 py-4">{isKo ? "항목" : "Bereich"}</div>
+                  <div className="px-4 py-4">Founding Restaurant</div>
+                  <div className="px-4 py-4">{isKo ? "일반 요금" : "Regulär"}</div>
                 </div>
                 {content.comparisonRows.map((row, index) => (
                   <div
                     key={row[0]}
-                    className={`grid grid-cols-4 text-sm ${
+                    className={`grid grid-cols-[1.2fr_0.9fr_0.9fr] text-sm ${
                       index % 2 === 0 ? "bg-white/75" : "bg-[rgba(255,252,242,0.88)]"
                     }`}
                   >
