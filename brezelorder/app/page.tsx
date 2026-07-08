@@ -3,16 +3,20 @@ import Link from "next/link";
 import {
   ArrowRight,
   Banknote,
+  Check,
   Clock3,
   CreditCard,
+  Headset,
   LayoutDashboard,
   MessageSquareMore,
   QrCode,
   ScanLine,
   ShieldCheck,
   Smartphone,
+  Sparkles,
   Store,
   TabletSmartphone,
+  TrendingUp,
   Users
 } from "lucide-react";
 
@@ -276,76 +280,69 @@ export default function LandingPage() {
           "서빙 완료"
         ],
         pricingEyebrow: "요금 안내",
-        pricingTitle: "테이블 수에 맞게 시작하고, 매장 규모에 맞게 확장하세요.",
+        pricingTitle: "인건비 부담을 줄이는 QR 테이블 오더",
         pricingBody:
-          "점주가 가장 직관적으로 이해할 수 있도록 Brezel Order는 테이블 수 기준으로 요금을 설계했습니다. 작은 매장은 가볍게, 더 큰 홀은 자연스럽게 확장할 수 있습니다.",
-        pricingBadge: "월 단위 결제 · 7일 무료 체험 · 초기 메뉴 세팅 지원",
-        pricingSupportTitle: "도입은 가볍게, 첫 설정은 더 쉽게",
-        pricingSupportBody:
-          "첫 7일은 무료로 시작할 수 있고, 런치 초기에는 레스토랑 메뉴 등록을 직접 도와드립니다.",
-        pricingFootnote: "장기 계약 없음 · 추가 하드웨어 없음 · 기존 POS 그대로 유지",
-        pricingSetupTitle: "10분 설치 가이드",
-        pricingSetupBody: "점주가 준비물부터 테스트 주문까지 바로 따라할 수 있는 공개 온보딩 화면도 함께 제공합니다.",
-        pricingSetupCta: "설치 가이드 보기",
-        pricingPlans: [
+          "손님은 QR 코드로 직접 주문하고, 직원은 서비스에 집중하세요. 브레젤 오더는 레스토랑 운영을 더 효율적으로 만드는 QR 테이블 오더입니다.",
+        pricingBadge: "첫 100개 레스토랑 한정 · 평생 €59 보장 · 2주 무료 체험",
+        foundingEyebrow: "🎉 Founding Restaurant",
+        foundingTitle: "독일 첫 100개 레스토랑만 제공되는 특별 혜택",
+        foundingLimitedBadge: "첫 100개 한정",
+        foundingPrice: "€59",
+        foundingPriceSuffix: "/ 월",
+        foundingOriginalPrice: "€89 정상가",
+        foundingGuarantee: "평생 €59 보장",
+        foundingCta: "무료 체험 시작하기",
+        foundingBenefits: [
+          { icon: Sparkles, label: "2주 무료 체험" },
+          { icon: ShieldCheck, label: "평생 €59 유지" },
+          { icon: LayoutDashboard, label: "메뉴 등록 무료" },
+          { icon: QrCode, label: "QR 테이블 사인 무료 제작" },
+          { icon: Headset, label: "우선 고객 지원" }
+        ],
+        urgencyTitle: "왜 지금 가입해야 하나?",
+        urgencyCards: [
           {
-            name: "Starter",
-            price: "29",
-            priceSuffix: "/ 월",
-            staffCount: "최대 10개 테이블",
-            description: "카페, 소형 레스토랑, 점주 중심 운영 매장에 적합합니다.",
-            features: [
-              "QR 주문",
-              "직원 호출",
-              "메뉴/가격 수정",
-              "무제한 테이블",
-              "QR 코드 생성",
-              "이메일 영수증"
-            ],
-            cta: "Starter로 시작"
+            icon: Banknote,
+            title: "€59 = 직원 약 3~4시간 인건비",
+            body: "한 달에 주문 응대 시간만 4시간 줄여도 이용료를 회수할 수 있습니다."
           },
           {
-            name: "Growth",
-            price: "49",
-            priceSuffix: "/ 월",
-            staffCount: "최대 25개 테이블",
-            description: "홀 운영 분배와 호출 대응을 여러 직원이 함께 처리하는 중형 매장에 맞습니다.",
-            features: [
-              "Starter의 모든 기능",
-              "실시간 직원 대시보드",
-              "직원별 테이블 담당 배정",
-              "완료 처리 담당 기록",
-              "기본 통계 대시보드",
-              "우선 지원"
-            ],
-            cta: "Team으로 시작",
-            featured: true
+            icon: Clock3,
+            title: "주문 응대 시간 감소",
+            body: "손님이 직접 주문하니 주문 받는 동선과 대기 시간이 동시에 줄어듭니다."
           },
           {
-            name: "Scale",
-            priceText: "맞춤 상담",
-            staffCount: "26개 테이블 이상",
-            description: "여러 구역 운영이나 더 큰 홀 구조가 있다면 매장 환경에 맞게 제안드립니다.",
-            features: [
-              "추가 테이블 구조 확장",
-              "매장별 운영 구조 설계",
-              "온보딩 지원",
-              "멀티 매장 대응 옵션"
-            ],
-            cta: "맞춤 상담 요청"
+            icon: Store,
+            title: "테이블 회전율 향상",
+            body: "피크 타임에도 주문 병목이 줄어 더 빠르게 다음 손님을 받을 수 있습니다."
+          },
+          {
+            icon: TrendingUp,
+            title: "객단가 향상",
+            body: "메뉴를 천천히 보고 추가 주문까지 이어져 자연스럽게 평균 주문 금액이 올라갑니다."
           }
         ],
+        comparisonTitle: "Founding Restaurant vs 일반 요금",
+        comparisonRows: [
+          ["월 요금", "€59", "€89"],
+          ["평생 가격 보장", "✅", "❌"],
+          ["2주 무료 체험", "✅", "❌"],
+          ["메뉴 등록", "무료", "별도"],
+          ["QR 사인 제작", "무료", "별도"],
+          ["QR 메뉴", "✅", "✅"],
+          ["QR 주문", "✅", "✅"],
+          ["무제한 주문", "✅", "✅"],
+          ["다국어", "✅", "✅"],
+          ["분석 기능", "✅", "✅"]
+        ],
         faqEyebrow: "자주 묻는 질문",
-        faqTitle: "도입 전에 많이 묻는 질문.",
-        faqBody: "기존 운영을 바꾸지 않는다는 점이 가장 중요합니다.",
+        faqTitle: "Founding Restaurant 관련 FAQ",
+        faqBody: "가격 비교보다 중요한 건 왜 지금 시작해야 하는지입니다.",
         faqs: [
-          ["POS를 교체해야 하나요?", "아니요. Brezel Order는 기존 POS와 함께 작동합니다."],
-          ["새 카드 단말기가 필요한가요?", "아니요. 현재 결제 환경을 그대로 유지하면 됩니다."],
-          ["손님이 앱을 설치해야 하나요?", "아니요. 모든 기능은 브라우저에서 동작합니다."],
-          ["세팅에는 얼마나 걸리나요?", "보통 30분 정도면 시작할 수 있습니다."],
-          ["가격은 어떻게 정해지나요?", "가격은 테이블 수를 기준으로 정합니다. 점주는 현재 운영 중인 좌석 규모만으로 바로 플랜을 이해할 수 있고, 매장 확장 시에도 예측이 쉽습니다."],
-          ["무료 체험은 어떻게 제공되나요?", "첫 7일은 무료로 사용해본 뒤 계속 사용할지 결정할 수 있습니다."],
-          ["초기 세팅도 도와주나요?", "네. 런치 초기에는 메뉴 등록을 직접 도와드려 30분 안에 시작할 수 있도록 맞춰드립니다."]
+          ["Founding Restaurant는 왜 더 저렴한가요?", "초기 레스토랑 파트너 100곳과 함께 제품을 빠르게 다듬기 위한 런치 프로그램이기 때문입니다."],
+          ["가격은 정말 평생 유지되나요?", "네. Founding Restaurant로 시작한 매장은 해지 전까지 월 €59가 그대로 유지됩니다."],
+          ["2주 무료 체험 후에는 어떻게 되나요?", "무료 체험 후 계속 사용을 원할 때만 Founding Restaurant 월 요금이 적용됩니다."],
+          ["언제든 해지할 수 있나요?", "네. 장기 약정 없이 언제든 중단할 수 있습니다."]
         ],
         finalTitle: "레스토랑 운영 생산성을 한 단계 끌어올릴 준비가 되셨나요?",
         finalBody: "주문 흐름과 직원 협업을 더 정리된 방식으로. 기존 운영은 그대로 두고 바로 시작할 수 있습니다.",
@@ -461,77 +458,69 @@ export default function LandingPage() {
           "Speisen servieren"
         ],
         pricingEyebrow: "Preise",
-        pricingTitle: "Nach Tischanzahl starten. Mit dem Gastraum sauber mitwachsen.",
+        pricingTitle: "QR-Tischbestellung, die Personalkosten spürbar entlastet",
         pricingBody:
-          "Brezel Order wird nach Tischanzahl bepreist, damit Inhaber die Logik sofort verstehen. Kleine Betriebe starten leicht, größere Flächen erweitern planbar.",
-        pricingBadge: "Monatlich kündbar · 7 Tage kostenlos · Menüeinrichtung zum Start inklusive",
-        pricingSupportTitle: "Schneller Start ohne Projektstress",
-        pricingSupportBody:
-          "Die ersten 7 Tage sind kostenlos. In der frühen Launch-Phase übernehmen wir auf Wunsch auch die Ersteinrichtung Ihres Menüs.",
-        pricingFootnote: "Keine Einrichtungsgebühr · Kein POS-Wechsel · Keine Zusatzhardware",
-        pricingSetupTitle: "10-Minuten-Setup",
-        pricingSetupBody: "Eine klare Inhaber-Anleitung führt durch Vorbereitung, Menüpflege, QR-Druck und die erste Testbestellung.",
-        pricingSetupCta: "Setup-Anleitung öffnen",
-        pricingPlans: [
+          "Gäste bestellen direkt per QR-Code, Ihr Team konzentriert sich auf Service. Brezel Order macht den Restaurantbetrieb einfacher, schneller und profitabler.",
+        pricingBadge: "Nur für die ersten 100 Restaurants · Dauerhaft €59 · 2 Wochen kostenlos testen",
+        foundingEyebrow: "🎉 Founding Restaurant",
+        foundingTitle: "Sonderkonditionen nur für die ersten 100 Restaurants in Deutschland",
+        foundingLimitedBadge: "Nur 100 Restaurants",
+        foundingPrice: "€59",
+        foundingPriceSuffix: "/ Monat",
+        foundingOriginalPrice: "€89 regulär",
+        foundingGuarantee: "Dauerhaft €59 gesichert",
+        foundingCta: "Kostenlose Testphase starten",
+        foundingBenefits: [
+          { icon: Sparkles, label: "2 Wochen kostenlos testen" },
+          { icon: ShieldCheck, label: "Dauerhaft €59 behalten" },
+          { icon: LayoutDashboard, label: "Menüeinrichtung kostenlos" },
+          { icon: QrCode, label: "QR-Tischschilder kostenlos" },
+          { icon: Headset, label: "Priorisierter Support" }
+        ],
+        urgencyTitle: "Warum sich ein früher Start lohnt",
+        urgencyCards: [
           {
-            name: "Starter",
-            price: "29",
-            priceSuffix: "/ Monat",
-            staffCount: "Bis zu 10 Tische",
-            description: "Für Cafés, kleine Restaurants und inhabergeführte Betriebe.",
-            features: [
-              "QR-Bestellung",
-              "Serviceanfragen",
-              "Menü- und Preisverwaltung",
-              "Unbegrenzte Tische",
-              "QR-Code-Erstellung",
-              "E-Mail-Belege"
-            ],
-            cta: "Starter wählen"
+            icon: Banknote,
+            title: "€59 entsprechen nur etwa 3 bis 4 Stunden Lohnkosten",
+            body: "Wenn Sie im Monat nur wenige Stunden Bestellaufwand sparen, ist die Gebühr bereits wieder eingespielt."
           },
           {
-            name: "Growth",
-            price: "49",
-            priceSuffix: "/ Monat",
-            staffCount: "Bis zu 25 Tische",
-            description: "Für mittlere Restaurants mit mehreren aktiv betreuten Tischbereichen.",
-            features: [
-              "Alles aus Starter",
-              "Live-Service-Dashboard",
-              "Tischzuweisung pro Mitarbeiter",
-              "Abschluss- und Servicehistorie",
-              "Betriebsübersicht und Kennzahlen",
-              "Priorisierter Support"
-            ],
-            cta: "Team wählen",
-            featured: true
+            icon: Clock3,
+            title: "Weniger Zeit für Bestellannahme",
+            body: "Weniger Laufwege und weniger Wartezeit, weil Gäste selbst bestellen können."
           },
           {
-            name: "Scale",
-            priceText: "Individuell",
-            staffCount: "Ab 26 Tischen",
-            description: "Für größere Gasträume oder mehrere Standorte mit abgestimmtem Setup.",
-            features: [
-              "Erweiterbare Tischstruktur",
-              "Setup für mehrere Standorte",
-              "Begleitete Einführung",
-              "Optionen für komplexere Abläufe"
-            ],
-            cta: "Beratung anfragen"
+            icon: Store,
+            title: "Bessere Tischrotation",
+            body: "Gerade zu Stoßzeiten werden Bestellungen schneller ausgelöst und Tische zügiger wieder frei."
+          },
+          {
+            icon: TrendingUp,
+            title: "Höherer Bon pro Tisch",
+            body: "Wer in Ruhe durchs Menü geht, bestellt häufiger noch ein Getränk oder eine weitere Runde dazu."
           }
         ],
+        comparisonTitle: "Founding Restaurant vs. regulärer Tarif",
+        comparisonRows: [
+          ["Monatspreis", "€59", "€89"],
+          ["Dauerhafte Preisgarantie", "✅", "❌"],
+          ["2 Wochen kostenlos testen", "✅", "❌"],
+          ["Menüeinrichtung", "Kostenlos", "Separat"],
+          ["QR-Schilder", "Kostenlos", "Separat"],
+          ["QR-Menü", "✅", "✅"],
+          ["QR-Bestellung", "✅", "✅"],
+          ["Unbegrenzte Bestellungen", "✅", "✅"],
+          ["Mehrsprachig", "✅", "✅"],
+          ["Analytics", "✅", "✅"]
+        ],
         faqEyebrow: "FAQ",
-        faqTitle: "Fragen, die Inhaber vor dem Start stellen",
-        faqBody: "Das zentrale Versprechen ist einfach: weniger Warten, kein Austausch der Abläufe.",
+        faqTitle: "FAQ zum Founding Restaurant Angebot",
+        faqBody: "Hier zählt nicht nur der Preis, sondern der Vorteil, jetzt früh dabei zu sein.",
         faqs: [
-          ["Muss ich mein POS austauschen?", "Nein. Brezel Order läuft neben Ihrem bestehenden POS."],
-          ["Brauche ich ein neues Kartenlesegerät?", "Nein. Ihr aktuelles Zahlungssystem kann unverändert weiterlaufen."],
-          ["Müssen Gäste eine App installieren?", "Nein. Alles funktioniert direkt im Browser."],
-          ["Wie lange dauert die Einrichtung?", "Etwa 30 Minuten."],
-          ["Wie funktioniert die Preislogik?", "Abgerechnet wird nach Tischanzahl. Das ist für Inhaber sofort verständlich und bleibt auch bei wechselnden Schichten klar kalkulierbar."],
-          ["Gibt es eine kostenlose Testphase?", "Ja. Sie können Brezel Order 7 Tage kostenlos testen, bevor ein kostenpflichtiger Plan startet."],
-          ["Helfen Sie beim Start?", "Ja. Während der Launch-Phase unterstützen wir auf Wunsch auch direkt bei der Menüeinrichtung."],
-          ["Sind Website oder Reservierungen enthalten?", "Nicht im Kernprodukt. Beides ist eher ein optionales Zusatzmodul für später, damit Brezel Order im Alltag bewusst schlank bleibt."]
+          ["Warum ist das Founding Restaurant Angebot günstiger?", "Weil wir die ersten 100 Restaurantpartner bewusst mit einem stärkeren Einstiegsvorteil gewinnen und eng begleiten möchten."],
+          ["Bleibt der Preis wirklich dauerhaft bei €59?", "Ja. Solange Sie Kunde bleiben, bleibt der Founding Restaurant Preis aktiv."],
+          ["Was passiert nach den 2 kostenlosen Wochen?", "Nur wenn Sie weitermachen möchten, startet der reguläre Founding Restaurant Tarif mit €59 pro Monat."],
+          ["Kann ich jederzeit kündigen?", "Ja. Es gibt keine langfristige Bindung."]
         ],
         finalTitle: "Bereit, Produktivität und Organisation im Restaurant sichtbar zu verbessern?",
         finalBody: "Weniger Wartezeit für Gäste. Mehr Übersicht für das Team. Ohne den laufenden Betrieb umzubauen.",
@@ -893,106 +882,148 @@ export default function LandingPage() {
               {content.pricingBadge}
             </div>
           </Reveal>
-          <div className="mt-10 grid gap-5 lg:grid-cols-3">
-            {content.pricingPlans.map((plan, index) => (
-              <Reveal key={plan.name} delay={index * 90}>
-                <article
-                  className={`flex h-full flex-col rounded-[2.2rem] border p-6 md:p-7 ${
-                    plan.featured
-                      ? "border-[rgba(235,94,40,0.24)] bg-[linear-gradient(145deg,rgba(255,240,230,0.94),rgba(245,232,255,0.92))] shadow-[0_24px_60px_rgba(235,94,40,0.08)]"
-                      : "border-[rgba(64,61,57,0.12)] bg-[rgba(255,252,242,0.82)]"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--brand-accent)]">
-                        {plan.name}
-                      </p>
-                      <p className="mt-3 text-sm font-medium text-[var(--brand-muted)]">
-                        {plan.staffCount}
-                      </p>
-                    </div>
-                    {plan.featured ? (
-                      <span className="rounded-full bg-[var(--brand-accent)] px-3 py-1 text-xs font-semibold text-white">
-                        Best Value
-                      </span>
-                    ) : null}
+          <Reveal delay={110} className="mt-10">
+            <article className="overflow-hidden rounded-[2.4rem] border border-[rgba(235,94,40,0.18)] bg-[linear-gradient(145deg,#fff7f3,rgba(255,252,242,0.98),#fff1ea)] p-6 shadow-[0_28px_80px_rgba(242,107,77,0.12)] md:p-8">
+              <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+                <div className="max-w-xl">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="inline-flex rounded-full bg-[var(--brand-accent)] px-3 py-1 text-xs font-semibold text-white">
+                      {content.foundingLimitedBadge}
+                    </span>
+                    <span className="text-sm font-semibold text-[var(--brand-accent)]">
+                      {content.foundingEyebrow}
+                    </span>
                   </div>
-                  <div className="mt-6">
-                    {plan.price ? (
-                      <div className="flex items-end gap-2">
-                        <p className="text-5xl font-semibold tracking-[-0.05em] text-[var(--brand-ink)]">
-                          €{plan.price}
-                        </p>
-                        <p className="pb-2 text-sm text-[var(--brand-muted)]">{plan.priceSuffix}</p>
-                      </div>
-                    ) : (
-                      <p className="text-3xl font-semibold tracking-[-0.04em] text-[var(--brand-ink)]">
-                        {plan.priceText}
-                      </p>
-                    )}
+                  <h3 className="mt-5 text-3xl font-semibold tracking-[-0.04em] text-[var(--brand-ink)] md:text-5xl">
+                    {content.foundingTitle}
+                  </h3>
+                  <div className="mt-8 flex items-end gap-3">
+                    <p className="text-6xl font-semibold tracking-[-0.06em] text-[var(--brand-ink)] md:text-7xl">
+                      {content.foundingPrice}
+                    </p>
+                    <p className="pb-3 text-lg text-[var(--brand-muted)]">
+                      {content.foundingPriceSuffix}
+                    </p>
                   </div>
-                  <p className="mt-4 text-sm leading-6 text-[var(--brand-muted)]">
-                    {plan.description}
+                  <p className="mt-3 text-lg text-[var(--brand-muted)] line-through">
+                    {content.foundingOriginalPrice}
                   </p>
-                  <div className="mt-6 flex-1 space-y-3 border-t border-[rgba(64,61,57,0.1)] pt-6">
-                    {plan.features.map((feature) => (
-                      <div key={feature} className="flex items-start gap-3">
-                        <span className="mt-1 h-2.5 w-2.5 rounded-full bg-[var(--brand-accent)]" />
-                        <span className="text-sm leading-6 text-[var(--brand-ink)]">{feature}</span>
-                      </div>
-                    ))}
+                  <p className="mt-5 text-xl font-semibold text-[var(--brand-accent)] md:text-2xl">
+                    {content.foundingGuarantee}
+                  </p>
+                  <div className="mt-8 space-y-3">
+                    {content.foundingBenefits.map((benefit) => {
+                      const Icon = benefit.icon;
+                      return (
+                        <div key={benefit.label} className="flex items-center gap-3 rounded-[1.3rem] bg-white/72 px-4 py-3">
+                          <div className="rounded-2xl bg-[rgba(242,107,77,0.12)] p-2 text-[var(--brand-accent)]">
+                            <Icon className="h-4 w-4" />
+                          </div>
+                          <span className="text-sm font-medium text-[var(--brand-ink)] md:text-base">
+                            {benefit.label}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
                   <div className="mt-8">
                     <Link href="/pricing">
-                      <Button
-                        className={`w-full rounded-full px-6 ${
-                          plan.featured
-                            ? "bg-[var(--brand-accent)] text-white hover:bg-[#d75424]"
-                            : "bg-[var(--brand-ink)] text-white hover:bg-black"
-                        }`}
-                      >
-                        {plan.cta}
+                      <Button className="rounded-full bg-[var(--brand-accent)] px-7 text-white hover:bg-[#de5c3e]">
+                        {content.foundingCta}
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </Link>
                   </div>
-                </article>
-              </Reveal>
-            ))}
+                </div>
+
+                <div className="space-y-4">
+                  <div className="rounded-[2rem] border border-[rgba(64,61,57,0.08)] bg-[#252422] p-6 text-[#FFFCF2]">
+                    <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#F26B4D]">
+                      Founding Restaurant
+                    </p>
+                    <p className="mt-4 text-sm leading-7 text-[#CCC5B9]">
+                      {locale === "ko"
+                        ? "기능 비교보다 중요한 건, 지금 합류하면 평생 가격과 런치 혜택을 함께 가져갈 수 있다는 점입니다."
+                        : "Wichtiger als ein Funktionsvergleich ist der frühe Einstiegsvorteil: dauerhafter Preis und Launch-Benefits in einem."}
+                    </p>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-3">
+                    {[
+                      locale === "ko" ? "평생 €59 유지" : "Dauerhaft €59",
+                      locale === "ko" ? "무료 메뉴 등록" : "Menüeinrichtung gratis",
+                      locale === "ko" ? "우선 고객 지원" : "Priorisierter Support"
+                    ].map((item) => (
+                      <div key={item} className="rounded-[1.6rem] border border-[rgba(64,61,57,0.12)] bg-[var(--brand-panel)] px-4 py-5">
+                        <p className="text-base font-semibold tracking-[-0.02em] text-[var(--brand-ink)]">
+                          {item}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </article>
+          </Reveal>
+
+          <Reveal delay={160} className="mt-12">
+            <div className="flex items-center gap-3">
+              <div className="rounded-2xl bg-[rgba(242,107,77,0.12)] p-2 text-[var(--brand-accent)]">
+                <Banknote className="h-5 w-5" />
+              </div>
+              <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[var(--brand-ink)] md:text-3xl">
+                {content.urgencyTitle}
+              </h3>
+            </div>
+          </Reveal>
+
+          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {content.urgencyCards.map((card, index) => {
+              const Icon = card.icon;
+              return (
+                <Reveal key={`${card.title}-detail`} delay={index * 70}>
+                  <article className="h-full rounded-[1.9rem] border border-[rgba(64,61,57,0.12)] bg-[var(--brand-panel)] p-5">
+                    <div className="rounded-2xl bg-[rgba(242,107,77,0.12)] p-2 text-[var(--brand-accent)] w-fit">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <p className="mt-4 text-lg font-semibold tracking-[-0.03em] text-[var(--brand-ink)]">
+                      {card.title}
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">
+                      {card.body}
+                    </p>
+                  </article>
+                </Reveal>
+              );
+            })}
           </div>
-          <Reveal delay={120} className="mt-8 rounded-[2rem] border border-[rgba(64,61,57,0.12)] bg-[var(--brand-panel)] p-6 md:p-7">
-            <div className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr]">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--brand-accent)]">
-                  {content.pricingSupportTitle}
-                </p>
-                <p className="mt-4 max-w-md text-base leading-7 text-[var(--brand-muted)]">
-                  {content.pricingSupportBody}
-                </p>
-                <Link
-                  href="/setup"
-                  className="mt-4 inline-flex items-center text-sm font-medium text-[var(--brand-accent)] hover:text-[#d75424]"
+
+          <Reveal delay={220} className="mt-12 rounded-[2.2rem] border border-[rgba(64,61,57,0.12)] bg-[var(--brand-panel)] p-6 md:p-8">
+            <div className="flex items-center gap-3">
+              <div className="rounded-2xl bg-[rgba(242,107,77,0.12)] p-2 text-[var(--brand-accent)]">
+                <Check className="h-5 w-5" />
+              </div>
+              <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[var(--brand-ink)] md:text-3xl">
+                {content.comparisonTitle}
+              </h3>
+            </div>
+            <div className="mt-6 overflow-hidden rounded-[1.6rem] border border-[rgba(64,61,57,0.08)]">
+              <div className="grid grid-cols-[1.2fr_0.9fr_0.9fr] bg-[#252422] px-4 py-4 text-sm font-semibold text-[#FFFCF2] md:px-6">
+                <div>{locale === "ko" ? "항목" : "Bereich"}</div>
+                <div>Founding Restaurant</div>
+                <div>{locale === "ko" ? "일반 요금" : "Regulär"}</div>
+              </div>
+              {content.comparisonRows.map((row, index) => (
+                <div
+                  key={row[0]}
+                  className={`grid grid-cols-[1.2fr_0.9fr_0.9fr] px-4 py-4 text-sm md:px-6 md:text-base ${
+                    index % 2 === 0 ? "bg-white/72" : "bg-[rgba(255,252,242,0.82)]"
+                  }`}
                 >
-                  {content.pricingSetupCta}
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </div>
-              <div className="space-y-4">
-                <div className="rounded-[1.6rem] bg-white/70 px-5 py-5">
-                  <p className="text-sm leading-7 text-[var(--brand-ink)]">
-                    {content.pricingFootnote}
-                  </p>
+                  <div className="font-medium text-[var(--brand-ink)]">{row[0]}</div>
+                  <div className="font-semibold text-[var(--brand-accent)]">{row[1]}</div>
+                  <div className="text-[var(--brand-muted)]">{row[2]}</div>
                 </div>
-                <div className="rounded-[1.6rem] border border-[rgba(64,61,57,0.08)] bg-white/50 px-5 py-5">
-                  <p className="text-sm font-semibold text-[var(--brand-ink)]">
-                    {content.pricingSetupTitle}
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">
-                    {content.pricingSetupBody}
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
           </Reveal>
         </div>

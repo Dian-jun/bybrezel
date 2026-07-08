@@ -13,6 +13,62 @@ type TableRecord = {
   code: string;
 };
 
+async function buildTableQrCard(url: string, tableLabel: string, size: number) {
+  const qrDataUrl = await QRCode.toDataURL(url, {
+    errorCorrectionLevel: "H",
+    margin: 1,
+    width: size,
+    color: {
+      dark: "#111827",
+      light: "#FFFFFF"
+    }
+  });
+
+  const image = new Image();
+  image.src = qrDataUrl;
+  await image.decode();
+
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+
+  const context = canvas.getContext("2d");
+  if (!context) return qrDataUrl;
+
+  context.fillStyle = "#FFFFFF";
+  context.fillRect(0, 0, size, size);
+  context.drawImage(image, 0, 0, size, size);
+
+  const badgeSize = Math.round(size * 0.2);
+  const badgeX = (size - badgeSize) / 2;
+  const badgeY = (size - badgeSize) / 2;
+  const radius = Math.round(badgeSize * 0.18);
+
+  context.fillStyle = "#FFFFFF";
+  context.beginPath();
+  context.roundRect(
+    badgeX - size * 0.018,
+    badgeY - size * 0.018,
+    badgeSize + size * 0.036,
+    badgeSize + size * 0.036,
+    radius
+  );
+  context.fill();
+
+  context.fillStyle = "#111111";
+  context.beginPath();
+  context.roundRect(badgeX, badgeY, badgeSize, badgeSize, radius);
+  context.fill();
+
+  context.fillStyle = "#FFFFFF";
+  context.font = `700 ${Math.round(badgeSize * 0.48)}px Inter, Arial, sans-serif`;
+  context.textAlign = "center";
+  context.textBaseline = "middle";
+  context.fillText(tableLabel, size / 2, size / 2 + 1);
+
+  return canvas.toDataURL("image/png");
+}
+
 export function QrManager({
   slug,
   tables,
@@ -41,14 +97,7 @@ export function QrManager({
       const pairs = await Promise.all(
         qrEntries.map(async (entry) => [
           entry.id,
-          await QRCode.toDataURL(entry.url, {
-            margin: 1,
-            width: 512,
-            color: {
-              dark: "#111827",
-              light: "#FFFFFF"
-            }
-          })
+          await buildTableQrCard(entry.url, entry.name, 512)
         ])
       );
 
@@ -65,14 +114,7 @@ export function QrManager({
   }, [qrEntries]);
 
   async function downloadSingle(url: string, tableName: string) {
-    const dataUrl = await QRCode.toDataURL(url, {
-      margin: 1,
-      width: 720,
-      color: {
-        dark: "#111827",
-        light: "#FFFFFF"
-      }
-    });
+    const dataUrl = await buildTableQrCard(url, tableName, 720);
 
     const link = document.createElement("a");
     link.href = dataUrl;
@@ -92,10 +134,7 @@ export function QrManager({
 
     for (let i = 0; i < qrEntries.length; i += 1) {
       const entry = qrEntries[i];
-      const qrDataUrl = await QRCode.toDataURL(entry.url, {
-        margin: 1,
-        width: 420
-      });
+      const qrDataUrl = await buildTableQrCard(entry.url, entry.name, 420);
 
       pdf.setDrawColor(229, 231, 235);
       pdf.roundedRect(x, y, 85, 65, 6, 6);

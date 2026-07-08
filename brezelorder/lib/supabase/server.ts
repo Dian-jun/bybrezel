@@ -2,6 +2,13 @@ import type { CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
+const PERSISTENT_COOKIE_OPTIONS: Partial<CookieOptions> = {
+  path: "/",
+  sameSite: "lax",
+  secure: process.env.NODE_ENV === "production",
+  maxAge: 60 * 60 * 24 * 30
+};
+
 export function createServerSupabaseClient() {
   const cookieStore = cookies();
 
@@ -15,12 +22,23 @@ export function createServerSupabaseClient() {
         },
         set(name: string, value: string, options: CookieOptions) {
           try {
-            cookieStore.set({ name, value, ...options });
+            cookieStore.set({
+              name,
+              value,
+              ...PERSISTENT_COOKIE_OPTIONS,
+              ...options
+            });
           } catch {}
         },
         remove(name: string, options: CookieOptions) {
           try {
-            cookieStore.set({ name, value: "", ...options });
+            cookieStore.set({
+              name,
+              value: "",
+              ...PERSISTENT_COOKIE_OPTIONS,
+              ...options,
+              maxAge: 0
+            });
           } catch {}
         }
       }

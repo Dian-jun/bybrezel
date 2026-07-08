@@ -167,13 +167,19 @@ export function KitchenBoard({
   async function updateOrder(orderId: string, status: KitchenOrder["status"]) {
     setPendingOrderId(orderId);
     try {
-      await fetch(`/api/orders/${orderId}`, {
+      const response = await fetch(`/api/orders/${orderId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ status })
       });
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload.error ?? `Failed to update order: ${response.status}`);
+      }
+
       await refreshSnapshot();
     } finally {
       setPendingOrderId(null);

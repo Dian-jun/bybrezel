@@ -157,6 +157,7 @@ export function StaffDashboard({
   const [currentServiceDay, setCurrentServiceDay] = useState<ServiceDay | null>(
     initialServiceDay
   );
+  const [pendingOrderId, setPendingOrderId] = useState<string | null>(null);
   const [alertsEnabled, setAlertsEnabled] = useState(false);
   const [serviceDayPending, setServiceDayPending] = useState(false);
   const supabase = useMemo(() => createBrowserSupabaseClient(), []);
@@ -435,23 +436,29 @@ export function StaffDashboard({
   }, [restaurantId, supabase, locale, alertsEnabled]);
 
   async function updateOrder(orderId: string, status: DashboardOrder["status"]) {
-    await fetch(`/api/orders/${orderId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ status })
-    });
+    setPendingOrderId(orderId);
+    try {
+      const response = await fetch(`/api/orders/${orderId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ status })
+      });
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload.error ?? `Failed to update order: ${response.status}`);
+      }
+
+      await refreshSnapshot();
+    } finally {
+      setPendingOrderId(null);
+    }
   }
 
   function getPrimaryOrderAction(order: DashboardOrder) {
     switch (order.status) {
-      case "new":
-        return "accepted" as const;
-      case "accepted":
-        return "preparing" as const;
-      case "preparing":
-        return "ready" as const;
       case "ready":
         return "served" as const;
       default:
@@ -615,13 +622,17 @@ export function StaffDashboard({
                   ) : null}
                   <div className="mt-4 flex flex-wrap gap-2">
                     {primaryAction ? (
-                      <Button onClick={() => updateOrder(order.id, primaryAction)}>
+                      <Button
+                        onClick={() => updateOrder(order.id, primaryAction)}
+                        disabled={pendingOrderId === order.id}
+                      >
                         {labels.statuses[primaryAction]}
                       </Button>
                     ) : null}
                     <Button
                       variant="secondary"
                       onClick={() => updateOrder(order.id, "cancelled")}
+                      disabled={pendingOrderId === order.id}
                     >
                       {labels.statuses.cancelled}
                     </Button>
