@@ -1,7 +1,7 @@
 [
   {
     "id": "kr-acheson-1950",
-    "title": "애치슨, 미국의 아시아 정책 연설.",
+    "title": "애치슨, 미국의 아시아 정책 연설",
     "description": "미국 현지 날짜 기준.",
     "date_start": "1950-01-12",
     "date_end": null,
@@ -20,7 +20,7 @@
   },
   {
     "id": "kr-election-1950",
-    "title": "제2대 국회의원 선거 실시.",
+    "title": "제2대 국회의원 선거 실시",
     "description": "",
     "date_start": "1950-05-30",
     "date_end": null,
@@ -39,7 +39,7 @@
   },
   {
     "id": "kr-bank-1950",
-    "title": "한국은행 설립 및 업무 개시.",
+    "title": "한국은행 설립 및 업무 개시",
     "description": "",
     "date_start": "1950-06-12",
     "date_end": null,
@@ -58,7 +58,7 @@
   },
   {
     "id": "korean-war-1950",
-    "title": "6·25 전쟁 발발.",
+    "title": "6·25 전쟁 발발",
     "description": "1950년 6월 25일 전쟁이 시작되었다. 전쟁은 수많은 사람의 일상과 삶의 터전을 바꾸었다.",
     "date_start": "1950-06-25",
     "date_end": null,
@@ -77,7 +77,7 @@
   },
   {
     "id": "kr-incheon-1950",
-    "title": "인천상륙작전 개시.",
+    "title": "인천상륙작전 개시",
     "description": "작전 개시일을 기록합니다.",
     "date_start": "1950-09-15",
     "date_end": null,
@@ -96,7 +96,7 @@
   },
   {
     "id": "kr-policy-200-relief",
-    "title": "중앙구호위원회 설치.",
+    "title": "중앙구호위원회 설치",
     "description": "",
     "date_start": "1950-10-01",
     "date_end": null,
@@ -115,7 +115,7 @@
   },
   {
     "id": "kr-policy-500-peace-line",
-    "title": "평화선 선언 발표.",
+    "title": "평화선 선언 발표",
     "description": "",
     "date_start": "1952-01-18",
     "date_end": null,
@@ -134,7 +134,7 @@
   },
   {
     "id": "armistice-1953",
-    "title": "판문점에서 정전협정 체결.",
+    "title": "판문점에서 정전협정 체결",
     "description": "1953년 7월 27일 정전협정이 체결되었다. 정전은 평화협정과 구분된다.",
     "date_start": "1953-07-27",
     "date_end": null,
@@ -153,7 +153,7 @@
   },
   {
     "id": "kr-policy-501-initial",
-    "title": "한미상호방위조약 가조인.",
+    "title": "한미상호방위조약 가조인",
     "description": "",
     "date_start": "1953-08-08",
     "date_end": null,
@@ -172,7 +172,7 @@
   },
   {
     "id": "kr-policy-501-signed",
-    "title": "한미상호방위조약 정식 서명.",
+    "title": "한미상호방위조약 정식 서명",
     "description": "",
     "date_start": "1953-10-01",
     "date_end": null,
@@ -191,7 +191,7 @@
   },
   {
     "id": "kr-policy-501-effective",
-    "title": "한미상호방위조약 발효.",
+    "title": "한미상호방위조약 발효",
     "description": "",
     "date_start": "1954-11-18",
     "date_end": null,
@@ -210,7 +210,7 @@
   },
   {
     "id": "kr-policy-200-welfare",
-    "title": "보건사회부 신설.",
+    "title": "보건사회부 신설",
     "description": "",
     "date_start": "1955-02-17",
     "date_end": null,
@@ -229,7 +229,7 @@
   },
   {
     "id": "kr-democracy-rigged-election",
-    "title": "3·15 부정선거와 마산 시위.",
+    "title": "3·15 부정선거와 마산 시위",
     "description": "",
     "date_start": "1960-03-15",
     "date_end": null,
@@ -248,7 +248,7 @@
   },
   {
     "id": "kr-democracy-kim-ju-yul",
-    "title": "마산에서 김주열의 시신 발견.",
+    "title": "마산에서 김주열의 시신 발견",
     "description": "",
     "date_start": "1960-04-11",
     "date_end": null,
@@ -267,7 +267,7 @@
   },
   {
     "id": "kr-democracy-april18",
-    "title": "고려대학교 학생들의 시위.",
+    "title": "고려대학교 학생들의 시위",
     "description": "",
     "date_start": "1960-04-18",
     "date_end": null,
@@ -286,7 +286,7 @@
   },
   {
     "id": "kr-democracy-revolution",
-    "title": "4·19 혁명.",
+    "title": "4·19 혁명",
     "description": "",
     "date_start": "1960-04-19",
     "date_end": null,
@@ -305,7 +305,7 @@
   },
   {
     "id": "kr-democracy-professors",
-    "title": "교수단의 시국 시위.",
+    "title": "교수단의 시국 시위",
     "description": "",
     "date_start": "1960-04-25",
     "date_end": null,
@@ -324,7 +324,7 @@
   },
   {
     "id": "kr-democracy-resignation",
-    "title": "이승만 대통령 하야 성명 발표.",
+    "title": "이승만 대통령 하야 성명 발표",
     "description": "",
     "date_start": "1960-04-26",
     "date_end": null,
@@ -343,7 +343,7 @@
   },
   {
     "id": "kr-policy-101-parliamentary",
-    "title": "의원내각제 개헌안 통과.",
+    "title": "의원내각제 개헌안 통과",
     "description": "",
     "date_start": "1960-06-15",
     "date_end": null,
@@ -362,7 +362,7 @@
   },
   {
     "id": "kr-democracy-assembly1960",
-    "title": "제5대 국회의원 선거 실시.",
+    "title": "제5대 국회의원 선거 실시",
     "description": "",
     "date_start": "1960-07-29",
     "date_end": null,
@@ -381,7 +381,7 @@
   },
   {
     "id": "kr-democracy-coup1961",
-    "title": "5·16 군사정변.",
+    "title": "5·16 군사정변",
     "description": "",
     "date_start": "1961-05-16",
     "date_end": null,
@@ -400,7 +400,7 @@
   },
   {
     "id": "kr-policy-305-plan1",
-    "title": "제1차 경제개발 5개년 계획 발표.",
+    "title": "제1차 경제개발 5개년 계획 발표",
     "description": "",
     "date_start": "1962-01-13",
     "date_end": null,
@@ -419,7 +419,7 @@
   },
   {
     "id": "kr-policy-207-law",
-    "title": "주민등록법 제정.",
+    "title": "주민등록법 제정",
     "description": "",
     "date_start": "1962-05-10",
     "date_end": null,
@@ -438,7 +438,7 @@
   },
   {
     "id": "kr-currency-1962",
-    "title": "화폐 단위를 환에서 원으로 변경.",
+    "title": "화폐 단위를 환에서 원으로 변경",
     "description": "",
     "date_start": "1962-06-10",
     "date_end": null,
@@ -457,7 +457,7 @@
   },
   {
     "id": "kr-policy-213-law",
-    "title": "의료보험법 제정.",
+    "title": "의료보험법 제정",
     "description": "",
     "date_start": "1963-12-16",
     "date_end": null,
@@ -476,7 +476,7 @@
   },
   {
     "id": "kr-policy-502-treaty",
-    "title": "한일기본조약 서명.",
+    "title": "한일기본조약 서명",
     "description": "",
     "date_start": "1965-06-22",
     "date_end": null,
@@ -495,7 +495,7 @@
   },
   {
     "id": "kr-policy-502-effective",
-    "title": "한일기본조약 발효.",
+    "title": "한일기본조약 발효",
     "description": "",
     "date_start": "1965-12-18",
     "date_end": null,
@@ -514,7 +514,7 @@
   },
   {
     "id": "kr-policy-504-sofa",
-    "title": "한미 주둔군지위협정(SOFA) 체결.",
+    "title": "한미 주둔군지위협정(SOFA) 체결",
     "description": "",
     "date_start": "1966-07-09",
     "date_end": null,
@@ -533,7 +533,7 @@
   },
   {
     "id": "kr-policy-305-plan2",
-    "title": "제2차 경제개발 5개년 계획 발표.",
+    "title": "제2차 경제개발 5개년 계획 발표",
     "description": "",
     "date_start": "1966-07-29",
     "date_end": null,
@@ -552,7 +552,7 @@
   },
   {
     "id": "kr-policy-306-start",
-    "title": "경부고속도로 착공.",
+    "title": "경부고속도로 착공",
     "description": "",
     "date_start": "1968-02-01",
     "date_end": null,
@@ -571,7 +571,7 @@
   },
   {
     "id": "kr-policy-505-reserve",
-    "title": "향토예비군 창설.",
+    "title": "향토예비군 창설",
     "description": "",
     "date_start": "1968-04-01",
     "date_end": null,
@@ -590,7 +590,7 @@
   },
   {
     "id": "kr-policy-306-open",
-    "title": "경부고속도로 전 구간 개통.",
+    "title": "경부고속도로 전 구간 개통",
     "description": "",
     "date_start": "1970-07-07",
     "date_end": null,
@@ -609,7 +609,7 @@
   },
   {
     "id": "kr-policy-401-add",
-    "title": "국방과학연구소 신설.",
+    "title": "국방과학연구소 신설",
     "description": "",
     "date_start": "1970-08-01",
     "date_end": null,
@@ -628,7 +628,7 @@
   },
   {
     "id": "kr-policy-305-plan3",
-    "title": "제3차 경제개발 5개년 계획 발표.",
+    "title": "제3차 경제개발 5개년 계획 발표",
     "description": "",
     "date_start": "1971-02-09",
     "date_end": null,
@@ -647,7 +647,7 @@
   },
   {
     "id": "kr-policy-307-greenbelt",
-    "title": "첫 개발제한구역 지정.",
+    "title": "첫 개발제한구역 지정",
     "description": "",
     "date_start": "1971-07-30",
     "date_end": null,
@@ -666,7 +666,7 @@
   },
   {
     "id": "kr-policy-600-joint",
-    "title": "7·4 남북공동성명 발표.",
+    "title": "7·4 남북공동성명 발표",
     "description": "",
     "date_start": "1972-07-04",
     "date_end": null,
@@ -685,7 +685,7 @@
   },
   {
     "id": "kr-policy-102-martial",
-    "title": "비상계엄과 유신 특별선언 발표.",
+    "title": "비상계엄과 유신 특별선언 발표",
     "description": "",
     "date_start": "1972-10-17",
     "date_end": null,
@@ -704,7 +704,7 @@
   },
   {
     "id": "kr-policy-102-constitution",
-    "title": "유신헌법 공포.",
+    "title": "유신헌법 공포",
     "description": "",
     "date_start": "1972-12-27",
     "date_end": null,
@@ -723,7 +723,7 @@
   },
   {
     "id": "kr-policy-305-plan4",
-    "title": "제4차 경제개발 5개년 계획 발표.",
+    "title": "제4차 경제개발 5개년 계획 발표",
     "description": "",
     "date_start": "1976-06-11",
     "date_end": null,
@@ -742,7 +742,7 @@
   },
   {
     "id": "kr-policy-213-workplace",
-    "title": "500인 이상 사업장 의료보험 시행.",
+    "title": "500인 이상 사업장 의료보험 시행",
     "description": "",
     "date_start": "1977-07-01",
     "date_end": null,
@@ -761,7 +761,7 @@
   },
   {
     "id": "kr-policy-309-ceremony",
-    "title": "고리 원자력발전소 1호기 준공식.",
+    "title": "고리 원자력발전소 1호기 준공식",
     "description": "상업운전 개시일이 아니라 준공식이 열린 날짜를 기록했다.",
     "date_start": "1978-07-20",
     "date_end": null,
@@ -780,7 +780,7 @@
   },
   {
     "id": "kr-gwangju-1980",
-    "title": "5·18 민주화운동.",
+    "title": "5·18 민주화운동",
     "description": "",
     "date_start": "1980-05-18",
     "date_end": "1980-05-27",
@@ -799,7 +799,7 @@
   },
   {
     "id": "kr-policy-208-color-tv",
-    "title": "컬러텔레비전 방송 시작.",
+    "title": "컬러텔레비전 방송 시작",
     "description": "",
     "date_start": "1980-12-01",
     "date_end": null,
@@ -818,7 +818,7 @@
   },
   {
     "id": "kr-policy-601-family1985",
-    "title": "남북 이산가족 고향방문단 교환 방문.",
+    "title": "남북 이산가족 고향방문단 교환 방문",
     "description": "",
     "date_start": "1985-09-20",
     "date_end": "1985-09-23",
@@ -837,7 +837,7 @@
   },
   {
     "id": "kr-june-1987",
-    "title": "6·10 민주항쟁.",
+    "title": "6·10 민주항쟁",
     "description": "",
     "date_start": "1987-06-10",
     "date_end": null,
@@ -856,7 +856,7 @@
   },
   {
     "id": "kr-policy-403-sejong",
-    "title": "남극 세종과학기지 준공.",
+    "title": "남극 세종과학기지 준공",
     "description": "",
     "date_start": "1988-02-17",
     "date_end": null,
@@ -875,7 +875,7 @@
   },
   {
     "id": "kr-policy-605-july7",
-    "title": "7·7 대북정책 특별선언 발표.",
+    "title": "7·7 대북정책 특별선언 발표",
     "description": "",
     "date_start": "1988-07-07",
     "date_end": null,
@@ -894,7 +894,7 @@
   },
   {
     "id": "seoul-1988",
-    "title": "서울 올림픽 개막.",
+    "title": "서울 올림픽 개막",
     "description": "서울에서 제24회 하계 올림픽이 개막했다. 대회는 10월 2일까지 이어졌다.",
     "date_start": "1988-09-17",
     "date_end": "1988-10-02",
@@ -913,7 +913,7 @@
   },
   {
     "id": "kr-policy-215-travel",
-    "title": "해외여행 전면 자유화.",
+    "title": "해외여행 전면 자유화",
     "description": "",
     "date_start": "1989-01-01",
     "date_end": null,
@@ -932,7 +932,7 @@
   },
   {
     "id": "kr-policy-213-universal",
-    "title": "전 국민 의료보험 실현.",
+    "title": "전 국민 의료보험 실현",
     "description": "",
     "date_start": "1989-07-01",
     "date_end": null,
@@ -951,7 +951,7 @@
   },
   {
     "id": "kr-policy-107-local1991",
-    "title": "기초의회 의원선거 실시.",
+    "title": "기초의회 의원선거 실시",
     "description": "",
     "date_start": "1991-03-26",
     "date_end": null,
@@ -970,7 +970,7 @@
   },
   {
     "id": "kr-policy-107-regional1991",
-    "title": "광역의회 의원선거 실시.",
+    "title": "광역의회 의원선거 실시",
     "description": "",
     "date_start": "1991-06-20",
     "date_end": null,
@@ -989,7 +989,7 @@
   },
   {
     "id": "kr-un-1991",
-    "title": "대한민국, 유엔 회원국으로 가입.",
+    "title": "대한민국, 유엔 회원국으로 가입",
     "description": "",
     "date_start": "1991-09-17",
     "date_end": null,
@@ -1008,7 +1008,7 @@
   },
   {
     "id": "kr-policy-319-real-name",
-    "title": "금융실명제 실시.",
+    "title": "금융실명제 실시",
     "description": "",
     "date_start": "1993-08-12",
     "date_end": null,
@@ -1027,7 +1027,7 @@
   },
   {
     "id": "kr-policy-107-local1995",
-    "title": "제1회 전국동시지방선거 실시.",
+    "title": "제1회 전국동시지방선거 실시",
     "description": "",
     "date_start": "1995-06-27",
     "date_end": null,
@@ -1046,7 +1046,7 @@
   },
   {
     "id": "kr-policy-321-oecd",
-    "title": "대한민국, OECD 가입.",
+    "title": "대한민국, OECD 가입",
     "description": "",
     "date_start": "1996-12-12",
     "date_end": null,
@@ -1065,7 +1065,7 @@
   },
   {
     "id": "hunminjeongeum-1997",
-    "title": "훈민정음 해례본, 유네스코 세계기록유산 등재.",
+    "title": "훈민정음 해례본, 유네스코 세계기록유산 등재",
     "description": "훈민정음 해례본이 세계기록유산에 등재되었다. 이 자료에서는 등재 연도만을 사용한다.",
     "date_start": "1997-01-01",
     "date_end": null,
@@ -1084,7 +1084,7 @@
   },
   {
     "id": "kr-policy-510-declaration",
-    "title": "김대중·오부치 공동선언 발표.",
+    "title": "김대중·오부치 공동선언 발표",
     "description": "",
     "date_start": "1998-10-08",
     "date_end": null,
@@ -1103,7 +1103,7 @@
   },
   {
     "id": "kr-incheon-airport-2001",
-    "title": "인천국제공항 개항.",
+    "title": "인천국제공항 개항",
     "description": "",
     "date_start": "2001-03-29",
     "date_end": null,
@@ -1122,7 +1122,7 @@
   },
   {
     "id": "worldcup-2002-quarterfinal",
-    "title": "대한민국, 월드컵 4강 진출.",
+    "title": "대한민국, 월드컵 4강 진출",
     "description": "광주에서 열린 스페인과의 8강전. 연장전까지 0대 0으로 맞선 뒤 승부차기에서 대한민국이 승리했다.",
     "date_start": "2002-06-22",
     "date_end": null,
@@ -1141,7 +1141,7 @@
   },
   {
     "id": "kr-ktx-2004",
-    "title": "KTX 운행 시작.",
+    "title": "KTX 운행 시작",
     "description": "",
     "date_start": "2004-04-01",
     "date_end": null,
@@ -1160,7 +1160,7 @@
   },
   {
     "id": "kr-policy-225-civil",
-    "title": "호주제 폐지를 위한 민법 개정 공포.",
+    "title": "호주제 폐지를 위한 민법 개정 공포",
     "description": "개정법 공포일을 기록했으며, 새로운 가족관계등록제의 시행일과 구분한다.",
     "date_start": "2005-03-31",
     "date_end": null,
@@ -1179,7 +1179,7 @@
   },
   {
     "id": "kr-policy-324-talks",
-    "title": "한미 FTA 공식 협상 개시 선언.",
+    "title": "한미 FTA 공식 협상 개시 선언",
     "description": "",
     "date_start": "2006-02-03",
     "date_end": null,
@@ -1198,7 +1198,7 @@
   },
   {
     "id": "kr-policy-324-agreement",
-    "title": "한미 FTA 협상 타결.",
+    "title": "한미 FTA 협상 타결",
     "description": "협상 타결일이며 협정 서명일이나 발효일을 뜻하지 않는다.",
     "date_start": "2007-04-02",
     "date_end": null,
@@ -1217,7 +1217,7 @@
   },
   {
     "id": "kr-policy-111-sejong",
-    "title": "행정중심복합도시 기공식.",
+    "title": "행정중심복합도시 기공식",
     "description": "",
     "date_start": "2007-07-20",
     "date_end": null,
@@ -1236,7 +1236,7 @@
   },
   {
     "id": "kr-policy-611-summit",
-    "title": "제2차 남북정상회담 개최.",
+    "title": "제2차 남북정상회담 개최",
     "description": "",
     "date_start": "2007-10-02",
     "date_end": "2007-10-04",
@@ -1254,8 +1254,27 @@
     ]
   },
   {
+    "id": "kr-park-taehwan-2008-gold",
+    "title": "박태환, 베이징 올림픽 수영 남자 자유형 400m 금메달",
+    "description": "중국 현지 날짜 기준",
+    "date_start": "2008-08-10",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "스포츠",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "박태환, 베이징 올림픽 수영 남자 자유형 400m 금메달",
+        "source_url": "https://www.worldaquatics.com/athletes/1017810/taehwan-park/medals",
+        "publisher": "World Aquatics",
+        "license": "Facts-only extraction; independently worded labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
     "id": "kr-policy-511-g20",
-    "title": "서울 G20 정상회의 개최.",
+    "title": "서울 G20 정상회의 개최",
     "description": "",
     "date_start": "2010-11-11",
     "date_end": "2010-11-12",
@@ -1274,7 +1293,7 @@
   },
   {
     "id": "kr-policy-324-effective",
-    "title": "한미 FTA 발효.",
+    "title": "한미 FTA 발효",
     "description": "",
     "date_start": "2012-03-15",
     "date_end": null,
@@ -1293,7 +1312,7 @@
   },
   {
     "id": "kr-gangnam-style-2012",
-    "title": "싸이, 「강남스타일」 뮤직비디오 공개.",
+    "title": "싸이, 「강남스타일」 뮤직비디오 공개",
     "description": "공식 소속사 게시물과 공식 아티스트 채널의 공개 날짜를 기준으로 했다.",
     "date_start": "2012-07-15",
     "date_end": null,
@@ -1312,7 +1331,7 @@
   },
   {
     "id": "kr-naro-2013",
-    "title": "나로호 3차 발사 성공.",
+    "title": "나로호 3차 발사 성공",
     "description": "",
     "date_start": "2013-01-30",
     "date_end": null,
@@ -1331,7 +1350,7 @@
   },
   {
     "id": "kr-sewol-2014",
-    "title": "세월호 참사.",
+    "title": "세월호 참사",
     "description": "특별법에서 규정한 참사의 발생 날짜를 기록했다.",
     "date_start": "2014-04-16",
     "date_end": null,
@@ -1350,7 +1369,7 @@
   },
   {
     "id": "kr-impeachment-2017",
-    "title": "헌법재판소, 박근혜 대통령 파면 결정.",
+    "title": "헌법재판소, 박근혜 대통령 파면 결정",
     "description": "사건번호 2016헌나1의 종국일자와 결정을 확인했다.",
     "date_start": "2017-03-10",
     "date_end": null,
@@ -1369,7 +1388,7 @@
   },
   {
     "id": "kr-pyeongchang-2018",
-    "title": "평창 동계올림픽 개최.",
+    "title": "평창 동계올림픽 개최",
     "description": "개회식부터 폐회식까지의 기간이다. 일부 종목의 사전 경기 시작일과 구분한다.",
     "date_start": "2018-02-09",
     "date_end": "2018-02-25",
@@ -1388,7 +1407,7 @@
   },
   {
     "id": "kr-covid-2020",
-    "title": "국내 첫 코로나19 확진 확인.",
+    "title": "국내 첫 코로나19 확진 확인",
     "description": "국내 유입 초기 경과에 기록된 첫 확진 날짜를 사용했다.",
     "date_start": "2020-01-20",
     "date_end": null,
@@ -1407,7 +1426,7 @@
   },
   {
     "id": "kr-parasite-2020",
-    "title": "영화 「기생충」, 아카데미 작품상 수상.",
+    "title": "영화 「기생충」, 아카데미 작품상 수상",
     "description": "미국 로스앤젤레스 현지 시상식 날짜 기준이다. 대한민국에서는 2월 10일이었다.",
     "date_start": "2020-02-09",
     "date_end": null,
@@ -1426,7 +1445,7 @@
   },
   {
     "id": "kr-nuri-2022",
-    "title": "누리호 2차 발사 성공.",
+    "title": "누리호 2차 발사 성공",
     "description": "",
     "date_start": "2022-06-21",
     "date_end": null,
@@ -1445,7 +1464,7 @@
   },
   {
     "id": "kr-nuri-2023",
-    "title": "누리호 3차 발사 성공.",
+    "title": "누리호 3차 발사 성공",
     "description": "출처에 월까지만 명시된 발사는 월 단위로 기록했다.",
     "date_start": "2023-05-01",
     "date_end": null,
@@ -1463,8 +1482,103 @@
     ]
   },
   {
+    "id": "kr-kim-woomin-2024-gold",
+    "title": "김우민, 도하 세계수영선수권 남자 자유형 400m 금메달",
+    "description": "카타르 현지 날짜 기준이며 한국에서는 2월 12일",
+    "date_start": "2024-02-11",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "스포츠",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "김우민, 도하 세계수영선수권 남자 자유형 400m 금메달",
+        "source_url": "https://www.worldaquatics.com/athletes/1135699/-/medals",
+        "publisher": "World Aquatics",
+        "license": "Facts-only extraction; independently worded labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-hwang-sunwoo-2024-gold",
+    "title": "황선우, 도하 세계수영선수권 남자 자유형 200m 금메달",
+    "description": "카타르 현지 날짜 기준이며 한국에서는 2월 14일",
+    "date_start": "2024-02-13",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "스포츠",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "황선우, 도하 세계수영선수권 남자 자유형 200m 금메달",
+        "source_url": "https://www.worldaquatics.com/athletes/1140557/sunwoo-hwang/medals",
+        "publisher": "World Aquatics",
+        "license": "Facts-only extraction; independently worded labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-shin-lim-2024-bronze",
+    "title": "신유빈·임종훈, 파리 올림픽 탁구 혼합복식 동메달",
+    "description": "프랑스 현지 날짜 기준",
+    "date_start": "2024-07-30",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "스포츠",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "신유빈·임종훈, 파리 올림픽 탁구 혼합복식 동메달",
+        "source_url": "https://www.ittf.com/2024/07/30/table-tennis-at-paris-2024-follow-the-action-here-from-first-medals-day/",
+        "publisher": "International Table Tennis Federation",
+        "license": "Facts-only extraction; independently worded labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-kim-woojin-2024-gold",
+    "title": "김우진, 파리 올림픽 양궁 남자 개인전 금메달·대회 3관왕",
+    "description": "프랑스 현지 날짜 기준",
+    "date_start": "2024-08-04",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "스포츠",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "김우진, 파리 올림픽 양궁 남자 개인전 금메달·대회 3관왕",
+        "source_url": "https://www.worldarchery.sport/news/201767/kim-woojin-becomes-greatest-archery-olympian-all-time-five-gold-medals",
+        "publisher": "World Archery",
+        "license": "Facts-only extraction; independently worded labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-an-seyoung-2024-gold",
+    "title": "안세영, 파리 올림픽 배드민턴 여자 단식 금메달",
+    "description": "프랑스 현지 날짜 기준",
+    "date_start": "2024-08-05",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "스포츠",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "안세영, 파리 올림픽 배드민턴 여자 단식 금메달",
+        "source_url": "https://oca.asia/news/5343-koreas-an-soars-to-gold-in-womens-badminton-final.html",
+        "publisher": "Olympic Council of Asia",
+        "license": "Facts-only extraction; independently worded labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
     "id": "kr-han-kang-2024",
-    "title": "한강, 노벨문학상 수상자로 선정.",
+    "title": "한강, 노벨문학상 수상자로 선정",
     "description": "수상자 발표 날짜이며 시상식 날짜와 구분한다.",
     "date_start": "2024-10-10",
     "date_end": null,
@@ -1482,8 +1596,53 @@
     ]
   },
   {
+    "id": "kr-faker-2024-mvp",
+    "title": "페이커, LoL 월드 챔피언십 결승 MVP 수상",
+    "description": "런던 현지 날짜 기준이며 한국에서는 11월 3일. 주최사 공식 사진의 수상 설명과 촬영일을 확인",
+    "date_start": "2024-11-02",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "스포츠",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "페이커, LoL 월드 챔피언십 결승 MVP 수상",
+        "source_url": "https://www.flickr.com/photos/lolesports/54112850518",
+        "publisher": "Riot Games / LoL Esports",
+        "license": "Facts-only extraction; independently worded labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-kim-doyoung-2024-mvp",
+    "title": "김도영, KBO 정규시즌 MVP 수상",
+    "description": "KBO 수상자 명단과 시상식 일정을 대조",
+    "date_start": "2024-11-26",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "스포츠",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "김도영, KBO 정규시즌 MVP 수상",
+        "source_url": "https://www.koreabaseball.com/Player/Awards/PlayerPrize.aspx",
+        "publisher": "KBO",
+        "license": "Facts-only extraction; independently worded labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "2024 KBO 시상식 개최 일정",
+        "source_url": "https://www.koreabaseball.com/MediaNews/Notice/View.aspx?bdSe=10308",
+        "publisher": "KBO",
+        "license": "Facts-only extraction; independently worded labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
     "id": "kr-president-2025",
-    "title": "이재명 대통령 취임.",
+    "title": "이재명 대통령 취임",
     "description": "취임 당일 공식 업무 개시를 다룬 기록을 확인했다.",
     "date_start": "2025-06-04",
     "date_end": null,
@@ -1502,7 +1661,7 @@
   },
   {
     "id": "kr-apec-2025",
-    "title": "경주 APEC 정상회의 개최.",
+    "title": "경주 APEC 정상회의 개최",
     "description": "",
     "date_start": "2025-10-31",
     "date_end": "2025-11-01",
@@ -1521,7 +1680,7 @@
   },
   {
     "id": "kr-nuri-2025",
-    "title": "누리호 4차 발사 성공.",
+    "title": "누리호 4차 발사 성공",
     "description": "출처에 월까지만 명시된 발사는 월 단위로 기록했다.",
     "date_start": "2025-11-01",
     "date_end": null,
@@ -1540,7 +1699,7 @@
   },
   {
     "id": "kr-nuri-2026",
-    "title": "누리호 5차 발사 성공.",
+    "title": "누리호 5차 발사 성공",
     "description": "출처에 월까지만 명시된 발사는 월 단위로 기록했다.",
     "date_start": "2026-10-01",
     "date_end": null,

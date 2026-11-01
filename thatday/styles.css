@@ -2102,4 +2102,93 @@ body[data-view="mine"] .time-atlas {
     flex-basis: 42px;
   }
 }
-.time-atlas[hidden] {display:none;}
+.time-atlas[hidden] {
+  display: none;
+}
+
+/* Keep time navigation scrollable without drawing a scrollbar. */
+.time-atlas .index-years {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.time-atlas .index-years::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.time-atlas .year-tick:first-child,
+.time-atlas .year-tick:last-child {
+  flex-basis: 44px;
+}
+.date-jump {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  font-size: 12px;
+}
+.date-jump input {
+  font-size: 12px;
+  padding: 5px 7px;
+  min-height: 36px;
+  width: 145px;
+}
+.simple-record {
+  gap: 16px;
+}
+.simple-record .context-note {
+  margin: 0;
+  padding: 10px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+}
+.simple-record .context-note p {
+  font-size: 14px;
+}
+.simple-record textarea {
+  font-size: 14px;
+  min-height: 110px;
+}
+.simple-record .writer-inline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+}
+.simple-record .writer-inline input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+.simple-visibility {
+  display: flex;
+  gap: 22px;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.simple-visibility label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  min-height: 44px;
+}
+@media (max-width: 760px) {
+  .tools {
+    gap: 14px;
+  }
+  .date-jump {
+    gap: 6px;
+  }
+  .date-jump > span {
+    display: none;
+  }
+  .date-jump input {
+    width: 138px;
+  }
+  .simple-record {
+    gap: 13px;
+  }
+}

@@ -1,9 +1,9 @@
+import { recordContext, cleanEventTitle } from "./record-input.js";
 import {
   categories,
   today,
   sentence,
   dateLabel,
-  normalizeDate,
   validateDate,
   safetyFlags,
   escapeHTML as h,
@@ -125,7 +125,7 @@ function heading() {
   $("#account-button").textContent =
     `${state.me.user?.role === "moderator" ? "관리" : "기기 보관함"} ↗`;
   $("#moderation-link").hidden = state.me.user?.role !== "moderator";
-  $("#year-select").value = state.date.slice(0, 4);
+
   document.body.dataset.view = state.view;
   $("#time-atlas").hidden = !["timeline", "mine"].includes(state.view);
   $("#atlas-year").innerHTML = state.date
@@ -143,7 +143,7 @@ function heading() {
         button.offsetWidth / 2;
     }
   });
-  $("#month").value = state.date.length >= 7 ? state.date.slice(0, 7) : "";
+
   $("#day").value = state.date.length === 10 ? state.date : "";
   $("#query").value = state.q;
   $("#categories").innerHTML = ["", ...categories]
@@ -379,7 +379,10 @@ async function load() {
         : Promise.resolve({ records: [], next: null }),
     ]);
     if (ticket !== generation) return;
-    state.events = events.events;
+    state.events = events.events.map((e) => ({
+      ...e,
+      title: cleanEventTitle(e.title),
+    }));
     state.eventNext = events.next;
     state.records = records.records;
     state.recordNext = records.next;
@@ -415,7 +418,9 @@ async function more(kind) {
         eventId: state.eventId,
       });
       if (ticket !== generation) return;
-      state.events.push(...r.events);
+      state.events.push(
+        ...r.events.map((e) => ({ ...e, title: cleanEventTitle(e.title) })),
+      );
       state.eventNext = r.next;
     } else {
       const r = await backend.records({
@@ -623,90 +628,41 @@ async function openEditor(event = null, record = null) {
     event?.date_start ??
     (state.date.length === 10 ? state.date : today());
   editor = { event, record };
-  const precision =
-    record?.date_precision ??
-    (event
-      ? event.date_precision === "range"
-        ? "around"
-        : event.date_precision
-      : "day");
+  const fixedDate = event || (record && record.date_precision !== "day");
   openSheet(
-    record ? "기록 다듬기" : "그날의 한 줄",
-    `<form id="record-form" class="record-form"><p class="fine">로그인 없이 참여합니다. 나의 기록은 이 기기의 같은 브라우저에 보관됩니다.</p><label for="writer-name">표시 이름<input id="writer-name" name="display_name" required maxlength="24" value="${h(state.me.user.display_name)}"></label>${event ? `<div class="context-note"><span>이날의 역사</span><p>${h(dateLabel(event.date_start, event.date_precision, event.date_end))} · ${h(event.title)}</p><label for="relation" class="sr-only">사건과의 관계</label><select id="relation" name="relation"><option value="related" ${record?.relation === "related" ? "selected" : ""}>이 사건과 관련된 기억</option><option value="same_date" ${record?.relation === "same_date" ? "selected" : ""}>같은 날의 다른 개인적 사건</option></select></div>` : ""}<div class="form-pair"><label for="record-date">언제였나요<input id="record-date" name="date" required type="date" min="1950-01-01" max="${today()}" value="${h(d)}"></label><label for="precision">날짜의 정확도<select id="precision" name="precision">${[["day", "정확한 날짜"], ...(event ? [["around", "이 사건 무렵"]] : []), ["month", "월까지만 기억"], ["year", "연도만 기억"], ["range", "기간으로 기록"]].map(([v, l]) => `<option value="${v}" ${v === precision ? "selected" : ""}>${l}</option>`).join("")}</select></label></div><label for="record-end" id="end-label" ${precision === "range" ? "" : "hidden"}>종료 날짜<input id="record-end" name="date_end" type="date" min="${h(d)}" max="${today()}" value="${h(record?.date_end ?? "")}"></label><label class="text-label" for="memory-text">그날, 당신은 무엇을 했나요?<span id="text-count">0 / 280</span></label><textarea id="memory-text" name="original_text" required maxlength="280" rows="3" placeholder="가족들과 거리 응원을 했다.">${h(record?.original_text ?? "")}</textarea><p class="fine">입력한 문장을 그대로 보관합니다. 실명이나 다른 사람의 개인정보는 남기지 마세요.</p><fieldset class="style-choice"><legend>문장의 모양</legend><label><input type="radio" name="style" value="subject" ${(record?.presentation_style ?? "subject") === "subject" ? "checked" : ""}> 이름으로 시작</label><label><input type="radio" name="style" value="quote" ${record?.presentation_style === "quote" ? "checked" : ""}> 내 말 그대로</label></fieldset><div class="record-preview"><span class="eyebrow">저장될 기록 / 미리보기</span><p id="preview-date"></p><p id="preview-text"></p><span class="fine" id="preview-visibility"></span></div><fieldset class="visibility"><legend>누가 볼 수 있나요?</legend><label><input type="radio" name="visibility" value="private" ${(record?.visibility ?? "private") === "private" ? "checked" : ""}> 나만 보기 <span>나의 기록에만 보관</span></label><label><input type="radio" name="visibility" value="public" ${record?.visibility === "public" ? "checked" : ""}> 모두에게 공개 <span>검수 후 연대기에 수록</span></label></fieldset><div id="public-options" hidden><p class="fine">공개 정보: 표시 이름, 문장, 날짜·정확도, 연결한 사건. 출생 연도는 공개하지 않습니다. 공개 요청과 수정은 검수를 거칩니다.</p><p class="form-error" id="safety-warning"></p><label class="confirm-public"><input type="checkbox" name="public_confirmed"> 미리보기와 공개될 정보를 확인하고 공개를 요청합니다.</label></div><p class="form-error" id="form-error" role="alert"></p><button class="primary" id="save-record" type="submit">나만의 기록으로 저장</button></form>`,
+    record ? "기록 수정" : "그날의 한 줄",
+    `<form id="record-form" class="record-form simple-record">
+    ${event ? `<div class="context-note"><span>${h(dateLabel(event.date_start, event.date_precision, event.date_end))}</span><p>${h(cleanEventTitle(event.title))}</p></div>` : fixedDate ? `<p class="fine">${h(dateLabel(record.date_start, record.date_precision, record.date_end))}</p>` : `<label for="record-date">날짜<input id="record-date" name="date" type="date" required min="1950-01-01" max="${today()}" value="${h(d)}"></label>`}
+    <label class="text-label" for="memory-text">${event ? "이 순간, 당신의 이야기는?" : "어떤 하루였나요?"}<span id="text-count">0 / 280</span></label>
+    <textarea id="memory-text" name="original_text" required maxlength="280" rows="4" placeholder="그날의 생각이나 있었던 일을 편하게 남겨 주세요">${h(record?.original_text ?? "")}</textarea>
+    <label class="writer-inline" for="writer-name">이름<input id="writer-name" name="display_name" required maxlength="24" value="${h(state.me.user.display_name)}"></label>
+    <fieldset class="simple-visibility"><legend class="sr-only">공개 범위</legend><label><input type="radio" name="visibility" value="private" ${(record?.visibility ?? "private") === "private" ? "checked" : ""}> 나만 보기</label><label><input type="radio" name="visibility" value="public" ${record?.visibility === "public" ? "checked" : ""}> 모두에게 공개</label></fieldset>
+    <div id="public-options" hidden><label class="confirm-public"><input type="checkbox" name="public_confirmed"> 이름과 내용을 검토 후 공개하는 데 동의합니다</label><p class="form-error" id="safety-warning"></p></div>
+    <p class="fine">로그인 없이 저장합니다. 이 기기의 같은 브라우저에서 다시 볼 수 있어요.</p><p id="form-error" class="form-error" role="alert"></p><button id="save-record" class="primary" type="submit">기록 남기기</button></form>`,
   );
   editor = { event, record };
-  setDateInputType();
   preview();
 }
-function setDateInputType() {
-  const input = $("#record-date"),
-    p = $("#precision").value;
-  let value = input.value;
-  const previous = input.dataset.fullDate ?? value;
-  if (input.type === "number" && value) value = `${value}-01-01`;
-  else if (input.type === "month" && value) value = `${value}-01`;
-  input.dataset.fullDate = value || previous;
-  input.type = p === "year" ? "number" : p === "month" ? "month" : "date";
-  input.min = p === "year" ? "1950" : p === "month" ? "1950-01" : "1950-01-01";
-  input.max =
-    p === "year"
-      ? today().slice(0, 4)
-      : p === "month"
-        ? today().slice(0, 7)
-        : today();
-  input.value =
-    p === "year"
-      ? value.slice(0, 4)
-      : p === "month"
-        ? value.slice(0, 7)
-        : value;
-  $("#end-label").hidden = p !== "range";
-  $("#record-end").required = p === "range";
-}
 function formRecord() {
-  const f = new FormData($("#record-form")),
-    p = f.get("precision"),
-    v = f.get("date"),
-    date = normalizeDate(
-      p === "year" ? `${v}-01-01` : p === "month" ? `${v}-01` : v,
-      p,
-    );
+  const f = new FormData($("#record-form"));
   return {
-    date_start: date,
-    date_end: p === "range" ? f.get("date_end") : null,
-    date_precision: p,
+    ...recordContext(editor.event, editor.record, f.get("date")),
     original_text: f.get("original_text"),
-    presentation_style: f.get("style"),
+    presentation_style: editor.record?.presentation_style ?? "quote",
     visibility: f.get("visibility"),
-    relation: editor.event ? f.get("relation") : "same_date",
-    event_id: editor.event?.id ?? null,
     public_confirmed: f.has("public_confirmed"),
   };
 }
 function preview() {
   const r = formRecord();
   $("#text-count").textContent = `${r.original_text.length} / 280`;
-  $("#preview-date").textContent = dateLabel(
-    r.date_start,
-    r.date_precision,
-    r.date_end,
-  );
-  $("#preview-text").textContent = sentence(
-    $("#writer-name").value || state.me.user.display_name,
-    r.original_text || "…",
-    r.presentation_style,
-  );
-  $("#preview-visibility").textContent =
-    r.visibility === "private"
-      ? "나에게만 보이는 기록"
-      : "표시 이름과 기록이 검수 후 모두에게 공개됩니다.";
   $("#public-options").hidden = r.visibility !== "public";
   const flags = safetyFlags(r.original_text);
   $("#safety-warning").textContent = flags.length
     ? `${flags.join(", ")} 감지. 공개 전 삭제하거나 나만 보기를 선택해 주세요. 자동 감지는 완전하지 않습니다.`
     : "";
   $("#save-record").textContent =
-    r.visibility === "public" ? "저장하고 검수 요청" : "나만의 기록으로 저장";
+    r.visibility === "public" ? "공개 요청하기" : "기록 남기기";
   $("#save-record").disabled =
     !r.original_text.trim() ||
     (r.visibility === "public" && (!r.public_confirmed || flags.length > 0));
@@ -1104,10 +1060,6 @@ $("#sheet-body").addEventListener("input", (e) => {
   } else if (e.target.closest("#profile-form")) dirty = true;
 });
 $("#sheet-body").addEventListener("change", (e) => {
-  if (e.target.id === "precision") {
-    setDateInputType();
-    preview();
-  }
   if (e.target.closest("#record-form")) {
     dirty = true;
     preview();
@@ -1132,12 +1084,6 @@ window.addEventListener("popstate", () => {
   readURL();
   void load();
 });
-$("#year-select").addEventListener("change", (e) =>
-  navigate({ date: e.target.value, eventId: null }),
-);
-$("#month").addEventListener("change", (e) =>
-  navigate({ date: e.target.value, eventId: null }),
-);
 $("#day").addEventListener("change", (e) =>
   navigate({ date: e.target.value, eventId: null }),
 );
@@ -1153,14 +1099,6 @@ $("#more-records").addEventListener("click", () => more("records"));
 async function start() {
   const year = Number(today().slice(0, 4));
   $$("[data-years]").forEach((el) => (el.textContent = `1950—${year}`));
-  $("#year-select").insertAdjacentHTML(
-    "beforeend",
-    Array.from(
-      { length: year - 1949 },
-      (_, i) => `<option>${year - i}</option>`,
-    ).join(""),
-  );
-  $("#month").max = today().slice(0, 7);
   $("#day").max = today();
   $("#year-index").innerHTML = Array.from(
     { length: year - 1949 },

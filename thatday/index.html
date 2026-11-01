@@ -22,11 +22,11 @@
     <meta property="og:image" content="https://bybrezel.com/thatday/og.svg" />
     <link rel="canonical" href="https://bybrezel.com/thatday/" />
     <link rel="icon" href="./favicon.svg" />
-    <link rel="stylesheet" href="./styles.css?v=398a943c1b0a" />
+    <link rel="stylesheet" href="./styles.css?v=6f9f2031aa5b" />
     <title>그날 우리는 — 대한민국의 모든 날</title>
     <script src="./config.js" defer></script>
     <script src="./vendor/supabase.js" defer></script>
-    <script src="./app.js?v=b8db7523c7a0" type="module"></script>
+    <script src="./app.js?v=1fbe4566d1c9" type="module"></script>
   </head>
   <body>
     <a class="skip" href="#chronology">본문으로 건너뛰기</a>
@@ -77,13 +77,14 @@
                   aria-controls="search-row"
                 >
                   검색</button
-                ><span class="tool-divider"></span
-                ><label class="year-select"
-                  ><span class="sr-only">연도</span
-                  ><select id="year-select">
-                    <option value="">모든 연도</option>
-                  </select></label
-                >
+                ><label class="date-jump" for="day"
+                  ><span>날짜로 이동</span
+                  ><input
+                    type="date"
+                    id="day"
+                    min="1950-01-01"
+                    aria-label="날짜로 이동"
+                /></label>
               </div>
             </div>
             <div class="search-row" id="search-row" hidden>
@@ -99,16 +100,6 @@
             </div>
             <div class="filter-row">
               <div class="categories" id="categories" aria-label="분야"></div>
-              <details class="date-details">
-                <summary>날짜로 이동 ＋</summary>
-                <div>
-                  <label
-                    >연·월<input type="month" id="month" min="1950-01" /></label
-                  ><label
-                    >정확한 날짜<input type="date" id="day" min="1950-01-01"
-                  /></label>
-                </div>
-              </details>
             </div>
           </section>
           <div class="memory-views">
