@@ -1,0 +1,1560 @@
+[
+  {
+    "id": "kr-acheson-1950",
+    "title": "애치슨, 미국의 아시아 정책 연설.",
+    "description": "미국 현지 날짜 기준.",
+    "date_start": "1950-01-12",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "애치슨, 미국의 아시아 정책 연설.",
+        "source_url": "https://history.state.gov/historicaldocuments/frus1950v06/d135",
+        "publisher": "미국 국무부 역사국",
+        "license": "Facts-only extraction; independently worded labels; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-election-1950",
+    "title": "제2대 국회의원 선거 실시.",
+    "description": "",
+    "date_start": "1950-05-30",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "제2대 국회의원 선거 실시.",
+        "source_url": "https://db.history.go.kr/contemp/level.do?levelId=dh_017_1950_05_30_0100",
+        "publisher": "국사편찬위원회",
+        "license": "Facts-only extraction; independently worded labels; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-bank-1950",
+    "title": "한국은행 설립 및 업무 개시.",
+    "description": "",
+    "date_start": "1950-06-12",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "경제",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "한국은행 설립 및 업무 개시",
+        "source_url": "https://archives.bok.or.kr/content/exhibition/get/806/1243",
+        "publisher": "한국은행",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "korean-war-1950",
+    "title": "6·25 전쟁 발발.",
+    "description": "1950년 6월 25일 전쟁이 시작되었다. 전쟁은 수많은 사람의 일상과 삶의 터전을 바꾸었다.",
+    "date_start": "1950-06-25",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "역사·사회",
+    "verification_status": "curated_sample",
+    "sources": [
+      {
+        "source_title": "Korean Armistice Agreement (1953)",
+        "source_url": "https://www.archives.gov/milestone-documents/armistice-agreement-restoration-south-korean-state",
+        "publisher": "미국 국립문서기록관리청",
+        "license": "Facts only; original Korean summary, no article text reused",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-incheon-1950",
+    "title": "인천상륙작전 개시.",
+    "description": "작전 개시일을 기록합니다.",
+    "date_start": "1950-09-15",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "역사·사회",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "인천상륙작전 개시.",
+        "source_url": "https://unarchives.mpva.go.kr/contents/map",
+        "publisher": "국가보훈부",
+        "license": "Facts-only extraction; independently worded labels; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-200-relief",
+    "title": "중앙구호위원회 설치.",
+    "description": "",
+    "date_start": "1950-10-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "역사·사회",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "중앙구호위원회 설치",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=200",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-500-peace-line",
+    "title": "평화선 선언 발표.",
+    "description": "",
+    "date_start": "1952-01-18",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "평화선 선언 발표",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=500",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "armistice-1953",
+    "title": "판문점에서 정전협정 체결.",
+    "description": "1953년 7월 27일 정전협정이 체결되었다. 정전은 평화협정과 구분된다.",
+    "date_start": "1953-07-27",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "역사·사회",
+    "verification_status": "curated_sample",
+    "sources": [
+      {
+        "source_title": "Korean Armistice Agreement (1953)",
+        "source_url": "https://www.archives.gov/milestone-documents/armistice-agreement-restoration-south-korean-state",
+        "publisher": "미국 국립문서기록관리청",
+        "license": "Facts only; original Korean summary, no article text reused",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-501-initial",
+    "title": "한미상호방위조약 가조인.",
+    "description": "",
+    "date_start": "1953-08-08",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "한미상호방위조약 가조인",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=501",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-501-signed",
+    "title": "한미상호방위조약 정식 서명.",
+    "description": "",
+    "date_start": "1953-10-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "한미상호방위조약 정식 서명",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=501",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-501-effective",
+    "title": "한미상호방위조약 발효.",
+    "description": "",
+    "date_start": "1954-11-18",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "한미상호방위조약 발효",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=501",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-200-welfare",
+    "title": "보건사회부 신설.",
+    "description": "",
+    "date_start": "1955-02-17",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "보건사회부 신설",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=200",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-democracy-rigged-election",
+    "title": "3·15 부정선거와 마산 시위.",
+    "description": "",
+    "date_start": "1960-03-15",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "3·15 부정선거와 마산 시위",
+        "source_url": "https://theme.archives.go.kr/next/419/info01.do?menuId=01",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-democracy-kim-ju-yul",
+    "title": "마산에서 김주열의 시신 발견.",
+    "description": "",
+    "date_start": "1960-04-11",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "마산에서 김주열의 시신 발견",
+        "source_url": "https://theme.archives.go.kr/next/419/info01.do?menuId=01",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-democracy-april18",
+    "title": "고려대학교 학생들의 시위.",
+    "description": "",
+    "date_start": "1960-04-18",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "고려대학교 학생들의 시위",
+        "source_url": "https://theme.archives.go.kr/next/419/info01.do?menuId=01",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-democracy-revolution",
+    "title": "4·19 혁명.",
+    "description": "",
+    "date_start": "1960-04-19",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "4·19 혁명",
+        "source_url": "https://theme.archives.go.kr/next/419/info01.do?menuId=01",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-democracy-professors",
+    "title": "교수단의 시국 시위.",
+    "description": "",
+    "date_start": "1960-04-25",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "교수단의 시국 시위",
+        "source_url": "https://theme.archives.go.kr/next/419/info01.do?menuId=01",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-democracy-resignation",
+    "title": "이승만 대통령 하야 성명 발표.",
+    "description": "",
+    "date_start": "1960-04-26",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "이승만 대통령 하야 성명 발표",
+        "source_url": "https://theme.archives.go.kr/next/419/info01.do?menuId=01",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-101-parliamentary",
+    "title": "의원내각제 개헌안 통과.",
+    "description": "",
+    "date_start": "1960-06-15",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "의원내각제 개헌안 통과",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=101",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-democracy-assembly1960",
+    "title": "제5대 국회의원 선거 실시.",
+    "description": "",
+    "date_start": "1960-07-29",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "제5대 국회의원 선거 실시",
+        "source_url": "https://theme.archives.go.kr/next/419/info01.do?menuId=01",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-democracy-coup1961",
+    "title": "5·16 군사정변.",
+    "description": "",
+    "date_start": "1961-05-16",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "5·16 군사정변",
+        "source_url": "https://theme.archives.go.kr/next/419/info01.do?menuId=01",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-305-plan1",
+    "title": "제1차 경제개발 5개년 계획 발표.",
+    "description": "",
+    "date_start": "1962-01-13",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "경제",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "제1차 경제개발 5개년 계획 발표",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=305",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-207-law",
+    "title": "주민등록법 제정.",
+    "description": "",
+    "date_start": "1962-05-10",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "주민등록법 제정",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=207",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-currency-1962",
+    "title": "화폐 단위를 환에서 원으로 변경.",
+    "description": "",
+    "date_start": "1962-06-10",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "경제",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "화폐 단위를 환에서 원으로 변경",
+        "source_url": "https://archives.bok.or.kr/content/exhibition/get/803/1302",
+        "publisher": "한국은행",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-213-law",
+    "title": "의료보험법 제정.",
+    "description": "",
+    "date_start": "1963-12-16",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "의료보험법 제정",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=213",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-502-treaty",
+    "title": "한일기본조약 서명.",
+    "description": "",
+    "date_start": "1965-06-22",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "한일기본조약 서명",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=502",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-502-effective",
+    "title": "한일기본조약 발효.",
+    "description": "",
+    "date_start": "1965-12-18",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "한일기본조약 발효",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=502",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-504-sofa",
+    "title": "한미 주둔군지위협정(SOFA) 체결.",
+    "description": "",
+    "date_start": "1966-07-09",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "한미 주둔군지위협정(SOFA) 체결",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=504",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-305-plan2",
+    "title": "제2차 경제개발 5개년 계획 발표.",
+    "description": "",
+    "date_start": "1966-07-29",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "경제",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "제2차 경제개발 5개년 계획 발표",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=305",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-306-start",
+    "title": "경부고속도로 착공.",
+    "description": "",
+    "date_start": "1968-02-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "경부고속도로 착공",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=306",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-505-reserve",
+    "title": "향토예비군 창설.",
+    "description": "",
+    "date_start": "1968-04-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "역사·사회",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "향토예비군 창설",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=505",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-306-open",
+    "title": "경부고속도로 전 구간 개통.",
+    "description": "",
+    "date_start": "1970-07-07",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "경부고속도로 전 구간 개통",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=306",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-401-add",
+    "title": "국방과학연구소 신설.",
+    "description": "",
+    "date_start": "1970-08-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "국방과학연구소 신설",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=401",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-305-plan3",
+    "title": "제3차 경제개발 5개년 계획 발표.",
+    "description": "",
+    "date_start": "1971-02-09",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "경제",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "제3차 경제개발 5개년 계획 발표",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=305",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-307-greenbelt",
+    "title": "첫 개발제한구역 지정.",
+    "description": "",
+    "date_start": "1971-07-30",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "첫 개발제한구역 지정",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=307",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-600-joint",
+    "title": "7·4 남북공동성명 발표.",
+    "description": "",
+    "date_start": "1972-07-04",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "7·4 남북공동성명 발표",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=600",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-102-martial",
+    "title": "비상계엄과 유신 특별선언 발표.",
+    "description": "",
+    "date_start": "1972-10-17",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "비상계엄과 유신 특별선언 발표",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=102",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-102-constitution",
+    "title": "유신헌법 공포.",
+    "description": "",
+    "date_start": "1972-12-27",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "유신헌법 공포",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=102",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-305-plan4",
+    "title": "제4차 경제개발 5개년 계획 발표.",
+    "description": "",
+    "date_start": "1976-06-11",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "경제",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "제4차 경제개발 5개년 계획 발표",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=305",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-213-workplace",
+    "title": "500인 이상 사업장 의료보험 시행.",
+    "description": "",
+    "date_start": "1977-07-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "500인 이상 사업장 의료보험 시행",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=213",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-309-ceremony",
+    "title": "고리 원자력발전소 1호기 준공식.",
+    "description": "상업운전 개시일이 아니라 준공식이 열린 날짜를 기록했다.",
+    "date_start": "1978-07-20",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "고리 원자력발전소 1호기 준공식",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=309",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-gwangju-1980",
+    "title": "5·18 민주화운동.",
+    "description": "",
+    "date_start": "1980-05-18",
+    "date_end": "1980-05-27",
+    "date_precision": "range",
+    "category": "역사·사회",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "5·18 민주화운동",
+        "source_url": "https://www.518archives.go.kr/dcma/DcmaPageLink.do?baseMenuNo=1000000&link=1010000",
+        "publisher": "5·18민주화운동기록관",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-208-color-tv",
+    "title": "컬러텔레비전 방송 시작.",
+    "description": "",
+    "date_start": "1980-12-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "컬러텔레비전 방송 시작",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=208",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-601-family1985",
+    "title": "남북 이산가족 고향방문단 교환 방문.",
+    "description": "",
+    "date_start": "1985-09-20",
+    "date_end": "1985-09-23",
+    "date_precision": "range",
+    "category": "역사·사회",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "남북 이산가족 고향방문단 교환 방문",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=601",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-june-1987",
+    "title": "6·10 민주항쟁.",
+    "description": "",
+    "date_start": "1987-06-10",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "역사·사회",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "6·10 민주항쟁",
+        "source_url": "https://theme.archives.go.kr/next/anniversary/anniversary.do?anniversaryId=9841000000",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-403-sejong",
+    "title": "남극 세종과학기지 준공.",
+    "description": "",
+    "date_start": "1988-02-17",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "남극 세종과학기지 준공",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=403",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-605-july7",
+    "title": "7·7 대북정책 특별선언 발표.",
+    "description": "",
+    "date_start": "1988-07-07",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "7·7 대북정책 특별선언 발표",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=605",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "seoul-1988",
+    "title": "서울 올림픽 개막.",
+    "description": "서울에서 제24회 하계 올림픽이 개막했다. 대회는 10월 2일까지 이어졌다.",
+    "date_start": "1988-09-17",
+    "date_end": "1988-10-02",
+    "date_precision": "range",
+    "category": "스포츠",
+    "verification_status": "curated_sample",
+    "sources": [
+      {
+        "source_title": "Olympic Games 1988",
+        "source_url": "https://www.fei.org/history/olympic-games/1988-seoul-republic-korea",
+        "publisher": "국제승마연맹",
+        "license": "Facts only; original Korean summary, no article text reused",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-215-travel",
+    "title": "해외여행 전면 자유화.",
+    "description": "",
+    "date_start": "1989-01-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "해외여행 전면 자유화",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=215",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-213-universal",
+    "title": "전 국민 의료보험 실현.",
+    "description": "",
+    "date_start": "1989-07-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "전 국민 의료보험 실현",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=213",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-107-local1991",
+    "title": "기초의회 의원선거 실시.",
+    "description": "",
+    "date_start": "1991-03-26",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "기초의회 의원선거 실시",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=107",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-107-regional1991",
+    "title": "광역의회 의원선거 실시.",
+    "description": "",
+    "date_start": "1991-06-20",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "광역의회 의원선거 실시",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=107",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-un-1991",
+    "title": "대한민국, 유엔 회원국으로 가입.",
+    "description": "",
+    "date_start": "1991-09-17",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "대한민국, 유엔 회원국으로 가입",
+        "source_url": "https://www.un.org/en/about-us/member-states",
+        "publisher": "United Nations",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-319-real-name",
+    "title": "금융실명제 실시.",
+    "description": "",
+    "date_start": "1993-08-12",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "경제",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "금융실명제 실시",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=319",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-107-local1995",
+    "title": "제1회 전국동시지방선거 실시.",
+    "description": "",
+    "date_start": "1995-06-27",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "제1회 전국동시지방선거 실시",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=107",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-321-oecd",
+    "title": "대한민국, OECD 가입.",
+    "description": "",
+    "date_start": "1996-12-12",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "경제",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "대한민국, OECD 가입",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=321",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "hunminjeongeum-1997",
+    "title": "훈민정음 해례본, 유네스코 세계기록유산 등재.",
+    "description": "훈민정음 해례본이 세계기록유산에 등재되었다. 이 자료에서는 등재 연도만을 사용한다.",
+    "date_start": "1997-01-01",
+    "date_end": null,
+    "date_precision": "year",
+    "category": "문화",
+    "verification_status": "curated_sample",
+    "sources": [
+      {
+        "source_title": "Memory of the World",
+        "source_url": "https://unesco.or.kr/eng/mow/",
+        "publisher": "유네스코한국위원회",
+        "license": "Facts only; original Korean summary, no article text reused",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-510-declaration",
+    "title": "김대중·오부치 공동선언 발표.",
+    "description": "",
+    "date_start": "1998-10-08",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "김대중·오부치 공동선언 발표",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=510",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-incheon-airport-2001",
+    "title": "인천국제공항 개항.",
+    "description": "",
+    "date_start": "2001-03-29",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "인천국제공항 개항",
+        "source_url": "https://business.airport.kr/co_en/4382/subview.do",
+        "publisher": "인천국제공항공사",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "worldcup-2002-quarterfinal",
+    "title": "대한민국, 월드컵 4강 진출.",
+    "description": "광주에서 열린 스페인과의 8강전. 연장전까지 0대 0으로 맞선 뒤 승부차기에서 대한민국이 승리했다.",
+    "date_start": "2002-06-22",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "스포츠",
+    "verification_status": "curated_sample",
+    "sources": [
+      {
+        "source_title": "Flashback: Korea Republic make quarter-final history",
+        "source_url": "https://www.the-afc.com/en/national/fifa_world_cup/news/flashback_korea_republic_make_quarter-final_history.html",
+        "publisher": "아시아축구연맹",
+        "license": "Facts only; original Korean summary, no article text reused",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-ktx-2004",
+    "title": "KTX 운행 시작.",
+    "description": "",
+    "date_start": "2004-04-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "KTX 운행 시작",
+        "source_url": "https://info.korail.com/info/contents.do?key=855",
+        "publisher": "한국철도공사",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-225-civil",
+    "title": "호주제 폐지를 위한 민법 개정 공포.",
+    "description": "개정법 공포일을 기록했으며, 새로운 가족관계등록제의 시행일과 구분한다.",
+    "date_start": "2005-03-31",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "호주제 폐지를 위한 민법 개정 공포",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=225",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-324-talks",
+    "title": "한미 FTA 공식 협상 개시 선언.",
+    "description": "",
+    "date_start": "2006-02-03",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "경제",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "한미 FTA 공식 협상 개시 선언",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=324",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-324-agreement",
+    "title": "한미 FTA 협상 타결.",
+    "description": "협상 타결일이며 협정 서명일이나 발효일을 뜻하지 않는다.",
+    "date_start": "2007-04-02",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "경제",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "한미 FTA 협상 타결",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=324",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-111-sejong",
+    "title": "행정중심복합도시 기공식.",
+    "description": "",
+    "date_start": "2007-07-20",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "행정중심복합도시 기공식",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=111",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-611-summit",
+    "title": "제2차 남북정상회담 개최.",
+    "description": "",
+    "date_start": "2007-10-02",
+    "date_end": "2007-10-04",
+    "date_precision": "range",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "제2차 남북정상회담 개최",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=611",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-511-g20",
+    "title": "서울 G20 정상회의 개최.",
+    "description": "",
+    "date_start": "2010-11-11",
+    "date_end": "2010-11-12",
+    "date_precision": "range",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "서울 G20 정상회의 개최",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=511",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-policy-324-effective",
+    "title": "한미 FTA 발효.",
+    "description": "",
+    "date_start": "2012-03-15",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "경제",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "한미 FTA 발효",
+        "source_url": "https://theme.archives.go.kr/next/govpo/detail.do?policySeq=324",
+        "publisher": "국가기록원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-gangnam-style-2012",
+    "title": "싸이, 「강남스타일」 뮤직비디오 공개.",
+    "description": "공식 소속사 게시물과 공식 아티스트 채널의 공개 날짜를 기준으로 했다.",
+    "date_start": "2012-07-15",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "음악",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "싸이, 「강남스타일」 뮤직비디오 공개",
+        "source_url": "https://yg-life.com/archives/12195?lang=ja",
+        "publisher": "YG Entertainment / YG LIFE",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-naro-2013",
+    "title": "나로호 3차 발사 성공.",
+    "description": "",
+    "date_start": "2013-01-30",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "나로호 3차 발사 성공",
+        "source_url": "https://www.kari.re.kr/kor/contents/55",
+        "publisher": "한국항공우주연구원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-sewol-2014",
+    "title": "세월호 참사.",
+    "description": "특별법에서 규정한 참사의 발생 날짜를 기록했다.",
+    "date_start": "2014-04-16",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "역사·사회",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "세월호 참사",
+        "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?ancYnChk=1&chrClsCd=010202&efYd=20170321&gubun=api&lsiSeq=192610&mobile=&urlMode=lsInfoP",
+        "publisher": "국가법령정보센터",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-impeachment-2017",
+    "title": "헌법재판소, 박근혜 대통령 파면 결정.",
+    "description": "사건번호 2016헌나1의 종국일자와 결정을 확인했다.",
+    "date_start": "2017-03-10",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "헌법재판소, 박근혜 대통령 파면 결정",
+        "source_url": "https://www.ccourt.go.kr/site/kor/ex/bbs/View.do?bcIdx=941743&cbIdx=1106",
+        "publisher": "헌법재판소",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-pyeongchang-2018",
+    "title": "평창 동계올림픽 개최.",
+    "description": "개회식부터 폐회식까지의 기간이다. 일부 종목의 사전 경기 시작일과 구분한다.",
+    "date_start": "2018-02-09",
+    "date_end": "2018-02-25",
+    "date_precision": "range",
+    "category": "스포츠",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "평창 동계올림픽 개최",
+        "source_url": "https://www.joc.or.jp/games/olympic/pyeongchang/",
+        "publisher": "일본올림픽위원회",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-covid-2020",
+    "title": "국내 첫 코로나19 확진 확인.",
+    "description": "국내 유입 초기 경과에 기록된 첫 확진 날짜를 사용했다.",
+    "date_start": "2020-01-20",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "역사·사회",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "국내 첫 코로나19 확진 확인",
+        "source_url": "https://www.kdca.go.kr/bbs/kdca/50/248460/download.do",
+        "publisher": "질병관리청",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-parasite-2020",
+    "title": "영화 「기생충」, 아카데미 작품상 수상.",
+    "description": "미국 로스앤젤레스 현지 시상식 날짜 기준이다. 대한민국에서는 2월 10일이었다.",
+    "date_start": "2020-02-09",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "영화 「기생충」, 아카데미 작품상 수상",
+        "source_url": "https://www.oscars.org/oscars/ceremonies/2020/A--E",
+        "publisher": "Academy of Motion Picture Arts and Sciences",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-nuri-2022",
+    "title": "누리호 2차 발사 성공.",
+    "description": "",
+    "date_start": "2022-06-21",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "누리호 2차 발사 성공",
+        "source_url": "https://www.kari.re.kr/kor/contents/51",
+        "publisher": "한국항공우주연구원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-nuri-2023",
+    "title": "누리호 3차 발사 성공.",
+    "description": "출처에 월까지만 명시된 발사는 월 단위로 기록했다.",
+    "date_start": "2023-05-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "누리호 3차 발사 성공",
+        "source_url": "https://www.kari.re.kr/kor/contents/51",
+        "publisher": "한국항공우주연구원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-han-kang-2024",
+    "title": "한강, 노벨문학상 수상자로 선정.",
+    "description": "수상자 발표 날짜이며 시상식 날짜와 구분한다.",
+    "date_start": "2024-10-10",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "문화",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "한강, 노벨문학상 수상자로 선정",
+        "source_url": "https://www.nobelprize.org/uploads/2024/10/press-literatureprize2024.pdf",
+        "publisher": "The Swedish Academy / Nobel Prize",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-president-2025",
+    "title": "이재명 대통령 취임.",
+    "description": "취임 당일 공식 업무 개시를 다룬 기록을 확인했다.",
+    "date_start": "2025-06-04",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "이재명 대통령 취임",
+        "source_url": "https://www.ktv.go.kr/content/view?content_id=729268",
+        "publisher": "KTV 국민방송",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-apec-2025",
+    "title": "경주 APEC 정상회의 개최.",
+    "description": "",
+    "date_start": "2025-10-31",
+    "date_end": "2025-11-01",
+    "date_precision": "range",
+    "category": "정치",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "경주 APEC 정상회의 개최",
+        "source_url": "https://www.apec.org/meeting-papers/leaders-declarations/2025/2025-apec-leaders--gyeongju-declaration",
+        "publisher": "Asia-Pacific Economic Cooperation",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-nuri-2025",
+    "title": "누리호 4차 발사 성공.",
+    "description": "출처에 월까지만 명시된 발사는 월 단위로 기록했다.",
+    "date_start": "2025-11-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "누리호 4차 발사 성공",
+        "source_url": "https://www.kari.re.kr/kor/contents/51",
+        "publisher": "한국항공우주연구원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "kr-nuri-2026",
+    "title": "누리호 5차 발사 성공.",
+    "description": "출처에 월까지만 명시된 발사는 월 단위로 기록했다.",
+    "date_start": "2026-10-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "source_title": "누리호 5차 발사 성공",
+        "source_url": "https://www.kari.re.kr/kor/contents/51",
+        "publisher": "한국항공우주연구원",
+        "license": "Facts-only extraction; independently worded event labels; source text and media not reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ]
+  }
+]

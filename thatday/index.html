@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta
+      name="description"
+      content="대한민국의 모든 날, 그리고 그 안에 살았던 우리. 역사와 개인의 기억이 만나는 공동의 연대기."
+    />
+    <meta name="theme-color" content="#F3F0E8" />
+    <meta property="og:title" content="그날 우리는" />
+    <meta
+      property="og:description"
+      content="대한민국의 모든 날, 그리고 그 안에 살았던 우리."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:url" content="https://bybrezel.com/thatday/" />
+    <meta property="og:image" content="https://bybrezel.com/thatday/og.svg" />
+    <link rel="canonical" href="https://bybrezel.com/thatday/" />
+    <link rel="icon" href="./favicon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>그날 우리는 — 대한민국의 모든 날</title>
+    <script src="./config.js" defer></script>
+    <script src="./vendor/supabase.js" defer></script>
+    <script src="./app.js" type="module"></script>
+  </head>
+  <body>
+    <a class="skip" href="#chronology">본문으로 건너뛰기</a>
+    <header class="masthead">
+      <a class="brand" href="./" data-nav="timeline"
+        >그날 우리는<span class="brand-dot"></span></a
+      ><span class="mast-caption">THAT DAY, WE</span>
+      <nav aria-label="주 메뉴">
+        <a href="./" data-nav="timeline" aria-current="page">연대기</a
+        ><a href="./?view=mine" data-nav="mine"
+          >나의 기록<span class="nav-count" id="archive-count"></span></a
+        ><button data-action="write">기록 남기기 ＋</button>
+      </nav>
+      <button class="account-button" data-action="account" id="account-button">
+        계정 ↗
+      </button>
+    </header>
+    <div class="page-grid">
+      <aside class="index">
+        <div class="index-top">
+          <span class="eyebrow">대한민국의 모든 날</span
+          ><span class="mono" data-years>1950—현재</span>
+        </div>
+        <div class="index-years" id="year-index" aria-label="연도 색인"></div>
+        <p class="index-note">
+          우리가 기억하는 날들이<br />우리의 역사가 됩니다.
+        </p>
+        <span class="index-number mono">ARCHIVE / 001</span>
+      </aside>
+      <main id="chronology">
+        <section class="intro">
+          <div class="intro-meta">
+            <span class="eyebrow">공동의 연대기 / COLLECTIVE CHRONICLE</span
+            ><span class="mono">기록 중 <span class="live-dot"></span></span>
+          </div>
+          <h1 id="page-heading">
+            대한민국의 모든 날,<br />그리고 그 안에 살았던 우리.
+          </h1>
+          <div class="intro-bottom">
+            <p>
+              역사의 한 줄 옆에, 당신의 한 줄을 남겨 주세요.<br />작고 평범한
+              하루도 우리 역사의 일부이니까요.
+            </p>
+            <span class="intro-stamp" aria-hidden="true"
+              >그날<br />우리는<span>記錄</span></span
+            >
+          </div>
+        </section>
+        <div id="archive-content">
+          <section class="toolbar" aria-label="연대기 탐색">
+            <div class="toolbar-top">
+              <span class="section-label" id="section-label"
+                >01 / CHRONOLOGY</span
+              >
+              <div class="tools">
+                <button
+                  data-action="search"
+                  aria-expanded="false"
+                  aria-controls="search-row"
+                >
+                  검색</button
+                ><span class="tool-divider"></span
+                ><label class="year-select"
+                  ><span class="sr-only">연도</span
+                  ><select id="year-select">
+                    <option value="">모든 연도</option>
+                  </select></label
+                >
+              </div>
+            </div>
+            <div class="search-row" id="search-row" hidden>
+              <input
+                type="search"
+                id="query"
+                maxlength="100"
+                aria-label="검색어"
+                placeholder="사건, 단어 또는 날짜를 찾아보세요"
+              /><button data-action="clear-search" aria-label="검색 닫기">
+                ×
+              </button>
+            </div>
+            <div class="filter-row">
+              <div class="categories" id="categories" aria-label="분야"></div>
+              <details class="date-details">
+                <summary>날짜로 이동 ＋</summary>
+                <div>
+                  <label
+                    >연·월<input type="month" id="month" min="1950-01" /></label
+                  ><label
+                    >정확한 날짜<input type="date" id="day" min="1950-01-01"
+                  /></label>
+                </div>
+              </details>
+            </div>
+          </section>
+          <div class="legend">
+            <span
+              ><span class="outline-dot"></span>기억하는 사건을 표시해
+              보세요</span
+            ><span><span class="small-dot"></span>개인의 기록</span>
+          </div>
+          <div id="connection-notice" class="inline-message" hidden></div>
+          <div id="merge-notice" class="inline-message" hidden></div>
+          <p class="sample-note" id="dataset-note"></p>
+          <p id="loading" class="fine" role="status" hidden>
+            기록을 불러오는 중입니다…
+          </p>
+          <div class="chronicle" id="lines"></div>
+          <button id="more-events" class="load-more" hidden>
+            다음 역사 기록 읽기 ↓</button
+          ><button id="more-records" class="load-more" hidden>
+            개인의 기록 더 읽기 ↓
+          </button>
+          <div class="end-note">
+            <span class="small-dot"></span>
+            <p>역사는 계속되고,<br />우리의 기록도 이어집니다.</p>
+            <button data-action="write">당신의 한 줄을 남겨 주세요 ↗</button>
+          </div>
+        </div>
+        <div id="moderation-content" class="moderation" hidden></div>
+        <article id="legal-content" class="legal" hidden></article>
+        <footer>
+          <div>
+            <a href="./" data-nav="timeline">그날 우리는</a
+            ><span>THAT DAY, WE</span>
+          </div>
+          <p>역사의 행간에, 우리의 삶을.</p>
+          <div>
+            <a href="./?view=privacy" data-nav="privacy">개인정보</a
+            ><a href="./?view=terms" data-nav="terms">이용약관</a
+            ><a
+              href="./?view=moderation"
+              data-nav="moderation"
+              id="moderation-link"
+              hidden
+              >검수</a
+            ><span data-years>1950—현재</span>
+          </div>
+        </footer>
+      </main>
+      <aside class="margin-note">
+        <span class="eyebrow">기억에 관하여</span>
+        <p>우리는 모두<br />역사의 목격자이자<br />각자의 기록자입니다.</p>
+        <div class="annotation">
+          <span class="outline-dot"></span> 기억하는 날의<br />작은 원을 눌러
+          주세요.<br /><br />당신에게 선명한 날들이<br />한 줄씩 남습니다.
+        </div>
+        <span class="vertical-label">THE ORDINARY BECOMES HISTORY</span>
+      </aside>
+    </div>
+    <div id="status" role="status" aria-live="polite"></div>
+    <div id="error" role="alert"></div>
+    <dialog id="sheet" class="sheet" aria-labelledby="sheet-title">
+      <div class="sheet-inner">
+        <div class="sheet-handle"></div>
+        <header>
+          <h2 id="sheet-title"></h2>
+          <button id="close-sheet" aria-label="닫기">×</button>
+        </header>
+        <div id="sheet-body"></div>
+      </div>
+    </dialog>
+    <noscript
+      ><p class="legal">
+        기록 탐색과 로그인에는 JavaScript가 필요합니다.
+        <a href="./data/events.json">출처를 포함한 역사 시작 자료 읽기</a>
+      </p></noscript
+    >
+  </body>
+</html>
