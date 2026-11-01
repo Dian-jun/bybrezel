@@ -54,7 +54,7 @@ function notify(text, error = false) {
 }
 function readURL() {
   const p = new URLSearchParams(location.search);
-  state.view = ["mine", "moderation", "privacy", "terms"].includes(
+  state.view = ["mine", "moderation", "privacy", "terms", "sources"].includes(
     p.get("view"),
   )
     ? p.get("view")
@@ -87,11 +87,13 @@ function heading() {
       ? "나의 기록<br>내가 지나온 날들의 증거."
       : state.view === "moderation"
         ? "기록 검수<br>공개의 문턱에서."
-        : state.view === "privacy"
-          ? "개인정보 처리방침"
-          : state.view === "terms"
-            ? "함께 기록하기 위한 약속"
-            : "대한민국의 모든 날,<br>그리고 그 안에 살았던 우리.";
+        : state.view === "sources"
+          ? "출처 확인"
+          : state.view === "privacy"
+            ? "개인정보 처리방침"
+            : state.view === "terms"
+              ? "함께 기록하기 위한 약속"
+              : "대한민국의 모든 날,<br>그리고 그 안에 살았던 우리.";
   $("#page-heading").innerHTML = title;
   document.title = `${state.view === "mine" ? "나의 기록" : state.view === "moderation" ? "기록 검수" : "그날 우리는"} — 대한민국의 모든 날`;
   $("#section-label").textContent =
@@ -145,15 +147,7 @@ function heading() {
 function eventHTML(e) {
   const remembered = selected().includes(e.id),
     open = state.expanded === e.id;
-  return `<article class="event ${remembered ? "remembered" : ""}" id="event-${h(e.id)}"><div class="event-line"><button class="remember-button" data-remember="${h(e.id)}" aria-pressed="${remembered}" aria-label="${h(e.title)} ${remembered ? "기억 선택 해제" : "기억으로 선택"}"><span class="memory-dot"></span></button><time class="date mono" datetime="${h(e.date_start)}">${h(dateLabel(e.date_start, e.date_precision, e.date_end))}</time><button class="event-title" data-expand="${h(e.id)}" aria-expanded="${open}" aria-controls="detail-${h(e.id)}">${h(e.title)}</button><button class="expand-button" data-expand="${h(e.id)}" aria-label="사건 상세 정보" aria-expanded="${open}">${open ? "−" : "＋"}</button></div><div class="expand-grid" data-open="${open}" id="detail-${h(e.id)}" ${open ? "" : "inert"}><div><div class="event-detail"><span class="eyebrow">${h(e.category)} · 출처 기반 역사 자료 · ${e.verification_status === "curated_sample" ? "시작 자료" : "출처 확인"}</span><p>${h(e.description)}</p><div class="source-list">${e.sources
-    .filter((s) => s.source_url.startsWith("https://"))
-    .map(
-      (s) =>
-        `<a href="${h(s.source_url)}" target="_blank" rel="noreferrer">${h(s.publisher)} · ${h(s.source_title)} ↗</a>`,
-    )
-    .join(
-      "",
-    )}<span>원문은 출처에서 확인하세요. 사실을 요약한 자체 작성 문장입니다.</span></div><div class="event-actions"><button data-write-event="${h(e.id)}">＋ 내 이야기</button><a href="${h(route(backend.base, { event: e.id }))}">고유 링크 ↗</a><a href="${h(route(backend.base, { date: e.date_start }))}">그날의 기록</a></div></div></div></div></article>`;
+  return `<article class="event ${remembered ? "remembered" : ""}" id="event-${h(e.id)}"><div class="event-line"><button class="remember-button" data-remember="${h(e.id)}" aria-pressed="${remembered}" aria-label="${h(e.title)} ${remembered ? "기억 선택 해제" : "기억으로 선택"}"><span class="memory-dot"></span></button><time class="date mono" datetime="${h(e.date_start)}">${h(dateLabel(e.date_start, e.date_precision, e.date_end))}</time><button class="event-title" data-expand="${h(e.id)}" aria-expanded="${open}" aria-controls="detail-${h(e.id)}">${h(e.title)}</button><button class="expand-button" data-expand="${h(e.id)}" aria-label="사건 상세 정보" aria-expanded="${open}">${open ? "−" : "＋"}</button></div><div class="expand-grid" data-open="${open}" id="detail-${h(e.id)}" ${open ? "" : "inert"}><div><div class="event-detail"><span class="eyebrow">${h(e.category)}</span>${e.description ? `<p>${h(e.description)}</p>` : ""}<div class="event-actions"><button data-write-event="${h(e.id)}">＋ 내 이야기</button><a href="${h(route(backend.base, { event: e.id }))}">고유 링크 ↗</a><a href="${h(route(backend.base, { date: e.date_start }))}">그날의 기록</a></div></div></div></div></article>`;
 }
 function recordHTML(r) {
   const own = state.view === "mine";
@@ -220,10 +214,14 @@ async function refreshMe() {
 async function load() {
   const ticket = ++generation;
   heading();
-  const legal = ["privacy", "terms"].includes(state.view);
+  const legal = ["privacy", "terms", "sources"].includes(state.view);
   $("#archive-content").hidden = legal || state.view === "moderation";
   $("#legal-content").hidden = !legal;
   $("#moderation-content").hidden = state.view !== "moderation";
+  if (state.view === "sources") {
+    await renderSources(ticket);
+    return;
+  }
   if (legal) {
     renderLegal();
     return;
@@ -542,6 +540,45 @@ async function loadModeration() {
       `<h2>공개 검수 대기</h2>${data.pending.map((r) => `<article><p>${h(sentence(r.display_name, r.original_text, r.presentation_style))}</p><p class="fine">${h(dateLabel(r.date_start, r.date_precision, r.date_end))}</p>${buttons(r, r.id)}</article>`).join("") || "<p>검수 대기 기록이 없습니다.</p>"}<h2>접수된 신고</h2>${data.reports.map((r) => `<article><p>${h(r.reason)}</p><p>${h(sentence(r.display_name, r.original_text, r.presentation_style))}</p>${buttons(r, r.target_record_id)}</article>`).join("") || "<p>접수된 신고가 없습니다.</p>"}<h2>검수 이력</h2>${data.audit.map((a) => `<p class="fine">${h(a.created_at)} · ${h(a.action)} · ${h(a.reason)}</p>`).join("")}`;
   } catch (e) {
     notify(e.message, true);
+  }
+}
+async function renderSources(ticket) {
+  const container = $("#legal-content");
+  container.innerHTML = '<p role="status">출처를 불러오는 중입니다.</p>';
+  try {
+    let events = [],
+      offset = 0;
+    if (backend.configured) {
+      do {
+        const page = await backend.timeline({ offset });
+        if (ticket !== generation) return;
+        events.push(...page.events);
+        if (page.next === null || page.next === undefined) break;
+        if (page.next <= offset)
+          throw Error("출처 목록을 불러오지 못했습니다.");
+        offset = page.next;
+      } while (true);
+    } else events = filterStarter(state.starter, {});
+    if (ticket !== generation) return;
+    container.innerHTML = `<p>수록된 역사 사건의 출처와 원문 기사입니다. 사건별로 날짜와 자료를 모았습니다.</p><p>사건 설명은 사실을 요약한 자체 작성 문장이며, 원문과 사진의 권리는 각 출처에 있습니다.</p>${
+      events
+        .map(
+          (e) =>
+            `<section class="source-entry"><h2>${h(dateLabel(e.date_start, e.date_precision, e.date_end))} · ${h(e.title)}</h2><div class="source-list">${
+              (e.sources ?? [])
+                .filter((s) => s.source_url.startsWith("https://"))
+                .map(
+                  (s) =>
+                    `<a href="${h(s.source_url)}" target="_blank" rel="noreferrer">${h(s.publisher)} · ${h(s.source_title)} ↗</a>`,
+                )
+                .join("") || "<span>등록된 출처가 없습니다.</span>"
+            }</div></section>`,
+        )
+        .join("") || "<p>등록된 역사 자료가 없습니다.</p>"
+    }`;
+  } catch (error) {
+    if (ticket === generation)
+      container.innerHTML = `<p role="alert">${h(error.message)} 페이지를 새로고침해 주세요.</p>`;
   }
 }
 function renderLegal() {
