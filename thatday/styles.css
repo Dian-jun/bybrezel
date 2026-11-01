@@ -1763,24 +1763,25 @@ textarea {
     flex-basis: 42px;
   }
   .event-line {
-    grid-template-columns: 24px minmax(0, 1fr) 28px;
+    grid-template-columns: 20px 100px minmax(0, 1fr) 24px;
+    column-gap: 4px;
   }
   .event-line .date {
     grid-column: 2;
     font-size: 11px;
   }
   .event-title {
-    grid-column: 2;
-    grid-row: 2;
+    grid-column: 3;
+    grid-row: 1;
     font-size: 15px;
   }
   .event-line .expand-button {
-    grid-column: 3;
-    grid-row: 1 / span 2;
+    grid-column: 4;
+    grid-row: 1;
   }
   .remember-button {
     grid-column: 1;
-    grid-row: 1 / span 2;
+    grid-row: 1;
   }
   .event-detail {
     margin-left: 12px;
@@ -2367,5 +2368,25 @@ body[data-view="mine"] .time-atlas {
 @media (prefers-reduced-motion: reduce) {
   .life-line.inserted > span {
     animation: none;
+  }
+}
+
+/* Compact empty discovery: one message and one writing action. */
+.life-empty {
+  padding: 14px 0 6px;
+}
+.life-write {
+  border-top: 0;
+  padding-top: 4px;
+}
+@media (max-width: 760px) {
+  .event-line .date {
+    grid-row: 1;
+    padding-right: 4px;
+  }
+  .event-line .event-title {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: keep-all;
   }
 }

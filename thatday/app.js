@@ -208,7 +208,7 @@ function heading() {
 function eventHTML(e) {
   const remembered = selected().includes(e.id),
     open = state.expanded === e.id;
-  return `<article class="event ${remembered ? "remembered" : ""}" id="event-${h(e.id)}"><div class="event-line"><button class="remember-button" data-remember="${h(e.id)}" aria-pressed="${remembered}" aria-label="${h(e.title)} ${remembered ? "기억 선택 해제" : "기억으로 선택"}"><span class="memory-dot"></span></button><time class="date mono" datetime="${h(e.date_start)}">${h(dateLabel(e.date_start, e.date_precision, e.date_end))}</time><button class="event-title" data-expand="${h(e.id)}" aria-expanded="${open}" aria-controls="detail-${h(e.id)}">${h(e.title)}</button><button class="expand-button" data-expand="${h(e.id)}" aria-label="사건 상세 정보" aria-expanded="${open}">${open ? "−" : "＋"}</button></div><div class="expand-grid" data-open="${open}" id="detail-${h(e.id)}" ${open ? "" : "inert"}><div><div class="event-detail"><span class="eyebrow">${h(e.category)}</span>${state.me.user?.birth_year && Number(e.date_start.slice(0, 4)) < state.me.user.birth_year ? `<p class="fine">출생 이전의 사건입니다. 직접 경험한 기억과 나중에 알게 된 역사를 구분해 남겨 주세요.</p>` : ""}${e.description ? `<p>${h(e.description)}</p>` : ""}<div class="event-actions"><button data-write-event="${h(e.id)}">＋ 내 이야기</button><a href="${h(route(backend.base, { event: e.id }))}">고유 링크 ↗</a><a href="${h(route(backend.base, { date: e.date_start }))}">그날의 기록</a></div></div></div></div><div class="life-invite" ${remembered ? "" : "hidden"}><button data-lives="${h(e.id)}" aria-expanded="${Boolean(state.lives.get(e.id)?.open)}" aria-controls="lives-${h(e.id)}">이날을 기억하는 다른 사람들의 이야기 보기 ↓</button></div><div class="lives-panel expand-grid" id="lives-${h(e.id)}" data-open="${Boolean(state.lives.get(e.id)?.open)}" ${state.lives.get(e.id)?.open ? "" : "inert"}><div><div class="lives-content">${state.lives.get(e.id)?.open ? livesHTML(e) : ""}</div></div></div></article>`;
+  return `<article class="event ${remembered ? "remembered" : ""}" id="event-${h(e.id)}"><div class="event-line"><button class="remember-button" data-remember="${h(e.id)}" aria-pressed="${remembered}" aria-label="${h(e.title)} ${remembered ? "기억 선택 해제" : "기억으로 선택"}"><span class="memory-dot"></span></button><time class="date mono" datetime="${h(e.date_start)}">${h(dateLabel(e.date_start, e.date_precision, e.date_end))}</time><button class="event-title" data-expand="${h(e.id)}" aria-expanded="${open}" aria-controls="detail-${h(e.id)}">${h(e.title)}</button><button class="expand-button" data-expand="${h(e.id)}" aria-label="사건 상세 정보" aria-expanded="${open}">${open ? "−" : "＋"}</button></div><div class="expand-grid" data-open="${open}" id="detail-${h(e.id)}" ${open ? "" : "inert"}><div><div class="event-detail"><span class="eyebrow">${h(e.category)}</span>${state.me.user?.birth_year && Number(e.date_start.slice(0, 4)) < state.me.user.birth_year ? `<p class="fine">출생 이전의 사건입니다. 직접 경험한 기억과 나중에 알게 된 역사를 구분해 남겨 주세요.</p>` : ""}${e.description ? `<p>${h(e.description)}</p>` : ""}<div class="event-actions"><button data-write-event="${h(e.id)}">＋ 내 이야기</button><a href="${h(route(backend.base, { event: e.id }))}">고유 링크 ↗</a><a href="${h(route(backend.base, { date: e.date_start }))}">그날의 기록</a></div></div></div></div><div class="life-invite" ${remembered && !state.lives.get(e.id)?.open ? "" : "hidden"}><button data-lives="${h(e.id)}" aria-expanded="${Boolean(state.lives.get(e.id)?.open)}" aria-controls="lives-${h(e.id)}">다른 이야기 보기 ↓</button></div><div class="lives-panel expand-grid" id="lives-${h(e.id)}" data-open="${Boolean(state.lives.get(e.id)?.open)}" ${state.lives.get(e.id)?.open ? "" : "inert"}><div><div class="lives-content">${state.lives.get(e.id)?.open ? livesHTML(e) : ""}</div></div></div></article>`;
 }
 function personalDateLabel(record, event = null) {
   const source =
@@ -236,15 +236,11 @@ function livesHTML(event) {
         ? [data.justSaved]
         : [],
     );
-    const label =
-      group === "related"
-        ? "이 사건을 기억하는 사람들"
-        : "같은 날, 다른 이야기";
-    if (group === "same_day" && !data.sameDay)
-      return '<p class="fine">날짜가 정확히 확인되지 않은 사건은 같은 날의 이야기를 묶지 않습니다.</p>';
-    return `<section><h3>${label}</h3>${records.map((r) => `<div class="life-line" id="life-record-${h(r.id)}"><span aria-hidden="true">↳</span><div><p>${personalSentence(r.display_name, r.original_text, r.presentation_style)}</p><div class="record-meta"><span>${h(personalDateLabel(r))}</span>${r.is_own ? `<span>${r.visibility === "private" ? "나만 보기" : r.moderation_status !== "published" ? "공개 검토 중 · 나에게만 표시" : "내 공개 기록"}</span><button data-life-edit="${h(r.id)}" data-event="${h(event.id)}">수정·공개 범위</button><button data-life-delete="${h(r.id)}" data-event="${h(event.id)}">삭제</button>` : `<button data-report="${h(r.id)}">신고</button>`}</div></div></div>`).join("") || `<p class="fine">${group === "related" ? "아직 이 사건에 남겨진 이야기가 없어요." : "아직 같은 날의 다른 이야기가 없어요."}</p><p class="fine">당신의 이야기를 남겨보세요.</p>`}${page.next !== null ? `<button class="life-more" data-life-more="${h(event.id)}" data-group="${group}">다른 이야기 더 보기 ↓</button>` : ""}</section>`;
+    const label = group === "related" ? "이 사건의 기억" : "같은 날의 기록";
+    if ((group === "same_day" && !data.sameDay) || !records.length) return "";
+    return `<section><h3>${label}</h3>${records.map((r) => `<div class="life-line" id="life-record-${h(r.id)}"><span aria-hidden="true">↳</span><div><p>${personalSentence(r.display_name, r.original_text, r.presentation_style)}</p><div class="record-meta"><span>${h(personalDateLabel(r))}</span>${r.is_own ? `<span>${r.visibility === "private" ? "나만 보기" : r.moderation_status !== "published" ? "공개 검토 중 · 나에게만 표시" : "내 공개 기록"}</span><button data-life-edit="${h(r.id)}" data-event="${h(event.id)}">수정·공개 범위</button><button data-life-delete="${h(r.id)}" data-event="${h(event.id)}">삭제</button>` : `<button data-report="${h(r.id)}">신고</button>`}</div></div></div>`).join("")}${page.next !== null ? `<button class="life-more" data-life-more="${h(event.id)}" data-group="${group}">다른 이야기 더 보기 ↓</button>` : ""}</section>`;
   };
-  return `<div class="life-heading"><span>같은 날, 다른 인생</span><button data-lives="${h(event.id)}" aria-label="다른 사람들의 이야기 접기">접기 −</button></div>${data.participants > 0 ? `<p class="fine">이 사건을 기억하는 참여자 ${data.participants}명</p>` : ""}${lifeGroups.map(groupHTML).join("")}${data.justSaved && !lifeGroups.some((g) => matchesLife(data.justSaved, event, g)) ? `<section class="life-line" id="life-record-${h(data.justSaved.id)}"><div><p>${personalSentence(data.justSaved.display_name, data.justSaved.original_text, data.justSaved.presentation_style)}</p><p class="fine">${h(personalDateLabel(data.justSaved, event))} · ${data.justSaved.visibility === "private" ? "나만 보기" : "공개 검토 중"} · 정확한 같은 날의 기록으로 묶지 않았습니다.</p></div></section>` : ""}<div class="life-write"><p>당신은 그날 무엇을 하고 있었나요?</p><button data-write-event="${h(event.id)}">＋ ${data.related.records.length ? "내 이야기 남기기" : "첫 번째 이야기 남기기"}</button></div>`;
+  return `<div class="life-heading"><span>같은 날, 다른 인생</span><button data-lives="${h(event.id)}" aria-label="다른 사람들의 이야기 접기">접기 −</button></div>${data.participants > 0 ? `<p class="fine">이 사건을 기억하는 참여자 ${data.participants}명</p>` : ""}${lifeGroups.map(groupHTML).join("") || (!data.justSaved ? '<p class="fine life-empty">아직 남겨진 이야기가 없어요.</p>' : "")}${data.justSaved && !lifeGroups.some((g) => matchesLife(data.justSaved, event, g)) ? `<section class="life-line" id="life-record-${h(data.justSaved.id)}"><div><p>${personalSentence(data.justSaved.display_name, data.justSaved.original_text, data.justSaved.presentation_style)}</p><p class="fine">${h(personalDateLabel(data.justSaved, event))} · ${data.justSaved.visibility === "private" ? "나만 보기" : "공개 검토 중"} · 정확한 같은 날의 기록으로 묶지 않았습니다.</p></div></section>` : ""}<div class="life-write"><button data-write-event="${h(event.id)}">＋ 내 이야기 남기기</button></div>`;
 }
 function paintLives(id) {
   const data = state.lives.get(id),
@@ -253,6 +249,10 @@ function paintLives(id) {
   if (!event || !panel) return;
   panel.dataset.open = String(Boolean(data?.open));
   panel.inert = !data?.open;
+  const invite = document.querySelector(
+    `#event-${CSS.escape(id)} .life-invite`,
+  );
+  if (invite) invite.hidden = Boolean(data?.open) || !selected().includes(id);
   panel.querySelector(".lives-content").innerHTML = data?.open
     ? livesHTML(event)
     : "";
@@ -263,7 +263,7 @@ function paintLives(id) {
     invitation.textContent =
       data?.participants > 0
         ? `이 사건을 기억하는 참여자 ${data.participants}명 · 이야기 보기 ↓`
-        : "이날을 기억하는 다른 사람들의 이야기 보기 ↓";
+        : "다른 이야기 보기 ↓";
   document.querySelectorAll("[data-lives]").forEach((b) => {
     if (b.dataset.lives === id)
       b.setAttribute("aria-expanded", String(Boolean(data?.open)));
@@ -563,7 +563,8 @@ async function remember(id, button) {
     const line = document.getElementById(`event-${id}`);
     if (line) {
       line.classList.toggle("remembered", value);
-      line.querySelector(".life-invite").hidden = !value;
+      line.querySelector(".life-invite").hidden =
+        !value || Boolean(state.lives.get(id)?.open);
       const control = line.querySelector("[data-remember]");
       control.setAttribute("aria-pressed", String(value));
       control.setAttribute(

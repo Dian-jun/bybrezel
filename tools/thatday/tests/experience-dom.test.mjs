@@ -172,13 +172,11 @@ test(
       assert.equal(d.querySelector(".lives-panel").dataset.open, "false");
       click("[data-lives]");
       await wait(() =>
-        d.querySelector(".lives-content").textContent.includes("아직 이 사건"),
+        d.querySelector(".lives-content").textContent.includes("아직 남겨진"),
       );
-      assert.ok(
-        d
-          .querySelector(".lives-content")
-          .textContent.includes("같은 날, 다른 이야기"),
-      );
+      assert.equal(d.querySelectorAll(".life-empty").length,1);
+      assert.equal(d.querySelectorAll(".lives-content h3").length,0);
+      assert.equal(d.querySelector(".life-invite").hidden,true);
       h.failMemory();
       click("[data-remember]");
       await wait(() => !d.querySelector("[data-remember]").disabled);
