@@ -5,6 +5,7 @@ export function createBackend(config, sdk = globalThis.supabase) {
     config.supabaseUrl && config.supabasePublishableKey,
   );
   let client = null;
+  let guestRequest = null;
   if (configured) {
     const url = new URL(config.supabaseUrl);
     if (
@@ -75,6 +76,26 @@ export function createBackend(config, sdk = globalThis.supabase) {
       const { data, error } = await client.auth.getSession();
       if (error) throw error;
       return data.session;
+    },
+    async guest() {
+      if (!client) throw Error("기록 저장 연결을 확인해 주세요.");
+      const { data: current, error: sessionError } =
+        await client.auth.getSession();
+      if (sessionError) throw sessionError;
+      if (current.session) return current.session;
+      if (!guestRequest)
+        guestRequest = (async () => {
+          const { data, error } = await client.auth.signInAnonymously();
+          if (error)
+            throw Error(
+              "기기 기록을 시작하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+            );
+          if (!data.session) throw Error("기기 보관 정보를 만들지 못했습니다.");
+          return data.session;
+        })().finally(() => {
+          guestRequest = null;
+        });
+      return guestRequest;
     },
     onAuth(callback) {
       return client?.auth.onAuthStateChange(callback).data.subscription;
@@ -156,7 +177,8 @@ export function filterStarter(
   if (date && (!validDay(start) || !validDay(end)))
     throw Error("날짜를 확인해 주세요.");
   return events.filter((e) => {
-    if(!["verified","curated_sample"].includes(e.verification_status))return false;
+    if (!["verified", "curated_sample"].includes(e.verification_status))
+      return false;
     const eventEnd =
       e.date_end ??
       (e.date_precision === "year"

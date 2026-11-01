@@ -10,13 +10,14 @@ import {
   route,
 } from "./domain.js";
 import { lifeGroups, mergeRecords, matchesLife } from "./lives.js";
-import { createBackend, filterStarter } from "./backend.js";
+import { createBackend, filterStarter } from "./backend.js?v=20261101-device";
 const $ = (s) => document.querySelector(s),
   $$ = (s) => [...document.querySelectorAll(s)];
 const backend = createBackend(
   window.THATDAY_CONFIG ?? { basePath: "/thatday/" },
 );
 const state = {
+  guest: false,
   lives: new Map(),
   providers: null,
   view: "timeline",
@@ -35,6 +36,8 @@ const state = {
   moderation: null,
 };
 let memoryQueue = Promise.resolve();
+let deviceSetup = false,
+  deviceRequest = null;
 const memoryPending = new Set();
 let generation = 0,
   authEpoch = 0,
@@ -120,7 +123,7 @@ function heading() {
   $("#archive-count").textContent = String(selected().length || "");
   $("#memory-count").textContent = `내가 기억하는 사건 ${selected().length}개`;
   $("#account-button").textContent =
-    `${state.me.user?.display_name || "계정"} ↗`;
+    `${state.me.user?.role === "moderator" ? "관리" : "기기 보관함"} ↗`;
   $("#moderation-link").hidden = state.me.user?.role !== "moderator";
   $("#year-select").value = state.date.slice(0, 4);
   document.body.dataset.view = state.view;
@@ -153,7 +156,7 @@ function heading() {
   n.hidden = backend.configured && !(state.view === "mine" && !state.me.user);
   n.textContent = !backend.configured
     ? "Supabase 연결 전입니다. 역사 시작 자료를 읽고 이 기기에 기억을 표시할 수 있습니다. 로그인과 개인 기록 저장은 연결 후 사용할 수 있습니다."
-    : "이 기기의 기억입니다. 개인 기록과 다른 기기에서의 보관은 로그인 후 이용할 수 있습니다.";
+    : "이 브라우저에 연결된 기록입니다. 브라우저 데이터를 지우거나 다른 기기를 사용하면 기존 기록에 접근할 수 없습니다.";
   const merge = $("#merge-notice");
   merge.hidden = !(state.me.user && state.local.length);
   merge.innerHTML = `이 기기에 ${state.local.length}개의 임시 기억이 있습니다. <button data-action="merge">계정에 합치기 ↗</button><button data-action="clear-local">기기 기억 비우기</button>`;
@@ -324,6 +327,9 @@ async function refreshMe() {
     ? await backend.rpc("me")
     : { user: null, remembered: [], record_count: 0 };
   if (epoch !== authEpoch) return;
+  const session = backend.configured ? await backend.session() : null;
+  if (epoch !== authEpoch) return;
+  state.guest = session?.user.is_anonymous === true;
   state.me = me;
   heading();
 }
@@ -487,7 +493,7 @@ async function remember(id, button) {
       notify(
         state.me.user
           ? "나의 기억에 보관했습니다."
-          : "이 기기에 기억을 저장했습니다. 로그인 후 계정에 합칠 수 있습니다.",
+          : "이 기기에 기억을 저장했습니다. 이야기를 남기면 같은 브라우저의 보관함에 함께 저장합니다.",
       );
     } else {
       notify("기억 선택을 해제했습니다.");
@@ -537,13 +543,16 @@ function openLogin() {
 }
 function openAccount() {
   if (!state.me.user) {
-    openLogin();
+    openSheet(
+      "이 기기의 보관함",
+      `<div class="sheet-message"><p>이야기는 로그인 없이 남길 수 있습니다.</p><p>나의 기록은 이 기기의 같은 브라우저에서 볼 수 있습니다. 쿠키·사이트 데이터를 지우면 기존 기록을 다시 열 수 없으니 중요한 기록은 내려받아 보관해 주세요.</p><button data-action="write">이야기 남기기 ＋</button></div>`,
+    );
     return;
   }
   const u = state.me.user;
   openSheet(
-    "나의 이름과 보관함",
-    `<form id="profile-form" class="record-form"><label for="display-name">표시 이름</label><input id="display-name" name="display_name" required maxlength="24" value="${h(u.display_name)}" placeholder="다인"><label for="birth-year">출생 연도 <span class="fine">선택 · 공개되지 않습니다</span></label><input id="birth-year" name="birth_year" type="number" min="1900" max="${today().slice(0, 4)}" value="${u.birth_year ?? ""}"><p class="fine">실명은 필요하지 않습니다. 이름을 바꾸면 공개 기록은 다시 검수를 받습니다.</p><button class="primary" type="submit">이름 저장 ✓</button><p class="form-error" id="form-error" role="alert"></p></form><div class="account-actions"><button data-action="export">나의 데이터 내려받기 ↓</button><button data-action="signout">로그아웃 ↗</button><details><summary class="danger">이 서비스의 계정 삭제</summary><p class="fine">이 서비스의 프로필과 기록을 영구 삭제합니다. 다른 서비스에서도 사용할 수 있는 Supabase 로그인 계정은 유지됩니다.</p><form id="delete-account"><label for="delete-confirm">‘내 계정 삭제’를 입력해 주세요</label><input id="delete-confirm" name="confirmation" required autocomplete="off"><button class="danger" type="submit">서비스 기록 영구 삭제</button></form></details></div>`,
+    "이 기기의 보관함",
+    `<form id="profile-form" class="record-form"><label for="display-name">표시 이름</label><input id="display-name" name="display_name" required maxlength="24" value="${h(u.display_name)}" placeholder="다인"><label for="birth-year">출생 연도 <span class="fine">선택 · 공개되지 않습니다</span></label><input id="birth-year" name="birth_year" type="number" min="1900" max="${today().slice(0, 4)}" value="${u.birth_year ?? ""}"><p class="fine">실명은 필요하지 않습니다. 이름을 바꾸면 공개 기록은 다시 검수를 받습니다.</p><button class="primary" type="submit">이름 저장 ✓</button><p class="form-error" id="form-error" role="alert"></p></form><div class="account-actions"><button data-action="export">나의 데이터 내려받기 ↓</button>${!state.guest ? `<button data-action="signout">로그아웃 ↗</button>` : `<p class="fine">이 기기의 같은 브라우저에 보관됩니다. 쿠키·사이트 데이터를 지우면 기록에 접근할 수 없습니다.</p>`}<details><summary class="danger">이 서비스의 계정 삭제</summary><p class="fine">이 서비스의 프로필과 기록을 영구 삭제합니다. 다른 서비스에서도 사용할 수 있는 Supabase 로그인 계정은 유지됩니다.</p><form id="delete-account"><label for="delete-confirm">‘내 계정 삭제’를 입력해 주세요</label><input id="delete-confirm" name="confirmation" required autocomplete="off"><button class="danger" type="submit">서비스 기록 영구 삭제</button></form></details></div>`,
   );
 }
 async function getEvent(id) {
@@ -554,20 +563,59 @@ async function getEvent(id) {
       : state.starter.find((e) => e.id === id))
   );
 }
+async function ensureDevice() {
+  if (state.me.user?.display_name) return;
+  if (deviceRequest) return deviceRequest;
+  deviceRequest = (async () => {
+    // Check durable browser storage before creating an identity users could not recover.
+    try {
+      localStorage.setItem("thatday:storage-check", "1");
+      localStorage.removeItem("thatday:storage-check");
+    } catch {
+      throw Error(
+        "이 브라우저에서 저장소가 차단되어 있습니다. 사이트 데이터 저장을 허용해 주세요.",
+      );
+    }
+    deviceSetup = true;
+    try {
+      await backend.guest();
+      await refreshMe();
+      if (!state.me.user?.display_name) {
+        const name =
+          "기록자" + crypto.randomUUID().replaceAll("-", "").slice(0, 6) + "님";
+        await backend.rpc("save_profile", {
+          p_display_name: name,
+          p_birth_year: null,
+        });
+        await refreshMe();
+      }
+      if (state.local.length) {
+        await backend.rpc("remember", { p_ids: state.local, p_selected: true });
+        saveLocal([]);
+        await refreshMe();
+      }
+      state.lives.clear();
+    } finally {
+      deviceSetup = false;
+    }
+  })().finally(() => {
+    deviceRequest = null;
+  });
+  return deviceRequest;
+}
 async function openEditor(event = null, record = null) {
   pendingEditor = { event, record };
-  if (!state.me.user) {
-    try {
-      sessionStorage.setItem(
-        "thatday:resume",
-        JSON.stringify({ eventId: event?.id ?? null }),
-      );
-    } catch {}
-    openLogin();
-    return;
-  }
-  if (!state.me.user.display_name) {
-    openAccount();
+  const preparing = !state.me.user?.display_name;
+  if (preparing)
+    openSheet(
+      "그날의 한 줄",
+      '<p class="sheet-message" role="status">이 기기의 보관함을 준비하고 있습니다…</p>',
+    );
+  try {
+    await ensureDevice();
+  } catch (error) {
+    if (preparing) closeSheet(true);
+    notify(error.message, true);
     return;
   }
   const d =
@@ -584,7 +632,7 @@ async function openEditor(event = null, record = null) {
       : "day");
   openSheet(
     record ? "기록 다듬기" : "그날의 한 줄",
-    `<form id="record-form" class="record-form">${event ? `<div class="context-note"><span>이날의 역사</span><p>${h(dateLabel(event.date_start, event.date_precision, event.date_end))} · ${h(event.title)}</p><label for="relation" class="sr-only">사건과의 관계</label><select id="relation" name="relation"><option value="related" ${record?.relation === "related" ? "selected" : ""}>이 사건과 관련된 기억</option><option value="same_date" ${record?.relation === "same_date" ? "selected" : ""}>같은 날의 다른 개인적 사건</option></select></div>` : ""}<div class="form-pair"><label for="record-date">언제였나요<input id="record-date" name="date" required type="date" min="1950-01-01" max="${today()}" value="${h(d)}"></label><label for="precision">날짜의 정확도<select id="precision" name="precision">${[["day", "정확한 날짜"], ...(event ? [["around", "이 사건 무렵"]] : []), ["month", "월까지만 기억"], ["year", "연도만 기억"], ["range", "기간으로 기록"]].map(([v, l]) => `<option value="${v}" ${v === precision ? "selected" : ""}>${l}</option>`).join("")}</select></label></div><label for="record-end" id="end-label" ${precision === "range" ? "" : "hidden"}>종료 날짜<input id="record-end" name="date_end" type="date" min="${h(d)}" max="${today()}" value="${h(record?.date_end ?? "")}"></label><label class="text-label" for="memory-text">그날, 당신은 무엇을 했나요?<span id="text-count">0 / 280</span></label><textarea id="memory-text" name="original_text" required maxlength="280" rows="3" placeholder="가족들과 거리 응원을 했다.">${h(record?.original_text ?? "")}</textarea><p class="fine">입력한 문장을 그대로 보관합니다. 실명이나 다른 사람의 개인정보는 남기지 마세요.</p><fieldset class="style-choice"><legend>문장의 모양</legend><label><input type="radio" name="style" value="subject" ${(record?.presentation_style ?? "subject") === "subject" ? "checked" : ""}> 이름으로 시작</label><label><input type="radio" name="style" value="quote" ${record?.presentation_style === "quote" ? "checked" : ""}> 내 말 그대로</label></fieldset><div class="record-preview"><span class="eyebrow">저장될 기록 / 미리보기</span><p id="preview-date"></p><p id="preview-text"></p><span class="fine" id="preview-visibility"></span></div><fieldset class="visibility"><legend>누가 볼 수 있나요?</legend><label><input type="radio" name="visibility" value="private" ${(record?.visibility ?? "private") === "private" ? "checked" : ""}> 나만 보기 <span>나의 기록에만 보관</span></label><label><input type="radio" name="visibility" value="public" ${record?.visibility === "public" ? "checked" : ""}> 모두에게 공개 <span>검수 후 연대기에 수록</span></label></fieldset><div id="public-options" hidden><p class="fine">공개 정보: 표시 이름, 문장, 날짜·정확도, 연결한 사건. 출생 연도는 공개하지 않습니다. 공개 요청과 수정은 검수를 거칩니다.</p><p class="form-error" id="safety-warning"></p><label class="confirm-public"><input type="checkbox" name="public_confirmed"> 미리보기와 공개될 정보를 확인하고 공개를 요청합니다.</label></div><p class="form-error" id="form-error" role="alert"></p><button class="primary" id="save-record" type="submit">나만의 기록으로 저장</button></form>`,
+    `<form id="record-form" class="record-form"><p class="fine">로그인 없이 참여합니다. 나의 기록은 이 기기의 같은 브라우저에 보관됩니다.</p><label for="writer-name">표시 이름<input id="writer-name" name="display_name" required maxlength="24" value="${h(state.me.user.display_name)}"></label>${event ? `<div class="context-note"><span>이날의 역사</span><p>${h(dateLabel(event.date_start, event.date_precision, event.date_end))} · ${h(event.title)}</p><label for="relation" class="sr-only">사건과의 관계</label><select id="relation" name="relation"><option value="related" ${record?.relation === "related" ? "selected" : ""}>이 사건과 관련된 기억</option><option value="same_date" ${record?.relation === "same_date" ? "selected" : ""}>같은 날의 다른 개인적 사건</option></select></div>` : ""}<div class="form-pair"><label for="record-date">언제였나요<input id="record-date" name="date" required type="date" min="1950-01-01" max="${today()}" value="${h(d)}"></label><label for="precision">날짜의 정확도<select id="precision" name="precision">${[["day", "정확한 날짜"], ...(event ? [["around", "이 사건 무렵"]] : []), ["month", "월까지만 기억"], ["year", "연도만 기억"], ["range", "기간으로 기록"]].map(([v, l]) => `<option value="${v}" ${v === precision ? "selected" : ""}>${l}</option>`).join("")}</select></label></div><label for="record-end" id="end-label" ${precision === "range" ? "" : "hidden"}>종료 날짜<input id="record-end" name="date_end" type="date" min="${h(d)}" max="${today()}" value="${h(record?.date_end ?? "")}"></label><label class="text-label" for="memory-text">그날, 당신은 무엇을 했나요?<span id="text-count">0 / 280</span></label><textarea id="memory-text" name="original_text" required maxlength="280" rows="3" placeholder="가족들과 거리 응원을 했다.">${h(record?.original_text ?? "")}</textarea><p class="fine">입력한 문장을 그대로 보관합니다. 실명이나 다른 사람의 개인정보는 남기지 마세요.</p><fieldset class="style-choice"><legend>문장의 모양</legend><label><input type="radio" name="style" value="subject" ${(record?.presentation_style ?? "subject") === "subject" ? "checked" : ""}> 이름으로 시작</label><label><input type="radio" name="style" value="quote" ${record?.presentation_style === "quote" ? "checked" : ""}> 내 말 그대로</label></fieldset><div class="record-preview"><span class="eyebrow">저장될 기록 / 미리보기</span><p id="preview-date"></p><p id="preview-text"></p><span class="fine" id="preview-visibility"></span></div><fieldset class="visibility"><legend>누가 볼 수 있나요?</legend><label><input type="radio" name="visibility" value="private" ${(record?.visibility ?? "private") === "private" ? "checked" : ""}> 나만 보기 <span>나의 기록에만 보관</span></label><label><input type="radio" name="visibility" value="public" ${record?.visibility === "public" ? "checked" : ""}> 모두에게 공개 <span>검수 후 연대기에 수록</span></label></fieldset><div id="public-options" hidden><p class="fine">공개 정보: 표시 이름, 문장, 날짜·정확도, 연결한 사건. 출생 연도는 공개하지 않습니다. 공개 요청과 수정은 검수를 거칩니다.</p><p class="form-error" id="safety-warning"></p><label class="confirm-public"><input type="checkbox" name="public_confirmed"> 미리보기와 공개될 정보를 확인하고 공개를 요청합니다.</label></div><p class="form-error" id="form-error" role="alert"></p><button class="primary" id="save-record" type="submit">나만의 기록으로 저장</button></form>`,
   );
   editor = { event, record };
   setDateInputType();
@@ -644,7 +692,7 @@ function preview() {
     r.date_end,
   );
   $("#preview-text").textContent = sentence(
-    state.me.user.display_name,
+    $("#writer-name").value || state.me.user.display_name,
     r.original_text || "…",
     r.presentation_style,
   );
@@ -731,7 +779,7 @@ async function renderSources(ticket) {
 function renderLegal() {
   const privacy = state.view === "privacy";
   $("#legal-content").innerHTML =
-    `<p class="review-note">출시 전 법률 검토가 필요한 초안입니다. 운영자·연락처, 시행일, 보유 기간, 국외 이전과 이의 제기 절차를 확정해야 합니다.</p>${privacy ? `<h2>수집과 목적</h2><p>Supabase Auth로 이메일·구글·카카오 로그인을 처리합니다. 서비스 프로필에는 표시 이름과 선택한 출생 연도를 저장하며, 기억 선택과 개인 기록을 보관합니다. 이메일과 출생 연도는 공개 기록에 포함하지 않습니다.</p><h2>공개 범위</h2><p>첫 기록은 나만 보기로 시작합니다. 공개를 요청하면 표시 이름, 원문, 날짜와 정확도, 연결한 사건이 검수 후 공개됩니다. 공개 기록은 제3자가 복사하거나 검색 엔진이 보관할 수 있습니다.</p><h2>저장과 권리</h2><p>데이터와 인증은 Supabase에서 처리합니다. 광고·방문 분석 도구는 사용하지 않습니다. 이 기기의 임시 기억과 로그인 세션은 브라우저에 저장됩니다. 나의 기록에서 원문·공개 범위를 수정하거나 삭제할 수 있고, 계정 설정에서 JSON 내보내기와 이 서비스의 프로필·기록 삭제를 할 수 있습니다. 공용 로그인 계정 자체의 삭제는 운영자에게 별도로 요청해야 합니다.</p><h2>출시 전 확인</h2><p>운영자의 개인정보 문의처, 수탁·국외 이전 고지, 미성년자 정책, 보유·백업 삭제 기간과 권리 행사 절차를 기재해야 합니다.</p>` : `<h2>역사와 개인의 기억</h2><p>출처를 가진 역사 자료와 이용자의 개인적 기억은 구분됩니다. 검수 승인은 사실을 독립적으로 검증했다는 뜻이 아닙니다.</p><h2>당신의 문장</h2><p>기록의 권리는 작성자에게 있습니다. 공개를 선택하면 서비스 연대기에 표시 이름과 기록을 표시하는 데 동의합니다. 원문은 자동으로 고쳐 쓰지 않습니다. 사칭, 괴롭힘, 개인정보 노출, 명예훼손, 광고와 불법 콘텐츠를 남기지 마세요.</p><h2>공개와 검수</h2><p>모든 공개 요청은 검수를 받습니다. 대기·거절·숨김 기록은 공개 연대기에 포함되지 않습니다. 공개 기록과 이름을 수정하면 다시 검수합니다. 신고를 통해 검수를 요청할 수 있으며, 운영자는 사유를 남겨 공개를 제한할 수 있습니다.</p><h2>날짜와 삭제</h2><p>불확실한 기억은 월·연도·사건 무렵으로 남겨 주세요. 기록의 수정·삭제와 비공개 전환은 가능하지만, 외부에 이미 복사된 기록의 삭제까지 보장할 수 없습니다. 수록된 자료는 역사의 일부이며 빈 날짜가 사건이 없던 날을 뜻하지 않습니다.</p>`}`;
+    `<p class="review-note">출시 전 법률 검토가 필요한 초안입니다. 운영자·연락처, 시행일, 보유 기간, 국외 이전과 이의 제기 절차를 확정해야 합니다.</p>${privacy ? `<h2>수집과 목적</h2><p>이메일 가입 없이 기기별 익명 세션으로 기록을 보관합니다. 기존 계정 로그인도 유지합니다. 서비스 프로필에는 표시 이름과 선택한 출생 연도를 저장하며, 기억 선택과 개인 기록을 보관합니다. 이메일과 출생 연도는 공개 기록에 포함하지 않습니다.</p><h2>공개 범위</h2><p>첫 기록은 나만 보기로 시작합니다. 공개를 요청하면 표시 이름, 원문, 날짜와 정확도, 연결한 사건이 검수 후 공개됩니다. 공개 기록은 제3자가 복사하거나 검색 엔진이 보관할 수 있습니다.</p><h2>저장과 권리</h2><p>데이터와 인증은 Supabase에서 처리합니다. 광고·방문 분석 도구는 사용하지 않습니다. 이 기기의 임시 기억과 기록 접근용 세션은 브라우저 저장소(localStorage)에 저장됩니다. 쿠키·사이트 데이터 삭제, 브라우저 변경 또는 기기 변경 시 기존 비공개 기록의 접근과 수정 권한을 복구할 수 없습니다. 이야기 본문과 공개·검수 상태는 Supabase에 저장합니다. 나의 기록에서 원문·공개 범위를 수정하거나 삭제할 수 있고, 계정 설정에서 JSON 내보내기와 이 서비스의 프로필·기록 삭제를 할 수 있습니다. 공용 로그인 계정 자체의 삭제는 운영자에게 별도로 요청해야 합니다.</p><h2>출시 전 확인</h2><p>운영자의 개인정보 문의처, 수탁·국외 이전 고지, 미성년자 정책, 보유·백업 삭제 기간과 권리 행사 절차를 기재해야 합니다.</p>` : `<h2>역사와 개인의 기억</h2><p>출처를 가진 역사 자료와 이용자의 개인적 기억은 구분됩니다. 검수 승인은 사실을 독립적으로 검증했다는 뜻이 아닙니다.</p><h2>당신의 문장</h2><p>기록의 권리는 작성자에게 있습니다. 공개를 선택하면 서비스 연대기에 표시 이름과 기록을 표시하는 데 동의합니다. 원문은 자동으로 고쳐 쓰지 않습니다. 사칭, 괴롭힘, 개인정보 노출, 명예훼손, 광고와 불법 콘텐츠를 남기지 마세요.</p><h2>공개와 검수</h2><p>모든 공개 요청은 검수를 받습니다. 대기·거절·숨김 기록은 공개 연대기에 포함되지 않습니다. 공개 기록과 이름을 수정하면 다시 검수합니다. 신고를 통해 검수를 요청할 수 있으며, 운영자는 사유를 남겨 공개를 제한할 수 있습니다.</p><h2>날짜와 삭제</h2><p>불확실한 기억은 월·연도·사건 무렵으로 남겨 주세요. 기록의 수정·삭제와 비공개 전환은 가능하지만, 외부에 이미 복사된 기록의 삭제까지 보장할 수 없습니다. 수록된 자료는 역사의 일부이며 빈 날짜가 사건이 없던 날을 뜻하지 않습니다.</p>`}`;
 }
 async function resumeEditor() {
   let resume;
@@ -840,10 +888,7 @@ document.addEventListener("click", async (event) => {
       return;
     }
     if (b.dataset.report) {
-      if (!state.me.user) {
-        openLogin();
-        return;
-      }
+      if (!state.me.user) await ensureDevice();
       const reason = prompt(
         "신고 사유를 입력해 주세요: 괴롭힘, 사칭, 개인정보 노출, 명예훼손, 스팸, 불법 콘텐츠",
       );
@@ -977,6 +1022,14 @@ document.addEventListener("submit", async (event) => {
       return;
     }
     if (f.id === "record-form") {
+      const name = $("#writer-name").value.trim();
+      if (name !== state.me.user.display_name) {
+        await backend.rpc("save_profile", {
+          p_display_name: name,
+          p_birth_year: state.me.user.birth_year ?? null,
+        });
+        await refreshMe();
+      }
       const r = formRecord();
       validateDate(r.date_start, r.date_precision, r.date_end, r.event_id);
       const result = await backend.rpc("save_record", {
@@ -1143,6 +1196,7 @@ async function start() {
         p.delete(key);
       history.replaceState({}, "", location.pathname + (p.size ? "?" + p : ""));
       backend.onAuth((event, session) => {
+        if (deviceSetup) return;
         if (
           event === "INITIAL_SESSION" ||
           (session?.user.id === state.me.user?.id && event !== "USER_UPDATED")
