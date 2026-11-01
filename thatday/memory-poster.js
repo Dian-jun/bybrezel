@@ -30,24 +30,14 @@ export function layoutMemoryPoster(
     y = 0;
   const runs = [];
   for (const token of tokens) {
-    const wordWidth = measure(token.text);
-    if (x && x + wordWidth > width) {
-      x = 0;
-      y += lineHeight;
-    }
-    if (wordWidth <= width) {
-      runs.push({ ...token, x, y, width: wordWidth });
-      x += wordWidth;
-    } else {
-      for (const char of token.text) {
-        const charWidth = measure(char);
-        if (x && x + charWidth > width) {
-          x = 0;
-          y += lineHeight;
-        }
-        runs.push({ ...token, text: char, x, y, width: charWidth });
-        x += charWidth;
+    for (const char of token.text) {
+      const charWidth = measure(char);
+      if (x && x + charWidth > width) {
+        x = 0;
+        y += lineHeight;
       }
+      runs.push({ ...token, text: char, x, y, width: charWidth });
+      x += charWidth;
     }
   }
   return { runs, height: y + lineHeight };
@@ -75,7 +65,7 @@ export async function saveMemoryPoster(events, ids, period) {
   });
   canvas.width = 1080;
   canvas.height = layout.height + 312;
-  context.fillStyle = "#f3f0e8";
+  context.fillStyle = "#ffffff";
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.fillStyle = "#1d1d1b";
   context.font = `28px ${family}`;
@@ -91,17 +81,22 @@ export async function saveMemoryPoster(events, ids, period) {
   context.fillRect(48, 128, 984, 1);
   context.font = `${size}px ${family}`;
   for (const run of layout.runs) {
+    if (run.kind === "chosen") {
+      context.fillStyle = "#000000";
+      context.fillRect(
+        48 + run.x,
+        180 + run.y - size,
+        run.width,
+        Math.ceil(size * 1.3),
+      );
+    }
     context.fillStyle =
       run.kind === "chosen"
-        ? "#1d1d1b"
+        ? "#ffffff"
         : run.kind === "year"
           ? "#78756e"
           : "#b7b3aa";
     context.fillText(run.text, 48 + run.x, 180 + run.y);
-    if (run.kind === "chosen") {
-      context.fillStyle = "#cd2e3a";
-      context.fillRect(48 + run.x, 186 + run.y, Math.max(1, run.width), 1.5);
-    }
   }
   const selected = new Set(ids),
     count = memoryPosterEvents(events).filter((e) => selected.has(e.id)).length;

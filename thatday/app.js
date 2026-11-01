@@ -22,7 +22,7 @@ import { lifeGroups, mergeRecords, matchesLife } from "./lives.js";
 import {
   memoryPosterEvents,
   saveMemoryPoster,
-} from "./memory-poster.js?v=20261101-poster";
+} from "./memory-poster.js?v=20261101-poster-white";
 import { createBackend, filterStarter } from "./backend.js?v=20261101-poster";
 const $ = (s) => document.querySelector(s),
   $$ = (s) => [...document.querySelectorAll(s)];
@@ -148,7 +148,7 @@ function heading() {
       : `${state.view === "mine" ? "포스터의" : state.date || state.q || state.category ? "찾은" : "수록"} 사건 ${state.eventTotal}개`;
   $("#memory-count").textContent = `내가 기억하는 사건 ${selected().length}개`;
   $("#account-button").textContent =
-    `${state.me.user?.role === "moderator" ? "관리" : "기기 보관함"} ↗`;
+    `${state.me.user?.role === "moderator" ? "관리" : "기기 보관함"}`;
   $("#moderation-link").hidden = state.me.user?.role !== "moderator";
 
   document.body.dataset.view = state.view;
@@ -195,7 +195,7 @@ function heading() {
     : "이 브라우저에 연결된 기록입니다. 브라우저 데이터를 지우거나 다른 기기를 사용하면 기존 기록에 접근할 수 없습니다.";
   const merge = $("#merge-notice");
   merge.hidden = !(state.me.user && state.local.length);
-  merge.innerHTML = `이 기기에 ${state.local.length}개의 임시 기억이 있습니다. <button data-action="merge">계정에 합치기 ↗</button><button data-action="clear-local">기기 기억 비우기</button>`;
+  merge.innerHTML = `이 기기에 ${state.local.length}개의 임시 기억이 있습니다. <button data-action="merge">계정에 합치기</button><button data-action="clear-local">기기 기억 비우기</button>`;
   $("#dataset-note").textContent = state.events.some(
     (e) => e.verification_status === "curated_sample",
   )
@@ -214,7 +214,7 @@ function heading() {
 function eventHTML(e) {
   const remembered = selected().includes(e.id),
     open = state.expanded === e.id;
-  return `<article class="event ${remembered ? "remembered" : ""}" id="event-${h(e.id)}"><div class="event-line"><button class="remember-button" data-remember="${h(e.id)}" aria-pressed="${remembered}" aria-label="${h(e.title)} ${remembered ? "기억 선택 해제" : "기억으로 선택"}"><span class="memory-dot"></span></button><time class="date mono" datetime="${h(e.date_start)}">${h(dateLabel(e.date_start, e.date_precision, e.date_end))}</time><button class="event-title" data-expand="${h(e.id)}" aria-expanded="${open}" aria-controls="detail-${h(e.id)}">${h(e.title)}</button><button class="expand-button" data-expand="${h(e.id)}" aria-label="사건 상세 정보" aria-expanded="${open}">${open ? "−" : "＋"}</button></div><div class="expand-grid" data-open="${open}" id="detail-${h(e.id)}" ${open ? "" : "inert"}><div><div class="event-detail"><span class="eyebrow">${h(e.category)}</span>${state.me.user?.birth_year && Number(e.date_start.slice(0, 4)) < state.me.user.birth_year ? `<p class="fine">출생 이전의 사건입니다. 직접 경험한 기억과 나중에 알게 된 역사를 구분해 남겨 주세요.</p>` : ""}${e.description ? `<p>${h(e.description)}</p>` : ""}<div class="event-actions"><button data-write-event="${h(e.id)}">＋ 내 이야기</button><a href="${h(route(backend.base, { event: e.id }))}">고유 링크 ↗</a><a href="${h(route(backend.base, { date: e.date_start }))}">그날의 기록</a></div></div></div></div><div class="life-invite" ${remembered && !state.lives.get(e.id)?.open ? "" : "hidden"}><button data-lives="${h(e.id)}" aria-expanded="${Boolean(state.lives.get(e.id)?.open)}" aria-controls="lives-${h(e.id)}">다른 이야기 보기 ↓</button></div><div class="lives-panel expand-grid" id="lives-${h(e.id)}" data-open="${Boolean(state.lives.get(e.id)?.open)}" ${state.lives.get(e.id)?.open ? "" : "inert"}><div><div class="lives-content">${state.lives.get(e.id)?.open ? livesHTML(e) : ""}</div></div></div></article>`;
+  return `<article class="event ${remembered ? "remembered" : ""}" id="event-${h(e.id)}"><div class="event-line"><button class="remember-button" data-remember="${h(e.id)}" aria-pressed="${remembered}" aria-label="${h(e.title)} ${remembered ? "기억 선택 해제" : "기억으로 선택"}"><span class="memory-dot"></span></button><time class="date mono" datetime="${h(e.date_start)}">${h(dateLabel(e.date_start, e.date_precision, e.date_end))}</time><button class="event-title" data-expand="${h(e.id)}" aria-expanded="${open}" aria-controls="detail-${h(e.id)}">${h(e.title)}</button><button class="expand-button" data-expand="${h(e.id)}" aria-label="사건 상세 정보" aria-expanded="${open}">${open ? "−" : "＋"}</button></div><div class="expand-grid" data-open="${open}" id="detail-${h(e.id)}" ${open ? "" : "inert"}><div><div class="event-detail"><span class="eyebrow">${h(e.category)}</span>${state.me.user?.birth_year && Number(e.date_start.slice(0, 4)) < state.me.user.birth_year ? `<p class="fine">출생 이전의 사건입니다. 직접 경험한 기억과 나중에 알게 된 역사를 구분해 남겨 주세요.</p>` : ""}${e.description ? `<p>${h(e.description)}</p>` : ""}<div class="event-actions"><button data-write-event="${h(e.id)}">＋ 내 이야기</button><a href="${h(route(backend.base, { event: e.id }))}">고유 링크</a><a href="${h(route(backend.base, { date: e.date_start }))}">그날의 기록</a></div></div></div></div><div class="life-invite" ${remembered && !state.lives.get(e.id)?.open ? "" : "hidden"}><button data-lives="${h(e.id)}" aria-expanded="${Boolean(state.lives.get(e.id)?.open)}" aria-controls="lives-${h(e.id)}">다른 이야기 보기 ↓</button></div><div class="lives-panel expand-grid" id="lives-${h(e.id)}" data-open="${Boolean(state.lives.get(e.id)?.open)}" ${state.lives.get(e.id)?.open ? "" : "inert"}><div><div class="lives-content">${state.lives.get(e.id)?.open ? livesHTML(e) : ""}</div></div></div></article>`;
 }
 function personalDateLabel(record, event = null) {
   const source =
@@ -389,12 +389,12 @@ function renderMemoryPoster() {
           : "";
       year = nextYear;
       const isChosen = chosen.has(event.id);
-      return `${marker}<button class="memory-word ${isChosen ? "is-chosen" : ""}" data-remember="${h(event.id)}" aria-pressed="${isChosen}" aria-label="${h(dateLabel(event.date_start, event.date_precision, event.date_end))} ${h(event.title)} ${isChosen ? "기억 선택 해제" : "기억으로 선택"}" title="${h(dateLabel(event.date_start, event.date_precision, event.date_end))}">${h(event.title)}</button><span class="poster-separator" aria-hidden="true"> · </span>`;
+      return `${marker}<span role="button" tabindex="0" class="memory-word ${isChosen ? "is-chosen" : ""}" data-remember="${h(event.id)}" aria-pressed="${isChosen}" aria-label="${h(dateLabel(event.date_start, event.date_precision, event.date_end))} ${h(event.title)} ${isChosen ? "기억 선택 해제" : "기억으로 선택"}" title="${h(dateLabel(event.date_start, event.date_precision, event.date_end))}">${h(event.title)}</span><span class="poster-separator" aria-hidden="true"> · </span>`;
     })
     .join("");
   const period = state.date || `1950—${today().slice(0, 4)}`;
   $("#lines").innerHTML =
-    `<div class="poster-tools"><p>기억하는 사건을 눌러 나의 연대기를 만들어 보세요</p><button data-action="save-memory-poster" ${events.length ? "" : "disabled"}>이미지로 저장 ↗</button></div><section class="memory-poster" aria-label="나의 기억 포스터"><header class="poster-masthead"><span>그날 우리는 <i aria-hidden="true">●</i></span><span class="mono">${h(period)}</span></header><div class="poster-caption"><h2>나의 기억</h2><span>선명하게 남은 날들</span></div><p class="poster-text" aria-label="사건을 누르면 기억 선택이 바뀝니다">${words || "이 조건에 해당하는 사건이 없습니다"}</p><div class="poster-colophon"><span id="poster-selection-count">${events.filter((e) => chosen.has(e.id)).length}개의 기억 / ${events.length}개의 사건</span><span>bybrezel.com/thatday</span></div></section>${state.records.length ? `<section class="poster-stories" aria-label="내가 남긴 이야기"><h2>내가 남긴 이야기</h2>${state.records.map(recordHTML).join("")}</section>` : ""}`;
+    `<div class="poster-tools"><p>기억하는 사건을 눌러 나의 연대기를 만들어 보세요</p><button data-action="save-memory-poster" ${events.length ? "" : "disabled"}>이미지로 저장</button></div><section class="memory-poster" aria-label="나의 기억 포스터"><header class="poster-masthead"><span>그날 우리는 <i aria-hidden="true">●</i></span><span class="mono">${h(period)}</span></header><div class="poster-caption"><h2>나의 기억</h2><span>선명하게 남은 날들</span></div><p class="poster-text" aria-label="사건을 누르면 기억 선택이 바뀝니다">${words || "이 조건에 해당하는 사건이 없습니다"}</p><div class="poster-colophon"><span id="poster-selection-count">${events.filter((e) => chosen.has(e.id)).length}개의 기억 / ${events.length}개의 사건</span><span>bybrezel.com/thatday</span></div></section>${state.records.length ? `<section class="poster-stories" aria-label="내가 남긴 이야기"><h2>내가 남긴 이야기</h2>${state.records.map(recordHTML).join("")}</section>` : ""}`;
   $("#more-events").hidden = true;
   $("#more-records").hidden = true;
 }
@@ -702,6 +702,7 @@ async function remember(id, button) {
   };
   memoryPending.add(id);
   button.disabled = true;
+  button.setAttribute("aria-disabled", "true");
   try {
     update(yes);
     if (!state.me.user && backend.configured) await ensureDevice();
@@ -739,6 +740,7 @@ async function remember(id, button) {
   } finally {
     memoryPending.delete(id);
     button.disabled = false;
+    button.removeAttribute("aria-disabled");
   }
 }
 function openSheet(title, html) {
@@ -790,7 +792,7 @@ function setupNotice() {
 function openLogin() {
   openSheet(
     "당신의 기록을 보관하려면",
-    `<div class="sheet-message"><p>이메일 또는 연결한 소셜 계정으로<br>당신의 한 줄을 남겨 주세요.</p>${backend.configured ? `<form id="email-login" class="record-form"><label for="login-email">이메일</label><input id="login-email" name="email" type="email" autocomplete="email" required maxlength="254"><button class="primary" type="submit">이메일로 로그인 링크 받기 ↗</button></form><p class="fine" id="login-status" role="status"></p><div class="account-actions"><button data-oauth="google" ${state.providers?.google ? "" : "disabled"}>${state.providers?.google ? "구글로 계속하기 ↗" : "구글 로그인 준비 중"}</button><button data-oauth="kakao" ${state.providers?.kakao ? "" : "disabled"}>${state.providers?.kakao ? "카카오로 계속하기 ↗" : "카카오 로그인 준비 중"}</button></div><p class="fine">로그인을 시작한 브라우저에서 이메일 링크를 열어 주세요.</p>` : setupNotice()}</div>`,
+    `<div class="sheet-message"><p>이메일 또는 연결한 소셜 계정으로<br>당신의 한 줄을 남겨 주세요.</p>${backend.configured ? `<form id="email-login" class="record-form"><label for="login-email">이메일</label><input id="login-email" name="email" type="email" autocomplete="email" required maxlength="254"><button class="primary" type="submit">이메일로 로그인 링크 받기</button></form><p class="fine" id="login-status" role="status"></p><div class="account-actions"><button data-oauth="google" ${state.providers?.google ? "" : "disabled"}>${state.providers?.google ? "구글로 계속하기" : "구글 로그인 준비 중"}</button><button data-oauth="kakao" ${state.providers?.kakao ? "" : "disabled"}>${state.providers?.kakao ? "카카오로 계속하기" : "카카오 로그인 준비 중"}</button></div><p class="fine">로그인을 시작한 브라우저에서 이메일 링크를 열어 주세요.</p>` : setupNotice()}</div>`,
   );
 }
 function openAccount() {
@@ -804,7 +806,7 @@ function openAccount() {
   const u = state.me.user;
   openSheet(
     "이 기기의 보관함",
-    `<form id="profile-form" class="record-form"><label for="display-name">표시 이름</label><input id="display-name" name="display_name" required maxlength="24" value="${h(u.display_name)}" placeholder="다인"><label for="birth-year">출생 연도 <span class="fine">선택 · 공개되지 않습니다</span></label><input id="birth-year" name="birth_year" type="number" min="1900" max="${today().slice(0, 4)}" value="${u.birth_year ?? ""}"><p class="fine">실명은 필요하지 않습니다. 이름을 바꾸면 공개 기록은 다시 검수를 받습니다.</p><button class="primary" type="submit">이름 저장 ✓</button><p class="form-error" id="form-error" role="alert"></p></form><div class="account-actions"><button data-action="export">나의 데이터 내려받기 ↓</button>${!state.guest ? `<button data-action="signout">로그아웃 ↗</button>` : `<p class="fine">이 기기의 같은 브라우저에 보관됩니다. 쿠키·사이트 데이터를 지우면 기록에 접근할 수 없습니다.</p>`}<details><summary class="danger">이 서비스의 계정 삭제</summary><p class="fine">이 서비스의 프로필과 기록을 영구 삭제합니다. 다른 서비스에서도 사용할 수 있는 Supabase 로그인 계정은 유지됩니다.</p><form id="delete-account"><label for="delete-confirm">‘내 계정 삭제’를 입력해 주세요</label><input id="delete-confirm" name="confirmation" required autocomplete="off"><button class="danger" type="submit">서비스 기록 영구 삭제</button></form></details></div>`,
+    `<form id="profile-form" class="record-form"><label for="display-name">표시 이름</label><input id="display-name" name="display_name" required maxlength="24" value="${h(u.display_name)}" placeholder="다인"><label for="birth-year">출생 연도 <span class="fine">선택 · 공개되지 않습니다</span></label><input id="birth-year" name="birth_year" type="number" min="1900" max="${today().slice(0, 4)}" value="${u.birth_year ?? ""}"><p class="fine">실명은 필요하지 않습니다. 이름을 바꾸면 공개 기록은 다시 검수를 받습니다.</p><button class="primary" type="submit">이름 저장 ✓</button><p class="form-error" id="form-error" role="alert"></p></form><div class="account-actions"><button data-action="export">나의 데이터 내려받기 ↓</button>${!state.guest ? `<button data-action="signout">로그아웃</button>` : `<p class="fine">이 기기의 같은 브라우저에 보관됩니다. 쿠키·사이트 데이터를 지우면 기록에 접근할 수 없습니다.</p>`}<details><summary class="danger">이 서비스의 계정 삭제</summary><p class="fine">이 서비스의 프로필과 기록을 영구 삭제합니다. 다른 서비스에서도 사용할 수 있는 Supabase 로그인 계정은 유지됩니다.</p><form id="delete-account"><label for="delete-confirm">‘내 계정 삭제’를 입력해 주세요</label><input id="delete-confirm" name="confirmation" required autocomplete="off"><button class="danger" type="submit">서비스 기록 영구 삭제</button></form></details></div>`,
   );
 }
 async function getEvent(id) {
@@ -975,7 +977,7 @@ async function renderSources(ticket) {
                 .filter((s) => s.source_url.startsWith("https://"))
                 .map(
                   (s) =>
-                    `<a href="${h(s.source_url)}" target="_blank" rel="noreferrer">${h(s.publisher)} · ${h(s.source_title)} ↗</a>`,
+                    `<a href="${h(s.source_url)}" target="_blank" rel="noreferrer">${h(s.publisher)} · ${h(s.source_title)}</a>`,
                 )
                 .join("") || "<span>등록된 출처가 없습니다.</span>"
             }</div></section>`,
@@ -1004,9 +1006,18 @@ async function resumeEditor() {
   }
 }
 
+// Inline controls fragment across lines; retain native button keyboard behavior.
+document.addEventListener("keydown", (event) => {
+  const target = event.target.closest('.memory-word[role="button"]');
+  if (target && (event.key === "Enter" || event.key === " ")) {
+    event.preventDefault();
+    if (!event.repeat && target.getAttribute("aria-disabled") !== "true")
+      target.click();
+  }
+});
 // Delegation keeps generated manuscript lines keyboard-accessible without per-line listeners.
 document.addEventListener("click", async (event) => {
-  const b = event.target.closest("button,a");
+  const b = event.target.closest('button,a,[role="button"][data-remember]');
   if (!b) return;
   try {
     if (b.dataset.nav) {

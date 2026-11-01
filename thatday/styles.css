@@ -1,10 +1,10 @@
 :root {
-  --paper: #f3f0e8;
+  --paper: #ffffff;
   --ink: #1d1d1b;
   --muted: #6c6a64;
   --line: #c9c6bf;
   --red: #cd2e3a;
-  --white: #faf9f6;
+  --white: #ffffff;
   --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 * {
@@ -2462,7 +2462,7 @@ body[data-view="mine"] .end-note {
   letter-spacing: -0.045em;
   font-weight: 400;
   overflow-wrap: anywhere;
-  word-break: keep-all;
+  word-break: break-all;
 }
 .poster-text .memory-word {
   display: inline;
@@ -2483,18 +2483,23 @@ body[data-view="mine"] .end-note {
     color 160ms ease,
     text-decoration-color 160ms ease;
 }
-.poster-text .memory-word.is-chosen {
-  color: var(--ink);
-  text-decoration: underline;
-  text-decoration-color: var(--red);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 5px;
+.poster-text .memory-word.is-chosen,
+.poster-text .memory-word.is-chosen:hover,
+.poster-text .memory-word.is-chosen:focus-visible {
+  color: #ffffff;
+  background: #000000;
+  text-decoration: none;
 }
 .poster-text .memory-word:hover,
 .poster-text .memory-word:focus-visible {
   color: var(--ink);
 }
-.poster-text .memory-word:disabled {
+.poster-text .memory-word:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.poster-text .memory-word:disabled,
+.poster-text .memory-word[aria-disabled="true"] {
   opacity: 1;
   cursor: progress;
 }
@@ -2502,7 +2507,7 @@ body[data-view="mine"] .end-note {
   color: var(--muted);
   font: inherit;
   letter-spacing: -0.02em;
-  white-space: nowrap;
+  white-space: normal;
 }
 .poster-separator {
   color: #b7b3aa;
