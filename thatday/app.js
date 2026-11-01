@@ -26,6 +26,7 @@ const state = {
   category: "",
   eventId: null,
   events: [],
+  eventTotal: null,
   records: [],
   eventNext: null,
   recordNext: null,
@@ -121,6 +122,10 @@ function heading() {
     else a.removeAttribute("aria-current");
   });
   $("#archive-count").textContent = String(selected().length || "");
+  $("#event-total").textContent =
+    state.eventTotal === null
+      ? ""
+      : `${state.view === "mine" ? "기억한" : state.date || state.q || state.category ? "찾은" : "수록"} 사건 ${state.eventTotal}개`;
   $("#memory-count").textContent = `내가 기억하는 사건 ${selected().length}개`;
   $("#account-button").textContent =
     `${state.me.user?.role === "moderator" ? "관리" : "기기 보관함"} ↗`;
@@ -335,6 +340,7 @@ async function refreshMe() {
 }
 async function load() {
   const ticket = ++generation;
+  state.eventTotal = null;
   heading();
   const legal = ["privacy", "terms", "sources", "about"].includes(state.view);
   $("#archive-content").hidden = legal || state.view === "moderation";
@@ -379,6 +385,7 @@ async function load() {
         : Promise.resolve({ records: [], next: null }),
     ]);
     if (ticket !== generation) return;
+    state.eventTotal = events.total ?? events.events.length;
     state.events = events.events.map((e) => ({
       ...e,
       title: cleanEventTitle(e.title),

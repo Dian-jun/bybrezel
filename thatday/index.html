@@ -22,11 +22,11 @@
     <meta property="og:image" content="https://bybrezel.com/thatday/og.svg" />
     <link rel="canonical" href="https://bybrezel.com/thatday/" />
     <link rel="icon" href="./favicon.svg" />
-    <link rel="stylesheet" href="./styles.css?v=6f9f2031aa5b" />
+    <link rel="stylesheet" href="./styles.css?v=ca91b32f8c19" />
     <title>그날 우리는 — 대한민국의 모든 날</title>
     <script src="./config.js" defer></script>
     <script src="./vendor/supabase.js" defer></script>
-    <script src="./app.js?v=1fbe4566d1c9" type="module"></script>
+    <script src="./app.js?v=548902bd130e" type="module"></script>
   </head>
   <body>
     <a class="skip" href="#chronology">본문으로 건너뛰기</a>
@@ -67,9 +67,11 @@
         <div id="archive-content">
           <section class="toolbar" aria-label="연대기 탐색">
             <div class="toolbar-top">
-              <span class="section-label" id="section-label"
-                >01 / CHRONOLOGY</span
-              >
+              <div class="archive-label">
+                <span class="section-label" id="section-label"
+                  >01 / CHRONOLOGY</span
+                ><span class="fine" id="event-total" aria-live="polite"></span>
+              </div>
               <div class="tools">
                 <button
                   data-action="search"
