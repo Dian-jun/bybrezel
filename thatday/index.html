@@ -45,17 +45,6 @@
       </button>
     </header>
     <div class="page-grid">
-      <aside class="index">
-        <div class="index-top">
-          <span class="eyebrow">대한민국의 모든 날</span
-          ><span class="mono" data-years>1950—현재</span>
-        </div>
-        <div class="index-years" id="year-index" aria-label="연도 색인"></div>
-        <p class="index-note">
-          우리가 기억하는 날들이<br />우리의 역사가 됩니다.
-        </p>
-        <span class="index-number mono">ARCHIVE / 001</span>
-      </aside>
       <main id="chronology">
         <section class="intro">
           <div class="intro-meta">
@@ -74,6 +63,24 @@
               >그날<br />우리는<span>記錄</span></span
             >
           </div>
+        </section>
+        <section class="time-atlas" id="time-atlas" aria-label="시간 탐색">
+          <div class="atlas-heading">
+            <div>
+              <span class="eyebrow">우리가 지나온 시간</span>
+              <p class="atlas-year mono" id="atlas-year">
+                1950<span>— 현재</span>
+              </p>
+            </div>
+            <p class="atlas-caption">
+              한 시대의 사건과<br />그 안에 남겨진 우리의 기억.
+            </p>
+          </div>
+          <div class="atlas-controls">
+            <span class="mono">TIME INDEX / 연도를 선택하세요</span
+            ><button data-year="">전체 시간 보기 ↗</button>
+          </div>
+          <div class="index-years" id="year-index" aria-label="연도 선택"></div>
         </section>
         <div id="archive-content">
           <section class="toolbar" aria-label="연대기 탐색">

@@ -1537,5 +1537,260 @@ p {
 }
 
 /* Maintain readable muted text and a full touch target for the small memory dot. */
-input,select,textarea{border-color:#8b8880}
-.remember-button{width:44px}
+input,
+select,
+textarea {
+  border-color: #8b8880;
+}
+.remember-button {
+  width: 44px;
+}
+
+/* An open atlas: time above, collective stories below. */
+.page-grid {
+  display: block;
+  max-width: 1240px;
+  padding: 40px 5% 0;
+}
+.page-grid main {
+  min-width: 0;
+  width: 100%;
+}
+.margin-note {
+  display: none;
+}
+.intro {
+  padding-bottom: 28px;
+}
+.intro h1 {
+  font-size: 18px;
+  line-height: 1.45;
+  letter-spacing: -0.025em;
+  margin: 24px 0 18px;
+  max-width: 850px;
+}
+.intro-bottom {
+  max-width: none;
+}
+.intro-bottom p {
+  font-size: 13px;
+}
+.intro-stamp {
+  border-color: var(--red);
+  color: var(--red);
+}
+.time-atlas {
+  border-top: 1px solid var(--ink);
+  padding: 20px 0;
+  margin-bottom: 28px;
+}
+.atlas-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+}
+.atlas-year {
+  font-size: 18px;
+  line-height: 1.8;
+  letter-spacing: -0.025em;
+  font-weight: 400;
+  margin: 8px 0 18px;
+}
+.atlas-year span {
+  font-size: 13px;
+  letter-spacing: -0.03em;
+  margin-left: 12px;
+  color: var(--muted);
+}
+.atlas-caption {
+  font-size: 13px;
+  color: var(--muted);
+  padding-bottom: 18px;
+  text-align: right;
+}
+.atlas-controls {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.atlas-controls button {
+  font-size: 12px;
+  color: var(--red);
+}
+.time-atlas .index-years {
+  display: flex;
+  overflow-x: auto;
+  border-top: 0;
+  border-bottom: 1px solid var(--line);
+  padding: 0 0 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+.time-atlas .year-tick {
+  flex: 1 0 13px;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  position: relative;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  margin: 0;
+  height: 66px;
+  min-height: 44px;
+  width: auto;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--muted);
+}
+.year-tick::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 14px;
+  width: 1px;
+  background: var(--line);
+}
+.year-tick span {
+  opacity: 0;
+}
+.year-tick.major {
+  flex-basis: 40px;
+}
+.year-tick.major::before {
+  height: 28px;
+  background: var(--muted);
+}
+.year-tick.major span,
+.year-tick:hover span,
+.year-tick:focus-visible span,
+.year-tick[aria-pressed="true"] span {
+  opacity: 1;
+}
+.time-atlas .year-tick[aria-pressed="true"] {
+  color: var(--red);
+  font-weight: 700;
+}
+.year-tick[aria-pressed="true"]::before {
+  height: 34px;
+  width: 2px;
+  background: var(--red);
+}
+.toolbar {
+  border-top: 1px solid var(--ink);
+}
+.year-heading {
+  padding-top: 28px;
+}
+.year-heading h2 {
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: -0.025em;
+}
+.event-line {
+  grid-template-columns: 28px 155px minmax(0, 1fr) 32px;
+}
+.event-title {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.event-detail {
+  margin-left: 183px;
+}
+.event {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.chronicle {
+  animation: archive-arrive 360ms ease-out;
+}
+@keyframes archive-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 760px) {
+  .page-grid {
+    display: block;
+    padding: 32px 22px 0;
+  }
+  .intro h1 {
+    font-size: 18px;
+    margin: 24px 0 20px;
+  }
+  .intro-meta > .mono {
+    display: none;
+  }
+  .intro-bottom p {
+    font-size: 12px;
+  }
+  .time-atlas {
+    padding-top: 24px;
+    margin-bottom: 24px;
+  }
+  .atlas-year {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  .atlas-year span {
+    font-size: 13px;
+    margin-left: 12px;
+  }
+  .atlas-caption {
+    display: none;
+  }
+  .atlas-controls {
+    font-size: 8px;
+    align-items: center;
+  }
+  .atlas-controls button {
+    font-size: 11px;
+  }
+  .time-atlas .year-tick {
+    flex: 0 0 18px;
+  }
+  .time-atlas .year-tick.major {
+    flex-basis: 42px;
+  }
+  .event-line {
+    grid-template-columns: 24px minmax(0, 1fr) 28px;
+  }
+  .event-line .date {
+    grid-column: 2;
+    font-size: 11px;
+  }
+  .event-title {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 15px;
+  }
+  .event-line .expand-button {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+  .remember-button {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+  .event-detail {
+    margin-left: 12px;
+  }
+  .year-heading h2 {
+    font-size: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chronicle {
+    animation: none;
+  }
+}

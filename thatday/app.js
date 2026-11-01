@@ -112,6 +112,23 @@ function heading() {
     `${state.me.user?.display_name || "계정"} ↗`;
   $("#moderation-link").hidden = state.me.user?.role !== "moderator";
   $("#year-select").value = state.date.slice(0, 4);
+  document.body.dataset.view = state.view;
+  $("#time-atlas").hidden = !["timeline", "mine"].includes(state.view);
+  $("#atlas-year").innerHTML = state.date
+    ? `${h(state.date.slice(0, 4))}<span>${h(state.date.length > 4 ? state.date.slice(5).replace("-", " / ") : "년의 기록")}</span>`
+    : `1950<span>— ${today().slice(0, 4)}</span>`;
+  $$("#year-index [data-year]").forEach((button) => {
+    const active = button.dataset.year === state.date.slice(0, 4);
+    button.setAttribute("aria-pressed", String(active));
+    if (active) {
+      const track = $("#year-index");
+      track.scrollLeft =
+        button.offsetLeft -
+        track.offsetLeft -
+        track.clientWidth / 2 +
+        button.offsetWidth / 2;
+    }
+  });
   $("#month").value = state.date.length >= 7 ? state.date.slice(0, 7) : "";
   $("#day").value = state.date.length === 10 ? state.date : "";
   $("#query").value = state.q;
@@ -909,17 +926,15 @@ async function start() {
   );
   $("#month").max = today().slice(0, 7);
   $("#day").max = today();
-  $("#year-index").innerHTML =
-    `<button data-year="">모든 연도 ↗</button>` +
-    Array.from(
-      { length: Math.floor((year - 1950) / 10) + 1 },
-      (_, i) => 1950 + i * 10,
+  $("#year-index").innerHTML = Array.from(
+    { length: year - 1949 },
+    (_, i) => 1950 + i,
+  )
+    .map(
+      (y) =>
+        `<button data-year="${y}" class="year-tick ${y % 10 === 0 || y === year ? "major" : ""}" aria-label="${y}년 기록" aria-pressed="false"><span>${y % 10 === 0 || y === year ? y : String(y).slice(2)}</span></button>`,
     )
-      .map(
-        (y) =>
-          `<div class="decade"><button data-year="${y}">${y}<span>—</span></button></div>`,
-      )
-      .join("");
+    .join("");
   try {
     const v = JSON.parse(localStorage.getItem("thatday:remembered") ?? "[]");
     state.local = Array.isArray(v)
