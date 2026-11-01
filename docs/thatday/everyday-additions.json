@@ -1,0 +1,3025 @@
+[
+  {
+    "id": "kr-life-plastic-1952",
+    "title": "플라스틱 빗과 비눗갑 생산",
+    "description": "락희화학이 오리엔탈 상표의 플라스틱 생활용품을 생산했다. 사출성형기를 들여와 빗과 비눗갑을 만들었다.",
+    "date_start": "1952-08-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "LG",
+        "source_title": "LG 역사: 창업과 개척",
+        "source_url": "https://lg.co.kr/about/history/1",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "1952-08",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-floor-1957",
+    "title": "락희화학 비닐장판 개발",
+    "description": "락희화학이 비닐장판을 개발했다. 실내 바닥에 쓰이는 합성수지 생활용품의 기록이다.",
+    "date_start": "1957-01-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "LG",
+        "source_title": "LG 역사: 창업과 개척",
+        "source_url": "https://lg.co.kr/about/history/1",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "뜻밖의 사실",
+      "date_basis": "1957-01",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-kingdrops-1957",
+    "title": "킹드롭프스 출시",
+    "description": "동양제과가 킹드롭프스를 선보였다. 근대식 캔디 제조 시설을 도입하던 시기의 사탕이다.",
+    "date_start": "1957-01-01",
+    "date_end": null,
+    "date_precision": "year",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "오리온",
+        "source_title": "오리온 연혁",
+        "source_url": "https://www.orionworld.com/html/13",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1957",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-radio-1959",
+    "title": "국산 라디오 금성 A-501 출시",
+    "description": "금성사가 A-501 라디오를 판매하기 시작했다. 외국산 라디오가 귀한 물건이던 때 국내에서 만든 탁상형 라디오가 등장했다.",
+    "date_start": "1959-11-15",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "국사편찬위원회",
+        "source_title": "한국의 광고: 국산 라디오 광고",
+        "source_url": "https://contents.history.go.kr/data/pdf/km/km_020.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "LG전자",
+        "source_title": "LG전자 역사",
+        "source_url": "https://www.lge.co.kr/company/info/history",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "1959-11-15",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-mommy-1960",
+    "title": "마미비스킷 출시",
+    "description": "동양제과가 마미비스킷을 출시했다. 회사 연혁에 현대식 비스킷 제품으로 기록되어 있다.",
+    "date_start": "1960-01-01",
+    "date_end": null,
+    "date_precision": "year",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "오리온",
+        "source_title": "오리온 연혁",
+        "source_url": "https://www.orionworld.com/html/13",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1960",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-telephone-1961",
+    "title": "금성 자동전화기 GS-1 개발",
+    "description": "금성사가 자동전화기 금성 1호 GS-1을 개발했다. 국산 전화기 제조의 초기 기록이다.",
+    "date_start": "1961-07-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "LG전자",
+        "source_title": "LG전자 역사",
+        "source_url": "https://www.lge.co.kr/company/info/history",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "1961-07",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-cream-1964",
+    "title": "삼립 크림빵 출시",
+    "description": "삼립이 크림빵을 처음 선보였다. 빵을 비닐로 포장해 판매한 제품으로 기록되어 있다.",
+    "date_start": "1964-01-01",
+    "date_end": null,
+    "date_precision": "year",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "삼립",
+        "source_title": "삼립 연혁",
+        "source_url": "https://spcsamlip.co.kr/company/history",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "서울신문",
+        "source_title": "SPC: 제빵에서 시작한 기업의 역사",
+        "source_url": "https://imgkr.seoul.co.kr/news/plan/corporate-industry-narrative-2024/2025/10/21/20251021020001",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1964",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-fridge-1965",
+    "title": "금성 냉장고 GR-120 개발",
+    "description": "금성사가 GR-120 냉장고를 개발했다. LG전자 연혁이 국내 첫 냉장고 개발로 기록한 모델이다.",
+    "date_start": "1965-04-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "LG전자",
+        "source_title": "LG전자 역사",
+        "source_url": "https://www.lge.co.kr/company/info/history",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "1965-04",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-tv-1966",
+    "title": "금성 흑백 TV VD-191 생산",
+    "description": "금성사가 국산 흑백 텔레비전 VD-191을 생산했다. 방송국 개국과 구분되는 수상기 제조의 기록이다.",
+    "date_start": "1966-08-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "LG전자",
+        "source_title": "LG전자 역사",
+        "source_url": "https://www.lge.co.kr/company/info/history",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "1966-08",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-aircon-1968",
+    "title": "금성 에어컨 GA-111 생산",
+    "description": "금성사가 에어컨 GA-111을 생산했다. 가정과 건물의 냉방 기기를 국내에서 만들기 시작한 시기의 제품이다.",
+    "date_start": "1968-03-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "LG전자",
+        "source_title": "LG전자 역사",
+        "source_url": "https://www.lge.co.kr/company/info/history",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "1968-03",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-washer-1969",
+    "title": "금성 세탁기 WP-181 개발",
+    "description": "금성사가 세탁기 WP-181을 개발했다. 빨래를 돕는 국산 가전제품의 초기 모델이다.",
+    "date_start": "1969-05-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "LG전자",
+        "source_title": "LG전자 역사",
+        "source_url": "https://www.lge.co.kr/company/info/history",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "1969-05",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-hoppang-1971",
+    "title": "삼립호빵 출시",
+    "description": "삼립이 호빵을 처음 출시했다. 연구개발을 거쳐 겨울에 데워 먹는 포장 빵을 선보였다.",
+    "date_start": "1971-01-01",
+    "date_end": null,
+    "date_precision": "year",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "삼립",
+        "source_title": "삼립 연혁",
+        "source_url": "https://spcsamlip.co.kr/company/history",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "서울신문",
+        "source_title": "SPC: 제빵에서 시작한 기업의 역사",
+        "source_url": "https://imgkr.seoul.co.kr/news/plan/corporate-industry-narrative-2024/2025/10/21/20251021020001",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1971",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-shrimp-1971",
+    "title": "새우깡 출시",
+    "description": "농심이 새우깡을 내놓았다. 라면을 만들던 회사가 새우 맛 스낵으로 제품 영역을 넓힌 기록이다.",
+    "date_start": "1971-12-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "농심",
+        "source_title": "농심 공식 연혁",
+        "source_url": "https://www.nongshim.com/introduce/history",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "농심",
+        "source_title": "농심 2017 연차보고서: 제품 출시 연표",
+        "source_url": "https://image.nongshim.com/non/cir/Nongshim_2017AR_Korean.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1971-12",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-chocopie-1974",
+    "title": "오리온 초코파이 출시",
+    "description": "동양제과가 초코파이를 출시했다. 오늘날 초코파이情으로 이어지는 제품의 첫 출시 연도다.",
+    "date_start": "1974-01-01",
+    "date_end": null,
+    "date_precision": "year",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "오리온",
+        "source_title": "오리온 연혁",
+        "source_url": "https://www.orionworld.com/html/13",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1974",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-together-1974",
+    "title": "투게더 아이스크림 출시",
+    "description": "대일유업이 생우유를 넣은 투게더 아이스크림을 선보였다. 미국 업체와의 기술 제휴를 바탕으로 만든 제품이다.",
+    "date_start": "1974-01-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "빙그레",
+        "source_title": "2025 지속가능경영보고서: 투게더 출시년월",
+        "source_url": "https://www.bing.co.kr/upload/esg/2025%20빙그레%20지속가능경영보고서.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "한국학중앙연구원",
+        "source_title": "한국민족문화대백과사전: 빙그레",
+        "source_url": "https://encykorea.aks.ac.kr/Article/E0080075",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1974-01",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-banmilk-1974",
+    "title": "바나나맛우유 출시",
+    "description": "빙그레의 전신 대일유업이 바나나맛우유를 선보였다. 단지 모양 용기는 반투명하게 만들어 우유의 노란빛이 드러나도록 했다.",
+    "date_start": "1974-06-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "빙그레",
+        "source_title": "2022 지속가능경영보고서: 바나나맛우유 출시년월",
+        "source_url": "https://www.bing.co.kr/upload/esg/2022빙그레지속가능경영보고서.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "문화체육관광부 해외문화홍보원",
+        "source_title": "한국의 장수상품: 바나나맛우유",
+        "source_url": "https://www.korean-culture.org/koreanet/view.do?seq=3308",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1974-06",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "date_resolution": "백과사전 본문 내 월 표기가 혼재해 제조사 보고서 1974.06과 한국문화원 기사로 확인",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-coffee-1976",
+    "title": "동서식품 커피믹스 개발",
+    "description": "동서식품이 커피와 크림, 설탕을 함께 담은 커피믹스를 개발했다. 재료를 각각 덜지 않고 물에 타 마실 수 있는 방식이었다.",
+    "date_start": "1976-01-01",
+    "date_end": null,
+    "date_precision": "year",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "국립민속박물관",
+        "source_title": "우리나라 커피의 변천사",
+        "source_url": "https://webzine.nfm.go.kr/2021/06/02/우리나라-커피의-변천사/",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "특허청",
+        "source_title": "우리나라를 빛낸 발명품 10선",
+        "source_url": "https://www.korea.kr/briefing/policyBriefingView.do?newsId=148837505",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "뜻밖의 사실",
+      "date_basis": "1976",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-squid-1976",
+    "title": "오징어땅콩 출시",
+    "description": "동양제과가 오징어땅콩을 출시했다. 회사 공식 연혁에 남아 있는 1970년대 스낵 제품이다.",
+    "date_start": "1976-01-01",
+    "date_end": null,
+    "date_precision": "year",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "오리온",
+        "source_title": "오리온 연혁",
+        "source_url": "https://www.orionworld.com/html/13",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1976",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-banana-1978",
+    "title": "바나나킥 출시",
+    "description": "농심이 바나나 향을 살린 옥수수 스낵 바나나킥을 출시했다. 옥수수를 주원료로 해 입안에서 부드럽게 녹는 식감을 낸 제품이다.",
+    "date_start": "1978-05-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "농심",
+        "source_title": "바나나킥 브랜드: 출시년월",
+        "source_url": "https://brand.nongshim.com/bananakicksnack/main/index",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "농심",
+        "source_title": "농심 2017 연차보고서: 제품 출시 연표",
+        "source_url": "https://image.nongshim.com/non/cir/Nongshim_2017AR_Korean.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1978-05",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-lotteria-1979",
+    "title": "롯데리아 소공점 개점",
+    "description": "롯데리아 첫 매장이 서울 소공동에 문을 열었다. 호텔롯데 개장과 같은 날 시작한 햄버거 매장이었다.",
+    "date_start": "1979-10-25",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "한국프랜차이즈산업협회",
+        "source_title": "프랜차이즈월드: 한국 패스트푸드의 역사",
+        "source_url": "https://www.ikfa.or.kr/data/pdf/world/world_07.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "1979-10-25",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-potato-1980",
+    "title": "농심 포테토칩 출시",
+    "description": "농심이 생감자로 만든 포테토칩을 출시했다. 감자를 원료로 하는 스낵 제품군의 초기 기록이다.",
+    "date_start": "1980-07-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "농심",
+        "source_title": "포테토칩 브랜드관: 출시년월",
+        "source_url": "https://brand.nongshim.com/potatochip/main/index",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1980-07",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-sing-1980",
+    "title": "전국노래자랑 첫 방송",
+    "description": "KBS 전국노래자랑이 방송을 시작했다. 지역 주민이 무대에서 노래와 장기를 선보이는 공개 참여 프로그램이다.",
+    "date_start": "1980-11-09",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "KBS",
+        "source_title": "KBS사람 719호: 전국노래자랑",
+        "source_url": "https://padmin.static.kbs.co.kr/nbroad/2021/5/17/1621209745010_nbroad.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "대중문화",
+      "date_basis": "1980-11-09",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-yukgaejang-1982",
+    "title": "육개장 사발면 출시",
+    "description": "농심이 육개장 사발면을 출시했다. 봉지에 끓이는 라면과 달리 용기에 물을 부어 먹는 제품이다.",
+    "date_start": "1982-11-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "농심",
+        "source_title": "농심 2017 연차보고서: 제품 출시 연표",
+        "source_url": "https://image.nongshim.com/non/cir/Nongshim_2017AR_Korean.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "연합인포맥스",
+        "source_title": "육개장사발면 가격 변천사와 1982년 11월 출시",
+        "source_url": "https://news.einfomax.co.kr/news/articleView.html?idxno=4436444",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1982-11",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-pager-1982",
+    "title": "수도권 무선호출기 서비스 시작",
+    "description": "수도권에서 무선호출기 서비스가 시작됐다. 초기에는 신호음으로 호출을 알렸고 숫자를 표시하는 방식은 이후 도입됐다.",
+    "date_start": "1982-12-15",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "SK텔레콤",
+        "source_title": "SK텔레콤 40년사",
+        "source_url": "https://www.sktelecom.com/assets/pdf/skt40th_s.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "국립국어원",
+        "source_title": "새국어생활 2013 봄: 무선호출기와 숫자 의사소통",
+        "source_url": "https://www.korean.go.kr/nkview/nklife/2013_1/23_0102.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "1982-12-15",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-diget-1983",
+    "title": "다이제 출시",
+    "description": "동양제과가 비스킷 다이제를 출시했다. 회사 공식 연혁에서 확인되는 장수 과자의 출발점이다.",
+    "date_start": "1983-01-01",
+    "date_end": null,
+    "date_precision": "year",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "오리온",
+        "source_title": "오리온 연혁",
+        "source_url": "https://www.orionworld.com/html/13",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1983",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-uniform-1983",
+    "title": "중·고등학교 교복 자율화 전면 시행",
+    "description": "중·고등학교에서 자유복 등교가 전면 시행됐다. 1982년의 시범 실시와 구분되는 조치다.",
+    "date_start": "1983-01-01",
+    "date_end": null,
+    "date_precision": "year",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "국가기록원",
+        "source_title": "기록으로 살펴보는 의식주: 교복자율화",
+        "source_url": "https://theme.archives.go.kr/next/education2010/wear04.do",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "한국학중앙연구원",
+        "source_title": "교복·두발 자율화 조치",
+        "source_url": "https://encykorea.aks.ac.kr/Article/E0076165",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "1983",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-dooly-1983",
+    "title": "아기공룡 둘리 연재 시작",
+    "description": "김수정의 아기공룡 둘리가 만화잡지 보물섬에 처음 실렸다. TV 애니메이션보다 먼저 만화로 독자를 만났다.",
+    "date_start": "1983-04-22",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "문화",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "MBC",
+        "source_title": "둘리가 벌써 서른: 보물섬 첫 연재",
+        "source_url": "https://imnews.imbc.com/replay/2013/nwdesk/article/3271179_30357.html",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "아시아경제",
+        "source_title": "오늘은 둘리 32살 생일",
+        "source_url": "https://view.asiae.co.kr/article/2015042210290804356",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "대중문화",
+      "date_basis": "1983-04-22",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-ansung-1983",
+    "title": "안성탕면 출시",
+    "description": "농심이 안성탕면을 출시했다. 스프 전문 공장을 세운 뒤 진공 건조 방식의 스프를 적용한 제품이었다.",
+    "date_start": "1983-09-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "농심",
+        "source_title": "안성탕면 브랜드관: 출시년월",
+        "source_url": "https://brand.nongshim.com/ansung/product/index",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "이데일리",
+        "source_title": "1983년 9월 출시된 안성탕면 35년",
+        "source_url": "https://www.edaily.co.kr/News/Read?mediaCodeNo=257&newsId=01866326619311912",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1983-09",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-jjapa-1984",
+    "title": "짜파게티 출시",
+    "description": "농심이 짜파게티를 출시했다. 집에서 조리해 먹는 짜장 라면 제품의 기록이다.",
+    "date_start": "1984-03-19",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "농심",
+        "source_title": "짜파게티 36주년: 1984년 3월 19일 출시",
+        "source_url": "https://www.nongshim.com/promotion/notice/press_view?groupCode=003&groupId=505&page=10",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "한국경제",
+        "source_title": "기생충 열풍에 짜파게티 해외서 제2 전성기",
+        "source_url": "https://www.hankyung.com/article/202003181022i",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1984-03-19",
+      "date_note": "제조사 출시 기념 보도자료와 언론 기사에 명시된 발매일",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-paldo-bibim-1984",
+    "title": "팔도 비빔면 출시",
+    "description": "팔도가 비빔면을 출시했다. 국물 라면과 달리 삶은 면을 비벼 먹는 제품이었다.",
+    "date_start": "1984-06-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "팔도",
+        "source_title": "팔도 공식 연혁: 비빔면 출시",
+        "source_url": "https://paldofood.co.kr/intro/history",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1984-06",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "제조사 공식 연혁의 출시년월 확인"
+    }
+  },
+  {
+    "id": "kr-life-shin-1986",
+    "title": "신라면 출시",
+    "description": "농심이 신라면을 출시했다. 출시 시점은 회사 공식 제품 연표의 1986년 10월을 기준으로 삼았다.",
+    "date_start": "1986-10-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "농심",
+        "source_title": "농심 2017 연차보고서: 제품 출시 연표",
+        "source_url": "https://image.nongshim.com/non/cir/Nongshim_2017AR_Korean.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1986-10",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-phonecard-1986",
+    "title": "카드식 공중전화 설치",
+    "description": "전화카드를 사용하는 공중전화가 설치됐다. 동전만 넣던 방식과 구분되는 공중전화의 변화다.",
+    "date_start": "1986-10-20",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "방송통신위원회",
+        "source_title": "정책연구 10-15: 국내 번호제도 및 체계 59쪽",
+        "source_url": "https://www.kcc.go.kr/download.do?fileSeq=32037",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "1986-10-20",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-poca-1988",
+    "title": "포카칩 출시",
+    "description": "동양제과가 생감자 스낵 포카칩을 출시했다. 같은 해 감자연구소도 설립했다.",
+    "date_start": "1988-01-01",
+    "date_end": null,
+    "date_precision": "year",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "오리온",
+        "source_title": "오리온 연혁",
+        "source_url": "https://www.orionworld.com/html/13",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1988",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-mcd-1988",
+    "title": "맥도날드 압구정점 개점",
+    "description": "한국 첫 맥도날드 매장이 서울 압구정동에 문을 열었다. 서울올림픽이 열리던 해 등장한 외식 공간이다.",
+    "date_start": "1988-03-29",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "경향신문",
+        "source_title": "1988년 맥도날드 국내 1호점 개점",
+        "source_url": "https://v.daum.net/v/20100328175310746",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "세계일보",
+        "source_title": "맥도날드의 35년 한국 사회 정착 이야기",
+        "source_url": "https://www.segye.com/newsView/20230714515540",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "1988-03-29",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-mobile-1988",
+    "title": "한국이동통신 휴대전화 서비스 시작",
+    "description": "한국이동통신이 서울에서 아날로그 휴대전화 서비스를 시작했다. 자동차에 설치하는 카폰과 구분되는 손에 들고 쓰는 이동전화였다.",
+    "date_start": "1988-07-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "SK텔레콤",
+        "source_title": "SK텔레콤 40년사",
+        "source_url": "https://www.sktelecom.com/assets/pdf/skt40th_s.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "1988-07",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-collect-1988",
+    "title": "수신자부담 공중전화 서비스 시작",
+    "description": "공중전화에서 전화를 받는 사람이 요금을 내는 서비스가 시작됐다. 통화 요금을 부담하는 쪽을 바꾼 전화 서비스다.",
+    "date_start": "1988-09-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "방송통신위원회",
+        "source_title": "정책연구 10-15: 국내 번호제도 및 체계 59쪽",
+        "source_url": "https://www.kcc.go.kr/download.do?fileSeq=32037",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "1988-09-01",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-hwp-1989",
+    "title": "아래아한글 1.0 출시",
+    "description": "국산 워드프로세서 아래아한글 1.0이 출시됐다. 한글과컴퓨터 법인 설립보다 앞선 소프트웨어의 출발점이다.",
+    "date_start": "1989-01-01",
+    "date_end": null,
+    "date_precision": "year",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "경향신문",
+        "source_title": "1989년 아래아한글 1.0 출시",
+        "source_url": "https://www.khan.co.kr/article/201004231753145",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "한글과컴퓨터",
+        "source_title": "창립 21주년 보도자료: 1989년 아래아한글",
+        "source_url": "https://www.newswire.co.kr/newsRead.php?no=574984",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "뜻밖의 사실",
+      "date_basis": "1989",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-seven-1989",
+    "title": "세븐일레븐 올림픽점 개점",
+    "description": "서울 방이동에 세븐일레븐 올림픽점이 문을 열었다. 한국 편의점 산업의 초기 매장으로 기록된다.",
+    "date_start": "1989-05-06",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "한국기업평가",
+        "source_title": "기업탐방: 코리아세븐",
+        "source_url": "https://www.korearatings.com/component/webzine/674/kr674.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "1989-05-06",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-gs-1990",
+    "title": "LG25 경희점 개점",
+    "description": "오늘날 GS25로 이어지는 LG25의 첫 매장이 문을 열었다. 서울 경희대학교 앞에서 시작한 편의점이다.",
+    "date_start": "1990-12-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "GS리테일",
+        "source_title": "기업연혁: LG25 경희점 개점",
+        "source_url": "https://hpimg.gsretail.com/gsretail/ko/intro/history",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "경향신문",
+        "source_title": "서른 살 GS25",
+        "source_url": "https://www.khan.co.kr/article/202001021836001",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "1990-12",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-seo-1992",
+    "title": "서태지와 아이들 정규 1집 발매",
+    "description": "난 알아요가 수록된 서태지와 아이들의 첫 음반이 나왔다. 방송 출연일과 구분되는 앨범 발매일이다.",
+    "date_start": "1992-03-23",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "음악",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "조선일보",
+        "source_title": "아카이브조선: 서태지와 아이들 첫 음반 발매",
+        "source_url": "https://history.chosun.com/history/popup.jsp?id=20000421_0002",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "뉴시스",
+        "source_title": "서태지 데뷔 30주년: 정규 1집 발매",
+        "source_url": "https://mobile.newsis.com/view/NISX20220306_0001783107",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "대중문화",
+      "date_basis": "1992-03-23",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-emart-1993",
+    "title": "이마트 창동점 개점",
+    "description": "신세계가 서울 창동에 이마트 첫 매장을 열었다. 할인마트라는 새로운 장보기 공간이 등장했다.",
+    "date_start": "1993-11-12",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "서울특별시",
+        "source_title": "서울미래유산: 이마트 창동점",
+        "source_url": "https://futureheritage.seoul.go.kr/futureHeritageMeet/futureHeritage/view.do?htNo=498",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "1993-11-12",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-now-1994",
+    "title": "PC통신 나우누리 등장",
+    "description": "나우누리가 PC통신 서비스에 합류했다. 하이텔·천리안과 함께 1990년대 게시판과 동호회 문화를 이루었다.",
+    "date_start": "1994-01-01",
+    "date_end": null,
+    "date_precision": "year",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "경향신문",
+        "source_title": "디지털 기억: 온라인 서비스 판도 변화",
+        "source_url": "https://weekly.khan.co.kr/article/201302251623081",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "PC사랑",
+        "source_title": "접속만 해도 가슴 벅차던 그 시절의 천리안",
+        "source_url": "https://www.ilovepc.co.kr/news/articleView.html?idxno=3114",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "1994",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-dimchae-1995",
+    "title": "김치냉장고 딤채 출시",
+    "description": "김치 숙성과 보관을 위한 딤채가 출시됐다. 김치를 뜻하는 옛말을 제품 이름으로 삼았다.",
+    "date_start": "1995-11-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "위니아",
+        "source_title": "딤채 브랜드 역사",
+        "source_url": "https://winia.com/brand/brand/brandInfo?type=3",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "세계지식재산기구",
+        "source_title": "도메인 분쟁 결정 D2007-0658: 딤채 출시 사실관계",
+        "source_url": "https://www.wipo.int/amc/en/domains/decisions/pdf/2007/d2007-0658.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "뜻밖의 사실",
+      "date_basis": "1995-11",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-uni-1996",
+    "title": "PC통신 유니텔 등장",
+    "description": "삼성SDS의 유니텔이 서비스를 시작했다. 영화 접속의 채팅 장면에도 등장한 PC통신 공간이다.",
+    "date_start": "1996-01-01",
+    "date_end": null,
+    "date_precision": "year",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "동아일보",
+        "source_title": "유니텔 6월 30일 서비스 종료 안내",
+        "source_url": "https://www.donga.com/news/It/article/all/20220306/112194183/9",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "경향신문",
+        "source_title": "디지털 기억: 온라인 서비스 판도 변화",
+        "source_url": "https://weekly.khan.co.kr/article/201302251623081",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "1996",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-cdma-1996",
+    "title": "한국이동통신 CDMA 가입자 개통",
+    "description": "한국이동통신 남인천영업소에서 CDMA 이동전화 가입자가 개통했다. 아날로그 이동전화와 구분되는 디지털 이동통신의 초기 장면이다.",
+    "date_start": "1996-01-03",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "SK텔레콤",
+        "source_title": "담대한 도전이 만든 신화, CDMA 30년",
+        "source_url": "https://news.sktelecom.com/223649",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "SK텔레콤",
+        "source_title": "SK텔레콤 40년사",
+        "source_url": "https://www.sktelecom.com/assets/pdf/skt40th_s.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "1996-01-03",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-school-1996",
+    "title": "국민학교 명칭을 초등학교로 변경",
+    "description": "교육법 개정에 따라 국민학교의 공식 명칭이 초등학교로 바뀌었다. 법률 개정일이 아닌 실제 시행일의 기록이다.",
+    "date_start": "1996-03-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "국사편찬위원회",
+        "source_title": "사료로 본 한국사: 국민학교 명칭 변경",
+        "source_url": "https://contents.history.go.kr/front/hm/view.do?levelId=hm_125_0150",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "1996-03-01",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-baram-1996",
+    "title": "바람의나라 상용 서비스 시작",
+    "description": "넥슨이 PC통신 천리안에서 바람의나라 상용 서비스를 시작했다. 김진의 만화를 바탕으로 한 그래픽 온라인 게임이다.",
+    "date_start": "1996-04-05",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "문화",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "한국경제인협회",
+        "source_title": "디지털 기업인 박물관: 바람의나라 서비스",
+        "source_url": "https://fki-emuseum.or.kr/main/history/1990.do",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "넥슨",
+        "source_title": "넥슨 사회공헌보고서 2022",
+        "source_url": "https://ssl.nexon.com/s2/corporation/NXK/01company/Contribution2022/NEXON_Contribution_2022.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "대중문화",
+      "date_basis": "1996-04-05",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-hatban-1996",
+    "title": "햇반 출시",
+    "description": "제일제당이 즉석밥 햇반을 출시했다. 밥을 상품으로 포장해 판매한 식생활의 기록이다.",
+    "date_start": "1996-12-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "CJ제일제당",
+        "source_title": "CJ제일제당 연혁",
+        "source_url": "https://www.cj.co.kr/kr/aboutus/cj-cheiljedang/history",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "1996-12",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-daiso-1997",
+    "title": "아스코 이븐 플라자 천호동 매장 개점",
+    "description": "다이소의 출발점이 된 균일가 생활용품점이 서울 천호동에 문을 열었다. 당시 간판 이름은 다이소가 아닌 아스코 이븐 플라자였다.",
+    "date_start": "1997-05-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "아성다이소",
+        "source_title": "다이소 천호동 첫 매장의 시작",
+        "source_url": "https://www.daiso.co.kr/cs/notice/28",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "뜻밖의 사실",
+      "date_basis": "1997-05",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-hanmail-1997",
+    "title": "한메일 서비스 시작",
+    "description": "다음이 무료 웹메일 한메일을 시작했다. 웹브라우저를 통해 전자우편을 이용하는 서비스였다.",
+    "date_start": "1997-05-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "카카오",
+        "source_title": "카카오 연혁: 한메일과 서비스 개시",
+        "source_url": "https://www.kakaocorp.com/page/about/milestones",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "1997-05",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-lineage-1998",
+    "title": "리니지 정식 서비스 시작",
+    "description": "엔씨소프트가 리니지 정식 서비스를 시작했다. 첫 서버 이름은 원작 만화의 주인공 이름을 딴 데포로쥬였다.",
+    "date_start": "1998-09-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "문화",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "엔씨소프트",
+        "source_title": "리니지 디지털 아트북: 첫 정식 서비스",
+        "source_url": "https://about.ncsoft.com/artbook/kr/lineage/",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "대중문화",
+      "date_basis": "1998-09",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-daumcafe-1999",
+    "title": "다음카페 서비스 시작",
+    "description": "다음이 관심사가 비슷한 이용자들이 모이는 카페 서비스를 시작했다. 정보 교환과 친목을 위한 온라인 커뮤니티 공간이었다.",
+    "date_start": "1999-01-01",
+    "date_end": null,
+    "date_precision": "year",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "카카오",
+        "source_title": "다음카페 서비스 소개: Since 1999",
+        "source_url": "https://www.kakaocorp.com/page/service/service/DaumCafe",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "1999",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-junior-1999",
+    "title": "쥬니어네이버 서비스 시작",
+    "description": "네이버가 어린이 전용 포털 쥬니어네이버를 선보였다. 성인용 포털과 구분해 어린이 이용자를 위한 공간을 마련했다.",
+    "date_start": "1999-06-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "네이버",
+        "source_title": "네이버 주요 연혁",
+        "source_url": "https://www.navercorp.com/company/history",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "1999-06",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-naver-1999",
+    "title": "네이버 검색 포털 서비스 시작",
+    "description": "네이버가 검색 포털 서비스를 시작했다. 회사 설립과 함께 검색 서비스를 내놓은 달이다.",
+    "date_start": "1999-06-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "네이버",
+        "source_title": "네이버 주요 연혁",
+        "source_url": "https://www.navercorp.com/company/history",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "1999-06",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-hangame-1999",
+    "title": "한게임 정식 서비스 시작",
+    "description": "게임 포털 한게임이 정식으로 문을 열었다. 여러 온라인 게임을 한곳에서 제공하는 서비스였다.",
+    "date_start": "1999-12-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "문화",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "NHN",
+        "source_title": "NHN 회사소개와 연혁",
+        "source_url": "https://www.nhn.com/en-US/company",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "네이버",
+        "source_title": "네이버 주요 연혁",
+        "source_url": "https://www.navercorp.com/company/history",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "대중문화",
+      "date_basis": "1999-12",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-cy-2001",
+    "title": "싸이월드 미니홈피 서비스 시작",
+    "description": "싸이월드가 개인 중심의 미니홈피 서비스를 선보였다. 사진과 글을 올리고 미니룸을 꾸미는 공간으로 확장됐다.",
+    "date_start": "2001-09-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "중앙일보",
+        "source_title": "개인 미니홈피 세상 싸이월드 열풍",
+        "source_url": "https://www.joongang.co.kr/article/317229",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "고려대학교",
+        "source_title": "싸이월드 방문 수업: 회사 소개",
+        "source_url": "https://biz.korea.ac.kr/news/news_view.html?no=85",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "2001-09",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-kin-2002",
+    "title": "네이버 지식iN 서비스 시작",
+    "description": "이용자가 질문하고 다른 이용자가 답하는 지식iN이 문을 열었다. 검색 결과에 이용자들의 문답이 쌓이기 시작했다.",
+    "date_start": "2002-10-07",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "네이버",
+        "source_title": "지식iN 10주년: 서비스 개시일",
+        "source_url": "https://www.navercorp.com/media/pressReleasesDetail?seq=28650",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "한국경제인협회",
+        "source_title": "디지털 기업인 박물관: 지식iN 론칭",
+        "source_url": "https://www.fki-emuseum.or.kr/main/history/2000.do",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "2002-10-07",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-maple-2003",
+    "title": "메이플스토리 서비스 시작",
+    "description": "넥슨이 메이플스토리 서비스를 시작했다. 옆으로 이동하는 화면에서 캐릭터를 성장시키는 온라인 게임이다.",
+    "date_start": "2003-04-29",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "문화",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "넥슨",
+        "source_title": "메이플스토리 10주년 기념사",
+        "source_url": "https://archive.maplestory.nexon.com/News/GMsDiary/127?p=4",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "전자신문",
+        "source_title": "메이플스토리 서비스 4주년",
+        "source_url": "https://www.etnews.com/200704240034",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "대중문화",
+      "date_basis": "2003-04-29",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-blog-2003",
+    "title": "네이버 블로그 서비스 시작",
+    "description": "네이버가 블로그 서비스를 시작했다. 개인이 글과 사진을 쌓아 가는 온라인 기록 공간이었다.",
+    "date_start": "2003-10-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "비즈워치",
+        "source_title": "14년 역사 네이버 블로그",
+        "source_url": "https://news.bizwatch.co.kr/article/mobile/2017/12/06/0010",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "YTN",
+        "source_title": "네이버 파워블로거 제도 종료와 블로그 연혁",
+        "source_url": "https://www.ytn.co.kr/_ln/0103_201604141700063095",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "2003-10",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-pororo-2003",
+    "title": "뽀롱뽀롱 뽀로로 첫 방송",
+    "description": "뽀롱뽀롱 뽀로로가 EBS에서 처음 방송됐다. 기획·제작사가 함께 만든 유아용 3D 애니메이션이다.",
+    "date_start": "2003-11-27",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "한국학중앙연구원",
+        "source_title": "뽀롱뽀롱 뽀로로",
+        "source_url": "https://encykorea.aks.ac.kr/Article/E0074414",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "한국콘텐츠진흥원",
+        "source_title": "캐릭터산업백서: 뽀로로 첫 방송",
+        "source_url": "https://www.kocca.kr/knowledge/publication/indu/__icsFiles/afieldfile/2012/12/06/C71RmQUXTPSz.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "대중문화",
+      "date_basis": "2003-11-27",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-010-2004",
+    "title": "휴대전화 통합 식별번호 010 도입",
+    "description": "휴대전화 신규 가입자 등에 공통 식별번호 010이 부여되기 시작했다. 기존 가입자의 모든 번호가 이날 일괄 변경된 것은 아니다.",
+    "date_start": "2004-01-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "정보통신정책연구원",
+        "source_title": "이동전화 번호제도 개선계획",
+        "source_url": "https://www.kisdi.re.kr/report/fileView.do?arrMasterId=3934566&id=528874&key=m2101113025931",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "매일경제",
+        "source_title": "010 통합번호 도입과 가입자 변화",
+        "source_url": "https://www.mk.co.kr/news/all/3852432",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "2004-01-01",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-webtoon-2004",
+    "title": "네이버 웹툰 서비스 시작",
+    "description": "네이버가 웹툰 서비스를 시작했다. 이후 도전만화 등을 통해 새 작가와 작품을 만나는 플랫폼으로 이어졌다.",
+    "date_start": "2004-06-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "문화",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "바이라인네트워크",
+        "source_title": "마음의 소리 1000회로 보는 네이버 웹툰의 역사",
+        "source_url": "https://byline.network/2015/12/1-19/",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "대중문화",
+      "date_basis": "2004-06",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-bus-2004",
+    "title": "서울 대중교통체계 개편 시행",
+    "description": "서울에서 버스 노선과 중앙버스전용차로, 환승할인 체계가 개편됐다. 시행 초기에는 단말기 오류와 노선 변경으로 혼란도 겪었다.",
+    "date_start": "2004-07-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "서울연구원",
+        "source_title": "서울시 교통·환경정책의 평가",
+        "source_url": "https://www.si.re.kr/sites/default/files/2005-R-12_0.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "동아일보",
+        "source_title": "다시 쓰는 2004뉴스: 서울 대중교통체계 개편",
+        "source_url": "https://www.donga.com/news/IssueSerial/article/all/20041223/8142281/1",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "2004-07-01",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-kart-2004",
+    "title": "카트라이더 상용 서비스 시작",
+    "description": "카트라이더가 상용 서비스를 시작했다. 6월의 공개 시험 서비스와 구분되는 정식 상용화 기록이다.",
+    "date_start": "2004-08-18",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "문화",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "전자신문",
+        "source_title": "카트라이더가 걸어온 길",
+        "source_url": "https://www.etnews.com/200607080020",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "한국학중앙연구원 DH 교육용 위키",
+        "source_title": "카트라이더 서비스 연표",
+        "source_url": "https://dh.aks.ac.kr/Edu/wiki/index.php/카트라이더",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "대중문화",
+      "date_basis": "2004-08-18",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-happybean-2005",
+    "title": "해피빈 서비스 시작",
+    "description": "네이버가 온라인 기부 포털 해피빈을 시작했다. 인터넷에서 기부 활동을 연결하는 서비스였다.",
+    "date_start": "2005-07-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "네이버",
+        "source_title": "네이버 주요 연혁",
+        "source_url": "https://www.navercorp.com/company/history",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "2005-07",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-infinite-2006",
+    "title": "무한도전 독립 프로그램 첫 방송",
+    "description": "무한도전이 독립 프로그램으로 방송을 시작했다. 2005년 코너로 출발한 무모한 도전과 구분되는 편성의 기록이다.",
+    "date_start": "2006-05-06",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "MBC",
+        "source_title": "무한도전 500회: 2006년 5월 6일 시작",
+        "source_url": "https://m.imbc.com/Vod/VodPlay?broadcastID=1000786100692100000&progCode=1000786100000100000&type=VOD",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "국민일보",
+        "source_title": "무한도전 400회: 독립 편성 첫 방송",
+        "source_url": "https://www.kmib.co.kr/article/view.asp?arcid=0922812089",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "대중문화",
+      "date_basis": "2006-05-06",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-hitelend-2007",
+    "title": "하이텔VT 서비스 종료",
+    "description": "KTH가 하이텔의 문자 기반 VT 서비스를 종료했다. 이후에도 남은 웹 서비스 전체의 종료와는 다른 기록이다.",
+    "date_start": "2007-02-28",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "전자신문",
+        "source_title": "하이텔VT 2007년 2월 28일 종료 안내",
+        "source_url": "https://m.etnews.com/200701290166",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "PC사랑",
+        "source_title": "접속만 해도 가슴 벅차던 그 시절의 천리안",
+        "source_url": "https://www.ilovepc.co.kr/news/articleView.html?idxno=3114",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "2007-02-28",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-ticket-2009",
+    "title": "수도권 지하철 1회용 교통카드 도입",
+    "description": "종이승차권을 대체하는 1회용 교통카드가 도입됐다. 운임에 보증금 500원을 더 내고 도착 후 카드를 반환하면 돌려받는 방식이었다.",
+    "date_start": "2009-05-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "서울특별시의회",
+        "source_title": "1회용 교통카드 정착: 시스템 오픈 2009.5.1",
+        "source_url": "https://ms.smc.seoul.kr/attach/record/SEOUL/appendix/a08/A0026299.pdf?time=20260415193819",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "MBC",
+        "source_title": "지하철 1회용 교통카드 도입",
+        "source_url": "https://news.imbc.com/replay/2009/nwdesk/article/2327118_30553.html",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "2009-05-01",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-iphone-2009",
+    "title": "아이폰 국내 공식 출시",
+    "description": "KT가 아이폰의 국내 판매와 개통을 시작했다. 잠실실내체육관에서 예약 고객을 대상으로 출시 행사를 열었다.",
+    "date_start": "2009-11-28",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "연합뉴스",
+        "source_title": "아이폰 오늘 공식 출시",
+        "source_url": "https://www.yna.co.kr/amp/view/AKR20091128034700017",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "뉴스핌",
+        "source_title": "아이폰 개통행사 런칭 페스티벌 개막",
+        "source_url": "https://www.newspim.com/news/view/20091128000072",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "2009-11-28",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-kakao-2010",
+    "title": "카카오톡 아이폰용 출시",
+    "description": "아이폰용 카카오톡이 앱스토어에 등장했다. 인터넷 연결로 메시지를 주고받는 모바일 메신저였다.",
+    "date_start": "2010-03-18",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "카카오",
+        "source_title": "카카오톡의 역사와 주요 기능 연표",
+        "source_url": "https://www.kakaocorp.com/page/detail/10810?lang=KOR",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "2010-03-18",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-running-2010",
+    "title": "런닝맨 첫 방송",
+    "description": "SBS 런닝맨이 방송을 시작했다. 출연자들이 야외에서 달리고 미션을 해결하는 예능 프로그램이다.",
+    "date_start": "2010-07-11",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "SBS",
+        "source_title": "SBS 사보 1082호: 런닝맨 7주년",
+        "source_url": "https://www.sbssau.co.kr/file_news/3_662_a/SBS사보-1082.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "동아일보",
+        "source_title": "런닝맨 첫 방송 이후 시청률 20% 돌파",
+        "source_url": "https://www.donga.com/news/List/article/all/20120116/43346466/3",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "대중문화",
+      "date_basis": "2010-07-11",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-gift-2010",
+    "title": "카카오톡 선물하기 서비스 시작",
+    "description": "카카오톡 안에서 선물을 주고받는 선물하기가 시작됐다. 대화 상대에게 모바일로 선물을 보내는 서비스였다.",
+    "date_start": "2010-12-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "카카오",
+        "source_title": "카카오톡의 역사와 주요 기능 연표",
+        "source_url": "https://www.kakaocorp.com/page/detail/10810?lang=KOR",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "2010-12",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-lte-2011",
+    "title": "SK텔레콤·LG유플러스 LTE 상용화",
+    "description": "두 통신사가 한국에서 LTE 서비스를 시작했다. 첫 상용 서비스와 전국망 완성 시점은 구분된다.",
+    "date_start": "2011-07-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "연합뉴스",
+        "source_title": "LTE 상용화 3년: 2011년 7월 1일 개시",
+        "source_url": "https://www.yna.co.kr/view/AKR20140629001451017",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "SK텔레콤",
+        "source_title": "SK텔레콤 40년사",
+        "source_url": "https://www.sktelecom.com/assets/pdf/skt40th_s.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "2011-07-01",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-emoji-2011",
+    "title": "카카오톡 이모티콘 출시",
+    "description": "카카오톡 대화에 이모티콘이 도입됐다. 문자 외에 캐릭터 이미지로 감정을 표현하는 상품이 등장했다.",
+    "date_start": "2011-11-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "문화",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "카카오",
+        "source_title": "카카오톡의 역사와 주요 기능 연표",
+        "source_url": "https://www.kakaocorp.com/page/detail/10810?lang=KOR",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "대중문화",
+      "date_basis": "2011-11",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-fiveday-2012",
+    "title": "주5일 수업제 전면 도입",
+    "description": "전국 학교에 주5일 수업제가 전면 도입됐다. 학교 여건에 따른 자율 시행과 함께 토요 프로그램도 마련됐다.",
+    "date_start": "2012-03-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "한국교육개발원",
+        "source_title": "교육개발 2012 여름: 주5일 수업제 시행",
+        "source_url": "https://www.kedi.re.kr/edzine/ednews/2012_06m/images/download.pdf",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "한국교육신문",
+        "source_title": "주5일 수업제 2012년 3월 도입",
+        "source_url": "https://hangyo.com/news/article.html?no=76378",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "2012-03",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-story-2012",
+    "title": "카카오스토리 출시",
+    "description": "사진과 글로 일상을 공유하는 카카오스토리가 출시됐다. 카카오톡 친구 관계와 연결되는 모바일 SNS였다.",
+    "date_start": "2012-03-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "카카오",
+        "source_title": "카카오스토리 스토리수 10억건 돌파",
+        "source_url": "https://www.kakaocorp.com/page/detail/7958",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "2012-03",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-voice-2012",
+    "title": "카카오톡 보이스톡 출시",
+    "description": "카카오톡에 인터넷 음성통화 기능 보이스톡이 추가됐다. 메시지 대화에서 목소리로도 연락할 수 있게 됐다.",
+    "date_start": "2012-06-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "카카오",
+        "source_title": "카카오톡의 역사와 주요 기능 연표",
+        "source_url": "https://www.kakaocorp.com/page/detail/10810?lang=KOR",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "2012-06",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-paranend-2012",
+    "title": "포털 파란닷컴 서비스 종료",
+    "description": "KTH가 파란닷컴 포털 서비스를 종료했다. 메일과 블로그 자료는 다음의 서비스로 이전할 수 있도록 안내했다.",
+    "date_start": "2012-07-31",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "전자신문",
+        "source_title": "포털 파란닷컴 7월 31일 종료 안내",
+        "source_url": "https://www.etnews.com/201206150143",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "2012-07-31",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-yahooend-2012",
+    "title": "야후코리아 서비스 종료",
+    "description": "야후코리아가 한국 포털 서비스를 종료했다. 미국 야후로 이전한 계정의 서비스와는 구분되는 한국 사업의 마무리다.",
+    "date_start": "2012-12-31",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "뉴스핌",
+        "source_title": "야후코리아 15년 만에 서비스 종료",
+        "source_url": "https://www.newspim.com/news/view/20121231000511",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "동아일보",
+        "source_title": "야후 한국 포털사이트 철수",
+        "source_url": "https://www.donga.com/news/home/article/all/20121231/51956709/3",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "2012-12-31",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-nowend-2013",
+    "title": "나우누리 서비스 종료",
+    "description": "PC통신 나우누리가 서비스를 종료했다. 종료 전에는 자료 백업과 이전을 위해 무료 이용 기간을 운영했다.",
+    "date_start": "2013-01-31",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "아이뉴스24",
+        "source_title": "하이텔 이어 나우누리도 1월 31일 종료",
+        "source_url": "https://inews24.com/view/721146",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "머니투데이",
+        "source_title": "나우누리 2013년 1월 말 서비스 종료",
+        "source_url": "https://news.nate.com/view/20121208n04146",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "2013-01-31",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-freechalend-2013",
+    "title": "프리챌 커뮤니티 서비스 종료",
+    "description": "프리챌의 커뮤니티 서비스가 문을 닫았다. 게임과 파일구리 서비스까지 모두 종료된 것은 아니었다.",
+    "date_start": "2013-02-18",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "경향신문",
+        "source_title": "인터넷의 추억: 프리챌 커뮤니티 종료",
+        "source_url": "https://weekly.khan.co.kr/article/201302251623051",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "2013-02-18",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-pcchat-2013",
+    "title": "카카오톡 PC 버전 정식 출시",
+    "description": "카카오톡 PC 버전이 정식 출시됐다. 휴대전화에서 하던 대화를 컴퓨터에서도 이어갈 수 있게 됐다.",
+    "date_start": "2013-06-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "카카오",
+        "source_title": "카카오톡의 역사와 주요 기능 연표",
+        "source_url": "https://www.kakaocorp.com/page/detail/10810?lang=KOR",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "2013-06",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-pay-2014",
+    "title": "카카오페이 서비스 시작",
+    "description": "카카오톡에 카드를 등록하고 비밀번호로 결제하는 카카오페이가 시작됐다. 출시 기념 이벤트가 열린 9월 15일과는 다른 날짜다.",
+    "date_start": "2014-09-05",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "카카오",
+        "source_title": "카카오페이 출시 기념 이벤트: 9월 5일 서비스 시작",
+        "source_url": "https://www.kakaocorp.com/page/detail/7576",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "2014-09-05",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-taxi-2015",
+    "title": "카카오택시 정식 서비스 시작",
+    "description": "택시 기사와 승객을 앱으로 연결하는 카카오택시가 정식 출시됐다. 고급택시 서비스 블랙의 시작과는 구분된다.",
+    "date_start": "2015-03-31",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "카카오",
+        "source_title": "카카오택시 블랙 운행 시작: 일반 카카오택시 개시일",
+        "source_url": "https://www.kakaocorp.com/page/detail/7849",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "2015-03-31",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-openchat-2015",
+    "title": "카카오톡 오픈채팅 출시",
+    "description": "카카오톡에 오픈채팅 기능이 추가됐다. 기존 친구 목록 밖에서도 주제별 대화방에 참여하는 기능이다.",
+    "date_start": "2015-08-01",
+    "date_end": null,
+    "date_precision": "month",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "카카오",
+        "source_title": "카카오톡의 역사와 주요 기능 연표",
+        "source_url": "https://www.kakaocorp.com/page/detail/10810?lang=KOR",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "2015-08",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-sampay-2015",
+    "title": "삼성페이 국내 서비스 시작",
+    "description": "삼성전자가 한국에서 삼성페이를 선보였다. 스마트폰을 카드 결제 단말기에 가까이 대어 결제하는 서비스였다.",
+    "date_start": "2015-08-20",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "삼성전자",
+        "source_title": "삼성월렛 10주년",
+        "source_url": "https://www.samsung.com/sec/business/insights/news/news_250825_05/",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "동아일보",
+        "source_title": "삼성페이 국내 출시",
+        "source_url": "https://www.donga.com/news/It/article/all/20150820/73152228/2",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "2015-08-20",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-bike-2015",
+    "title": "서울 공공자전거 따릉이 본격 운영",
+    "description": "따릉이가 서울의 다섯 거점 지역에서 본격 운영을 시작했다. 150개 대여소와 자전거 2천 대 규모로 출발했다.",
+    "date_start": "2015-10-15",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "서울특별시",
+        "source_title": "서울 공공자전거 따릉이 본격 운영일",
+        "source_url": "https://news.seoul.go.kr/traffic/archives/28411",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "동아일보",
+        "source_title": "서울 공공자전거 따릉이 15일부터 운영",
+        "source_url": "https://www.donga.com/news/Society/article/all/20151015/74176530/1",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "2015-10-15",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-netflix-2016",
+    "title": "넷플릭스 한국 서비스 시작",
+    "description": "넷플릭스가 한국에서 서비스를 시작했다. 미국 서부의 1월 6일 발표와 구분해 한국 날짜인 1월 7일로 기록했다.",
+    "date_start": "2016-01-07",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "넷플릭스",
+        "source_title": "한국 서비스 10주년: 한국 날짜 기준 2016년 1월 7일",
+        "source_url": "https://about.netflix.com/ko/news/netflixkorea10yearanniversary",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "대중문화",
+      "date_basis": "2016-01-07",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-turtle-2017",
+    "title": "꼬북칩 출시",
+    "description": "오리온이 네 겹으로 만든 스낵 꼬북칩을 출시했다. 회사 공식 연혁에 4겹 스낵의 등장으로 기록되어 있다.",
+    "date_start": "2017-01-01",
+    "date_end": null,
+    "date_precision": "year",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "오리온",
+        "source_title": "오리온 연혁",
+        "source_url": "https://www.orionworld.com/html/13",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "2017",
+      "date_note": "연도·월 정확도의 01은 저장용 기준값이며 실제 발생일을 뜻하지 않음",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-peng-2019",
+    "title": "자이언트 펭TV 첫 방송",
+    "description": "펭수가 등장하는 자이언트 펭TV가 EBS1에서 방송을 시작했다. 크리에이터를 꿈꾸는 펭귄 캐릭터의 성장기를 다뤘다.",
+    "date_start": "2019-04-02",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "EBS",
+        "source_title": "자이언트 펭TV 첫 방송 안내",
+        "source_url": "https://about.ebs.co.kr/board/bbs?boardId=31&boardTypeId=1&cmd=view&no=15&option=&pageNo=461&postId=10004993123&searchCondition=title&searchKeyword=",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "대중문화",
+      "date_basis": "2019-04-02",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-mask-2020",
+    "title": "공적 마스크 구매 5부제 시행",
+    "description": "출생연도 끝자리에 따라 마스크를 살 수 있는 요일을 나누었다. 초기 구매 한도는 한 사람당 일주일에 두 장이었다.",
+    "date_start": "2020-03-09",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "식품의약품안전처·KDI",
+        "source_title": "마스크 5부제 시행 현황",
+        "source_url": "https://eiec.kdi.re.kr/policy/materialView.do?datecount=&num=198536&pg=&pp=20&recommend=&topic=O",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "강남구",
+        "source_title": "공적 마스크 5부제 안내",
+        "source_url": "https://www.gangnam.go.kr/board/article/4379/view.do?mid=ID01_05013",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "2020-03-09",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-disney-2021",
+    "title": "디즈니플러스 한국 서비스 시작",
+    "description": "디즈니플러스가 한국에서 서비스를 시작했다. 웹사이트와 모바일 앱으로 영화와 시리즈를 제공했다.",
+    "date_start": "2021-11-12",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "연합뉴스",
+        "source_title": "Disney+ lands in South Korea",
+        "source_url": "https://en.yna.co.kr/view/AEN20211112001200320",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "대중문화",
+      "date_basis": "2021-11-12",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-pokemon-2022",
+    "title": "돌아온 포켓몬빵 재출시",
+    "description": "삼립이 포켓몬빵을 다시 판매하기 시작했다. 최초 출시가 아닌 추억의 제품을 되살린 재출시 기록이다.",
+    "date_start": "2022-02-24",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "뉴스핌",
+        "source_title": "포켓몬빵 2월 24일 재출시",
+        "source_url": "https://www.newspim.com/news/view/20220303000775",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "스포츠한국",
+        "source_title": "2022년 유통결산: 포켓몬빵",
+        "source_url": "https://news.nate.com/view/20221228n28197",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "음식·소비",
+      "date_basis": "2022-02-24",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-cyback-2022",
+    "title": "싸이월드 서비스 재개",
+    "description": "싸이월드가 모바일 앱으로 서비스를 다시 열었다. 첫날에는 로그인 등이 가능했지만 사진첩 복원은 순차적으로 진행됐다.",
+    "date_start": "2022-04-02",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "뉴시스",
+        "source_title": "싸이월드 서비스 재개",
+        "source_url": "https://www.donga.com/news/article/all/20220402/112660634/1",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "2022-04-02",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-uniend-2022",
+    "title": "유니텔 서비스 종료",
+    "description": "유니텔이 서비스를 종료했다. 1996년 시작한 PC통신에서 웹 포털로 이어졌던 공간이 문을 닫았다.",
+    "date_start": "2022-06-30",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "동아일보",
+        "source_title": "유니텔 6월 30일 서비스 종료 안내",
+        "source_url": "https://www.donga.com/news/It/article/all/20220306/112194183/9",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "2022-06-30",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-mobileid-2022",
+    "title": "모바일 운전면허증 전국 발급 시작",
+    "description": "모바일 운전면허증을 전국에서 발급하기 시작했다. 일부 지역 시범 발급과 구분되는 전국 확대 기록이다.",
+    "date_start": "2022-07-28",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "행정안전부",
+        "source_title": "모바일 운전면허증 전국 발급 개시",
+        "source_url": "https://www.mois.go.kr/frt/bbs/type013/commonSelectBoardArticle.do%3Bjsessionid%3D2s3H-8LTdf-c8pNG45eDFZ32.node50?bbsId=BBSMSTR_000000000411&nttId=95297",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "publisher": "금융위원회",
+        "source_title": "7월 28일부터 전국 발급 가능한 모바일 운전면허증",
+        "source_url": "https://www.fsc.go.kr/no040101?cnId=1264&curPage=236&pastPage=236&srchKey=&srchText=",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "2022-07-28",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 2,
+      "crosscheck_note": "서로 다른 발행기관 자료를 함께 확인함. 기업 제공 자료를 인용한 보도는 완전한 독립 증거로 단정하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-applepay-2023",
+    "title": "애플페이 한국 서비스 시작",
+    "description": "애플페이가 한국에서 이용 가능해졌다. 출시 당시에는 현대카드를 등록해 지원 가맹점에서 사용할 수 있었다.",
+    "date_start": "2023-03-21",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "Apple",
+        "source_title": "Apple Pay 대한민국 출시",
+        "source_url": "https://www.apple.com/kr/newsroom/2023/03/apple-pay-launches-in-south-korea/",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "인터넷·IT",
+      "date_basis": "2023-03-21",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-age-2023",
+    "title": "만 나이 계산·표시 원칙 시행",
+    "description": "민법과 행정기본법의 나이 계산·표시 원칙이 만 나이로 통일됐다. 별도 규정이 있는 법령까지 모두 같은 방식으로 바뀐 것은 아니다.",
+    "date_start": "2023-06-28",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "법제처",
+        "source_title": "만 나이 개정 민법·행정기본법 시행",
+        "source_url": "https://m.easylaw.go.kr/MOB/NtcInfoRetrieve.laf?ntcSeq=1442",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "2023-06-28",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-chollend-2024",
+    "title": "천리안 포털 서비스 종료",
+    "description": "PC통신에서 출발해 포털로 이어진 천리안 서비스가 종료됐다. 옛 PC통신 접속 방식의 종료일과는 구분되는 기록이다.",
+    "date_start": "2024-10-31",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "기술",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "이데일리",
+        "source_title": "천리안 10월 31일 서비스 종료 안내",
+        "source_url": "https://www.edaily.co.kr/News/Read?mediaCodeNo=257&newsId=03466966638952880",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "사라진 일상",
+      "date_basis": "2024-10-31",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  },
+  {
+    "id": "kr-life-resident-2025",
+    "title": "모바일 주민등록증 전국 어디서나 발급",
+    "description": "주민등록지와 관계없이 전국 행정복지센터에서 모바일 주민등록증을 신청할 수 있게 됐다. 2024년 시범 발급과 2025년 지역별 확대를 거친 조치다.",
+    "date_start": "2025-03-28",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "생활",
+    "verification_status": "verified",
+    "sources": [
+      {
+        "publisher": "인천광역시",
+        "source_title": "모바일 주민등록증 단계별 전국 시행 안내",
+        "source_url": "https://www.incheon.go.kr/ml_kr/MLKR020401/3000625",
+        "license": "Facts-only extraction; independently worded factual labels and context; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "batch": "everyday-history-20261101",
+      "theme": "생활문화",
+      "date_basis": "2025-03-28",
+      "date_note": "출처에 명시된 사건 발생일 사용",
+      "source_count": 1,
+      "crosscheck_note": "1개 발행기관의 자료로 확인; 독립적인 2개 출처 검증으로 표시하지 않음"
+    }
+  }
+]
