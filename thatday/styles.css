@@ -1997,3 +1997,109 @@ body[data-view="timeline"] .time-atlas {
     transition: none;
   }
 }
+
+/* A single document measure for header, navigation, records and footer. */
+.masthead,
+.page-grid {
+  width: calc(100% - 80px);
+  max-width: 1120px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.masthead {
+  padding-left: 0;
+  padding-right: 0;
+}
+.page-grid {
+  padding: 24px 0 0;
+}
+.time-atlas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px 24px;
+  padding: 16px 0;
+  margin-bottom: 16px;
+}
+.atlas-heading > div {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+}
+.atlas-year {
+  font-size: 14px;
+  letter-spacing: 0;
+  margin: 0;
+}
+.atlas-year span {
+  font-size: 12px;
+}
+.atlas-controls {
+  align-items: center;
+  margin: 0;
+  gap: 24px;
+}
+.atlas-controls > .mono {
+  font-size: 10px;
+}
+.time-atlas .index-years {
+  grid-column: 1 / -1;
+  min-width: 0;
+  width: 100%;
+  padding-bottom: 4px;
+}
+.time-atlas .year-tick {
+  flex: 1 0 8px;
+  height: 52px;
+}
+.time-atlas .year-tick.major {
+  flex-basis: 34px;
+}
+.time-atlas .year-tick.major::before {
+  height: 22px;
+}
+.time-atlas .year-tick[aria-pressed="true"]::before {
+  height: 28px;
+}
+.page-title:not(.sr-only) {
+  padding-bottom: 12px;
+}
+body[data-view="mine"] .time-atlas {
+  border-top: 0;
+  padding-top: 0;
+}
+@media (max-width: 760px) {
+  .masthead,
+  .page-grid {
+    width: calc(100% - 44px);
+    max-width: 1120px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .page-grid {
+    padding: 20px 0 0;
+  }
+  .time-atlas {
+    gap: 10px 12px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    margin-bottom: 12px;
+  }
+  .atlas-heading > div {
+    display: block;
+  }
+  .atlas-heading .eyebrow {
+    display: none;
+  }
+  .atlas-controls > .mono {
+    display: none;
+  }
+  .atlas-controls {
+    gap: 0;
+  }
+  .time-atlas .year-tick {
+    flex: 0 0 18px;
+  }
+  .time-atlas .year-tick.major {
+    flex-basis: 42px;
+  }
+}
+.time-atlas[hidden] {display:none;}
