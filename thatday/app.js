@@ -1,4 +1,13 @@
-import { recordContext, cleanEventTitle } from "./record-input.js";
+import {
+  memoryYears,
+  personalSentence,
+  orderedRows,
+  allPages,
+} from "./experience.js";
+import {
+  chosenRecordContext,
+  cleanEventTitle,
+} from "./record-input.js?v=3d53c435cff1";
 import {
   categories,
   today,
@@ -19,6 +28,7 @@ const backend = createBackend(
 const state = {
   guest: false,
   lives: new Map(),
+  memoryEvents: [],
   providers: null,
   view: "timeline",
   date: "",
@@ -47,6 +57,7 @@ let generation = 0,
   previousFocus,
   previousScroll = 0,
   dirty = false,
+  savingRecord = false,
   editor = null,
   pendingEditor = null;
 const selected = () => (state.me.user ? state.me.remembered : state.local);
@@ -117,6 +128,9 @@ function heading() {
   $$("[data-nav]").forEach((a) => {
     a.href = route(backend.base, {
       view: a.dataset.nav === "timeline" ? "" : a.dataset.nav,
+      ...(["timeline", "mine"].includes(a.dataset.nav)
+        ? { date: state.date, q: state.q, category: state.category }
+        : {}),
     });
     if (a.dataset.nav === state.view) a.setAttribute("aria-current", "page");
     else a.removeAttribute("aria-current");
@@ -136,7 +150,18 @@ function heading() {
   $("#atlas-year").innerHTML = state.date
     ? `${h(state.date.slice(0, 4))}<span>${h(state.date.length > 4 ? state.date.slice(5).replace("-", " / ") : "년의 기록")}</span>`
     : `1950<span>— ${today().slice(0, 4)}</span>`;
+  const rememberedYears = memoryYears(selected(), [
+    ...state.starter,
+    ...state.memoryEvents,
+    ...state.events,
+  ]);
   $$("#year-index [data-year]").forEach((button) => {
+    const hasMemory = rememberedYears.has(button.dataset.year);
+    button.classList.toggle("has-memory", hasMemory);
+    button.setAttribute(
+      "aria-label",
+      `${button.dataset.year}년 기록${hasMemory ? ", 기억한 사건 있음" : ""}`,
+    );
     const active = button.dataset.year === state.date.slice(0, 4);
     button.setAttribute("aria-pressed", String(active));
     if (active) {
@@ -183,7 +208,19 @@ function heading() {
 function eventHTML(e) {
   const remembered = selected().includes(e.id),
     open = state.expanded === e.id;
-  return `<article class="event ${remembered ? "remembered" : ""}" id="event-${h(e.id)}"><div class="event-line"><button class="remember-button" data-remember="${h(e.id)}" aria-pressed="${remembered}" aria-label="${h(e.title)} ${remembered ? "기억 선택 해제" : "기억으로 선택"}"><span class="memory-dot"></span></button><time class="date mono" datetime="${h(e.date_start)}">${h(dateLabel(e.date_start, e.date_precision, e.date_end))}</time><button class="event-title" data-expand="${h(e.id)}" aria-expanded="${open}" aria-controls="detail-${h(e.id)}">${h(e.title)}</button><button class="expand-button" data-expand="${h(e.id)}" aria-label="사건 상세 정보" aria-expanded="${open}">${open ? "−" : "＋"}</button></div><div class="expand-grid" data-open="${open}" id="detail-${h(e.id)}" ${open ? "" : "inert"}><div><div class="event-detail"><span class="eyebrow">${h(e.category)}</span>${state.me.user?.birth_year && Number(e.date_start.slice(0, 4)) < state.me.user.birth_year ? `<p class="fine">출생 이전의 사건입니다. 직접 경험한 기억과 나중에 알게 된 역사를 구분해 남겨 주세요.</p>` : ""}${e.description ? `<p>${h(e.description)}</p>` : ""}<div class="event-actions"><button data-write-event="${h(e.id)}">＋ 내 이야기</button><a href="${h(route(backend.base, { event: e.id }))}">고유 링크 ↗</a><a href="${h(route(backend.base, { date: e.date_start }))}">그날의 기록</a></div></div></div></div><div class="life-invite" ${remembered ? "" : "hidden"}><button data-lives="${h(e.id)}" aria-expanded="${Boolean(state.lives.get(e.id)?.open)}" aria-controls="lives-${h(e.id)}">이날을 기억하는 다른 사람들의 이야기 보기 ↓</button></div><div class="lives-panel expand-grid" id="lives-${h(e.id)}" data-open="${Boolean(state.lives.get(e.id)?.open)}" ${state.lives.get(e.id)?.open ? "" : "inert"}><div><div class="lives-content">${livesHTML(e)}</div></div></div></article>`;
+  return `<article class="event ${remembered ? "remembered" : ""}" id="event-${h(e.id)}"><div class="event-line"><button class="remember-button" data-remember="${h(e.id)}" aria-pressed="${remembered}" aria-label="${h(e.title)} ${remembered ? "기억 선택 해제" : "기억으로 선택"}"><span class="memory-dot"></span></button><time class="date mono" datetime="${h(e.date_start)}">${h(dateLabel(e.date_start, e.date_precision, e.date_end))}</time><button class="event-title" data-expand="${h(e.id)}" aria-expanded="${open}" aria-controls="detail-${h(e.id)}">${h(e.title)}</button><button class="expand-button" data-expand="${h(e.id)}" aria-label="사건 상세 정보" aria-expanded="${open}">${open ? "−" : "＋"}</button></div><div class="expand-grid" data-open="${open}" id="detail-${h(e.id)}" ${open ? "" : "inert"}><div><div class="event-detail"><span class="eyebrow">${h(e.category)}</span>${state.me.user?.birth_year && Number(e.date_start.slice(0, 4)) < state.me.user.birth_year ? `<p class="fine">출생 이전의 사건입니다. 직접 경험한 기억과 나중에 알게 된 역사를 구분해 남겨 주세요.</p>` : ""}${e.description ? `<p>${h(e.description)}</p>` : ""}<div class="event-actions"><button data-write-event="${h(e.id)}">＋ 내 이야기</button><a href="${h(route(backend.base, { event: e.id }))}">고유 링크 ↗</a><a href="${h(route(backend.base, { date: e.date_start }))}">그날의 기록</a></div></div></div></div><div class="life-invite" ${remembered ? "" : "hidden"}><button data-lives="${h(e.id)}" aria-expanded="${Boolean(state.lives.get(e.id)?.open)}" aria-controls="lives-${h(e.id)}">이날을 기억하는 다른 사람들의 이야기 보기 ↓</button></div><div class="lives-panel expand-grid" id="lives-${h(e.id)}" data-open="${Boolean(state.lives.get(e.id)?.open)}" ${state.lives.get(e.id)?.open ? "" : "inert"}><div><div class="lives-content">${state.lives.get(e.id)?.open ? livesHTML(e) : ""}</div></div></div></article>`;
+}
+function personalDateLabel(record, event = null) {
+  const source =
+    event ??
+    [...state.events, ...state.memoryEvents, ...state.starter].find(
+      (e) => e.id === record.event_id,
+    );
+  return record.date_precision === "around" &&
+    source &&
+    source.date_precision !== "day"
+    ? `${dateLabel(source.date_start, source.date_precision, source.date_end)} 무렵`
+    : dateLabel(record.date_start, record.date_precision, record.date_end);
 }
 function livesHTML(event) {
   const data = state.lives.get(event.id);
@@ -205,9 +242,9 @@ function livesHTML(event) {
         : "같은 날, 다른 이야기";
     if (group === "same_day" && !data.sameDay)
       return '<p class="fine">날짜가 정확히 확인되지 않은 사건은 같은 날의 이야기를 묶지 않습니다.</p>';
-    return `<section><h3>${label}</h3>${records.map((r) => `<div class="life-line" id="life-record-${h(r.id)}"><span aria-hidden="true">↳</span><div><p>${h(sentence(r.display_name, r.original_text, r.presentation_style))}</p><div class="record-meta"><span>${h(dateLabel(r.date_start, r.date_precision, r.date_end))}</span>${r.is_own ? `<span>${r.visibility === "private" ? "나만 보기" : r.moderation_status !== "published" ? "공개 검토 중 · 나에게만 표시" : "내 공개 기록"}</span><button data-life-edit="${h(r.id)}" data-event="${h(event.id)}">수정·공개 범위</button><button data-life-delete="${h(r.id)}" data-event="${h(event.id)}">삭제</button>` : `<button data-report="${h(r.id)}">신고</button>`}</div></div></div>`).join("") || `<p class="fine">${group === "related" ? "아직 이 사건에 남겨진 이야기가 없어요." : "아직 같은 날의 다른 이야기가 없어요."}</p>`}${page.next !== null ? `<button class="life-more" data-life-more="${h(event.id)}" data-group="${group}">다른 이야기 더 보기 ↓</button>` : ""}</section>`;
+    return `<section><h3>${label}</h3>${records.map((r) => `<div class="life-line" id="life-record-${h(r.id)}"><span aria-hidden="true">↳</span><div><p>${personalSentence(r.display_name, r.original_text, r.presentation_style)}</p><div class="record-meta"><span>${h(personalDateLabel(r))}</span>${r.is_own ? `<span>${r.visibility === "private" ? "나만 보기" : r.moderation_status !== "published" ? "공개 검토 중 · 나에게만 표시" : "내 공개 기록"}</span><button data-life-edit="${h(r.id)}" data-event="${h(event.id)}">수정·공개 범위</button><button data-life-delete="${h(r.id)}" data-event="${h(event.id)}">삭제</button>` : `<button data-report="${h(r.id)}">신고</button>`}</div></div></div>`).join("") || `<p class="fine">${group === "related" ? "아직 이 사건에 남겨진 이야기가 없어요." : "아직 같은 날의 다른 이야기가 없어요."}</p><p class="fine">당신의 이야기를 남겨보세요.</p>`}${page.next !== null ? `<button class="life-more" data-life-more="${h(event.id)}" data-group="${group}">다른 이야기 더 보기 ↓</button>` : ""}</section>`;
   };
-  return `<div class="life-heading"><span>같은 날, 다른 인생</span><button data-lives="${h(event.id)}" aria-label="다른 사람들의 이야기 접기">접기 −</button></div><p class="fine">이 웹사이트에서 이 사건을 기억으로 선택한 참여자 ${data.participants}명</p>${lifeGroups.map(groupHTML).join("")}<div class="life-write"><p>당신은 그날 무엇을 하고 있었나요?</p><button data-write-event="${h(event.id)}">＋ ${data.related.records.length ? "내 이야기 남기기" : "첫 번째 이야기 남기기"}</button></div>`;
+  return `<div class="life-heading"><span>같은 날, 다른 인생</span><button data-lives="${h(event.id)}" aria-label="다른 사람들의 이야기 접기">접기 −</button></div>${data.participants > 0 ? `<p class="fine">이 사건을 기억하는 참여자 ${data.participants}명</p>` : ""}${lifeGroups.map(groupHTML).join("")}${data.justSaved && !lifeGroups.some((g) => matchesLife(data.justSaved, event, g)) ? `<section class="life-line" id="life-record-${h(data.justSaved.id)}"><div><p>${personalSentence(data.justSaved.display_name, data.justSaved.original_text, data.justSaved.presentation_style)}</p><p class="fine">${h(personalDateLabel(data.justSaved, event))} · ${data.justSaved.visibility === "private" ? "나만 보기" : "공개 검토 중"} · 정확한 같은 날의 기록으로 묶지 않았습니다.</p></div></section>` : ""}<div class="life-write"><p>당신은 그날 무엇을 하고 있었나요?</p><button data-write-event="${h(event.id)}">＋ ${data.related.records.length ? "내 이야기 남기기" : "첫 번째 이야기 남기기"}</button></div>`;
 }
 function paintLives(id) {
   const data = state.lives.get(id),
@@ -216,7 +253,17 @@ function paintLives(id) {
   if (!event || !panel) return;
   panel.dataset.open = String(Boolean(data?.open));
   panel.inert = !data?.open;
-  panel.querySelector(".lives-content").innerHTML = livesHTML(event);
+  panel.querySelector(".lives-content").innerHTML = data?.open
+    ? livesHTML(event)
+    : "";
+  const invitation = document.querySelector(
+    `#event-${CSS.escape(id)} .life-invite button`,
+  );
+  if (invitation)
+    invitation.textContent =
+      data?.participants > 0
+        ? `이 사건을 기억하는 참여자 ${data.participants}명 · 이야기 보기 ↓`
+        : "이날을 기억하는 다른 사람들의 이야기 보기 ↓";
   document.querySelectorAll("[data-lives]").forEach((b) => {
     if (b.dataset.lives === id)
       b.setAttribute("aria-expanded", String(Boolean(data?.open)));
@@ -231,6 +278,11 @@ async function loadLives(id, { more = null, toggle = false } = {}) {
     return;
   }
   if (data?.busy) return;
+  if (toggle && data && !data.error) {
+    data.open = true;
+    paintLives(id);
+    return;
+  }
   if (!data) {
     data = {
       open: true,
@@ -274,7 +326,7 @@ async function loadLives(id, { more = null, toggle = false } = {}) {
   }
 }
 function recordHTML(r) {
-  const own = state.view === "mine";
+  const own = state.view === "mine" || r.is_own;
   const status =
     r.visibility === "private"
       ? "나만 보기"
@@ -284,27 +336,14 @@ function recordHTML(r) {
           hidden: "공개 숨김",
           rejected: "공개 거절",
         }[r.moderation_status] ?? "검수 중");
-  return `<article class="personal-line" id="record-${h(r.id)}" aria-label="이용자가 남긴 개인의 기억. 독립적으로 검증되지 않았습니다."><span class="small-dot"></span><time class="date mono" datetime="${h(r.date_start)}">${h(dateLabel(r.date_start, r.date_precision, r.date_end))}</time><div><p>${h(sentence(r.display_name, r.original_text, r.presentation_style))}</p><div class="record-meta"><span>개인의 기억</span>${own ? `<span>${h(status)}</span><button data-edit="${h(r.id)}">수정·공개 범위</button><button data-delete="${h(r.id)}">삭제</button>` : `<button data-report="${h(r.id)}">신고</button>`}</div></div></article>`;
+  return `<article class="personal-line" id="record-${h(r.id)}" aria-label="이용자가 남긴 개인의 기억. 독립적으로 검증되지 않았습니다."><span class="small-dot"></span><time class="date mono" datetime="${h(r.date_start)}">${h(personalDateLabel(r))}</time><div><p>${personalSentence(r.display_name, r.original_text, r.presentation_style)}</p><div class="record-meta"><span>개인의 기억</span>${own ? `<span>${h(status)}</span><button data-edit="${h(r.id)}">수정·공개 범위</button><button data-delete="${h(r.id)}">삭제</button>` : `<button data-report="${h(r.id)}">신고</button>`}</div></div></article>`;
 }
 function renderLines() {
-  const rows = [
-    ...state.events.map((e) => ({
-      kind: "event",
-      date: e.date_start,
-      id: e.id,
-      item: e,
-    })),
-    ...state.records.map((r) => ({
-      kind: "record",
-      date: r.date_start,
-      id: r.id,
-      item: r,
-    })),
-  ].sort(
-    (a, b) =>
-      a.date.localeCompare(b.date) ||
-      a.kind.localeCompare(b.kind) ||
-      a.id.localeCompare(b.id),
+  const rows = orderedRows(
+    state.events,
+    state.view === "mine"
+      ? state.records
+      : state.records.filter((r) => !r.event_id || r.relation !== "related"),
   );
   let prev = "";
   $("#lines").innerHTML =
@@ -313,7 +352,7 @@ function renderLines() {
         const y = row.date.slice(0, 4),
           start =
             y !== prev
-              ? `<div class="year-heading"><h2>${y}</h2><span class="mono">${String(Number(y) - 1949).padStart(2, "0")} /</span></div>`
+              ? `<div class="year-heading" data-scroll-year="${y}"><h2>${y}</h2><span class="mono">${String(Number(y) - 1949).padStart(2, "0")} /</span></div>`
               : "";
         prev = y;
         return (
@@ -323,8 +362,29 @@ function renderLines() {
       })
       .join("") ||
     `<div class="empty"><span class="mono">—</span><p>${state.view === "mine" ? "아직 기록된 기억이 없습니다." : "이 조건에 해당하는 기록은 아직 없습니다."}</p><p>빈 날짜에도, 누군가의 하루는 있었습니다.</p><button data-action="write">이날의 기록 남기기 ＋</button></div>`;
+  observeYears();
   $("#more-events").hidden = state.eventNext === null;
   $("#more-records").hidden = state.recordNext === null;
+}
+let yearObserver = null;
+function observeYears() {
+  yearObserver?.disconnect();
+  if (!("IntersectionObserver" in window)) return;
+  yearObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries)
+        if (entry.isIntersecting) {
+          const year = entry.target.dataset.scrollYear;
+          $$("#year-index [data-year]").forEach((b) => {
+            b.classList.toggle("in-view", b.dataset.year === year);
+            if (b.dataset.year === year) b.setAttribute("aria-current", "date");
+            else b.removeAttribute("aria-current");
+          });
+        }
+    },
+    { rootMargin: "-12% 0px -65% 0px", threshold: 0 },
+  );
+  $$("[data-scroll-year]").forEach((el) => yearObserver.observe(el));
 }
 async function refreshMe() {
   const epoch = authEpoch;
@@ -336,6 +396,15 @@ async function refreshMe() {
   if (epoch !== authEpoch) return;
   state.guest = session?.user.is_anonymous === true;
   state.me = me;
+  if (me.remembered.length) {
+    const memories = await allPages(
+      (offset) => backend.timeline({ ids: me.remembered, offset }),
+      "events",
+      () => epoch === authEpoch,
+    );
+    if (epoch !== authEpoch) return;
+    state.memoryEvents = memories ?? [];
+  } else state.memoryEvents = [];
   heading();
 }
 async function load() {
@@ -373,7 +442,7 @@ async function load() {
     eventId: state.eventId,
   };
   try {
-    const [events, records] = await Promise.all([
+    let [events, records] = await Promise.all([
       backend.configured
         ? backend.timeline(args)
         : Promise.resolve({
@@ -385,6 +454,25 @@ async function load() {
         : Promise.resolve({ records: [], next: null }),
     ]);
     if (ticket !== generation) return;
+    if (state.view === "mine" && backend.configured) {
+      const [allEvents, allRecords] = await Promise.all([
+        allPages(
+          (offset) => backend.timeline({ ...args, offset }),
+          "events",
+          () => ticket === generation,
+        ),
+        state.me.user
+          ? allPages(
+              (offset) => backend.records({ ...args, own: true, offset }),
+              "records",
+              () => ticket === generation,
+            )
+          : Promise.resolve([]),
+      ]);
+      if (ticket !== generation) return;
+      events = { ...events, events: allEvents, next: null };
+      records = { records: allRecords, next: null };
+    }
     state.eventTotal = events.total ?? events.events.length;
     state.events = events.events.map((e) => ({
       ...e,
@@ -447,11 +535,11 @@ async function more(kind) {
   }
 }
 function saveLocal(next) {
-  state.local = next;
   try {
     localStorage.setItem("thatday:remembered", JSON.stringify(next));
+    state.local = next;
   } catch {
-    notify("이 브라우저에서는 임시 기억을 보관할 수 없습니다.", true);
+    throw Error("이 브라우저에서는 임시 기억을 보관할 수 없습니다.");
   }
 }
 async function remember(id, button) {
@@ -487,8 +575,9 @@ async function remember(id, button) {
   };
   memoryPending.add(id);
   button.disabled = true;
-  update(yes);
   try {
+    update(yes);
+    if (!state.me.user && backend.configured) await ensureDevice();
     if (state.me.user) {
       const job = memoryQueue
         .catch(() => {})
@@ -512,7 +601,13 @@ async function remember(id, button) {
       if (state.view === "mine") await load();
     }
   } catch (error) {
-    if (epoch === authEpoch) update(!yes);
+    if (epoch === authEpoch) {
+      try {
+        update(!yes);
+      } catch {
+        state.local = selected().filter((x) => x !== id);
+      }
+    }
     notify(error.message, true);
   } finally {
     memoryPending.delete(id);
@@ -531,7 +626,25 @@ function openSheet(title, html) {
   if (!$("#sheet").open) $("#sheet").showModal();
   $("#close-sheet").focus();
 }
+async function closeSavedSheet() {
+  const sheet = $("#sheet");
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    sheet.classList.add("closing");
+    await Promise.race([
+      new Promise((resolve) =>
+        sheet.addEventListener("animationend", resolve, { once: true }),
+      ),
+      new Promise((resolve) => setTimeout(resolve, 340)),
+    ]);
+    sheet.classList.remove("closing");
+  }
+  closeSheet(true);
+}
 function closeSheet(force = false) {
+  if (savingRecord && !force) {
+    notify("기록을 저장하고 있습니다. 잠시만 기다려 주세요.");
+    return false;
+  }
   if (dirty && !force && !confirm("저장하지 않은 내용이 있습니다. 닫을까요?"))
     return false;
   $("#sheet").close();
@@ -606,7 +719,6 @@ async function ensureDevice() {
         saveLocal([]);
         await refreshMe();
       }
-      state.lives.clear();
     } finally {
       deviceSetup = false;
     }
@@ -643,6 +755,8 @@ async function openEditor(event = null, record = null) {
     <label class="text-label" for="memory-text">${event ? "이 순간, 당신의 이야기는?" : "어떤 하루였나요?"}<span id="text-count">0 / 280</span></label>
     <textarea id="memory-text" name="original_text" required maxlength="280" rows="4" placeholder="그날의 생각이나 있었던 일을 편하게 남겨 주세요">${h(record?.original_text ?? "")}</textarea>
     <label class="writer-inline" for="writer-name">이름<input id="writer-name" name="display_name" required maxlength="24" value="${h(state.me.user.display_name)}"></label>
+    ${event ? `<label class="relation-choice">이야기의 연결<select name="relation"><option value="related" ${(record?.relation ?? "related") === "related" ? "selected" : ""}>이 사건과 관련된 기억</option><option value="same_date" ${record?.relation === "same_date" ? "selected" : ""}>같은 시기의 별개 이야기</option></select></label>` : ""}
+    <details class="record-options"><summary>날짜·문장 표시 옵션</summary><label>날짜의 정확도<select name="precision"><option value="">${record ? "기존 정확도 유지" : event ? "사건 날짜 기준" : "정확한 날짜"}</option>${!event || event.date_precision === "day" || record?.date_precision === "day" ? '<option value="day">정확한 날짜</option>' : ""}${event ? '<option value="around">해당 사건이 있었던 무렵</option>' : ""}${!event || event.date_precision !== "year" || record?.date_precision === "month" ? '<option value="month">해당 월</option>' : ""}<option value="year">해당 연도</option></select></label><p class="fine">확실히 기억하는 범위만 선택해 주세요.</p><label>문장 표시<select name="presentation_style"><option value="quote" ${(record?.presentation_style ?? "quote") === "quote" ? "selected" : ""}>@이름: 내 문장</option><option value="subject" ${record?.presentation_style === "subject" ? "selected" : ""}>@이름은/는 내 문장</option></select></label></details>
     <fieldset class="simple-visibility"><legend class="sr-only">공개 범위</legend><label><input type="radio" name="visibility" value="private" ${(record?.visibility ?? "private") === "private" ? "checked" : ""}> 나만 보기</label><label><input type="radio" name="visibility" value="public" ${record?.visibility === "public" ? "checked" : ""}> 모두에게 공개</label></fieldset>
     <div id="public-options" hidden><label class="confirm-public"><input type="checkbox" name="public_confirmed"> 이름과 내용을 검토 후 공개하는 데 동의합니다</label><p class="form-error" id="safety-warning"></p></div>
     <p class="fine">로그인 없이 저장합니다. 이 기기의 같은 브라우저에서 다시 볼 수 있어요.</p><p id="form-error" class="form-error" role="alert"></p><button id="save-record" class="primary" type="submit">기록 남기기</button></form>`,
@@ -653,9 +767,15 @@ async function openEditor(event = null, record = null) {
 function formRecord() {
   const f = new FormData($("#record-form"));
   return {
-    ...recordContext(editor.event, editor.record, f.get("date")),
+    ...chosenRecordContext(editor.event, editor.record, f.get("date"), {
+      precision: f.get("precision"),
+      relation: f.get("relation"),
+    }),
     original_text: f.get("original_text"),
-    presentation_style: editor.record?.presentation_style ?? "quote",
+    presentation_style:
+      f.get("presentation_style") ??
+      editor.record?.presentation_style ??
+      "quote",
     visibility: f.get("visibility"),
     public_confirmed: f.has("public_confirmed"),
   };
@@ -671,6 +791,7 @@ function preview() {
   $("#save-record").textContent =
     r.visibility === "public" ? "공개 요청하기" : "기록 남기기";
   $("#save-record").disabled =
+    savingRecord ||
     !r.original_text.trim() ||
     (r.visibility === "public" && (!r.public_confirmed || flags.length > 0));
 }
@@ -695,7 +816,7 @@ async function loadModeration() {
         )
         .join("")}</div>`;
     $("#moderation-content").innerHTML =
-      `<h2>공개 검수 대기</h2>${data.pending.map((r) => `<article><p>${h(sentence(r.display_name, r.original_text, r.presentation_style))}</p><p class="fine">${h(dateLabel(r.date_start, r.date_precision, r.date_end))}</p>${buttons(r, r.id)}</article>`).join("") || "<p>검수 대기 기록이 없습니다.</p>"}<h2>접수된 신고</h2>${data.reports.map((r) => `<article><p>${h(r.reason)}</p><p>${h(sentence(r.display_name, r.original_text, r.presentation_style))}</p>${buttons(r, r.target_record_id)}</article>`).join("") || "<p>접수된 신고가 없습니다.</p>"}<h2>검수 이력</h2>${data.audit.map((a) => `<p class="fine">${h(a.created_at)} · ${h(a.action)} · ${h(a.reason)}</p>`).join("")}`;
+      `<h2>공개 검수 대기</h2>${data.pending.map((r) => `<article><p>${personalSentence(r.display_name, r.original_text, r.presentation_style)}</p><p class="fine">${h(personalDateLabel(r))}</p>${buttons(r, r.id)}</article>`).join("") || "<p>검수 대기 기록이 없습니다.</p>"}<h2>접수된 신고</h2>${data.reports.map((r) => `<article><p>${h(r.reason)}</p><p>${personalSentence(r.display_name, r.original_text, r.presentation_style)}</p>${buttons(r, r.target_record_id)}</article>`).join("") || "<p>접수된 신고가 없습니다.</p>"}<h2>검수 이력</h2>${data.audit.map((a) => `<p class="fine">${h(a.created_at)} · ${h(a.action)} · ${h(a.reason)}</p>`).join("")}`;
   } catch (e) {
     notify(e.message, true);
   }
@@ -765,9 +886,11 @@ document.addEventListener("click", async (event) => {
       event.preventDefault();
       navigate({
         view: b.dataset.nav,
-        date: "",
-        q: "",
-        category: "",
+        date: ["timeline", "mine"].includes(b.dataset.nav) ? state.date : "",
+        q: ["timeline", "mine"].includes(b.dataset.nav) ? state.q : "",
+        category: ["timeline", "mine"].includes(b.dataset.nav)
+          ? state.category
+          : "",
         eventId: null,
       });
       return;
@@ -826,6 +949,10 @@ document.addEventListener("click", async (event) => {
         .forEach((x) => x.setAttribute("aria-expanded", String(open)));
       article.querySelector(".expand-button").textContent = open ? "−" : "＋";
       if (open) void loadLives(id);
+      else if (state.lives.get(id)?.open) {
+        state.lives.get(id).open = false;
+        paintLives(id);
+      }
       return;
     }
     if (b.dataset.remember) {
@@ -985,6 +1112,8 @@ document.addEventListener("submit", async (event) => {
       return;
     }
     if (f.id === "record-form") {
+      if (savingRecord) return;
+      savingRecord = true;
       const name = $("#writer-name").value.trim();
       if (name !== state.me.user.display_name) {
         await backend.rpc("save_profile", {
@@ -1000,21 +1129,35 @@ document.addEventListener("submit", async (event) => {
         p_id: editor.record?.id ?? null,
       });
       const eventId = editor.event?.id;
+      const returnEvent = eventId
+        ? state.events.find((e) => e.id === eventId)
+        : null;
+      const savedRecord = {
+        ...r,
+        ...result,
+        display_name: state.me.user.display_name,
+        is_own: true,
+      };
       const scroll = previousScroll;
-      closeSheet(true);
+      dirty = false;
+      await closeSavedSheet();
       pendingEditor = null;
       await refreshMe();
-      await load();
+      if (eventId && returnEvent) {
+        const i = state.records.findIndex((x) => x.id === result.id);
+        if (i >= 0) state.records[i] = savedRecord;
+      } else {
+        await load();
+        if (!eventId && state.view !== "mine") {
+          state.records = mergeRecords(state.records, [savedRecord]);
+          renderLines();
+        }
+      }
       if (eventId) {
         await loadLives(eventId);
         const data = state.lives.get(eventId);
         if (data) {
-          data.justSaved = {
-            ...r,
-            ...result,
-            display_name: state.me.user.display_name,
-            is_own: true,
-          };
+          data.justSaved = savedRecord;
           paintLives(eventId);
         }
       }
@@ -1050,6 +1193,7 @@ document.addEventListener("submit", async (event) => {
     if (el) el.textContent = e.message;
     else notify(e.message, true);
   } finally {
+    if (f.id === "record-form") savingRecord = false;
     if (button.isConnected) {
       button.disabled = false;
       if (f.id === "record-form") preview();
