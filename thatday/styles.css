@@ -1794,3 +1794,206 @@ textarea {
     animation: none;
   }
 }
+
+/* The archive opens directly on dates and records. */
+.page-title:not(.sr-only) {
+  padding-bottom: 20px;
+}
+.page-title h1 {
+  font-size: 18px;
+  margin: 0;
+  line-height: 1.8;
+}
+body[data-view="timeline"] .time-atlas {
+  border-top: 0;
+  padding-top: 0;
+}
+
+/* Quiet discovery, in the same continuous document. */
+.event-title,
+.event-line .date {
+  color: #a5a39d;
+  font-size: 14px;
+  transition: color 200ms;
+}
+.event.remembered .event-title,
+.event.remembered .date {
+  color: var(--ink);
+}
+.event.remembered .event-title {
+  font-weight: 500;
+}
+.memory-dot:after {
+  transition:
+    opacity 180ms,
+    transform 180ms;
+}
+.memory-views {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 0 4px;
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+.memory-views a[aria-current="page"] {
+  color: var(--red);
+  border-bottom: 1px solid var(--red);
+}
+#memory-count {
+  margin-left: auto;
+  color: var(--muted);
+}
+.life-invite {
+  margin-left: 183px;
+  font-size: 12px;
+  color: var(--red);
+}
+.life-invite button {
+  min-height: 44px;
+  text-align: left;
+}
+.lives-content {
+  margin-left: 183px;
+  border-top: 1px solid var(--line);
+  padding: 16px 0;
+  font-size: 14px;
+}
+.lives-content h3 {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+  margin: 16px 0 8px;
+}
+.lives-content section {
+  padding-bottom: 12px;
+}
+.life-line {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  animation: life-arrive 260ms ease-out;
+}
+.life-line > span {
+  color: var(--red);
+}
+.life-line p {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.life-write {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.life-write button,
+.life-more {
+  min-height: 44px;
+  color: var(--red);
+  font-size: 12px;
+}
+.lives-panel {
+  transition:
+    grid-template-rows 260ms,
+    opacity 260ms;
+}
+.chronicle {
+  animation-duration: 220ms;
+}
+.sheet {
+  animation-duration: 320ms;
+}
+#record-form .primary {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  background: var(--ink);
+  color: var(--paper);
+}
+.sheet {
+  max-height: 90dvh;
+  overscroll-behavior: contain;
+  scroll-padding-bottom: 80px;
+}
+@keyframes life-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 760px) {
+  .life-invite,
+  .lives-content {
+    margin-left: 24px;
+  }
+  .event-title,
+  .event-line .date,
+  .personal-line p {
+    font-size: 14px;
+  }
+  .brand {
+    font-size: 16px;
+  }
+  .sheet {
+    animation-duration: 320ms;
+  }
+  .memory-views {
+    gap: 16px;
+  }
+  #memory-count {
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .life-line,
+  .chronicle,
+  .sheet {
+    animation: none;
+  }
+  .lives-panel,
+  .event-title,
+  .event-line .date,
+  .memory-dot:after {
+    transition: none;
+  }
+}
+
+.life-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+}
+.life-heading button {
+  min-height: 44px;
+  color: var(--muted);
+}
+
+.event.remembered .event-title {
+  font-weight: 400;
+  text-shadow: 0.2px 0 currentColor;
+}
+.event-title {
+  text-shadow: 0 0 transparent;
+  transition:
+    color 200ms,
+    text-shadow 200ms;
+}
+.event {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.personal-line p,
+.event-detail > p {
+  font-size: 14px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .event-title {
+    transition: none;
+  }
+}

@@ -35,9 +35,9 @@
         >그날 우리는<span class="brand-dot"></span></a
       ><span class="mast-caption">THAT DAY, WE</span>
       <nav aria-label="주 메뉴">
-        <a href="./" data-nav="timeline" aria-current="page">연대기</a
+        <a href="./" data-nav="timeline" aria-current="page">전체 기록</a
         ><a href="./?view=mine" data-nav="mine"
-          >나의 기록<span class="nav-count" id="archive-count"></span></a
+          >나의 기억<span class="nav-count" id="archive-count"></span></a
         ><button data-action="write">기록 남기기 ＋</button>
       </nav>
       <button class="account-button" data-action="account" id="account-button">
@@ -46,35 +46,17 @@
     </header>
     <div class="page-grid">
       <main id="chronology">
-        <section class="intro">
-          <div class="intro-meta">
-            <span class="eyebrow">공동의 연대기 / COLLECTIVE CHRONICLE</span
-            ><span class="mono">기록 중 <span class="live-dot"></span></span>
-          </div>
-          <h1 id="page-heading">
-            대한민국의 모든 날,<br />그리고 그 안에 살았던 우리.
-          </h1>
-          <div class="intro-bottom">
-            <p>
-              역사의 한 줄 옆에, 당신의 한 줄을 남겨 주세요.<br />작고 평범한
-              하루도 우리 역사의 일부이니까요.
-            </p>
-            <span class="intro-stamp" aria-hidden="true"
-              >그날<br />우리는<span>記錄</span></span
-            >
-          </div>
+        <section class="intro page-title">
+          <h1 id="page-heading">연대기</h1>
         </section>
         <section class="time-atlas" id="time-atlas" aria-label="시간 탐색">
           <div class="atlas-heading">
             <div>
-              <span class="eyebrow">우리가 지나온 시간</span>
+              <span class="eyebrow">연대기</span>
               <p class="atlas-year mono" id="atlas-year">
                 1950<span>— 현재</span>
               </p>
             </div>
-            <p class="atlas-caption">
-              한 시대의 사건과<br />그 안에 남겨진 우리의 기억.
-            </p>
           </div>
           <div class="atlas-controls">
             <span class="mono">TIME INDEX / 연도를 선택하세요</span
@@ -129,6 +111,11 @@
               </details>
             </div>
           </section>
+          <div class="memory-views">
+            <a href="./" data-nav="timeline">전체 기록</a
+            ><a href="./?view=mine" data-nav="mine">나의 기억</a
+            ><span id="memory-count" role="status" aria-live="polite"></span>
+          </div>
           <div class="legend">
             <span
               ><span class="outline-dot"></span>기억하는 사건을 표시해
@@ -162,7 +149,8 @@
           </div>
           <p>역사의 행간에, 우리의 삶을.</p>
           <div>
-            <a href="./?view=sources" data-nav="sources">출처 확인</a
+            <a href="./?view=about" data-nav="about">소개</a
+            ><a href="./?view=sources" data-nav="sources">출처 확인</a
             ><a href="./?view=privacy" data-nav="privacy">개인정보</a
             ><a href="./?view=terms" data-nav="terms">이용약관</a
             ><a

@@ -9,6 +9,7 @@ import {
   escapeHTML as h,
   route,
 } from "./domain.js";
+import { lifeGroups, mergeRecords, matchesLife } from "./lives.js";
 import { createBackend, filterStarter } from "./backend.js";
 const $ = (s) => document.querySelector(s),
   $$ = (s) => [...document.querySelectorAll(s)];
@@ -16,6 +17,7 @@ const backend = createBackend(
   window.THATDAY_CONFIG ?? { basePath: "/thatday/" },
 );
 const state = {
+  lives: new Map(),
   providers: null,
   view: "timeline",
   date: "",
@@ -32,6 +34,8 @@ const state = {
   starter: [],
   moderation: null,
 };
+let memoryQueue = Promise.resolve();
+const memoryPending = new Set();
 let generation = 0,
   authEpoch = 0,
   searchTimer,
@@ -54,9 +58,14 @@ function notify(text, error = false) {
 }
 function readURL() {
   const p = new URLSearchParams(location.search);
-  state.view = ["mine", "moderation", "privacy", "terms", "sources"].includes(
-    p.get("view"),
-  )
+  state.view = [
+    "mine",
+    "moderation",
+    "privacy",
+    "terms",
+    "sources",
+    "about",
+  ].includes(p.get("view"))
     ? p.get("view")
     : "timeline";
   state.date = p.get("date") ?? "";
@@ -84,17 +93,20 @@ function navigate(values, { replace = false } = {}) {
 function heading() {
   const title =
     state.view === "mine"
-      ? "나의 기록<br>내가 지나온 날들의 증거."
+      ? "나의 기록"
       : state.view === "moderation"
-        ? "기록 검수<br>공개의 문턱에서."
+        ? "기록 검수"
         : state.view === "sources"
           ? "출처 확인"
           : state.view === "privacy"
             ? "개인정보 처리방침"
             : state.view === "terms"
               ? "함께 기록하기 위한 약속"
-              : "대한민국의 모든 날,<br>그리고 그 안에 살았던 우리.";
+              : state.view === "about"
+                ? "그날 우리는 소개"
+                : "연대기";
   $("#page-heading").innerHTML = title;
+  $(".page-title").classList.toggle("sr-only", state.view === "timeline");
   document.title = `${state.view === "mine" ? "나의 기록" : state.view === "moderation" ? "기록 검수" : "그날 우리는"} — 대한민국의 모든 날`;
   $("#section-label").textContent =
     state.view === "mine" ? "02 / PERSONAL ARCHIVE" : "01 / CHRONOLOGY";
@@ -105,9 +117,8 @@ function heading() {
     if (a.dataset.nav === state.view) a.setAttribute("aria-current", "page");
     else a.removeAttribute("aria-current");
   });
-  $("#archive-count").textContent = String(
-    selected().length + state.me.record_count || "",
-  );
+  $("#archive-count").textContent = String(selected().length || "");
+  $("#memory-count").textContent = `내가 기억하는 사건 ${selected().length}개`;
   $("#account-button").textContent =
     `${state.me.user?.display_name || "계정"} ↗`;
   $("#moderation-link").hidden = state.me.user?.role !== "moderator";
@@ -164,7 +175,95 @@ function heading() {
 function eventHTML(e) {
   const remembered = selected().includes(e.id),
     open = state.expanded === e.id;
-  return `<article class="event ${remembered ? "remembered" : ""}" id="event-${h(e.id)}"><div class="event-line"><button class="remember-button" data-remember="${h(e.id)}" aria-pressed="${remembered}" aria-label="${h(e.title)} ${remembered ? "기억 선택 해제" : "기억으로 선택"}"><span class="memory-dot"></span></button><time class="date mono" datetime="${h(e.date_start)}">${h(dateLabel(e.date_start, e.date_precision, e.date_end))}</time><button class="event-title" data-expand="${h(e.id)}" aria-expanded="${open}" aria-controls="detail-${h(e.id)}">${h(e.title)}</button><button class="expand-button" data-expand="${h(e.id)}" aria-label="사건 상세 정보" aria-expanded="${open}">${open ? "−" : "＋"}</button></div><div class="expand-grid" data-open="${open}" id="detail-${h(e.id)}" ${open ? "" : "inert"}><div><div class="event-detail"><span class="eyebrow">${h(e.category)}</span>${e.description ? `<p>${h(e.description)}</p>` : ""}<div class="event-actions"><button data-write-event="${h(e.id)}">＋ 내 이야기</button><a href="${h(route(backend.base, { event: e.id }))}">고유 링크 ↗</a><a href="${h(route(backend.base, { date: e.date_start }))}">그날의 기록</a></div></div></div></div></article>`;
+  return `<article class="event ${remembered ? "remembered" : ""}" id="event-${h(e.id)}"><div class="event-line"><button class="remember-button" data-remember="${h(e.id)}" aria-pressed="${remembered}" aria-label="${h(e.title)} ${remembered ? "기억 선택 해제" : "기억으로 선택"}"><span class="memory-dot"></span></button><time class="date mono" datetime="${h(e.date_start)}">${h(dateLabel(e.date_start, e.date_precision, e.date_end))}</time><button class="event-title" data-expand="${h(e.id)}" aria-expanded="${open}" aria-controls="detail-${h(e.id)}">${h(e.title)}</button><button class="expand-button" data-expand="${h(e.id)}" aria-label="사건 상세 정보" aria-expanded="${open}">${open ? "−" : "＋"}</button></div><div class="expand-grid" data-open="${open}" id="detail-${h(e.id)}" ${open ? "" : "inert"}><div><div class="event-detail"><span class="eyebrow">${h(e.category)}</span>${state.me.user?.birth_year && Number(e.date_start.slice(0, 4)) < state.me.user.birth_year ? `<p class="fine">출생 이전의 사건입니다. 직접 경험한 기억과 나중에 알게 된 역사를 구분해 남겨 주세요.</p>` : ""}${e.description ? `<p>${h(e.description)}</p>` : ""}<div class="event-actions"><button data-write-event="${h(e.id)}">＋ 내 이야기</button><a href="${h(route(backend.base, { event: e.id }))}">고유 링크 ↗</a><a href="${h(route(backend.base, { date: e.date_start }))}">그날의 기록</a></div></div></div></div><div class="life-invite" ${remembered ? "" : "hidden"}><button data-lives="${h(e.id)}" aria-expanded="${Boolean(state.lives.get(e.id)?.open)}" aria-controls="lives-${h(e.id)}">이날을 기억하는 다른 사람들의 이야기 보기 ↓</button></div><div class="lives-panel expand-grid" id="lives-${h(e.id)}" data-open="${Boolean(state.lives.get(e.id)?.open)}" ${state.lives.get(e.id)?.open ? "" : "inert"}><div><div class="lives-content">${livesHTML(e)}</div></div></div></article>`;
+}
+function livesHTML(event) {
+  const data = state.lives.get(event.id);
+  if (!data || data.loading)
+    return '<p role="status">그날의 이야기를 불러오는 중입니다…</p>';
+  if (data.error)
+    return `<p role="alert">${h(data.error)}</p><button data-life-retry="${h(event.id)}">다시 불러오기</button>`;
+  const groupHTML = (group) => {
+    const page = data[group];
+    const records = mergeRecords(
+      page.records,
+      data.justSaved && matchesLife(data.justSaved, event, group)
+        ? [data.justSaved]
+        : [],
+    );
+    const label =
+      group === "related"
+        ? "이 사건을 기억하는 사람들"
+        : "같은 날, 다른 이야기";
+    if (group === "same_day" && !data.sameDay)
+      return '<p class="fine">날짜가 정확히 확인되지 않은 사건은 같은 날의 이야기를 묶지 않습니다.</p>';
+    return `<section><h3>${label}</h3>${records.map((r) => `<div class="life-line" id="life-record-${h(r.id)}"><span aria-hidden="true">↳</span><div><p>${h(sentence(r.display_name, r.original_text, r.presentation_style))}</p><div class="record-meta"><span>${h(dateLabel(r.date_start, r.date_precision, r.date_end))}</span>${r.is_own ? `<span>${r.visibility === "private" ? "나만 보기" : r.moderation_status !== "published" ? "공개 검토 중 · 나에게만 표시" : "내 공개 기록"}</span><button data-life-edit="${h(r.id)}" data-event="${h(event.id)}">수정·공개 범위</button><button data-life-delete="${h(r.id)}" data-event="${h(event.id)}">삭제</button>` : `<button data-report="${h(r.id)}">신고</button>`}</div></div></div>`).join("") || `<p class="fine">${group === "related" ? "아직 이 사건에 남겨진 이야기가 없어요." : "아직 같은 날의 다른 이야기가 없어요."}</p>`}${page.next !== null ? `<button class="life-more" data-life-more="${h(event.id)}" data-group="${group}">다른 이야기 더 보기 ↓</button>` : ""}</section>`;
+  };
+  return `<div class="life-heading"><span>같은 날, 다른 인생</span><button data-lives="${h(event.id)}" aria-label="다른 사람들의 이야기 접기">접기 −</button></div><p class="fine">이 웹사이트에서 이 사건을 기억으로 선택한 참여자 ${data.participants}명</p>${lifeGroups.map(groupHTML).join("")}<div class="life-write"><p>당신은 그날 무엇을 하고 있었나요?</p><button data-write-event="${h(event.id)}">＋ ${data.related.records.length ? "내 이야기 남기기" : "첫 번째 이야기 남기기"}</button></div>`;
+}
+function paintLives(id) {
+  const data = state.lives.get(id),
+    event = state.events.find((e) => e.id === id);
+  const panel = document.getElementById(`lives-${id}`);
+  if (!event || !panel) return;
+  panel.dataset.open = String(Boolean(data?.open));
+  panel.inert = !data?.open;
+  panel.querySelector(".lives-content").innerHTML = livesHTML(event);
+  document.querySelectorAll("[data-lives]").forEach((b) => {
+    if (b.dataset.lives === id)
+      b.setAttribute("aria-expanded", String(Boolean(data?.open)));
+  });
+}
+async function loadLives(id, { more = null, toggle = false } = {}) {
+  const epoch = authEpoch;
+  let data = state.lives.get(id);
+  if (toggle && data?.open) {
+    data.open = false;
+    paintLives(id);
+    return;
+  }
+  if (data?.busy) return;
+  if (!data) {
+    data = {
+      open: true,
+      related: { records: [], next: null },
+      same_day: { records: [], next: null },
+    };
+    state.lives.set(id, data);
+  }
+  data.open = true;
+  data.busy = true;
+  data.loading = !more;
+  data.error = null;
+  if (!more) data.justSaved = null;
+  paintLives(id);
+  try {
+    if (!backend.configured)
+      throw Error("다른 사람의 이야기는 Supabase 연결 후 볼 수 있습니다.");
+    for (const group of more ? [more] : lifeGroups) {
+      const result = await backend.rpc("event_lives", {
+        p_event_id: id,
+        p_group: group,
+        p_offset: more ? data[group].next : 0,
+        p_limit: 5,
+      });
+      if (epoch !== authEpoch || state.lives.get(id) !== data) return;
+      data[group] = {
+        records: more
+          ? mergeRecords(data[group].records, result.records)
+          : result.records,
+        next: result.next,
+      };
+      data.participants = result.participants;
+      data.sameDay = result.same_day_available;
+    }
+  } catch (error) {
+    data.error = "이야기를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.";
+  } finally {
+    data.loading = false;
+    data.busy = false;
+    if (epoch === authEpoch) paintLives(id);
+  }
 }
 function recordHTML(r) {
   const own = state.view === "mine";
@@ -231,10 +330,15 @@ async function refreshMe() {
 async function load() {
   const ticket = ++generation;
   heading();
-  const legal = ["privacy", "terms", "sources"].includes(state.view);
+  const legal = ["privacy", "terms", "sources", "about"].includes(state.view);
   $("#archive-content").hidden = legal || state.view === "moderation";
   $("#legal-content").hidden = !legal;
   $("#moderation-content").hidden = state.view !== "moderation";
+  if (state.view === "about") {
+    $("#legal-content").innerHTML =
+      `<span class="eyebrow">공동의 연대기 / COLLECTIVE CHRONICLE</span><h2>대한민국의 모든 날,<br>그리고 그 안에 살았던 우리.</h2><p>역사의 한 줄 옆에, 당신의 한 줄을 남겨 주세요.<br>작고 평범한 하루도 우리 역사의 일부이니까요.</p>`;
+    return;
+  }
   if (state.view === "sources") {
     await renderSources(ticket);
     return;
@@ -275,6 +379,8 @@ async function load() {
     state.recordNext = records.next;
     heading();
     renderLines();
+    if (state.expanded && state.events.some((e) => e.id === state.expanded))
+      void loadLives(state.expanded);
   } catch (e) {
     if (ticket === generation) {
       state.events = [];
@@ -331,43 +437,67 @@ function saveLocal(next) {
   }
 }
 async function remember(id, button) {
-  const yes = !selected().includes(id);
-  button.disabled = true;
-  try {
-    if (!state.me.user) {
-      if (yes && state.local.length >= 200)
-        throw Error(
-          "이 기기에는 최대 200개의 기억을 보관할 수 있습니다. 로그인 후 계속 기록해 주세요.",
-        );
-      saveLocal(
-        yes ? [...state.local, id] : state.local.filter((x) => x !== id),
-      );
-      notify(
-        "이 기기에 기억을 저장했습니다. 계정에 보관하려면 로그인해 주세요.",
-      );
-    } else {
-      if (!state.me.user.display_name) {
-        openAccount();
-        throw Error("기억을 보관하기 전에 표시 이름을 정해 주세요.");
-      }
-      await backend.rpc("remember", { p_ids: [id], p_selected: yes });
-      await refreshMe();
-      notify(yes ? "나의 기억에 보관했습니다." : "기억 선택을 해제했습니다.");
-    }
+  if (memoryPending.has(id)) return;
+  if (state.me.user && !state.me.user.display_name) {
+    openAccount();
+    return;
+  }
+  const yes = !selected().includes(id),
+    epoch = authEpoch;
+  if (!state.me.user && yes && state.local.length >= 200) {
+    notify("이 기기에는 최대 200개의 기억을 보관할 수 있습니다.", true);
+    return;
+  }
+  const update = (value) => {
+    const next = value
+      ? [...new Set([...selected(), id])]
+      : selected().filter((x) => x !== id);
+    if (state.me.user) state.me.remembered = next;
+    else saveLocal(next);
     const line = document.getElementById(`event-${id}`);
     if (line) {
-      line.classList.toggle("remembered", yes);
-      button.setAttribute("aria-pressed", String(yes));
-      button.setAttribute(
+      line.classList.toggle("remembered", value);
+      line.querySelector(".life-invite").hidden = !value;
+      const control = line.querySelector("[data-remember]");
+      control.setAttribute("aria-pressed", String(value));
+      control.setAttribute(
         "aria-label",
-        `${state.events.find((e) => e.id === id)?.title} ${yes ? "기억 선택 해제" : "기억으로 선택"}`,
+        `${state.events.find((e) => e.id === id)?.title} ${value ? "기억 선택 해제" : "기억으로 선택"}`,
       );
     }
     heading();
-    if (state.view === "mine" && !yes) await load();
-  } catch (e) {
-    notify(e.message, true);
+  };
+  memoryPending.add(id);
+  button.disabled = true;
+  update(yes);
+  try {
+    if (state.me.user) {
+      const job = memoryQueue
+        .catch(() => {})
+        .then(() => {
+          if (epoch !== authEpoch) throw Error("로그인 상태가 바뀌었습니다.");
+          return backend.rpc("remember", { p_ids: [id], p_selected: yes });
+        });
+      memoryQueue = job;
+      await job;
+    }
+    if (epoch !== authEpoch) return;
+    if (yes) {
+      if (state.lives.get(id)?.open) void loadLives(id);
+      notify(
+        state.me.user
+          ? "나의 기억에 보관했습니다."
+          : "이 기기에 기억을 저장했습니다. 로그인 후 계정에 합칠 수 있습니다.",
+      );
+    } else {
+      notify("기억 선택을 해제했습니다.");
+      if (state.view === "mine") await load();
+    }
+  } catch (error) {
+    if (epoch === authEpoch) update(!yes);
+    notify(error.message, true);
   } finally {
+    memoryPending.delete(id);
     button.disabled = false;
   }
 }
@@ -639,6 +769,40 @@ document.addEventListener("click", async (event) => {
       navigate({ date: b.dataset.year, eventId: null });
       return;
     }
+    if (b.dataset.lives) {
+      await loadLives(b.dataset.lives, { toggle: true });
+      return;
+    }
+    if (b.dataset.lifeRetry) {
+      await loadLives(b.dataset.lifeRetry);
+      return;
+    }
+    if (b.dataset.lifeMore) {
+      b.disabled = true;
+      await loadLives(b.dataset.lifeMore, { more: b.dataset.group });
+      return;
+    }
+    if (b.dataset.lifeEdit || b.dataset.lifeDelete) {
+      const id = b.dataset.lifeEdit || b.dataset.lifeDelete;
+      const data = state.lives.get(b.dataset.event);
+      const record = [
+        ...lifeGroups.flatMap((g) => data?.[g]?.records ?? []),
+        ...(data?.justSaved ? [data.justSaved] : []),
+      ].find((r) => r.id === id && r.is_own);
+      if (!record) return;
+      if (b.dataset.lifeEdit)
+        await openEditor(
+          record.event_id ? await getEvent(record.event_id) : null,
+          record,
+        );
+      else if (confirm("이 기록을 영구 삭제할까요?")) {
+        await backend.rpc("delete_record", { p_id: id });
+        await refreshMe();
+        await loadLives(b.dataset.event);
+        await load();
+      }
+      return;
+    }
     if (b.dataset.expand) {
       const id = b.dataset.expand;
       state.expanded = state.expanded === id ? "" : id;
@@ -650,6 +814,7 @@ document.addEventListener("click", async (event) => {
         .querySelectorAll("[data-expand]")
         .forEach((x) => x.setAttribute("aria-expanded", String(open)));
       article.querySelector(".expand-button").textContent = open ? "−" : "＋";
+      if (open) void loadLives(id);
       return;
     }
     if (b.dataset.remember) {
@@ -818,21 +983,39 @@ document.addEventListener("submit", async (event) => {
         p_record: r,
         p_id: editor.record?.id ?? null,
       });
+      const eventId = editor.event?.id;
       const scroll = previousScroll;
       closeSheet(true);
       pendingEditor = null;
       await refreshMe();
       await load();
+      if (eventId) {
+        await loadLives(eventId);
+        const data = state.lives.get(eventId);
+        if (data) {
+          data.justSaved = {
+            ...r,
+            ...result,
+            display_name: state.me.user.display_name,
+            is_own: true,
+          };
+          paintLives(eventId);
+        }
+      }
       window.scrollTo(0, scroll);
-      const line = document.getElementById(`record-${result.id}`);
+      const line =
+        document.getElementById(`life-record-${result.id}`) ??
+        document.getElementById(`record-${result.id}`);
       if (line) {
         line.classList.add("inserted");
         setTimeout(() => line.classList.remove("inserted"), 3500);
       }
       notify(
-        result.visibility === "public"
-          ? "기록을 저장했습니다. 검수 후에만 공개됩니다."
-          : "나만의 기록에 저장했습니다.",
+        result.visibility === "private"
+          ? "나의 연대기에 기록되었습니다."
+          : result.moderation_status === "published"
+            ? "당신의 이야기가 이 날짜에 더해졌습니다."
+            : "기록이 저장되었고 공개 검토를 기다리고 있습니다.",
       );
       return;
     }
@@ -966,6 +1149,8 @@ async function start() {
         )
           return;
         authEpoch++;
+        state.lives.clear();
+        $$(".lives-content").forEach((el) => el.replaceChildren());
         generation++;
         state.me = { user: null, remembered: [], record_count: 0 };
         state.records = [];
@@ -990,3 +1175,12 @@ async function start() {
   }
 }
 void start();
+
+if (window.visualViewport) {
+  const fitSheet = () => {
+    const viewport = window.visualViewport;
+    $("#sheet").style.maxHeight = `${viewport.height * 0.94}px`;
+  };
+  window.visualViewport.addEventListener("resize", fitSheet);
+  fitSheet();
+}
