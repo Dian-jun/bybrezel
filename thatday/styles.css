@@ -2466,6 +2466,9 @@ body[data-view="mine"] .end-note {
 }
 .poster-text .memory-word {
   display: inline;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   padding: 0;
   margin: 0;
   border: 0;
