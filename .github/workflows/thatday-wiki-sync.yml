@@ -1,0 +1,63 @@
+name: Thatday wiki research
+on:
+  push:
+    branches: [main]
+    paths:
+      - "tools/thatday/**"
+      - ".github/workflows/thatday-wiki-sync.yml"
+  schedule:
+    - cron: "23 3 * * 0"
+  workflow_dispatch:
+    inputs:
+      from:
+        description: "시작일 YYYY-MM-DD (비우면 최근 2년)"
+        type: string
+      to:
+        description: "종료일 YYYY-MM-DD (비우면 오늘)"
+        type: string
+      offset:
+        description: "후보 시작 위치"
+        default: "0"
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: thatday-wiki-research
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Restore API metadata cache
+        uses: actions/cache@v4
+        with:
+          path: outputs/wiki-review/cache.json
+          key: thatday-wiki-${{ github.run_id }}
+          restore-keys: thatday-wiki-
+      - name: Collect event candidates
+        env:
+          REQUEST_FROM: ${{ inputs.from }}
+          REQUEST_TO: ${{ inputs.to }}
+        run: |
+          FROM_DATE="${REQUEST_FROM:-$(node -e 'console.log((new Date().getUTCFullYear()-2)+"-01-01")')}"
+          TO_DATE="${REQUEST_TO:-$(node -e 'console.log(new Date().toISOString().slice(0,10))')}"
+          node tools/thatday/collect-history.mjs --from "$FROM_DATE" --to "$TO_DATE" --out outputs/wiki-collection
+      - name: Link Wikipedia revisions and prepare review
+        env:
+          REVIEW_OFFSET: ${{ inputs.offset || '0' }}
+        run: node tools/thatday/sync-wiki.mjs --input outputs/wiki-collection/candidates.json --out outputs/wiki-review --offset "$REVIEW_OFFSET" --limit 100
+      - name: Save research results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thatday-wiki-review-${{ github.run_number }}
+          path: |
+            outputs/wiki-collection/
+            outputs/wiki-review/
+          retention-days: 14
+          if-no-files-found: warn

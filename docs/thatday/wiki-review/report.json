@@ -1,0 +1,15 @@
+{
+  "checked_at": "2026-11-01T04:52:31.489Z",
+  "input_count": 4565,
+  "offset": 0,
+  "requested": 100,
+  "processed": 100,
+  "wikipedia_links": 75,
+  "requests": 0,
+  "cache_hits": 100,
+  "incomplete": false,
+  "errors": [],
+  "published_count": 0,
+  "next_offset": 100,
+  "note": "All candidates require human review; dates and existing published events are never overwritten automatically. No article body/media or visitor data requested."
+}
