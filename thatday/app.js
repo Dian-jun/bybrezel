@@ -47,6 +47,8 @@ const state = {
   moderation: null,
 };
 let memoryQueue = Promise.resolve();
+let paginationObserver = null,
+  paginationPaused = false;
 let deviceSetup = false,
   deviceRequest = null;
 const memoryPending = new Set();
@@ -409,6 +411,16 @@ async function refreshMe() {
 }
 async function load() {
   const ticket = ++generation;
+  paginationObserver?.disconnect();
+  paginationPaused = false;
+  state.eventNext = null;
+  state.recordNext = null;
+  $("#more-events").disabled = false;
+  $("#more-records").disabled = false;
+  $("#more-events").textContent = "다음 역사 기록 읽기 ↓";
+  $("#more-records").textContent = "개인의 기록 더 읽기 ↓";
+  $("#more-events").removeAttribute("aria-busy");
+  $("#more-records").removeAttribute("aria-busy");
   state.eventTotal = null;
   heading();
   const legal = ["privacy", "terms", "sources", "about"].includes(state.view);
@@ -478,9 +490,9 @@ async function load() {
       ...e,
       title: cleanEventTitle(e.title),
     }));
-    state.eventNext = events.next;
+    state.eventNext = events.next ?? null;
     state.records = records.records;
-    state.recordNext = records.next;
+    state.recordNext = records.next ?? null;
     heading();
     renderLines();
     if (state.expanded && state.events.some((e) => e.id === state.expanded))
@@ -496,31 +508,73 @@ async function load() {
     if (ticket === generation) {
       $("#loading").hidden = true;
       $("#lines").setAttribute("aria-busy", "false");
+      observePagination();
     }
   }
+}
+function observePagination() {
+  paginationObserver?.disconnect();
+  if (
+    !("IntersectionObserver" in window) ||
+    paginationPaused ||
+    state.view !== "timeline" ||
+    !backend.configured ||
+    state.eventNext == null
+  )
+    return;
+  const ticket = generation;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (
+        paginationObserver !== observer ||
+        ticket !== generation ||
+        paginationPaused ||
+        state.view !== "timeline"
+      )
+        return;
+      if (entries.some((entry) => entry.isIntersecting)) void more("events");
+    },
+    { rootMargin: "600px 0px", threshold: 0 },
+  );
+  paginationObserver = observer;
+  observer.observe($("#more-events"));
 }
 async function more(kind) {
   const ticket = generation;
   const button = $(kind === "events" ? "#more-events" : "#more-records");
+  const offset = kind === "events" ? state.eventNext : state.recordNext;
+  if (button.disabled || offset == null || !$("#loading").hidden) return;
+  if (kind === "events") {
+    paginationPaused = false;
+    paginationObserver?.disconnect();
+  }
   button.disabled = true;
+  const label = button.textContent;
+  button.textContent = "기록을 불러오는 중…";
+  button.setAttribute("aria-busy", "true");
   try {
     const args = { date: state.date, q: state.q, category: state.category };
     if (kind === "events") {
       const r = await backend.timeline({
         ...args,
-        offset: state.eventNext,
+        offset,
         ids: state.view === "mine" ? selected() : null,
         eventId: state.eventId,
       });
       if (ticket !== generation) return;
+      if (r.next != null && r.next <= offset)
+        throw Error("다음 기록을 불러오지 못했습니다. 다시 시도해 주세요.");
+      const ids = new Set(state.events.map((event) => event.id));
       state.events.push(
-        ...r.events.map((e) => ({ ...e, title: cleanEventTitle(e.title) })),
+        ...r.events
+          .filter((event) => !ids.has(event.id))
+          .map((e) => ({ ...e, title: cleanEventTitle(e.title) })),
       );
-      state.eventNext = r.next;
+      state.eventNext = r.next ?? null;
     } else {
       const r = await backend.records({
         ...args,
-        offset: state.recordNext,
+        offset,
         own: state.view === "mine",
       });
       if (ticket !== generation) return;
@@ -529,9 +583,18 @@ async function more(kind) {
     }
     renderLines();
   } catch (e) {
-    notify(e.message, true);
+    if (ticket === generation) {
+      if (kind === "events") paginationPaused = true;
+      notify(e.message, true);
+    }
   } finally {
-    button.disabled = false;
+    if (ticket === generation) {
+      button.disabled = false;
+      button.textContent =
+        paginationPaused && kind === "events" ? "다시 불러오기 ↓" : label;
+      button.removeAttribute("aria-busy");
+      if (kind === "events") observePagination();
+    }
   }
 }
 function saveLocal(next) {
