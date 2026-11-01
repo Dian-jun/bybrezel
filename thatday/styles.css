@@ -2390,3 +2390,156 @@ body[data-view="mine"] .time-atlas {
     word-break: keep-all;
   }
 }
+
+/* A personal chronology as a continuous, shareable field of type. */
+body[data-view="mine"] .legend,
+body[data-view="mine"] .end-note {
+  display: none;
+}
+.poster-tools {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  padding: 18px 0 24px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.poster-tools p {
+  margin: 0;
+}
+.poster-tools button {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  min-height: 44px;
+}
+.memory-poster {
+  padding: 30px 0 24px;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  background: var(--paper);
+}
+.poster-masthead,
+.poster-caption,
+.poster-colophon {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+.poster-masthead {
+  padding-bottom: 18px;
+  font-size: 14px;
+}
+.poster-masthead i {
+  color: var(--red);
+  font-size: 8px;
+  font-style: normal;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+.poster-masthead > .mono {
+  color: var(--muted);
+  font-size: 12px;
+}
+.poster-caption {
+  margin-bottom: 32px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.poster-caption h2 {
+  margin: 0;
+  font: inherit;
+  color: var(--ink);
+}
+.poster-text {
+  display: block;
+  margin: 0;
+  font-size: clamp(19px, 2.3vw, 28px);
+  line-height: 1.65;
+  letter-spacing: -0.045em;
+  font-weight: 400;
+  overflow-wrap: anywhere;
+  word-break: keep-all;
+}
+.poster-text .memory-word {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  text-align: left;
+  white-space: normal;
+  color: #aaa69d;
+  text-decoration: none;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition:
+    color 160ms ease,
+    text-decoration-color 160ms ease;
+}
+.poster-text .memory-word.is-chosen {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+.poster-text .memory-word:hover,
+.poster-text .memory-word:focus-visible {
+  color: var(--ink);
+}
+.poster-text .memory-word:disabled {
+  opacity: 1;
+  cursor: progress;
+}
+.poster-year {
+  color: var(--muted);
+  font: inherit;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+.poster-separator {
+  color: #b7b3aa;
+}
+.poster-colophon {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  margin-top: 34px;
+  color: var(--muted);
+  font-size: 11px;
+  flex-wrap: wrap;
+}
+.poster-stories {
+  margin-top: 56px;
+}
+.poster-stories > h2 {
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 24px;
+}
+@media (max-width: 760px) {
+  .memory-poster {
+    padding-top: 24px;
+  }
+  .poster-caption {
+    margin-bottom: 24px;
+  }
+  .poster-text {
+    font-size: 20px;
+    line-height: 1.7;
+  }
+  .poster-colophon {
+    gap: 8px 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .poster-text .memory-word {
+    transition: none;
+  }
+}

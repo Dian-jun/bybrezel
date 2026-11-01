@@ -129,13 +129,14 @@ export function createBackend(config, sdk = globalThis.supabase) {
       offset = 0,
       ids = null,
       eventId = null,
+      limit = 40,
     } = {}) {
       return rpc("timeline", {
         p_date: date,
         p_query: q,
         p_category: category,
         p_offset: offset,
-        p_limit: 40,
+        p_limit: Math.min(100, Math.max(1, Math.trunc(Number(limit) || 40))),
         p_ids: ids,
         p_event_id: eventId,
       });

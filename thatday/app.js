@@ -19,7 +19,11 @@ import {
   route,
 } from "./domain.js";
 import { lifeGroups, mergeRecords, matchesLife } from "./lives.js";
-import { createBackend, filterStarter } from "./backend.js?v=20261101-device";
+import {
+  memoryPosterEvents,
+  saveMemoryPoster,
+} from "./memory-poster.js?v=20261101-poster";
+import { createBackend, filterStarter } from "./backend.js?v=20261101-poster";
 const $ = (s) => document.querySelector(s),
   $$ = (s) => [...document.querySelectorAll(s)];
 const backend = createBackend(
@@ -141,7 +145,7 @@ function heading() {
   $("#event-total").textContent =
     state.eventTotal === null
       ? ""
-      : `${state.view === "mine" ? "기억한" : state.date || state.q || state.category ? "찾은" : "수록"} 사건 ${state.eventTotal}개`;
+      : `${state.view === "mine" ? "포스터의" : state.date || state.q || state.category ? "찾은" : "수록"} 사건 ${state.eventTotal}개`;
   $("#memory-count").textContent = `내가 기억하는 사건 ${selected().length}개`;
   $("#account-button").textContent =
     `${state.me.user?.role === "moderator" ? "관리" : "기기 보관함"} ↗`;
@@ -341,6 +345,10 @@ function recordHTML(r) {
   return `<article class="personal-line" id="record-${h(r.id)}" aria-label="이용자가 남긴 개인의 기억. 독립적으로 검증되지 않았습니다."><span class="small-dot"></span><time class="date mono" datetime="${h(r.date_start)}">${h(personalDateLabel(r))}</time><div><p>${personalSentence(r.display_name, r.original_text, r.presentation_style)}</p><div class="record-meta"><span>개인의 기억</span>${own ? `<span>${h(status)}</span><button data-edit="${h(r.id)}">수정·공개 범위</button><button data-delete="${h(r.id)}">삭제</button>` : `<button data-report="${h(r.id)}">신고</button>`}</div></div></article>`;
 }
 function renderLines() {
+  if (state.view === "mine") {
+    renderMemoryPoster();
+    return;
+  }
   const rows = orderedRows(
     state.events,
     state.view === "mine"
@@ -367,6 +375,49 @@ function renderLines() {
   observeYears();
   $("#more-events").hidden = state.eventNext === null;
   $("#more-records").hidden = state.recordNext === null;
+}
+function renderMemoryPoster() {
+  const events = memoryPosterEvents(state.events),
+    chosen = new Set(selected());
+  let year = "";
+  const words = events
+    .map((event) => {
+      const nextYear = event.date_start.slice(0, 4);
+      const marker =
+        year !== nextYear
+          ? `<span class="poster-year mono">${nextYear} / </span>`
+          : "";
+      year = nextYear;
+      const isChosen = chosen.has(event.id);
+      return `${marker}<button class="memory-word ${isChosen ? "is-chosen" : ""}" data-remember="${h(event.id)}" aria-pressed="${isChosen}" aria-label="${h(dateLabel(event.date_start, event.date_precision, event.date_end))} ${h(event.title)} ${isChosen ? "기억 선택 해제" : "기억으로 선택"}" title="${h(dateLabel(event.date_start, event.date_precision, event.date_end))}">${h(event.title)}</button><span class="poster-separator" aria-hidden="true"> · </span>`;
+    })
+    .join("");
+  const period = state.date || `1950—${today().slice(0, 4)}`;
+  $("#lines").innerHTML =
+    `<div class="poster-tools"><p>기억하는 사건을 눌러 나의 연대기를 만들어 보세요</p><button data-action="save-memory-poster" ${events.length ? "" : "disabled"}>이미지로 저장 ↗</button></div><section class="memory-poster" aria-label="나의 기억 포스터"><header class="poster-masthead"><span>그날 우리는 <i aria-hidden="true">●</i></span><span class="mono">${h(period)}</span></header><div class="poster-caption"><h2>나의 기억</h2><span>선명하게 남은 날들</span></div><p class="poster-text" aria-label="사건을 누르면 기억 선택이 바뀝니다">${words || "이 조건에 해당하는 사건이 없습니다"}</p><div class="poster-colophon"><span id="poster-selection-count">${events.filter((e) => chosen.has(e.id)).length}개의 기억 / ${events.length}개의 사건</span><span>bybrezel.com/thatday</span></div></section>${state.records.length ? `<section class="poster-stories" aria-label="내가 남긴 이야기"><h2>내가 남긴 이야기</h2>${state.records.map(recordHTML).join("")}</section>` : ""}`;
+  $("#more-events").hidden = true;
+  $("#more-records").hidden = true;
+}
+function paintMemoryPoster() {
+  if (state.view !== "mine") return;
+  const chosen = new Set(selected());
+  $$(".memory-word[data-remember]").forEach((button) => {
+    const yes = chosen.has(button.dataset.remember);
+    button.classList.toggle("is-chosen", yes);
+    button.setAttribute("aria-pressed", String(yes));
+    button.setAttribute(
+      "aria-label",
+      button
+        .getAttribute("aria-label")
+        .replace(
+          / (기억으로 선택|기억 선택 해제)$/,
+          yes ? " 기억 선택 해제" : " 기억으로 선택",
+        ),
+    );
+  });
+  const count = $("#poster-selection-count");
+  if (count)
+    count.textContent = `${state.events.filter((e) => chosen.has(e.id)).length}개의 기억 / ${state.events.length}개의 사건`;
 }
 let yearObserver = null;
 function observeYears() {
@@ -411,6 +462,8 @@ async function refreshMe() {
 }
 async function load() {
   const ticket = ++generation;
+  const exportButton = $('[data-action="save-memory-poster"]');
+  if (exportButton) exportButton.disabled = true;
   paginationObserver?.disconnect();
   paginationPaused = false;
   state.eventNext = null;
@@ -450,8 +503,9 @@ async function load() {
     date: state.date,
     q: state.q,
     category: state.category,
-    ids: state.view === "mine" ? selected() : null,
+    ids: null,
     eventId: state.eventId,
+    limit: state.view === "mine" ? 100 : 40,
   };
   try {
     let [events, records] = await Promise.all([
@@ -467,15 +521,23 @@ async function load() {
     ]);
     if (ticket !== generation) return;
     if (state.view === "mine" && backend.configured) {
+      const firstEvents = events,
+        firstRecords = records;
       const [allEvents, allRecords] = await Promise.all([
         allPages(
-          (offset) => backend.timeline({ ...args, offset }),
+          (offset) =>
+            offset === 0
+              ? Promise.resolve(firstEvents)
+              : backend.timeline({ ...args, offset }),
           "events",
           () => ticket === generation,
         ),
         state.me.user
           ? allPages(
-              (offset) => backend.records({ ...args, own: true, offset }),
+              (offset) =>
+                offset === 0
+                  ? Promise.resolve(firstRecords)
+                  : backend.records({ ...args, own: true, offset }),
               "records",
               () => ticket === generation,
             )
@@ -636,6 +698,7 @@ async function remember(id, button) {
       );
     }
     heading();
+    paintMemoryPoster();
   };
   memoryPending.add(id);
   button.disabled = true;
@@ -662,7 +725,7 @@ async function remember(id, button) {
       );
     } else {
       notify("기억 선택을 해제했습니다.");
-      if (state.view === "mine") await load();
+      // The poster keeps every event in place when a memory is deselected.
     }
   } catch (error) {
     if (epoch === authEpoch) {
@@ -1076,6 +1139,19 @@ document.addEventListener("click", async (event) => {
       return;
     }
     const action = b.dataset.action;
+    if (action === "save-memory-poster") {
+      b.disabled = true;
+      try {
+        await saveMemoryPoster(
+          state.events,
+          selected(),
+          state.date || `1950—${today().slice(0, 4)}`,
+        );
+      } finally {
+        b.disabled = false;
+      }
+      return;
+    }
     if (action === "write") {
       await openEditor();
       return;
