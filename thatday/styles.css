@@ -2163,7 +2163,9 @@ body[data-view="mine"] .time-atlas {
 }
 .simple-visibility {
   display: flex;
-  gap: 22px;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+  min-width: 0;
   border: 0;
   padding: 0;
   margin: 0;
@@ -2174,6 +2176,14 @@ body[data-view="mine"] .time-atlas {
   gap: 7px;
   font-size: 13px;
   min-height: 44px;
+  white-space: nowrap;
+}
+.record-form input:is([type="radio"], [type="checkbox"]) {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+  padding: 0;
+  margin: 0;
 }
 @media (max-width: 760px) {
   .tools {
