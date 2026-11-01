@@ -1,0 +1,690 @@
+[
+  {
+    "title": "명량",
+    "date": "2014-07-30",
+    "admissions": 17616791,
+    "code": "20129370",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "왕과 사는 남자",
+    "date": "2026-02-04",
+    "admissions": 16933177,
+    "code": "20242837",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "극한직업",
+    "date": "2019-01-23",
+    "admissions": 16266641,
+    "code": "20182530",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "신과함께-죄와 벌",
+    "date": "2017-12-20",
+    "admissions": 14414658,
+    "code": "20150976",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "국제시장",
+    "date": "2014-12-17",
+    "admissions": 14269967,
+    "code": "20137048",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "베테랑",
+    "date": "2015-08-05",
+    "admissions": 13414649,
+    "code": "20148048",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "서울의 봄",
+    "date": "2023-11-22",
+    "admissions": 13128587,
+    "code": "20212866",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "도둑들",
+    "date": "2012-07-25",
+    "admissions": 12984701,
+    "code": "20124034",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "7번방의 선물",
+    "date": "2013-01-23",
+    "admissions": 12812473,
+    "code": "20127593",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "암살",
+    "date": "2015-07-22",
+    "admissions": 12707491,
+    "code": "20148851",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "범죄도시2",
+    "date": "2022-05-18",
+    "admissions": 12693415,
+    "code": "20204548",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "광해, 왕이 된 남자",
+    "date": "2012-09-13",
+    "admissions": 12324238,
+    "code": "20124079",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "신과함께-인과 연",
+    "date": "2018-08-01",
+    "admissions": 12278010,
+    "code": "20186202",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "택시운전사",
+    "date": "2017-08-02",
+    "admissions": 12189988,
+    "code": "20162869",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "파묘",
+    "date": "2024-02-22",
+    "admissions": 11916041,
+    "code": "20234675",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "부산행",
+    "date": "2016-07-20",
+    "admissions": 11567816,
+    "code": "20156564",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "범죄도시4",
+    "date": "2024-04-24",
+    "admissions": 11502928,
+    "code": "20228797",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "변호인",
+    "date": "2013-12-18",
+    "admissions": 11375399,
+    "code": "20134803",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "해운대",
+    "date": "2009-07-22",
+    "admissions": 11325117,
+    "code": "20090074",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "괴물",
+    "date": "2006-07-27",
+    "admissions": 10900492,
+    "code": "20060151",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "범죄도시3",
+    "date": "2023-05-31",
+    "admissions": 10682813,
+    "code": "20226411",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "왕의 남자",
+    "date": "2005-12-29",
+    "admissions": 10513207,
+    "code": "20050333",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "기생충",
+    "date": "2019-05-30",
+    "admissions": 10317318,
+    "code": "20183782",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "검사외전",
+    "date": "2016-02-03",
+    "admissions": 9707581,
+    "code": "20145507",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "엑시트",
+    "date": "2019-07-31",
+    "admissions": 9429024,
+    "code": "20184621",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "설국열차",
+    "date": "2013-08-01",
+    "admissions": 9355093,
+    "code": "20126674",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "관상",
+    "date": "2013-09-11",
+    "admissions": 9135853,
+    "code": "20126091",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "수상한 그녀",
+    "date": "2014-01-22",
+    "admissions": 8667104,
+    "code": "20131102",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "해적: 바다로 간 산적",
+    "date": "2014-08-06",
+    "admissions": 8666208,
+    "code": "20136064",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "백두산",
+    "date": "2019-12-19",
+    "admissions": 8253570,
+    "code": "20192206",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "과속스캔들",
+    "date": "2008-12-03",
+    "admissions": 8223342,
+    "code": "20081672",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "국가대표",
+    "date": "2009-07-29",
+    "admissions": 8035181,
+    "code": "20090307",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "디워",
+    "date": "2007-08-01",
+    "admissions": 7855474,
+    "code": "20070316",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "공조",
+    "date": "2017-01-18",
+    "admissions": 7817686,
+    "code": "20151228",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "히말라야",
+    "date": "2015-12-16",
+    "admissions": 7760011,
+    "code": "20136068",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "베테랑2",
+    "date": "2024-09-13",
+    "admissions": 7525902,
+    "code": "20239670",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "밀정",
+    "date": "2016-09-07",
+    "admissions": 7500457,
+    "code": "20159646",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "최종병기 활",
+    "date": "2011-08-10",
+    "admissions": 7470754,
+    "code": "20110302",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "써니",
+    "date": "2011-05-04",
+    "admissions": 7363587,
+    "code": "20110193",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "한산: 용의 출현",
+    "date": "2022-07-27",
+    "admissions": 7267202,
+    "code": "20209343",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "1987",
+    "date": "2017-12-27",
+    "admissions": 7233076,
+    "code": "20170590",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "베를린",
+    "date": "2013-01-30",
+    "admissions": 7166944,
+    "code": "20124083",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "마스터",
+    "date": "2016-12-21",
+    "admissions": 7150586,
+    "code": "20161725",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "터널",
+    "date": "2016-08-10",
+    "admissions": 7120905,
+    "code": "20154910",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "내부자들",
+    "date": "2015-11-19",
+    "admissions": 7073581,
+    "code": "20149314",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "인천상륙작전",
+    "date": "2016-07-27",
+    "admissions": 7051866,
+    "code": "20156250",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "공조2: 인터내셔날",
+    "date": "2022-09-07",
+    "admissions": 6983077,
+    "code": "20215601",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "럭키",
+    "date": "2016-10-13",
+    "admissions": 6975677,
+    "code": "20153444",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "은밀하게 위대하게",
+    "date": "2013-06-05",
+    "admissions": 6959083,
+    "code": "20126672",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "범죄도시",
+    "date": "2017-10-03",
+    "admissions": 6880546,
+    "code": "20172742",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "곡성",
+    "date": "2016-05-12",
+    "admissions": 6879989,
+    "code": "20140194",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "화려한 휴가",
+    "date": "2007-07-25",
+    "admissions": 6855433,
+    "code": "20070209",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "좋은 놈, 나쁜 놈, 이상한 놈",
+    "date": "2008-07-17",
+    "admissions": 6686082,
+    "code": "20072152",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "늑대소년",
+    "date": "2012-10-31",
+    "admissions": 6655821,
+    "code": "20124054",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "군함도",
+    "date": "2017-07-26",
+    "admissions": 6592178,
+    "code": "20161481",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "웰컴 투 동막골",
+    "date": "2005-08-04",
+    "admissions": 6430103,
+    "code": "20050180",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "사도",
+    "date": "2015-09-16",
+    "admissions": 6247872,
+    "code": "20148846",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "아저씨",
+    "date": "2010-08-04",
+    "admissions": 6179701,
+    "code": "20100214",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "미녀는 괴로워",
+    "date": "2006-12-14",
+    "admissions": 6074814,
+    "code": "20060387",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "전우치",
+    "date": "2009-12-23",
+    "admissions": 6065505,
+    "code": "20090077",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "연평해전",
+    "date": "2015-06-24",
+    "admissions": 6046312,
+    "code": "20134798",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "군체",
+    "date": "2026-05-21",
+    "admissions": 5954211,
+    "code": "20252402",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "타짜",
+    "date": "2006-09-28",
+    "admissions": 5692238,
+    "code": "20060277",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "청년경찰",
+    "date": "2017-08-09",
+    "admissions": 5653444,
+    "code": "20162442",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "좀비딸",
+    "date": "2025-07-30",
+    "admissions": 5642778,
+    "code": "20241941",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "숨바꼭질",
+    "date": "2013-08-14",
+    "admissions": 5604106,
+    "code": "20136049",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "덕혜옹주",
+    "date": "2016-08-03",
+    "admissions": 5599943,
+    "code": "20150979",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "더 테러 라이브",
+    "date": "2013-07-31",
+    "admissions": 5584295,
+    "code": "20136052",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "감시자들",
+    "date": "2013-07-03",
+    "admissions": 5509019,
+    "code": "20122783",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "검은 사제들",
+    "date": "2015-11-05",
+    "admissions": 5443366,
+    "code": "20145503",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "안시성",
+    "date": "2018-09-19",
+    "admissions": 5441279,
+    "code": "20176122",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "의형제",
+    "date": "2010-02-04",
+    "admissions": 5416923,
+    "code": "20090904",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "더 킹",
+    "date": "2017-01-18",
+    "admissions": 5318202,
+    "code": "20151229",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "완득이",
+    "date": "2011-10-20",
+    "admissions": 5311497,
+    "code": "20112695",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "완벽한 타인",
+    "date": "2018-10-31",
+    "admissions": 5294154,
+    "code": "20177538",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "타워",
+    "date": "2012-12-25",
+    "admissions": 5181244,
+    "code": "20124039",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "밀수",
+    "date": "2023-07-26",
+    "admissions": 5143751,
+    "code": "20218541",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "투사부일체",
+    "date": "2006-01-19",
+    "admissions": 5073037,
+    "code": "20050363",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "독전",
+    "date": "2018-05-22",
+    "admissions": 5064323,
+    "code": "20179383",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "추격자",
+    "date": "2008-02-14",
+    "admissions": 5046096,
+    "code": "20080046",
+    "basis": "kobis-ticketing",
+    "period": "2026-11-01 조회, 전일 마감 기준"
+  },
+  {
+    "title": "태극기 휘날리며",
+    "date": "2004-02-05",
+    "admissions": 11746135,
+    "code": "20030371",
+    "basis": "kofic-official-yearbook",
+    "period": "2026-09 공식통계 마감 기준"
+  },
+  {
+    "title": "실미도",
+    "date": "2003-12-24",
+    "admissions": 11081000,
+    "code": "20030410",
+    "basis": "kofic-official-yearbook",
+    "period": "2026-09 공식통계 마감 기준"
+  },
+  {
+    "title": "쉬리",
+    "date": "1999-02-13",
+    "admissions": 5820000,
+    "code": "19990084",
+    "basis": "kofic-official-yearbook",
+    "period": "2026-09 공식통계 마감 기준"
+  },
+  {
+    "title": "가문의 위기",
+    "date": "2005-09-07",
+    "admissions": 5635266,
+    "code": "20050219",
+    "basis": "kofic-official-yearbook",
+    "period": "2026-09 공식통계 마감 기준"
+  },
+  {
+    "title": "살인의 추억",
+    "date": "2003-04-25",
+    "admissions": 5255376,
+    "code": "20030046",
+    "basis": "kofic-official-yearbook",
+    "period": "2026-09 공식통계 마감 기준"
+  },
+  {
+    "title": "말아톤",
+    "date": "2005-01-27",
+    "admissions": 5148022,
+    "code": "20040785",
+    "basis": "kofic-official-yearbook",
+    "period": "2026-09 공식통계 마감 기준"
+  }
+]

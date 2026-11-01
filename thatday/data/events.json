@@ -6118,6 +6118,40 @@
     ]
   },
   {
+    "id": "kr-drama-premiere-sandglass",
+    "title": "드라마 「모래시계」 첫 방송",
+    "date_start": "1995-01-09",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "모래시계 · 첫 방송·공개일",
+        "source_url": "https://programs.sbs.co.kr/programTemplate/amp/clip/pc/22000008797",
+        "publisher": "SBS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "모래시계 · 흥행 성과 확인",
+        "source_url": "https://news.sbs.co.kr/amp/news.amp?news_id=N0300117165",
+        "publisher": "SBS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "모래시계",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "방송사 보도에서 평균 시청률 45.3% 기록 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
+  },
+  {
     "id": "kr-chronology-d77b6b941397c38e",
     "title": "한·일·러 잇는 국제 해저 광케이블망 개통",
     "date_start": "1995-02-15",
@@ -6859,6 +6893,37 @@
     ]
   },
   {
+    "id": "kr-film-release-19990084",
+    "title": "영화 「쉬리」 개봉",
+    "date_start": "1999-02-13",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 쉬리",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/offc/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "19990084",
+      "nation_filter": "K",
+      "admissions": 5820000,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kofic-official-yearbook",
+      "admissions_period": "2026-09 공식통계 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-chronology-5dc9d74a3914a6d2",
     "title": "국민연금관리공단, 전국민 대상 국민연금 확대실시 시행",
     "date_start": "1999-04-01",
@@ -6971,6 +7036,40 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-drama-premiere-heojun",
+    "title": "드라마 「허준」 첫 방송",
+    "date_start": "1999-11-22",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "허준 · 첫 방송·공개일",
+        "source_url": "https://playvod.imbc.com/Templete/VodView?bid=1000020100001100000",
+        "publisher": "MBC",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "허준 · 흥행 성과 확인",
+        "source_url": "https://enews.imbc.com/News/RetrieveNewsInfo/3742",
+        "publisher": "MBC",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "허준",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "방송사 자료에서 역대 높은 시청률 기록 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
   },
   {
     "id": "kr-chronology-03630269a3bb1161",
@@ -7771,6 +7870,37 @@
     ]
   },
   {
+    "id": "kr-film-release-20030046",
+    "title": "영화 「살인의 추억」 개봉",
+    "date_start": "2003-04-25",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 살인의 추억",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/offc/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20030046",
+      "nation_filter": "K",
+      "admissions": 5255376,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kofic-official-yearbook",
+      "admissions_period": "2026-09 공식통계 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-expanded-a33051ae87ebfd80",
     "title": "과학기술위성 1호 발사",
     "date_start": "2003-09-01",
@@ -7790,6 +7920,40 @@
     ]
   },
   {
+    "id": "kr-drama-premiere-dae-jang-geum",
+    "title": "드라마 「대장금」 첫 방송",
+    "date_start": "2003-09-15",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "대장금 · 첫 방송·공개일",
+        "source_url": "https://playvod.imbc.com/Templete/VodView?bid=1000090100001100000",
+        "publisher": "MBC",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "대장금 · 흥행 성과 확인",
+        "source_url": "https://imnews.imbc.com/replay/2004/nwdesk/article/1958875_30775.html",
+        "publisher": "MBC",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "대장금",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "방송사 보도에서 최종회 시청률 57.8% 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
+  },
+  {
     "id": "kr-expanded-5474b959ee4fcac6",
     "title": "다목적 성층권 장기체공 무인비행선 개발",
     "date_start": "2003-10-01",
@@ -7807,6 +7971,37 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-film-release-20030410",
+    "title": "영화 「실미도」 개봉",
+    "date_start": "2003-12-24",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 실미도",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/offc/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20030410",
+      "nation_filter": "K",
+      "admissions": 11081000,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kofic-official-yearbook",
+      "admissions_period": "2026-09 공식통계 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
   },
   {
     "id": "kr-expanded-1626bffdf79204c2",
@@ -7845,6 +8040,37 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-film-release-20030371",
+    "title": "영화 「태극기 휘날리며」 개봉",
+    "date_start": "2004-02-05",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 태극기 휘날리며",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/offc/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20030371",
+      "nation_filter": "K",
+      "admissions": 11746135,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kofic-official-yearbook",
+      "admissions_period": "2026-09 공식통계 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
   },
   {
     "id": "kr-ktx-2004",
@@ -7904,6 +8130,37 @@
     ]
   },
   {
+    "id": "kr-film-release-20040785",
+    "title": "영화 「말아톤」 개봉",
+    "date_start": "2005-01-27",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 말아톤",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/offc/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20040785",
+      "nation_filter": "K",
+      "admissions": 5148022,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kofic-official-yearbook",
+      "admissions_period": "2026-09 공식통계 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-policy-225-civil",
     "title": "호주제 폐지를 위한 민법 개정 공포",
     "description": "개정법 공포일을 기록했으며, 새로운 가족관계등록제의 시행일과 구분한다.",
@@ -7923,6 +8180,99 @@
     ]
   },
   {
+    "id": "kr-film-release-20050180",
+    "title": "영화 「웰컴 투 동막골」 개봉",
+    "date_start": "2005-08-04",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 웰컴 투 동막골",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20050180",
+      "nation_filter": "K",
+      "admissions": 6430103,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20050219",
+    "title": "영화 「가문의 위기」 개봉",
+    "date_start": "2005-09-07",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 가문의 위기",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/offc/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20050219",
+      "nation_filter": "K",
+      "admissions": 5635266,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kofic-official-yearbook",
+      "admissions_period": "2026-09 공식통계 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20050333",
+    "title": "영화 「왕의 남자」 개봉",
+    "date_start": "2005-12-29",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 왕의 남자",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20050333",
+      "nation_filter": "K",
+      "admissions": 10513207,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-expanded-176f5c54e83182c3",
     "title": "류현진, KBO MVP 수상",
     "date_start": "2006-01-01",
@@ -7940,6 +8290,37 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-film-release-20050363",
+    "title": "영화 「투사부일체」 개봉",
+    "date_start": "2006-01-19",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 투사부일체",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20050363",
+      "nation_filter": "K",
+      "admissions": 5073037,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
   },
   {
     "id": "kr-policy-324-talks",
@@ -7978,6 +8359,99 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-film-release-20060151",
+    "title": "영화 「괴물」 개봉",
+    "date_start": "2006-07-27",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 괴물",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20060151",
+      "nation_filter": "K",
+      "admissions": 10900492,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20060277",
+    "title": "영화 「타짜」 개봉",
+    "date_start": "2006-09-28",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 타짜",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20060277",
+      "nation_filter": "K",
+      "admissions": 5692238,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20060387",
+    "title": "영화 「미녀는 괴로워」 개봉",
+    "date_start": "2006-12-14",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 미녀는 괴로워",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20060387",
+      "nation_filter": "K",
+      "admissions": 6074814,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
   },
   {
     "id": "kr-expanded-60ac9dea56a13ba6",
@@ -8094,6 +8568,68 @@
     ]
   },
   {
+    "id": "kr-film-release-20070209",
+    "title": "영화 「화려한 휴가」 개봉",
+    "date_start": "2007-07-25",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 화려한 휴가",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20070209",
+      "nation_filter": "K",
+      "admissions": 6855433,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20070316",
+    "title": "영화 「디워」 개봉",
+    "date_start": "2007-08-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 디워",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20070316",
+      "nation_filter": "K",
+      "admissions": 7855474,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-policy-611-summit",
     "title": "제2차 남북정상회담 개최",
     "description": "",
@@ -8151,6 +8687,37 @@
     ]
   },
   {
+    "id": "kr-film-release-20080046",
+    "title": "영화 「추격자」 개봉",
+    "date_start": "2008-02-14",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 추격자",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20080046",
+      "nation_filter": "K",
+      "admissions": 5046096,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-expanded-92a4d86774836719",
     "title": "우주인 배출",
     "date_start": "2008-04-01",
@@ -8168,6 +8735,37 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-film-release-20072152",
+    "title": "영화 「좋은 놈, 나쁜 놈, 이상한 놈」 개봉",
+    "date_start": "2008-07-17",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 좋은 놈, 나쁜 놈, 이상한 놈",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20072152",
+      "nation_filter": "K",
+      "admissions": 6686082,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
   },
   {
     "id": "kr-music-8ec4ab0144305cff",
@@ -8225,6 +8823,37 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-film-release-20081672",
+    "title": "영화 「과속스캔들」 개봉",
+    "date_start": "2008-12-03",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 과속스캔들",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20081672",
+      "nation_filter": "K",
+      "admissions": 8223342,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
   },
   {
     "id": "kr-expanded-68d187bb6dce809d",
@@ -8341,6 +8970,99 @@
     ]
   },
   {
+    "id": "kr-film-release-20090074",
+    "title": "영화 「해운대」 개봉",
+    "date_start": "2009-07-22",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 해운대",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20090074",
+      "nation_filter": "K",
+      "admissions": 11325117,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20090307",
+    "title": "영화 「국가대표」 개봉",
+    "date_start": "2009-07-29",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 국가대표",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20090307",
+      "nation_filter": "K",
+      "admissions": 8035181,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20090077",
+    "title": "영화 「전우치」 개봉",
+    "date_start": "2009-12-23",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 전우치",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20090077",
+      "nation_filter": "K",
+      "admissions": 6065505,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-expanded-a2654f4ec149784b",
     "title": "이대호, KBO MVP 수상",
     "date_start": "2010-01-01",
@@ -8398,6 +9120,37 @@
     ]
   },
   {
+    "id": "kr-film-release-20090904",
+    "title": "영화 「의형제」 개봉",
+    "date_start": "2010-02-04",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 의형제",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20090904",
+      "nation_filter": "K",
+      "admissions": 5416923,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-expanded-5574121d85c41c74",
     "title": "천리안위성 발사",
     "date_start": "2010-06-01",
@@ -8417,6 +9170,37 @@
     ]
   },
   {
+    "id": "kr-film-release-20100214",
+    "title": "영화 「아저씨」 개봉",
+    "date_start": "2010-08-04",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 아저씨",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20100214",
+      "nation_filter": "K",
+      "admissions": 6179701,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-policy-511-g20",
     "title": "서울 G20 정상회의 개최",
     "description": "",
@@ -8434,6 +9218,40 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-drama-premiere-secret-garden",
+    "title": "드라마 「시크릿 가든」 첫 방송",
+    "date_start": "2010-11-13",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "시크릿 가든 · 첫 방송·공개일",
+        "source_url": "https://programs.sbs.co.kr/drama/secretgarden/about/53663",
+        "publisher": "SBS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "시크릿 가든 · 흥행 성과 확인",
+        "source_url": "https://programs.sbs.co.kr/special/sbscontentshub/about/63732",
+        "publisher": "SBS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "시크릿 가든",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "방송사 판매 자료에 최고 시청률 35.2% 제시",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
   },
   {
     "id": "kr-expanded-3dc4f99934e32fd6",
@@ -8510,6 +9328,99 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-film-release-20110193",
+    "title": "영화 「써니」 개봉",
+    "date_start": "2011-05-04",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 써니",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20110193",
+      "nation_filter": "K",
+      "admissions": 7363587,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20110302",
+    "title": "영화 「최종병기 활」 개봉",
+    "date_start": "2011-08-10",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 최종병기 활",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20110302",
+      "nation_filter": "K",
+      "admissions": 7470754,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20112695",
+    "title": "영화 「완득이」 개봉",
+    "date_start": "2011-10-20",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 완득이",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20112695",
+      "nation_filter": "K",
+      "admissions": 5311497,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
   },
   {
     "id": "kr-expanded-b4d6b52fc3904d5a",
@@ -8645,6 +9556,130 @@
     ]
   },
   {
+    "id": "kr-film-release-20124034",
+    "title": "영화 「도둑들」 개봉",
+    "date_start": "2012-07-25",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 도둑들",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20124034",
+      "nation_filter": "K",
+      "admissions": 12984701,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20124079",
+    "title": "영화 「광해, 왕이 된 남자」 개봉",
+    "date_start": "2012-09-13",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 광해, 왕이 된 남자",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20124079",
+      "nation_filter": "K",
+      "admissions": 12324238,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20124054",
+    "title": "영화 「늑대소년」 개봉",
+    "date_start": "2012-10-31",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 늑대소년",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20124054",
+      "nation_filter": "K",
+      "admissions": 6655821,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20124039",
+    "title": "영화 「타워」 개봉",
+    "date_start": "2012-12-25",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 타워",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20124039",
+      "nation_filter": "K",
+      "admissions": 5181244,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-expanded-0c124483a6df450c",
     "title": "김장문화, 유네스코 인류무형문화유산 등재",
     "date_start": "2013-01-01",
@@ -8702,6 +9737,68 @@
     ]
   },
   {
+    "id": "kr-film-release-20127593",
+    "title": "영화 「7번방의 선물」 개봉",
+    "date_start": "2013-01-23",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 7번방의 선물",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20127593",
+      "nation_filter": "K",
+      "admissions": 12812473,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20124083",
+    "title": "영화 「베를린」 개봉",
+    "date_start": "2013-01-30",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 베를린",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20124083",
+      "nation_filter": "K",
+      "admissions": 7166944,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-naro-2013",
     "title": "나로호 3차 발사 성공",
     "description": "",
@@ -8721,6 +9818,99 @@
     ]
   },
   {
+    "id": "kr-film-release-20126672",
+    "title": "영화 「은밀하게 위대하게」 개봉",
+    "date_start": "2013-06-05",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 은밀하게 위대하게",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20126672",
+      "nation_filter": "K",
+      "admissions": 6959083,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20122783",
+    "title": "영화 「감시자들」 개봉",
+    "date_start": "2013-07-03",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 감시자들",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20122783",
+      "nation_filter": "K",
+      "admissions": 5509019,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20136052",
+    "title": "영화 「더 테러 라이브」 개봉",
+    "date_start": "2013-07-31",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 더 테러 라이브",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20136052",
+      "nation_filter": "K",
+      "admissions": 5584295,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-expanded-68900735a38e27e1",
     "title": "다목적실용위성(아리랑) 5호 발사",
     "date_start": "2013-08-01",
@@ -8738,6 +9928,99 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-film-release-20126674",
+    "title": "영화 「설국열차」 개봉",
+    "date_start": "2013-08-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 설국열차",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20126674",
+      "nation_filter": "K",
+      "admissions": 9355093,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20136049",
+    "title": "영화 「숨바꼭질」 개봉",
+    "date_start": "2013-08-14",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 숨바꼭질",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20136049",
+      "nation_filter": "K",
+      "admissions": 5604106,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20126091",
+    "title": "영화 「관상」 개봉",
+    "date_start": "2013-09-11",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 관상",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20126091",
+      "nation_filter": "K",
+      "admissions": 9135853,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
   },
   {
     "id": "kr-expanded-19f9fc350ea26cf2",
@@ -8776,6 +10059,71 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-drama-premiere-my-love-from-the-star",
+    "title": "드라마 「별에서 온 그대」 첫 방송",
+    "date_start": "2013-12-18",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "별에서 온 그대 · 첫 방송·공개일",
+        "source_url": "https://news.sbs.co.kr/news/endPage.do?news_id=N1002140563",
+        "publisher": "SBS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "별에서 온 그대 · 흥행 성과 확인",
+        "source_url": "https://ent.sbs.co.kr/news/article.do?article_id=E10005075682",
+        "publisher": "SBS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "별에서 온 그대",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "방송사 보도에서 최종회 전국 시청률 28.1% 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
+  },
+  {
+    "id": "kr-film-release-20134803",
+    "title": "영화 「변호인」 개봉",
+    "date_start": "2013-12-18",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 변호인",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20134803",
+      "nation_filter": "K",
+      "admissions": 11375399,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
   },
   {
     "id": "kr-expanded-12d2443741e06878",
@@ -8835,6 +10183,37 @@
     ]
   },
   {
+    "id": "kr-film-release-20131102",
+    "title": "영화 「수상한 그녀」 개봉",
+    "date_start": "2014-01-22",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 수상한 그녀",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20131102",
+      "nation_filter": "K",
+      "admissions": 8667104,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-sewol-2014",
     "title": "세월호 참사",
     "description": "특별법에서 규정한 참사의 발생 날짜를 기록했다.",
@@ -8871,6 +10250,133 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-film-release-20129370",
+    "title": "영화 「명량」 개봉",
+    "date_start": "2014-07-30",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 명량",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20129370",
+      "nation_filter": "K",
+      "admissions": 17616791,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20136064",
+    "title": "영화 「해적: 바다로 간 산적」 개봉",
+    "date_start": "2014-08-06",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 해적: 바다로 간 산적",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20136064",
+      "nation_filter": "K",
+      "admissions": 8666208,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-drama-premiere-misaeng",
+    "title": "드라마 「미생」 첫 방송",
+    "date_start": "2014-10-17",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "미생 · 첫 방송·공개일",
+        "source_url": "https://tvn.cjenm.com/ko/misaeng/",
+        "publisher": "tvN",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "미생 · 흥행 성과 확인",
+        "source_url": "https://kind.krx.co.kr/external/dst/irReference/16676/CJENM_IR_Book_2025.05.pdf",
+        "publisher": "CJ ENM",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "미생",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "회사 IR 자료의 주요 흥행 드라마 및 시청률 추이 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
+  },
+  {
+    "id": "kr-film-release-20137048",
+    "title": "영화 「국제시장」 개봉",
+    "date_start": "2014-12-17",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 국제시장",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20137048",
+      "nation_filter": "K",
+      "admissions": 14269967,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
   },
   {
     "id": "kr-expanded-61d2ee50fa5330d1",
@@ -8987,6 +10493,226 @@
     ]
   },
   {
+    "id": "kr-film-release-20134798",
+    "title": "영화 「연평해전」 개봉",
+    "date_start": "2015-06-24",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 연평해전",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20134798",
+      "nation_filter": "K",
+      "admissions": 6046312,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20148851",
+    "title": "영화 「암살」 개봉",
+    "date_start": "2015-07-22",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 암살",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20148851",
+      "nation_filter": "K",
+      "admissions": 12707491,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20148048",
+    "title": "영화 「베테랑」 개봉",
+    "date_start": "2015-08-05",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 베테랑",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20148048",
+      "nation_filter": "K",
+      "admissions": 13414649,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20148846",
+    "title": "영화 「사도」 개봉",
+    "date_start": "2015-09-16",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 사도",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20148846",
+      "nation_filter": "K",
+      "admissions": 6247872,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20145503",
+    "title": "영화 「검은 사제들」 개봉",
+    "date_start": "2015-11-05",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 검은 사제들",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20145503",
+      "nation_filter": "K",
+      "admissions": 5443366,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-drama-premiere-reply1988",
+    "title": "드라마 「응답하라 1988」 첫 방송",
+    "date_start": "2015-11-06",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "응답하라 1988 · 첫 방송·공개일",
+        "source_url": "https://tvn.cjenm.com/ko/reply1988/",
+        "publisher": "tvN",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "응답하라 1988 · 흥행 성과 확인",
+        "source_url": "https://kind.krx.co.kr/external/dst/irReference/16676/CJENM_IR_Book_2025.05.pdf",
+        "publisher": "CJ ENM",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "응답하라 1988",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "회사 IR 자료의 주요 흥행 드라마 및 시청률 추이 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
+  },
+  {
+    "id": "kr-film-release-20149314",
+    "title": "영화 「내부자들」 개봉",
+    "date_start": "2015-11-19",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 내부자들",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20149314",
+      "nation_filter": "K",
+      "admissions": 7073581,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-expanded-3247e6ff2a0d6985",
     "title": "한국형발사체엔진 추진기관 시험설비 준공",
     "date_start": "2015-12-01",
@@ -9004,6 +10730,37 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-film-release-20136068",
+    "title": "영화 「히말라야」 개봉",
+    "date_start": "2015-12-16",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 히말라야",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20136068",
+      "nation_filter": "K",
+      "admissions": 7760011,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
   },
   {
     "id": "kr-expanded-d1a294ba23e673f2",
@@ -9044,6 +10801,288 @@
     ]
   },
   {
+    "id": "kr-film-release-20145507",
+    "title": "영화 「검사외전」 개봉",
+    "date_start": "2016-02-03",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 검사외전",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20145507",
+      "nation_filter": "K",
+      "admissions": 9707581,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-drama-premiere-descendants-of-the-sun",
+    "title": "드라마 「태양의 후예」 첫 방송",
+    "date_start": "2016-02-24",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "태양의 후예 · 첫 방송·공개일",
+        "source_url": "https://www.kbs.co.kr/search/main.html?keyword=태양의%20후예",
+        "publisher": "KBS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "태양의 후예 · 흥행 성과 확인",
+        "source_url": "https://mylovekbs.kbs.co.kr/index.html?contents_id=70000000279041&sname=mylovekbs&source=mylovekbs&stype=magazine",
+        "publisher": "KBS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "태양의 후예",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "방송사 자료에서 최종회 전국 시청률 38.8% 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
+  },
+  {
+    "id": "kr-film-release-20140194",
+    "title": "영화 「곡성」 개봉",
+    "date_start": "2016-05-12",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 곡성",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20140194",
+      "nation_filter": "K",
+      "admissions": 6879989,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20156564",
+    "title": "영화 「부산행」 개봉",
+    "date_start": "2016-07-20",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 부산행",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20156564",
+      "nation_filter": "K",
+      "admissions": 11567816,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20156250",
+    "title": "영화 「인천상륙작전」 개봉",
+    "date_start": "2016-07-27",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 인천상륙작전",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20156250",
+      "nation_filter": "K",
+      "admissions": 7051866,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20150979",
+    "title": "영화 「덕혜옹주」 개봉",
+    "date_start": "2016-08-03",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 덕혜옹주",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20150979",
+      "nation_filter": "K",
+      "admissions": 5599943,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20154910",
+    "title": "영화 「터널」 개봉",
+    "date_start": "2016-08-10",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 터널",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20154910",
+      "nation_filter": "K",
+      "admissions": 7120905,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20159646",
+    "title": "영화 「밀정」 개봉",
+    "date_start": "2016-09-07",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 밀정",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20159646",
+      "nation_filter": "K",
+      "admissions": 7500457,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20153444",
+    "title": "영화 「럭키」 개봉",
+    "date_start": "2016-10-13",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 럭키",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20153444",
+      "nation_filter": "K",
+      "admissions": 6975677,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-expanded-2a9cf77997daa77b",
     "title": "국가 우주개발전문기관 선정",
     "date_start": "2016-12-01",
@@ -9061,6 +11100,71 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-drama-premiere-goblin",
+    "title": "드라마 「도깨비」 첫 방송",
+    "date_start": "2016-12-02",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "도깨비 · 첫 방송·공개일",
+        "source_url": "https://tvn.cjenm.com/ko/dokebi/",
+        "publisher": "tvN",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "도깨비 · 흥행 성과 확인",
+        "source_url": "https://kind.krx.co.kr/external/dst/irReference/16676/CJENM_IR_Book_2025.05.pdf",
+        "publisher": "CJ ENM",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "도깨비",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "회사 IR 자료의 주요 흥행 드라마 및 시청률 추이 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
+  },
+  {
+    "id": "kr-film-release-20161725",
+    "title": "영화 「마스터」 개봉",
+    "date_start": "2016-12-21",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 마스터",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20161725",
+      "nation_filter": "K",
+      "admissions": 7150586,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
   },
   {
     "id": "kr-expanded-2b960f3cbecac560",
@@ -9120,6 +11224,68 @@
     ]
   },
   {
+    "id": "kr-film-release-20151228",
+    "title": "영화 「공조」 개봉",
+    "date_start": "2017-01-18",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 공조",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20151228",
+      "nation_filter": "K",
+      "admissions": 7817686,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20151229",
+    "title": "영화 「더 킹」 개봉",
+    "date_start": "2017-01-18",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 더 킹",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20151229",
+      "nation_filter": "K",
+      "admissions": 5318202,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-impeachment-2017",
     "title": "헌법재판소, 박근혜 대통령 파면 결정",
     "description": "사건번호 2016헌나1의 종국일자와 결정을 확인했다.",
@@ -9137,6 +11303,192 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-film-release-20161481",
+    "title": "영화 「군함도」 개봉",
+    "date_start": "2017-07-26",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 군함도",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20161481",
+      "nation_filter": "K",
+      "admissions": 6592178,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20162869",
+    "title": "영화 「택시운전사」 개봉",
+    "date_start": "2017-08-02",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 택시운전사",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20162869",
+      "nation_filter": "K",
+      "admissions": 12189988,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20162442",
+    "title": "영화 「청년경찰」 개봉",
+    "date_start": "2017-08-09",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 청년경찰",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20162442",
+      "nation_filter": "K",
+      "admissions": 5653444,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20172742",
+    "title": "영화 「범죄도시」 개봉",
+    "date_start": "2017-10-03",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 범죄도시",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20172742",
+      "nation_filter": "K",
+      "admissions": 6880546,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20150976",
+    "title": "영화 「신과함께-죄와 벌」 개봉",
+    "date_start": "2017-12-20",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 신과함께-죄와 벌",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20150976",
+      "nation_filter": "K",
+      "admissions": 14414658,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20170590",
+    "title": "영화 「1987」 개봉",
+    "date_start": "2017-12-27",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 1987",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20170590",
+      "nation_filter": "K",
+      "admissions": 7233076,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
   },
   {
     "id": "kr-expanded-3ca0972d6f977fcf",
@@ -9215,6 +11567,164 @@
     ]
   },
   {
+    "id": "kr-film-release-20179383",
+    "title": "영화 「독전」 개봉",
+    "date_start": "2018-05-22",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 독전",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20179383",
+      "nation_filter": "K",
+      "admissions": 5064323,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-drama-premiere-mr-sunshine",
+    "title": "드라마 「미스터 션샤인」 첫 방송",
+    "date_start": "2018-07-07",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "미스터 션샤인 · 첫 방송·공개일",
+        "source_url": "https://tvn.cjenm.com/ko/mrsunshine/",
+        "publisher": "tvN",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "미스터 션샤인 · 흥행 성과 확인",
+        "source_url": "https://kind.krx.co.kr/external/dst/irReference/16676/CJENM_IR_Book_2025.05.pdf",
+        "publisher": "CJ ENM",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "미스터 션샤인",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "회사 IR 자료의 주요 흥행 드라마 및 시청률 추이 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
+  },
+  {
+    "id": "kr-film-release-20186202",
+    "title": "영화 「신과함께-인과 연」 개봉",
+    "date_start": "2018-08-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 신과함께-인과 연",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20186202",
+      "nation_filter": "K",
+      "admissions": 12278010,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20176122",
+    "title": "영화 「안시성」 개봉",
+    "date_start": "2018-09-19",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 안시성",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20176122",
+      "nation_filter": "K",
+      "admissions": 5441279,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20177538",
+    "title": "영화 「완벽한 타인」 개봉",
+    "date_start": "2018-10-31",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 완벽한 타인",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20177538",
+      "nation_filter": "K",
+      "admissions": 5294154,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-expanded-bb36c6a3ea72ee2b",
     "title": "누리호 시험발사체 발사",
     "date_start": "2018-11-01",
@@ -9291,6 +11801,37 @@
     ]
   },
   {
+    "id": "kr-film-release-20182530",
+    "title": "영화 「극한직업」 개봉",
+    "date_start": "2019-01-23",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 극한직업",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20182530",
+      "nation_filter": "K",
+      "admissions": 16266641,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-music-0550fc2ac756701c",
     "title": "백예린, 음반 「Our love is great」 발매",
     "date_start": "2019-03-18",
@@ -9308,6 +11849,133 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-film-release-20183782",
+    "title": "영화 「기생충」 개봉",
+    "date_start": "2019-05-30",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 기생충",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20183782",
+      "nation_filter": "K",
+      "admissions": 10317318,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20184621",
+    "title": "영화 「엑시트」 개봉",
+    "date_start": "2019-07-31",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 엑시트",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20184621",
+      "nation_filter": "K",
+      "admissions": 9429024,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-drama-premiere-crash-landing-on-you",
+    "title": "드라마 「사랑의 불시착」 첫 방송",
+    "date_start": "2019-12-14",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "사랑의 불시착 · 첫 방송·공개일",
+        "source_url": "https://tvn.cjenm.com/ko/cloy/",
+        "publisher": "tvN",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "사랑의 불시착 · 흥행 성과 확인",
+        "source_url": "https://kind.krx.co.kr/external/dst/irReference/16676/CJENM_IR_Book_2025.05.pdf",
+        "publisher": "CJ ENM",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "사랑의 불시착",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "회사 IR 자료의 주요 흥행 드라마 및 시청률 추이 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
+  },
+  {
+    "id": "kr-film-release-20192206",
+    "title": "영화 「백두산」 개봉",
+    "date_start": "2019-12-19",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 백두산",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20192206",
+      "nation_filter": "K",
+      "admissions": 8253570,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
   },
   {
     "id": "kr-expanded-7749e72dbda656ea",
@@ -9424,6 +12092,40 @@
     ]
   },
   {
+    "id": "kr-drama-premiere-hospital-playlist",
+    "title": "드라마 「슬기로운 의사생활」 첫 방송",
+    "date_start": "2020-03-12",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "슬기로운 의사생활 · 첫 방송·공개일",
+        "source_url": "https://tvn.cjenm.com/ko/doctorlife/",
+        "publisher": "tvN",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "슬기로운 의사생활 · 흥행 성과 확인",
+        "source_url": "https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002652882",
+        "publisher": "한국콘텐츠학회 논문/KCI",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "슬기로운 의사생활",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "시청자 반응 연구에서 최고 시청률 14.1% 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
+  },
+  {
     "id": "kr-music-613a35bff744edb1",
     "title": "정밀아, 음반 「청파소나타」 발매",
     "date_start": "2020-10-22",
@@ -9538,6 +12240,40 @@
     ]
   },
   {
+    "id": "kr-drama-premiere-squid-game",
+    "title": "시리즈 「오징어 게임」 공개",
+    "date_start": "2021-09-17",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "오징어 게임 · 첫 방송·공개일",
+        "source_url": "https://about.netflix.com/en/news/squid-game-invites-you-to-deadly-childhood-games-on-september-17",
+        "publisher": "Netflix",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "오징어 게임 · 흥행 성과 확인",
+        "source_url": "https://about.netflix.com/ko/news/red-light-green-light-no-to-network-usage-fees",
+        "publisher": "Netflix",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "오징어 게임",
+      "date_basis": "initial_streaming_release",
+      "hit_evidence": "플랫폼 발표에서 1억 4,200만 이상 구독 회원 시청 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
+  },
+  {
     "id": "kr-expanded-014c5be19866b1b0",
     "title": "한국의 탈춤, 유네스코 인류무형문화유산 등재",
     "date_start": "2022-01-01",
@@ -9614,6 +12350,37 @@
     ]
   },
   {
+    "id": "kr-film-release-20204548",
+    "title": "영화 「범죄도시2」 개봉",
+    "date_start": "2022-05-18",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 범죄도시2",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20204548",
+      "nation_filter": "K",
+      "admissions": 12693415,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-nuri-2022",
     "title": "누리호 2차 발사 성공",
     "description": "",
@@ -9633,6 +12400,71 @@
     ]
   },
   {
+    "id": "kr-drama-premiere-extraordinary-attorney-woo",
+    "title": "드라마 「이상한 변호사 우영우」 첫 방송",
+    "date_start": "2022-06-29",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "이상한 변호사 우영우 · 첫 방송·공개일",
+        "source_url": "https://www.etnews.com/20220718000279",
+        "publisher": "전자신문 · ENA 편성 발표 보도",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "이상한 변호사 우영우 · 흥행 성과 확인",
+        "source_url": "https://about.netflix.com/ko/news/2022lookback",
+        "publisher": "Netflix",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "이상한 변호사 우영우",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "플랫폼 연간 결산에서 비영어권 TV 글로벌 Top 10에 21주간 진입 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
+  },
+  {
+    "id": "kr-film-release-20209343",
+    "title": "영화 「한산: 용의 출현」 개봉",
+    "date_start": "2022-07-27",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 한산: 용의 출현",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20209343",
+      "nation_filter": "K",
+      "admissions": 7267202,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-expanded-3258e5778cb9c45c",
     "title": "다누리 발사",
     "date_start": "2022-08-01",
@@ -9650,6 +12482,71 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-film-release-20215601",
+    "title": "영화 「공조2: 인터내셔날」 개봉",
+    "date_start": "2022-09-07",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 공조2: 인터내셔날",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20215601",
+      "nation_filter": "K",
+      "admissions": 6983077,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-drama-premiere-the-glory",
+    "title": "시리즈 「더 글로리」 공개",
+    "date_start": "2022-12-30",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "더 글로리 · 첫 방송·공개일",
+        "source_url": "https://about.netflix.com/ko/news/korean-netflix-year-end-slate-2022",
+        "publisher": "Netflix",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "더 글로리 · 흥행 성과 확인",
+        "source_url": "https://about.netflix.com/ko/news/top-10-week-of-april-3-the-night-agent-enters-the-most-popular-list",
+        "publisher": "Netflix",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "더 글로리",
+      "date_basis": "initial_streaming_release",
+      "hit_evidence": "플랫폼 주간 집계에서 비영어권 TV 1위 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
   },
   {
     "id": "kr-expanded-9cef6b16b1a2f238",
@@ -9747,6 +12644,133 @@
     ]
   },
   {
+    "id": "kr-film-release-20226411",
+    "title": "영화 「범죄도시3」 개봉",
+    "date_start": "2023-05-31",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 범죄도시3",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20226411",
+      "nation_filter": "K",
+      "admissions": 10682813,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20218541",
+    "title": "영화 「밀수」 개봉",
+    "date_start": "2023-07-26",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 밀수",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20218541",
+      "nation_filter": "K",
+      "admissions": 5143751,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20212866",
+    "title": "영화 「서울의 봄」 개봉",
+    "date_start": "2023-11-22",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 서울의 봄",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20212866",
+      "nation_filter": "K",
+      "admissions": 13128587,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-drama-premiere-marry-my-husband",
+    "title": "드라마 「내 남편과 결혼해줘」 첫 방송",
+    "date_start": "2024-01-01",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "내 남편과 결혼해줘 · 첫 방송·공개일",
+        "source_url": "https://tvn.cjenm.com/ko/Marrymyhusband/",
+        "publisher": "tvN",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "내 남편과 결혼해줘 · 흥행 성과 확인",
+        "source_url": "https://studiodragon.irplus.co.kr/common/sustainabilitydownload/250619_Studio_Dragon_Corporation_Sustainability_Report_Korean.pdf",
+        "publisher": "스튜디오드래곤",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "내 남편과 결혼해줘",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "제작사 연간 보고서에서 시청률 12.0%와 프라임비디오 1위 성과 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
+  },
+  {
     "id": "kr-expanded-edb46c86bd102e98",
     "title": "한국의 장 담그기 문화, 유네스코 인류무형문화유산 등재",
     "date_start": "2024-01-01",
@@ -9823,6 +12847,136 @@
     ]
   },
   {
+    "id": "kr-film-release-20234675",
+    "title": "영화 「파묘」 개봉",
+    "date_start": "2024-02-22",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 파묘",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20234675",
+      "nation_filter": "K",
+      "admissions": 11916041,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-drama-premiere-queen-of-tears",
+    "title": "드라마 「눈물의 여왕」 첫 방송",
+    "date_start": "2024-03-09",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "눈물의 여왕 · 첫 방송·공개일",
+        "source_url": "https://cjnews.cj.net/?p=47894",
+        "publisher": "CJ ENM",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "눈물의 여왕 · 흥행 성과 확인",
+        "source_url": "https://studiodragon.irplus.co.kr/common/sustainabilitydownload/250619_Studio_Dragon_Corporation_Sustainability_Report_Korean.pdf",
+        "publisher": "스튜디오드래곤",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "눈물의 여왕",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "제작사 연간 보고서에서 tvN 역대 드라마 시청률 1위 24.9% 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
+  },
+  {
+    "id": "kr-drama-premiere-lovely-runner",
+    "title": "드라마 「선재 업고 튀어」 첫 방송",
+    "date_start": "2024-04-08",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "선재 업고 튀어 · 첫 방송·공개일",
+        "source_url": "https://cjnews.cj.net/?p=50551",
+        "publisher": "CJ CGV",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "선재 업고 튀어 · 흥행 성과 확인",
+        "source_url": "https://www.cjenm.com/ko/genz/genz-loves-cjenm-03/",
+        "publisher": "CJ ENM",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "선재 업고 튀어",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "방송사 자료에서 2049 타깃 시청률 6주 연속 1위와 누적 조회 성과 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
+  },
+  {
+    "id": "kr-film-release-20228797",
+    "title": "영화 「범죄도시4」 개봉",
+    "date_start": "2024-04-24",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 범죄도시4",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20228797",
+      "nation_filter": "K",
+      "admissions": 11502928,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-shin-lim-2024-bronze",
     "title": "신유빈·임종훈, 파리 올림픽 탁구 혼합복식 동메달",
     "description": "프랑스 현지 날짜 기준",
@@ -9880,6 +13034,37 @@
     ]
   },
   {
+    "id": "kr-film-release-20239670",
+    "title": "영화 「베테랑2」 개봉",
+    "date_start": "2024-09-13",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 베테랑2",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20239670",
+      "nation_filter": "K",
+      "admissions": 7525902,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
     "id": "kr-han-kang-2024",
     "title": "한강, 노벨문학상 수상자로 선정",
     "description": "수상자 발표 날짜이며 시상식 날짜와 구분한다.",
@@ -9897,6 +13082,40 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-drama-premiere-jeongnyeon",
+    "title": "드라마 「정년이」 첫 방송",
+    "date_start": "2024-10-12",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "정년이 · 첫 방송·공개일",
+        "source_url": "https://tvn.cjenm.com/ko/Jeongnyeon/special/",
+        "publisher": "tvN",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "정년이 · 흥행 성과 확인",
+        "source_url": "https://studiodragon.irplus.co.kr/common/sustainabilitydownload/250619_Studio_Dragon_Corporation_Sustainability_Report_Korean.pdf",
+        "publisher": "스튜디오드래곤",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "정년이",
+      "date_basis": "first_episode_broadcast",
+      "hit_evidence": "제작사 연간 보고서에서 최고 시청률 17.1% 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
   },
   {
     "id": "kr-faker-2024-mvp",
@@ -10020,6 +13239,40 @@
     ]
   },
   {
+    "id": "kr-drama-premiere-when-life-gives-you-tangerines",
+    "title": "시리즈 「폭싹 속았수다」 공개",
+    "date_start": "2025-03-07",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "폭싹 속았수다 · 첫 방송·공개일",
+        "source_url": "https://about.netflix.com/en/news/when-life-gives-you-tangerines-premieres-march-7",
+        "publisher": "Netflix",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      },
+      {
+        "source_title": "폭싹 속았수다 · 흥행 성과 확인",
+        "source_url": "https://newsroom.kakaoent.com/news/when-life-gives-you-tangerines-karma-dark-nuns-kakao-entertainments-media-business-extends-winning-streak-with-mega-hit-series-and-movies-in/",
+        "publisher": "카카오엔터테인먼트",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "drama_premiere",
+      "work_title": "폭싹 속았수다",
+      "date_basis": "initial_streaming_release",
+      "hit_evidence": "제작사 발표에서 넷플릭스 비영어권 TV 글로벌 Top 10 1위 확인",
+      "checked_at": "2026-11-01",
+      "note": "일률적인 시청률 순위·전수 목록이 아닌 공식 성과 자료 중심의 선정"
+    }
+  },
+  {
     "id": "kr-president-2025",
     "title": "이재명 대통령 취임",
     "description": "취임 당일 공식 업무 개시를 다룬 기록을 확인했다.",
@@ -10037,6 +13290,37 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-film-release-20241941",
+    "title": "영화 「좀비딸」 개봉",
+    "date_start": "2025-07-30",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 좀비딸",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20241941",
+      "nation_filter": "K",
+      "admissions": 5642778,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
   },
   {
     "id": "kr-apec-2025",
@@ -10113,6 +13397,68 @@
         "retrieved_at": "2026-11-01"
       }
     ]
+  },
+  {
+    "id": "kr-film-release-20242837",
+    "title": "영화 「왕과 사는 남자」 개봉",
+    "date_start": "2026-02-04",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 왕과 사는 남자",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20242837",
+      "nation_filter": "K",
+      "admissions": 16933177,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
+  },
+  {
+    "id": "kr-film-release-20252402",
+    "title": "영화 「군체」 개봉",
+    "date_start": "2026-05-21",
+    "date_end": null,
+    "date_precision": "day",
+    "category": "영화·방송",
+    "verification_status": "verified",
+    "description": "",
+    "sources": [
+      {
+        "source_title": "역대 박스오피스 · 한국 영화 · 군체",
+        "source_url": "https://www.kobis.or.kr/kobis/business/stat/boxs/findFormerBoxOfficeList.do",
+        "publisher": "영화진흥위원회 KOBIS",
+        "license": "Facts-only extraction; independently formatted factual labels; no synopsis, dialogue, reviews, images or video reproduced; original source rights reserved",
+        "retrieved_at": "2026-11-01"
+      }
+    ],
+    "review": {
+      "kind": "film_release",
+      "movie_code": "20252402",
+      "nation_filter": "K",
+      "admissions": 5954211,
+      "minimum_admissions": 5000000,
+      "admissions_basis": "kobis-ticketing",
+      "admissions_period": "2026-11-01 조회, 전일 마감 기준",
+      "checked_at": "2026-11-01",
+      "date_basis": "domestic_release_date",
+      "note": "관객 수는 수록 기준 확인용 집계이며 개봉일에 달성했다는 뜻이 아님"
+    }
   },
   {
     "id": "kr-nuri-2026",
