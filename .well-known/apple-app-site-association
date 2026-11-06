@@ -1,0 +1,8 @@
+{
+  "applinks": {
+    "details": [{
+      "appIDs": ["BT4637TR4Z.com.bybrezel.money.kimdian"],
+      "components": [{"/": "/invite", "comment": "Brezel shared ledger invitations"}]
+    }]
+  }
+}
