@@ -192,6 +192,22 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 // ─── Supabase 클라이언트 ──────────────────────────────────────────────────────
 const SUPABASE_URL = 'https://yknhizzyzxrurgkkknsx.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_JXT1WB2T1NZMMzSG7hNW9w_NrkvyNKu';
+const authCallbackUrl = new URL(window.location.href);
+const authCallbackHash = new URLSearchParams(authCallbackUrl.hash.slice(1));
+const initialRecoveryError = authCallbackHash.get('error_code') === 'otp_expired'
+  || authCallbackHash.get('error') === 'access_denied'
+  ? '재설정 링크가 만료되었거나 유효하지 않아요. 이메일을 입력해 새 링크를 요청해주세요.' : '';
+let recoveryRequested = !initialRecoveryError && (
+  authCallbackUrl.searchParams.get('recovery') === '1'
+  || authCallbackHash.get('type') === 'recovery'
+);
+const clearRecoveryUrl = () => {
+  const url = new URL(window.location.href);
+  url.searchParams.delete('recovery');
+  url.hash = '';
+  window.history.replaceState(null, '', url.pathname + url.search);
+};
+
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: {
     persistSession: true,
@@ -201,6 +217,11 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
 });
 
 // ─── lucide icons (inline SVG helpers) ───────────────────────────────────────
+// Preserve recovery events emitted before React mounts.
+supabase.auth.onAuthStateChange(event => {
+  if (event === 'PASSWORD_RECOVERY') recoveryRequested = true;
+});
+
 const Icon = ({ d, size=24, color='currentColor', sw=2, ...p }) =>
   jsx('svg',{width:size,height:size,viewBox:'0 0 24 24',fill:'none',stroke:color,
     strokeWidth:sw,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':true,...p,
@@ -3781,17 +3802,48 @@ function SettingsPage({ onClose, onSignOut, onShowAuth, authUser }) {
 }
 
 // ─── AUTH PAGE ────────────────────────────────────────────────────────────────
-function AuthPage({ onAuth, onClose }) {
-  const [mode, setMode] = useState('login');   // 'login' | 'signup' | 'reset'
+function AuthPage({ onAuth, onClose, initialMode = 'login', initialError = '' }) {
+  const [mode, setMode] = useState(initialMode);   // login | signup | reset | recovery
   const [email, setEmail] = useState('');
   const [pw, setPw]       = useState('');
   const [pw2, setPw2]     = useState('');
   const [loading, setLoading] = useState(false);
-  const [err, setErr]     = useState('');
+  const [err, setErr]     = useState(initialError);
   const [msg, setMsg]     = useState('');
+
+  useEffect(() => {
+    setMode(initialMode);
+    setErr(initialError);
+    setMsg('');
+  }, [initialMode, initialError]);
 
   const submit = async () => {
     setErr(''); setMsg('');
+    if (loading) return;
+    if (mode === 'recovery') {
+      if (pw.length < 8 || !/[A-Z]/.test(pw) || !/[a-z]/.test(pw) || !/[0-9]/.test(pw)) {
+        setErr('영문 대문자, 소문자, 숫자를 포함해 8자 이상 입력해주세요.'); return;
+      }
+      if (pw !== pw2) { setErr('비밀번호가 일치하지 않아요.'); return; }
+      setLoading(true);
+      try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError || !session) {
+          setMode('reset');
+          setErr('재설정 링크가 만료되었어요. 이메일을 입력해 새 링크를 요청해주세요.');
+          return;
+        }
+        const { error } = await supabase.auth.updateUser({ password: pw });
+        if (error) { setErr('비밀번호를 변경하지 못했어요. 비밀번호 조건을 확인하거나 새 링크를 요청해주세요.'); return; }
+        window.alert('비밀번호가 변경되었어요.');
+        onAuth();
+      } catch {
+        setErr('연결에 실패했어요. 잠시 후 다시 시도해주세요.');
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
     if (!email) { setErr('이메일을 입력해주세요.'); return; }
 
     // ── 비밀번호 재설정 이메일 발송 ──────────────────────────────
@@ -3832,9 +3884,9 @@ function AuthPage({ onAuth, onClose }) {
 
   const switchMode = (next) => { setMode(next); setErr(''); setMsg(''); };
 
-  const titles = { login: '다시 돌아오셨군요 👋', signup: '계정을 만들어볼게요', reset: '비밀번호를 재설정할게요' };
-  const subs   = { login: '로그인하면 모든 기기에서\n데이터가 동기화돼요.', signup: '가입하면 데이터가 안전하게\n클라우드에 저장돼요.', reset: '가입한 이메일 주소를 입력하면\n재설정 링크를 보내드려요.' };
-  const btnLabels = { login: '로그인', signup: '가입하기', reset: '재설정 링크 보내기' };
+  const titles = { login: '다시 돌아오셨군요 👋', signup: '계정을 만들어볼게요', reset: '비밀번호를 재설정할게요', recovery: '새 비밀번호를 설정해주세요' };
+  const subs   = { login: '로그인하면 모든 기기에서\n데이터가 동기화돼요.', signup: '가입하면 데이터가 안전하게\n클라우드에 저장돼요.', reset: '가입한 이메일 주소를 입력하면\n재설정 링크를 보내드려요.', recovery: '새 비밀번호를 입력하고 저장해주세요.' };
+  const btnLabels = { login: '로그인', signup: '가입하기', reset: '재설정 링크 보내기', recovery: '새 비밀번호 저장' };
 
   return jsx('div', { className: 'app-shell', children:
     jsxs('div', { className: 'auth-shell', children: [
@@ -3851,7 +3903,7 @@ function AuthPage({ onAuth, onClose }) {
         jsx('p', { className: 'auth-sub', children: subs[mode] }),
 
         // 구글 로그인 (reset 모드에서는 숨김)
-        mode !== 'reset' && jsxs(Fragment, { children: [
+        mode !== 'reset' && mode !== 'recovery' && jsxs(Fragment, { children: [
           jsxs('button', { className: 'btn-google', onClick: googleLogin, children: [
             jsx('svg', { width: 18, height: 18, viewBox: '0 0 48 48', children: [
               jsx('path', { fill: '#EA4335', d: 'M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z' }),
@@ -3865,7 +3917,7 @@ function AuthPage({ onAuth, onClose }) {
         ] }),
 
         // 이메일 입력
-        jsxs('div', { className: 'field-wrap', children: [
+        mode !== 'recovery' && jsxs('div', { className: 'field-wrap', children: [
           jsx('label', { children: '이메일' }),
           jsx('input', { className: 'field', type: 'email', placeholder: 'you@example.com',
             value: email, onChange: e => setEmail(e.target.value),
@@ -3875,21 +3927,21 @@ function AuthPage({ onAuth, onClose }) {
         // 비밀번호 (reset 모드에서는 숨김)
         mode !== 'reset' && jsxs('div', { className: 'field-wrap', children: [
           jsxs('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }, children: [
-            jsx('label', { style: { marginBottom: 0 }, children: '비밀번호' }),
+            jsx('label', { style: { marginBottom: 0 }, children: mode === 'recovery' ? '새 비밀번호' : '비밀번호' }),
             mode === 'login' && jsx('span', {
               onClick: () => switchMode('reset'),
               style: { fontSize: 11, color: 'var(--gray-400)', cursor: 'pointer', borderBottom: '1px solid var(--gray-200)' },
               children: '비밀번호를 잊으셨나요?',
             }),
           ] }),
-          jsx('input', { className: 'field', type: 'password', placeholder: '6자 이상',
+          jsx('input', { className: 'field', type: 'password', placeholder: mode === 'recovery' ? '8자 이상, 대소문자와 숫자 포함' : '6자 이상',
             value: pw, onChange: e => setPw(e.target.value),
             onKeyDown: e => e.key === 'Enter' && submit() }),
         ] }),
 
         // 비밀번호 확인 (signup만)
-        mode === 'signup' && jsxs('div', { className: 'field-wrap', children: [
-          jsx('label', { children: '비밀번호 확인' }),
+        (mode === 'signup' || mode === 'recovery') && jsxs('div', { className: 'field-wrap', children: [
+          jsx('label', { children: mode === 'recovery' ? '새 비밀번호 확인' : '비밀번호 확인' }),
           jsx('input', { className: 'field', type: 'password', placeholder: '동일하게 입력',
             value: pw2, onChange: e => setPw2(e.target.value),
             onKeyDown: e => e.key === 'Enter' && submit() }),
@@ -3903,7 +3955,7 @@ function AuthPage({ onAuth, onClose }) {
           children: loading ? '처리 중…' : btnLabels[mode] }),
 
         // 하단 전환 링크
-        mode === 'reset'
+        (mode === 'reset' || mode === 'recovery')
           ? jsx('p', { className: 'auth-switch', children:
               jsxs(Fragment, { children: [
                 jsx('span', { onClick: () => switchMode('login'), children: '← 로그인으로 돌아가기' }),
@@ -3954,14 +4006,18 @@ function App() {
   const [homeYr, setHomeYr] = useState(_today.getFullYear());
   const [homeMo, setHomeMo] = useState(_today.getMonth());
   const [homeSelDay, setHomeSelDay] = useState(_today.getDate());
-  const [showAuth, setShowAuth]   = useState(false);
+  const [showAuth, setShowAuth]   = useState(!!initialRecoveryError);
+  const [passwordRecovery, setPasswordRecovery] = useState(recoveryRequested);
+  const [recoveryError, setRecoveryError] = useState(initialRecoveryError);
   const [globalRate, setGlobalRate] = useState(normalizeRate(getRate().rate));
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
+      if (recoveryRequested) setPasswordRecovery(true);
       setAuthUser(data.session?.user ?? null);
     });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') { setPasswordRecovery(true); setRecoveryError(''); }
       setAuthUser(session?.user ?? null);
     });
     return () => subscription.unsubscribe();
@@ -3972,7 +4028,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (authUser === undefined) return;
+    if (authUser === undefined || passwordRecovery || recoveryError) return;
 
     if (!authUser) {
       setActiveScopeUserId(null);
@@ -4047,20 +4103,32 @@ function App() {
         setDbReady(true);
       }
     })();
-  }, [authUser]);
+  }, [authUser, passwordRecovery, recoveryError]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     setShowAuth(false);
   };
 
-  if (authUser === undefined || onboardedState === null) return null;
-  if (authUser && !dbReady) return null;
+  if (authUser === undefined) return null;
 
-  if (showAuth) return jsx(AuthPage, {
-    onAuth: () => setShowAuth(false),
-    onClose: () => setShowAuth(false),
+  const closeAuth = () => {
+    recoveryRequested = false;
+    if (passwordRecovery || recoveryError) clearRecoveryUrl();
+    setPasswordRecovery(false);
+    setRecoveryError('');
+    setShowAuth(false);
+  };
+  // Recovery takes priority over onboarding, database loads, and existing sessions.
+  if (passwordRecovery || recoveryError || showAuth) return jsx(AuthPage, {
+    key: passwordRecovery ? 'recovery' : recoveryError ? 'expired' : 'auth',
+    initialMode: passwordRecovery ? 'recovery' : recoveryError ? 'reset' : 'login',
+    initialError: recoveryError,
+    onAuth: closeAuth,
+    onClose: closeAuth,
   });
+
+  if (onboardedState === null || (authUser && !dbReady)) return null;
 
   if (!onboardedState) return jsx(Onboarding, {
     initialStep: onboardingInitialStep,
